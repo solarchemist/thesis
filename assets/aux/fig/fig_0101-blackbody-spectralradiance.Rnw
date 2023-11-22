@@ -1,0 +1,114 @@
+<<'0101F-blackbody-model-parameters', cache=TRUE>>=
+blackbody <- list()
+blackbody[["temperature"]] <- solarconstants %>% filter(label == "T.Sun") %>% pull(value)
+blackbody[["wvlen.ranges.steps"]] <- data.frame(structure(matrix(
+   c(
+      # min   # max # stepsize # length (no of elements)
+      1E-9,   2E-5, 1E-9,    20000,
+      # i.e., 1 nm to 20 um, step 1 nm (20000 elements)
+      7E-5,   1,    5E-5,    19999,
+      # i.e., 20 um to 1 m, step 50 um (20000 elements)
+      10001,  1E10,  5E5,    20000),
+   # i.e., 1 m to 1e10 m, step 5e5 m (20000 elements)
+   ncol = 4, byrow = TRUE),
+   dimnames = list(c("first", "second", "third"), c("min", "max", "stepsize", "length"))))
+blackbody[["spectral.radiance"]] <- data.frame(
+   temperature = rep(
+      blackbody[["temperature"]],
+      sum(blackbody[["wvlen.ranges.steps"]][, "length"])),
+   range = c(
+      rep(row.names(blackbody[["wvlen.ranges.steps"]])[1], blackbody[["wvlen.ranges.steps"]]["first", "length"]),
+      rep(row.names(blackbody[["wvlen.ranges.steps"]])[2], blackbody[["wvlen.ranges.steps"]]["second", "length"]),
+      rep(row.names(blackbody[["wvlen.ranges.steps"]])[3], blackbody[["wvlen.ranges.steps"]]["third", "length"])),
+   wavelength = c(
+      seq(
+         blackbody[["wvlen.ranges.steps"]]["first", "min"],
+         blackbody[["wvlen.ranges.steps"]]["first", "max"],
+         blackbody[["wvlen.ranges.steps"]]["first", "stepsize"]),
+      seq(
+         blackbody[["wvlen.ranges.steps"]]["second", "min"],
+         blackbody[["wvlen.ranges.steps"]]["second", "max"],
+         blackbody[["wvlen.ranges.steps"]]["second", "stepsize"]),
+      seq(
+         blackbody[["wvlen.ranges.steps"]]["third", "min"],
+         blackbody[["wvlen.ranges.steps"]]["third", "max"],
+         blackbody[["wvlen.ranges.steps"]]["third", "stepsize"])))
+@
+
+
+<<'0101F-spectral-radiance-calculated', cache=TRUE>>=
+# spectral radiance calculated using Planck's law
+blackbody$spectral.radiance$spectral.radiance <-
+   ((2 * pi * subset(solarconstants, label == "h")$value *
+        subset(solarconstants, label == "c")$value^2) /
+        blackbody$spectral.radiance$wavelength^5) *
+   (1 / (exp((subset(solarconstants, label == "h")$value * subset(solarconstants, label == "c")$value) /
+                (blackbody$spectral.radiance$wavelength *
+                    subset(solarconstants, label == "k")$value *
+                    blackbody$spectral.radiance$temperature)) - 1))
+@
+
+
+<<'0101F-planck-law-terms', cache=TRUE>>=
+blackbody$terms <- data.frame(
+   wavelength = rep(blackbody$spectral.radiance$wavelength, 2),
+   term = c(
+      rep("power term", length(blackbody$spectral.radiance$wavelength)),
+      rep("exponential term", length(blackbody$spectral.radiance$wavelength))),
+   value = c(
+      ((2 * pi * subset(solarconstants, label == "h")$value *
+      subset(solarconstants, label == "c")$value^2) /
+      (blackbody$spectral.radiance$wavelength^5)),
+      (1 / (exp((subset(solarconstants, label == "h")$value *
+      subset(solarconstants, label == "c")$value) /
+      (blackbody$spectral.radiance$wavelength *
+      subset(solarconstants, label == "k")$value *
+      blackbody$spectral.radiance$temperature)) - 1))))
+# dataframe with LaTeX equation for labelling in plot
+eq <- data.frame(
+   term = c("power term", "exponential term"),
+   latex = c(
+      "$\\displaystyle\\frac{2\\pi hc^2}{\\lambda^5}$",
+      "$\\displaystyle\\frac{1}{\\exp\\left(\\displaystyle\\frac{hc}{\\lambda kT}\\right) - 1}$"),
+   x = c(7.5E-7, 7.5E-7),
+   y = c(1E21, 1e-113))
+@
+
+
+<<'0101-fig-blackbody-spectralradiance', cache=TRUE, eval=FALSE>>=
+# Limit number of plotted points to fewer than <points.limit>
+# (to avoid running into R, ggplot or TeX memory limits)
+points.limit <- 5E3
+modvalue <- 1
+# Compare length of plot vector to points.limit
+if (dim(blackbody$spectral.radiance)[1] >= points.limit) {
+   # then we  need to limit the dataset
+   modvalue <-
+      roundup(dim(blackbody$spectral.radiance)[1] / points.limit, nearest = 10)
+}
+# spectral radiance df with max <points.limit> rows:
+blackbody[["spectral.radiance.sparse"]] <-
+   blackbody$spectral.radiance %>%
+      filter((as.numeric(row.names(.)) %% modvalue) == 0)
+p <- ggplot(blackbody$spectral.radiance.sparse %>% filter(wavelength < 2E-5),
+       aes(wavelength, spectral.radiance)) +
+   geom_line() +
+   labs(
+      x = "$\\lambda$/\\unit{\\metre}",
+      y = "$I$/\\unit{\\watt\\per\\square\\metre\\per\\metre}") +
+   theme_halfwidth()
+p.visible <-
+   ggplot(
+      blackbody$spectral.radiance.sparse %>%
+         filter((wavelength >= 380E-9) & (wavelength <= 780E-9)),
+      aes(wavelength, spectral.radiance)) +
+   geom_line() + # size = 0.25
+   scale_y_continuous(
+      breaks = c(6E13, 7.0E13, 8.0E13),
+      labels = c("6e+13", "7e+13", "8e+13")) +
+   theme_halfwidth() +
+   theme(axis.title = element_blank())
+vp.inset <- viewport(width = 0.56, height = 0.43, x = 0.95, y = 0.95, just = c("right", "top"))
+print(p)
+print(p.visible, vp = vp.inset)
+@

@@ -1,0 +1,148 @@
+Världen har byggt upp ett industriellt system som har gjort sig helt
+beroende av ett ständigt ökande flöde av fossil olja och gas, både som
+energikälla och som råvara.
+Detta trots att vetenskapen i över \qty{100}{\yearswe} varnat för de globala
+klimatförändringar som vore följden av att släppa ut dessa enorma mängder
+uråldrigt kol i atmosfären.
+Industrialiseringen har dessutom lett till utbredd miljöförstöring, i form av
+föroreningar av vatten och luft.
+
+Ett viktigt steg för att inom en snar framtid helt avveckla
+samhällets beroende av fossilbränslen är den pågående elektrifieringen,
+som för närvarande är mest synlig inom transportsektorn (med elbilar och så vidare).
+Men för vissa sektorer, till exempel kemisk industri,
+räcker inte elektrifiering för att åstadkomma den gröna omställningen --
+de behöver \emph{förnybara bränslen}.
+Samtidigt behöver vi och många andra länder hantera miljöföroreningar på ett bättre
+och billigare sätt än dagens metoder som mest skyfflar föroreningarna från
+en plats till en annan (eller ett land till ett annat).
+
+För att finna metoder att lösa dess problem behöver vi bara titta upp.
+I solljus har vi energi som kan omvandlas direkt till elektricitet
+(solceller uppfanns redan på 50-talet och är idag världens mest kostnadseffektiva elkälla)
+eller med hjälp av halvledande kristallina material kan driva den kemiska
+reaktionen av energifattiga kemikalier (t.ex. vatten, \water) till
+energirika kemikalier som vätgas, \hydrogen, så kallad \emph{soldriven vattensplittring}.
+Solljus kan också utnyttjas, med hjälp av andra halvledande kristallina material,
+för att bryta ner föroreningar (oftast kolbaserade kemikalier) i en process
+som kallas \emph{soldriven fotokatalys}.
+
+Som du säkert lagt märke till har både vattensplittring och fotokatalys
+en sak gemensamt: de kan katalyseras av halvledande material.
+Halvledare är material som är varken bra eller dåliga på att leda
+elektricitet, och detta beror på att de har ett så kallat \emph{bandgap}
+mellan ett ledande och ett icke-ledande elektroniskt tillstånd.
+Ett halvledande materials ledningsförmåga kan kontrolleras med en extern
+elektrisk spänning, eller med belysning (beroende på ljusets färg), eller
+med temperatur och några andra sätt.
+
+Halvledande material är intressanta som fotokatalysatorer på grund av att vi kan
+anpassa storleken på deras bandgap genom valet av material (inklusive dopning)
+eller till och med genom att kontrollera materialets partikelstorlek, vilket är
+något jag utforskat för zinkoxid (\ZnO) i denna avhandling.
+Bandgapets storlek avgör materialets optiska och elektroniska egenskaper, båda
+viktiga parametrar för att optimera soldriven vattensplittring
+eller soldriven fotokatalys.
+
+För att använda en liknelse kan bandgapet i en halvledare liknas vid en höjdhoppsribba,
+och ljuset (fotoner) som faller på materialet som höjdhoppare med olika mycket \enquote{studs i benen}.
+Fotoner med kort våglängd har mycket energi och kan enkelt hoppa över även högt lagda ribbor,
+medan fotoner med lång våglängd har lite energi och bara klarar lågt lagda ribbor.
+Varje foton som tar sig över ribban \emph{absorberas} av materialet och kan sedan
+omvandlas till en elektron och ett hål.
+Fotoner som inte kan ta sig över ribban kan inte heller absorberas och går till spillo.
+Det är därför viktigt att anpassa bandgapet till det ljus som kommer att falla
+på fotokatalysatorn. Detta ställer väldigt olika krav på materialet beroende
+på om det ska drivas av naturligt solljus eller en artificiell ljuskälla
+(ljus är elektromagnetisk strålning, se \cref{fig:0900-elektromagnetiskt-spektrum}).
+
+%\input{assets/aux/fig/fig_0900-elektromagnetiskt-spektrum.Rnw}
+<<child=here::here('assets/aux/fig/fig_0900-elektromagnetiskt-spektrum.Rnw')>>=
+# \label{fig:0900-elektromagnetiskt-spektrum}
+@
+
+Genom att anpassa storleken på \ZnO\ nanopartiklar eller kvantprickar, kan vi
+kontrollera bandgapets storlek inom vissa gränser,
+och därmed förutbestämma vilka våglängder av ljus som kommer absorberas
+av materialet.
+
+\ZnO\ är en vanligt förekommande halvledare (produceras några miljoner ton per år,
+främst för användning inom däcktillverkning) och ett välkänt fotokatalytiskt material
+med ett stort bandgap som bara kan absorbera UV-ljus (inget synligt ljus kan absorberas,
+och \ZnO\ har följaktligen vit färg).
+Detta innebär att odopad \ZnO\ inte kommer på fråga för soldriven vattensplittring,
+men ur katalytisk synvinkel kan dess stora bandgap vara fördelaktigt för att generera
+högre redox-potentialer, särskilt i kombination med större ytarea via nanostrukturering.
+
+I den här avhandlingen har jag tillverkat nanostrukturerade filmer av
+\ZnO\ för sig självt eller i kombination med \ch{CdS} eller \ironox,
+och undersökt dessa filmers egenskaper med hjälp av olika
+metoder såsom röntgendiffraktometri, \gls{UV-Vis} spektrofotometri,
+elektronmikroskopi, röntgenfluorescens, med flera.
+
+Jag syntetiserade kvantprickar av \ZnO\ och övervakade deras fotokatalytiska
+verkan under simulerat AM1.5G solljus samtidigt som bandgapets storlek förändrades.
+
+Jag utförde även fundamentala undersökningar av kristallvibrationer (fononer) och
+fonon-fonon- samt elektron-fonon-kopplingar i \ZnO\ nanopartiklar.
+
+Nanopartiklar ger material helt nya kemiska egenskaper enbart på grund av deras storlek.
+Det handlar om partiklar som är mindre än \qty{100}{\nm} i diameter
+(se \cref{fig:0900-nanopartikel-storlek}).
+Som jämförelse får ungefär 10 atomer på rad plats på en nanometer, och ett hårstrå
+är cirka \qty{50000}{\nm} i diameter.
+Tillverkning av nanomaterial är som kemiskt finsnickeri; rena atomslöjden.
+
+%\input{assets/aux/fig/fig_0900-nanopartikel-storlek.Rnw}
+<<child=here::here('assets/aux/fig/fig_0900-nanopartikel-storlek.Rnw')>>=
+# \label{fig:0900-nanopartikel-storlek}
+@
+
+
+
+Det kan finnas risker med nanotekniken.
+Vi måste beakta att partiklarnas själva litenhet kan öka risken att de tas
+upp av lungorna eller till och med genom huden, alldeles oavsett om materialet
+ifråga är giftigt när det inte är nanostrukturerat.
+Vi behöver vara respektfulla inför att vi ännu kan för lite om riskerna,
+men samtidigt ska vi inte vara onödigt rädda.
+Nanopartiklar bildas helt naturligt vid många olika processer, till exempel
+när du tänder eld på en tändsticka.
+Dessutom har de flesta användningsområden inget behov av lösa nanopartiklar,
+utan de är vanligtvis inneslutna i en film eller i en lösning
+av något slag (t.ex. innehåller flera nya TV-skärmar kvantprickar, \enquote{quantum dots},
+för rikare färgåtergivning).
+
+
+
+Denna avhandling har studerat en-dimensionella nanostrukturer av \ZnO\ belagda
+med olika tjocka filmer av \ch{CdS} och funnit att sulfidfilmen ger kompositmaterialet
+markant förbättrad optisk absorption i det synliga våglängdsområdet, och att
+denna effekt visar ett beroende på sulfidfilmens tjocklek.
+De olika energinivåerna för valens- och ledningsbandkanterna i oxid- respektive
+sulfidfilmen gav också en observerbar laddningsseparation av de fotogenererade
+laddningsbärarna.
+
+Denna avhandling har visat att 1D nanostrukturer av \ZnO\ kan beläggas med
+nanofilmer av \ironox\ som effektivt skyddar materialet mot fotokorrosion,
+men de tunnaste filmerna har sannolikt låg kristallinitet vilket
+försämrade deras fotokatalysatiska förmåga.
+
+Vi har visat att kvantpunkter av \ZnO\ kan användas för att effektivt
+bryta ner distribuerade miljöföroreningar med hjälp av solljus,
+och observerat hur redox-kemin ändrat sig för olika diameter på kvantprickarna.
+
+För nanostrukturerade \ZnO\ pulver med partikelstorlekar i intervallet
+\qty{10}{\nm} till \qty{150}{\nm} undersökte vi
+deras fundamentala kristallvibrationer inklusive flera övertoner samt kopplingen
+mellan elektroniska och vibrationella moder i materialet.
+
+I denna avhandling har \ZnO\ tillverkats i storlekar från \qty{3}{\nm} till över
+\qty{100}{\nm} och studerats med avseende på dess elektroniska, optiska och
+vibrationella egenskaper, samt i flera fall har deras förmåga att verka fotokatalytiskt
+undersökts.
+
+Förutom att öka den fundamentala förståelsen för materialet i sig har denna
+avhandling även bidragit med praktiskt användbar information och vägledning
+om vilka ändringar i främst partikelstorlek som ger optimerad fotofysik för
+soldriven vattensplittring och soldriven fotokatalys.

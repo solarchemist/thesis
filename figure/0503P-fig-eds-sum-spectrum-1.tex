@@ -1,0 +1,341 @@
+% Created by tikzDevice version 0.12.4 on 2023-12-15 02:03:23
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{luatex85}
+\documentclass{LuaUUThesis}
+\nonstopmode
+
+\usepackage{tikz}
+\usepackage{luatex85}
+\usepackage[active,tightpage,psfixbb]{preview}
+\usepackage{fontspec}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\linespread{1.05}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\PreviewEnvironment{pgfpicture}
+\setlength\PreviewBorder{0pt}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage[backend=biber]{biblatex}
+\usepackage{xfrac}
+\usetikzlibrary{ arrows, backgrounds, calc, decorations, decorations.markings, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, fadings, fit, positioning, shapes }
+\usepackage[ minimal=true, modules={ thermodynamics, units, orbital, reactions, redox, reactants, scheme} ]{chemmacros}
+\chemsetup{ formula=chemformula, chemformula/frac-style=nicefrac, reactions/list-entry={}, reactants/printreactants-style=xltabular, reactants/initiate=true }
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+\NewChemParticle{\oxide}{O^{2-}}
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+\NewChemParticle\ZnAc{Zn(OAc)2}
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\definesubmol\nobond{-[,1.2,,,draw=none]}
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+\usepackage{siunitx}
+\sisetup{ uncertainty-mode=compact, reset-text-family=false, text-family-to-math=false, text-series-to-math=false }
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+\DeclareSIUnit{\lines}{lines}
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+\DeclareSIUnit{\rpm}{rpm}
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+\DeclareSIUnit{\foot}{ft}
+\DeclareSIUnit{\sq}{sq}
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+\DeclareSIUnit{\angstrom}{Å}
+\usepackage{xifthen}
+\usepackage{xparse}
+\ExplSyntaxOn \NewExpandableDocumentCommand{\stringcase}{mO{}m}{ \str_case_e:nnF { #1 } { #3 } { #2 } } \ExplSyntaxOff  \NewDocumentCommand{\NonResonantModesShort}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2l}}} {B1l}{\textit{B}\textsubscript{\textup{1l}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2h}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1h}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLong}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2(low)}}} {B1l}{\textit{B}\textsubscript{\textup{1(low)}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2(high)}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1(high)}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{ \IfNoValueTF{#2}{ \NonResonantModesShort{#1} }{ \ifthenelse{\equal{#2}{long}}{ \NonResonantModesLong{#1} }{ \ifthenelse{\equal{#2}{short}}{ \NonResonantModesShort{#1} }{ \NonResonantModesShort{} } } } }  \NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{ \IfNoValueTF{#2}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\isempty{#2}}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\equal{#4}{diff}}{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2} } } }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2} } } } } } }   \NewDocumentCommand{\Eg}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{E_\text{g}}}{ \IfNoValueTF{#2}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\Rsq}{om}{ \IfNoValueTF{#1}{ \ensuremath{R^2{\,=\,}\num{#2}}}{ \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}   \NewDocumentCommand{\density}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{\rho}}{ \IfNoValueTF{#2}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\miller}{m}{ \num{#1} }
+\newcommand{\SweaveOpts}[1]{}  % do not interfere with LaTeX
+\newcommand{\SweaveInput}[1]{} % because they are not real TeX commands
+\newcommand{\Sexpr}[1]{}       % will only be parsed by R
+
+
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+
+\begin{document}
+
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor{fillColor}{RGB}{255,255,255}
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (341.11,211.03);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  0.00,  2.22) --
+	(  1.80,  2.37) --
+	(  3.59,  2.44) --
+	(  5.39,  2.63) --
+	(  7.18,  3.30) --
+	(  8.98,  4.16) --
+	( 10.77,  5.55) --
+	( 12.57,  6.26) --
+	( 14.36,  7.99) --
+	( 16.16, 10.73) --
+	( 17.95, 13.70) --
+	( 19.75, 17.60) --
+	( 21.54, 20.78) --
+	( 23.34, 25.05) --
+	( 25.13, 27.71) --
+	( 26.93, 28.70) --
+	( 28.73, 27.68) --
+	( 30.52, 24.93) --
+	( 32.32, 22.08) --
+	( 34.11, 17.14) --
+	( 35.91, 12.70) --
+	( 37.70,  9.15) --
+	( 39.50,  6.46) --
+	( 41.29,  4.56) --
+	( 43.09,  3.53) --
+	( 44.88,  3.03) --
+	( 46.68,  2.78) --
+	( 48.47,  3.23) --
+	( 50.27,  3.39) --
+	( 52.06,  4.49) --
+	( 53.86,  4.68) --
+	( 55.66,  5.49) --
+	( 57.45,  6.14) --
+	( 59.25,  7.44) --
+	( 61.04,  9.38) --
+	( 62.84, 11.12) --
+	( 64.63, 12.75) --
+	( 66.43, 12.99) --
+	( 68.22, 15.33) --
+	( 70.02, 16.05) --
+	( 71.81, 15.20) --
+	( 73.61, 14.75) --
+	( 75.40, 13.89) --
+	( 77.20, 11.24) --
+	( 78.99,  9.38) --
+	( 80.79,  7.48) --
+	( 82.59,  5.71) --
+	( 84.38,  5.00) --
+	( 86.18,  3.85) --
+	( 87.97,  3.67) --
+	( 89.77,  3.93) --
+	( 91.56,  4.40) --
+	( 93.36,  6.13) --
+	( 95.15,  7.86) --
+	( 96.95, 10.80) --
+	( 98.74, 16.16) --
+	(100.54, 22.85) --
+	(102.33, 33.25) --
+	(104.13, 47.63) --
+	(105.92, 66.54) --
+	(107.72, 90.89) --
+	(109.52,117.99) --
+	(111.31,146.23) --
+	(113.11,174.19) --
+	(114.90,192.40) --
+	(116.70,207.82) --
+	(118.49,208.81) --
+	(120.29,197.70) --
+	(122.08,175.69) --
+	(123.88,148.14) --
+	(125.67,118.54) --
+	(127.47, 88.17) --
+	(129.26, 62.29) --
+	(131.06, 40.41) --
+	(132.86, 25.25) --
+	(134.65, 14.48) --
+	(136.45,  8.04) --
+	(138.24,  5.00) --
+	(140.04,  3.38) --
+	(141.83,  3.18) --
+	(143.63,  3.51) --
+	(145.42,  4.57) --
+	(147.22,  5.53) --
+	(149.01,  6.54) --
+	(150.81,  6.90) --
+	(152.60,  6.47) --
+	(154.40,  6.13) --
+	(156.19,  5.15) --
+	(157.99,  3.75) --
+	(159.79,  3.31) --
+	(161.58,  3.04) --
+	(163.38,  3.04) --
+	(165.17,  3.40) --
+	(166.97,  6.10) --
+	(168.76,  8.79) --
+	(170.56, 11.99) --
+	(172.35, 17.02) --
+	(174.15, 24.12) --
+	(175.94, 31.48) --
+	(177.74, 37.97) --
+	(179.53, 43.77) --
+	(181.33, 49.61) --
+	(183.12, 53.14) --
+	(184.92, 54.43) --
+	(186.72, 52.44) --
+	(188.51, 50.58) --
+	(190.31, 43.93) --
+	(192.10, 37.59) --
+	(193.90, 30.37) --
+	(195.69, 23.72) --
+	(197.49, 18.64) --
+	(199.28, 13.43) --
+	(201.08,  9.36) --
+	(202.87,  7.09) --
+	(204.67,  4.56) --
+	(206.46,  3.18) --
+	(208.26,  2.89) --
+	(210.05,  3.02) --
+	(211.85,  2.78) --
+	(213.65,  2.61) --
+	(215.44,  2.45) --
+	(217.24,  2.67) --
+	(219.03,  2.90) --
+	(220.83,  2.84) --
+	(222.62,  3.37) --
+	(224.42,  2.80) --
+	(226.21,  3.50) --
+	(228.01,  3.92) --
+	(229.80,  3.84) --
+	(231.60,  4.15) --
+	(233.39,  4.18) --
+	(235.19,  4.78) --
+	(236.98,  5.01) --
+	(238.78,  5.30) --
+	(240.58,  5.23) --
+	(242.37,  5.73) --
+	(244.17,  6.43) --
+	(245.96,  6.47) --
+	(247.76,  7.34) --
+	(249.55,  7.15) --
+	(251.35,  6.78) --
+	(253.14,  6.29) --
+	(254.94,  5.98) --
+	(256.73,  5.23) --
+	(258.53,  4.94) --
+	(260.32,  3.84) --
+	(262.12,  3.45) --
+	(263.91,  3.16) --
+	(265.71,  3.36) --
+	(267.51,  3.14) --
+	(269.30,  3.19) --
+	(271.10,  4.54) --
+	(272.89,  5.19) --
+	(274.69,  7.77) --
+	(276.48, 11.31) --
+	(278.28, 15.23) --
+	(280.07, 20.66) --
+	(281.87, 28.02) --
+	(283.66, 34.31) --
+	(285.46, 43.47) --
+	(287.25, 52.62) --
+	(289.05, 60.81) --
+	(290.84, 68.37) --
+	(292.64, 73.89) --
+	(294.44, 77.45) --
+	(296.23, 77.96) --
+	(298.03, 77.21) --
+	(299.82, 74.22) --
+	(301.62, 69.18) --
+	(303.41, 61.28) --
+	(305.21, 51.92) --
+	(307.00, 43.65) --
+	(308.80, 36.47) --
+	(310.59, 28.64) --
+	(312.39, 22.37) --
+	(314.18, 16.53) --
+	(315.98, 12.56) --
+	(317.77,  9.20) --
+	(319.57,  6.88) --
+	(321.37,  6.02) --
+	(323.16,  4.49) --
+	(324.96,  4.37) --
+	(326.75,  3.44) --
+	(328.55,  3.25) --
+	(330.34,  3.16) --
+	(332.14,  2.97) --
+	(333.93,  2.97) --
+	(335.73,  2.55) --
+	(337.52,  2.27) --
+	(339.32,  2.53) --
+	(341.11,  2.62);
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at ( 15.16, 31.70) {C KL$_{2,3}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at ( 58.62, 18.61) {Sn M$_{4}$N$_{2,3}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at (139.88, 10.46) {Fe L$_{3}$M$_{1}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at (173.53, 58.17) {Fe L$_{3}$M$_{5}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at (234.99, 10.08) {Zn L$_{3}$M$_{1}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at (107.66, 22.89) {O KL$_{2,3}$};
+
+\node[text=drawColor,rotate=-90.00,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  2.56] at (286.72, 10.01) {Zn L$_{3}$M$_{4}$};
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

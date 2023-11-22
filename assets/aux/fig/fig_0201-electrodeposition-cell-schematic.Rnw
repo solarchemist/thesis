@@ -1,0 +1,317 @@
+<<'0201F-electrodeposition-cell-schematic', cache=TRUE>>=
+cell <- list()
+cell[["diameter"]] <- 25 #mm
+cell[["radius"]]   <- cell[["diameter"]] / 2 #mm
+cell[["height"]]   <- 40 #mm
+# sample
+substrate <- list()
+substrate[["width"]]     <- 10 #mm
+substrate[["thickness"]] <- 2.2 #mm
+substrate[["height"]]    <- 20 #mm
+# sample-holder
+wesupprod <- list()
+wesupprod[["height"]] <- 55 #mm #not counting the contact-tip
+wesupprod[["width"]]  <- 5 #mm (just an approximation)
+wesupprod[["arm.length"]] <- 6.2 #mm
+wesupprod[["arm.distance"]] <- 2.8 #mm (just an approximation)
+wesupprod[["arm.width"]]    <- (wesupprod[["width"]] -
+   wesupprod[["arm.distance"]]) / 2 #mm
+wesupprod[["screw.position"]] <- 4 #mm
+wesupprod[["screw.width"]]  <- 2 #mm
+wesupprod[["screw.length"]] <- 4 #mm
+# reference-electrode
+refelectrode <- list()
+refelectrode[["diameter"]] <- 4.0 #mm
+refelectrode[["radius"]] <- refelectrode[["diameter"]] / 2 #mm
+refelectrode[["height.glass"]] <- 45 #mm
+refelectrode[["height.upper.cap"]] <- 16 #mm
+refelectrode[["height.lower.cap"]] <- 9 #mm
+refelectrode[["height"]] <- refelectrode[["height.glass"]] +
+   refelectrode[["height.upper.cap"]] + refelectrode[["height.lower.cap"]] #mm
+refelectrode[["width.upper.cap"]] <- 6.35 #mm
+refelectrode[["width.lower.cap"]] <- 5.8 #mm
+refelectrode[["diameter.wire"]] <- 0.5 #mm
+refelectrode[["height.wire"]] <- 35 #mm (just an approximation)
+# counter-electrode
+cntelectrode <- list()
+cntelectrode[["diameter"]] <- 0.5 #mm
+cntelectrode[["radius"]] <- cntelectrode[["diameter"]] / 2 #mm
+cntelectrode[["height"]] <- 27 #mm
+cntelectrode[["height-upper"]] <- 3.5 #mm
+# teflon-cap
+cap <- list()
+cap[["height"]] <- 12 #mm
+cap[["width"]]  <- 30 #mm
+cap[["inset-height"]] <- 8 #mm
+cap[["inset-width"]]  <- cell[["diameter"]]
+# set-distance-d
+d.all <- 5 #mm
+scale.edcell <- 3 # 8
+@
+
+
+<<'0201F-electrodeposition-cap-schematic', cache=TRUE>>=
+# Port positions (correct relative positions)
+coord <-
+  data.frame(port1 = c(1.30, 1.98),
+             port2 = c(2.32, 2.58),
+             port3 = c(2.32, 1.45),
+             aux1  = c(1.55, 1.18),
+             aux2  = c(1.58, 2.72))
+row.names(coord) <- c("x", "y")
+# To correct for change of reference frame (origo was earlier at lower right corner of teflon-cap-no-annot.pdf
+coord["x",] <- coord["x",] - 1.9
+coord["y",] <- coord["y",] - 2
+@
+
+
+
+\begin{figure}[tbp]
+\centering
+% The TikZ sketches are natural size (1mm equals 1mm on the page) which I think makes
+% the whole plot incongruously large. So we scale the whole figure down a little.
+% NOTE! This also scales down the subcaption labels, so be careful not to down-scale too much!
+\scalebox{0.80}{%
+\begin{subfigure}[c]{0.40\linewidth}
+\centering
+%%%
+\begin{tikzpicture}[x=1mm,y=1mm]%
+%%%%%%%%%
+% Spacers
+\tikzstyle{InnerSpacer} = [rectangle,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=2.5, minimum height=2.5]
+\tikzstyle{HorizSpacer} = [InnerSpacer]
+\tikzstyle{VertSpacer} = [InnerSpacer]
+%%%%%%%%%%%%%%
+% Cell and cap
+\tikzstyle{Cell} = [rectangle, draw=black, thick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{cell[["diameter"]]},
+  minimum height=\Sexpr{cell[["height"]]}]
+\tikzstyle{CapUpper} = [rectangle, draw=black, thick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{cap[["width"]]},
+  minimum height=\Sexpr{cap[["height"]]}]
+\tikzstyle{CapLower} = [rectangle, draw=black, thick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{cap[["inset-width"]]},
+  minimum height=\Sexpr{cap[["inset-height"]]}]
+\tikzstyle{Substrate}  = [rectangle, draw=black, thick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{substrate[["thickness"]]},
+  minimum height=\Sexpr{substrate[["height"]]}]
+%%%%%%%%%%%%%%%%%
+% Counter electrode, Pt wire
+\tikzstyle{CounterElectrode} = [rectangle, draw=black, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{cntelectrode[["diameter"]]},
+  minimum height=\Sexpr{cntelectrode[["height"]]}]
+\tikzstyle{CounterElectrodeUpper} = [rectangle, draw=black, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{cntelectrode[["diameter"]]},
+  minimum height=\Sexpr{cntelectrode[["height-upper"]]}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference electrode, Ag/AgCl
+\tikzstyle{RECapUpper} = [rectangle, draw=black, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{refelectrode[["width.upper.cap"]]},
+  minimum height=\Sexpr{refelectrode[["height.upper.cap"]]},
+  rounded corners]
+\tikzstyle{RECapLower} = [rectangle, draw=black, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{refelectrode[["width.lower.cap"]]},
+  minimum height=\Sexpr{refelectrode[["height.lower.cap"]]}]
+\tikzstyle{REGlassTubing} = [rectangle,
+  fill=\bgcolorbackground, draw=black, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{refelectrode[["diameter"]]},
+  minimum height=\Sexpr{refelectrode[["height.glass"]]}]
+\tikzstyle{REWire} = [rectangle, draw=black,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{refelectrode[["diameter.wire"]]},
+  minimum height=\Sexpr{refelectrode[["height.wire"]]}]
+%%%%%%%%%%%%%%%%%%%
+% Working electrode
+\tikzstyle{WESubstrate} = [rectangle, draw=black,
+  fill=gryningmellan, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{substrate[["thickness"]]},
+  minimum height=\Sexpr{substrate[["height"]]}]
+\tikzstyle{WEHolderArm} = [rectangle, draw=black, fill=uugray, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{wesupprod[["arm.width"]]},
+  minimum height=\Sexpr{wesupprod[["arm.length"]]}]
+\tikzstyle{WEHolder} = [rectangle, draw=black, fill=uugray, semithick,
+  inner sep=0, outer sep=0, scale=\Sexpr{scale.edcell},
+  minimum width=\Sexpr{wesupprod[["width"]]},
+  minimum height=\Sexpr{wesupprod[["height"]] - wesupprod[["arm.length"]]}]
+%%%%%%
+% Cell
+\node [name=cell, Cell] {};
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Electrolyte solution level
+\draw[decorate,decoration={coil,aspect=0,amplitude=2,segment length=16}, thick]
+  % coordinates set manually for this one
+  ($(cell.south west) + (0,17.5)$) -- ($(cell.south east) + (0,17.5)$);
+%%%%%%%%%%%%%%%%%%%%%
+% Reference electrode
+\node [name=refglass, REGlassTubing, anchor=south,
+yshift=\Sexpr{d.all}, xshift=0] at (cell.south) {};
+\node [name=refwire, REWire, anchor=north, fill=uublack] at (refglass.north) {};
+\node [name=refcaplower, RECapLower, anchor=south, fill=gronskamellan] at (refglass.north) {};
+\node [name=refcapupper, RECapUpper, anchor=south, fill=gronskamellan] at (refcaplower.north) {};
+\node [rotate=90] at (refcapupper) {RE};
+%%%%%%%%%%%%%%%%%%%
+% Working electrode
+\node [name=wesubstrate, WESubstrate, anchor=south,
+yshift=\Sexpr{d.all}, xshift=7.5] at (cell.south) {};
+\node [name=weholderarmwest, WEHolderArm, anchor=north east] at (wesubstrate.north west) {};
+\node [name=weholder, WEHolder, anchor=south west] at (weholderarmwest.north west) {};
+\node [name=weholderarmeast, WEHolderArm, anchor=north east] at (weholder.south east) {};
+\node [yshift=-\Sexpr{0.5*wesupprod[["height"]]}, rotate=90] at (weholder.north) {WE};
+%%%%%%%%%%%%%%%%%%
+% Cap (Teflon lid)
+\node [name=capupper, CapUpper, anchor=south, fill=uugraylight] at (cell.north) {};
+\node [name=caplower, CapLower, anchor=north, fill=uugraylight] at (capupper.south) {};
+%%%%%%%%%%%%%%%%%%%
+% Counter electrode
+\node [name=counterelectrode, CounterElectrode, anchor=south,
+  yshift=\Sexpr{d.all}, xshift=-7.5, fill=uublack] at (cell.south) {};
+\node [name=counterelectrodeupper, CounterElectrodeUpper, anchor=south,
+  xshift=-7.5, fill=uublack] at (capupper.north) {};
+\node [anchor=west, rotate=90] at (counterelectrodeupper.north) {CE};
+\begin{scope}[font=\footnotesize, >=latex]
+  % west-side spacers, level 1 (spacer)
+  \node [name=spacercapwestupper, InnerSpacer, anchor=north east] at (capupper.north west) {};
+  \node [name=spacercapwestchin, InnerSpacer, anchor=south east] at (capupper.south west) {};
+  \node [name=spacercellwestupper, InnerSpacer, anchor=north east] at (cell.north west) {};
+  \node [name=spacercapwestlower, InnerSpacer, anchor=south east] at (caplower.south west) {};
+  \node [name=spacercellwestlower, InnerSpacer, anchor=south east] at (cell.south west) {};
+  % west-side spacers, level 2 (ss)
+  %\node [name=sscapwestupper, HorizSpacer, anchor=east] at (spacercapwestupper.west) {};
+  %\node [name=sscapwestchin, HorizSpacer, anchor=east] at (spacercapwestchin.west) {};
+  \node [name=sscellwestupper, HorizSpacer, anchor=east] at (spacercellwestupper.west) {};
+  \node [name=sscapwestlower, HorizSpacer, anchor=east] at (spacercapwestlower.west) {};
+  \node [name=sscellwestlower, HorizSpacer, anchor=east] at (spacercellwestlower.west) {};
+  % west-side spacers, level 3 (sss)
+  %\node [name=ssscapwestupper, HorizSpacer, anchor=east] at (sscapwestupper.west) {};
+  %\node [name=ssscapwestchin, HorizSpacer, anchor=east] at (sscapwestchin.west) {};
+  %\node [name=ssscellwestupper, HorizSpacer, anchor=east] at (sscellwestupper.west) {};
+  %\node [name=ssscapwestlower, HorizSpacer, anchor=east] at (sscapwestlower.west) {};
+  %\node [name=ssscellwestlower, HorizSpacer, anchor=east] at (sscellwestlower.west) {};
+  % south-side spacers, level 1 (spacer)
+  \node [name=spacercellwestbottom, InnerSpacer, anchor=north west] at (cell.south west) {};
+  \node [name=spacercelleastbottom, InnerSpacer, anchor=north east] at (cell.south east) {};
+  % south-side spacers, level 2 (ss)
+  %\node [name=sscellwestbottom, VertSpacer, anchor=north] at (spacercellwestbottom.south) {};
+  %\node [name=sscelleastbottom, VertSpacer, anchor=north] at (spacercelleastbottom.south) {};
+  % south-side spacers, level 3 (sss)
+  %\node [name=ssscellwestbottom, VertSpacer, anchor=north] at (sscellwestbottom.south) {};
+  %\node [name=ssscelleastbottom, VertSpacer, anchor=north] at (sscelleastbottom.south) {};
+  % east-side spacers, level 1 (spacer)
+  \node [name=spacercapeastupper, InnerSpacer, anchor=north west] at (capupper.north east) {};
+  \node [name=spacercapeastchin, InnerSpacer, anchor=south west] at (capupper.south east) {};
+  \node [name=spacercelleastupper, InnerSpacer, anchor=north west] at (cell.north east) {};
+  \node [name=spacercapeastlower, InnerSpacer, anchor=south west] at (caplower.south east) {};
+  \node [name=spacercelleastlower, InnerSpacer, anchor=south west] at (cell.south east) {};
+  % d-level spacers, level 1 (spacer)
+  \node [name=spacerdwest, InnerSpacer, yshift=\Sexpr{d.all}, anchor=north east] at (cell.south west) {};
+  \node [name=spacerdeast, InnerSpacer, yshift=\Sexpr{d.all}, anchor=north west] at (cell.south east) {};
+  % Electrode, spacers, level 1 (spacer)
+  \node [name=spacercounterelectrodewestupper, InnerSpacer, anchor=north east] at (counterelectrode.north west) {};
+  \node [name=spacercounterelectrodewestlower, InnerSpacer, anchor=south east] at (counterelectrode.south west) {};
+
+  % Arrows, west-side
+  \draw[<->] (spacercapwestupper.north west) -- (spacercapwestchin.south west)
+    node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{cap[["height"]]}};
+  \draw[<->] (spacercellwestupper.north west) -- (spacercapwestlower.south west)
+    node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{cap[["inset-height"]]}};
+  \draw[<->] (spacercapwestlower.south west) -- (spacercellwestlower.south west)
+    node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0]
+    {\Sexpr{cell[["height"]] - cap[["inset-height"]]}};
+%   \draw[<->] (sscellwestupper.north west) -- (sscellwestlower.south west)
+%     node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{cell[["height"]]}};
+  % Arrows, south-side
+  \draw[<->] (spacercellwestbottom.south west) -- (spacercelleastbottom.south east)
+    node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{cell[["diameter"]]}};
+  % Arrows, electrodes
+  %\draw[<->] (spacercounterelectrodewestlower.south west) --
+    %(spacercounterelectrodewestupper.north west)
+  %node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{cntelectrode[["height"]]}};
+  % Arrows, d-level
+  \draw[<->] (cell.south) -- (refglass.south)
+    %(spacerdeast.north east) -- (spacercelleastlower.south east)
+    node [midway, fill=\bgcolorbackground, outer sep=0, inner sep=0] {\Sexpr{d.all}};
+\end{scope}
+\end{tikzpicture}
+\caption{}
+\label{fig:0201-electrodeposition-cell-schematic}
+\end{subfigure}%
+% negative horizontal space, otherwise whitespace looks too large
+% because "O2(g) in" juts out a little to the left
+\hspace{-14pt}%
+\begin{subfigure}[c]{0.40\linewidth}\centering
+  \begin{subfigure}[c]{\linewidth}\centering
+    \begin{tikzpicture}[font=\footnotesize\bfseries, style=thick, scale=0.75, transform shape, rotate=-90]
+      \node [name=cap,inner sep=0pt] {\includegraphics[width=1.5in]{synthesis/electrodeposition/teflon-cap-no-annot.pdf}};
+      % Define x,y position of main and auxiliary ports in teflon cap
+      \node [name=port1, rectangle, inner sep=8pt]
+        at (\Sexpr{prettyNum(coord["x", "port1"])}, \Sexpr{prettyNum(coord["y", "port1"])}) {};
+      \node [name=port2, rectangle, inner sep=8pt]
+        at (\Sexpr{prettyNum(coord["x", "port2"])}, \Sexpr{prettyNum(coord["y", "port2"])}) {};
+      \node [name=port3, rectangle, inner sep=8pt]
+        at (\Sexpr{prettyNum(coord["x", "port3"])}, \Sexpr{prettyNum(coord["y", "port3"])}) {};
+      \node [name=aux1, rectangle, inner sep=2pt]
+        at (\Sexpr{prettyNum(coord["x", "aux1"])}, \Sexpr{prettyNum(coord["y", "aux1"])}) {};
+      \node [name=aux2, rectangle, inner sep=2pt]
+        at (\Sexpr{prettyNum(coord["x", "aux2"])}, \Sexpr{prettyNum(coord["y", "aux2"])}) {};
+      % Labels and connecting lines
+      \node at (port1.west) [name=port1label, rotate=90, anchor=south, yshift=5pt, inner sep=2pt, fill=gronskamellan] {RE};
+      \node at (port2.east) [name=port2label, rotate=90, anchor=north, yshift=-5pt, inner sep=2pt, fill=uugray] {WE};
+      \node at (port3.east) [name=port3label, rotate=90, anchor=north, yshift=-5pt, inner sep=2pt] {CE};
+      % arrow to "O2 in"-port
+      % makebox with explicit width to allow centering to center the whole sketch properly
+      \draw [latex-, blue, rotate=90] (aux1.west) arc (0:100:30pt) node [anchor=east] {\makebox[3em]{\ch{O2\gas}~in}};
+      % arrow from "O2 out"-port
+      \draw [-latex, blue, dashed, rotate=-90] (aux2.west) arc (0:-100:30pt) node [rotate=180, anchor=west] {\makebox[3em]{Air out}};
+    \end{tikzpicture}%
+    \caption{}
+    \label{fig:0201-electrodeposition-cap-schematic}
+  \end{subfigure}%
+  \\%
+  \begin{subfigure}[c]{\linewidth}\centering
+    \begin{tikzpicture}[font=\footnotesize, scale=0.75]
+      \node [inner sep=0pt, anchor=north] at (cap.south) {%
+      % trim: left bottom right top
+      \includegraphics[trim={8cm 0cm 8cm 0cm},clip,width=1.0in]{synthesis/electrodeposition/1020110747.jpg}%
+    };
+    \end{tikzpicture}
+    \caption{}
+    \label{fig:0201-electrodeposition-WE}
+  \end{subfigure}%
+\end{subfigure}%
+% increase whitespace slightly to balance whitespace between the three image columns
+\hspace{6pt}%
+\begin{subfigure}[c]{0.33\linewidth}\centering
+    % trim: left bottom right top
+    \includegraphics[width=\linewidth,trim={1cm 0cm 1cm 0cm},clip]{synthesis/electrodeposition/0909014.jpg}
+    \caption{}
+    \label{fig:0201-ED-CHI}
+\end{subfigure}%
+}%end scalebox
+%%%
+\caption[Primary electrodeposition setup]{%
+  Primary setup for electrodeposition of \zincox.
+  (\subref{fig:0201-electrodeposition-cell-schematic})
+  Schematic (side view, to scale) of the low-volume cylindrical three-electrode cell
+  used during electrodeposition,
+  (\subref{fig:0201-electrodeposition-cap-schematic})
+  the cell seen from the top, showing the location of the ports in the cap,
+  (\subref{fig:0201-electrodeposition-WE})
+  a photograph by the author of a mounted \gls{WE}, and
+  (\subref{fig:0201-ED-CHI})
+  an overview of the setup (water bath on hot plate inside the fume hood).
+}
+\label{fig:0201-electrodeposition-schematic}
+\end{figure}

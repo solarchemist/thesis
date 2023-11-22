@@ -1,0 +1,134 @@
+% ----------------------------------------------------------------------
+% Fonts and symbols (LuaLaTeX specific)
+% ----------------------------------------------------------------------
+%\input{assets/preamble/fonts.Rnw}
+<<child=here::here('assets/preamble/fonts.Rnw'), label='preamble-fonts', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Custom LaTeX abbreviations, etc.
+% ----------------------------------------------------------------------
+%\input{assets/preamble/abbrev-commands.Rnw}
+<<child=here::here('assets/preamble/abbrev-commands.Rnw'), label='preamble-abbrev-commands', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Draft packages
+% ----------------------------------------------------------------------
+%\input{assets/preamble/draft.Rnw}
+<<child=here::here('assets/preamble/draft.Rnw'), label='preamble-draft', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - general
+% ----------------------------------------------------------------------
+%\input{assets/preamble/misc-packages.Rnw}
+<<child=here::here('assets/preamble/misc-packages.Rnw'), label='preamble-misc-packages', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Bibliography
+% ----------------------------------------------------------------------
+%\input{assets/preamble/bibliography-packages.Rnw}
+<<child=here::here('assets/preamble/bibliography-packages.Rnw'), label='preamble-bibliography-packages', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - graphics, captions, etc.
+% ----------------------------------------------------------------------
+%\input{assets/preamble/graphics-captions.Rnw}
+<<child=here::here('assets/preamble/graphics-captions.Rnw'), label='preamble-graphics-captions', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+% ----------------------------------------------------------------------
+% Support packages - tables, lists
+% ----------------------------------------------------------------------
+%\input{assets/preamble/tables-lists.Rnw}
+<<child=here::here('assets/preamble/tables-lists.Rnw'), label='preamble-tables-lists', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - chemistry, SI units
+% ----------------------------------------------------------------------
+%\input{assets/preamble/chem-packages.Rnw}
+<<child=here::here('assets/preamble/chem-packages.Rnw'), label='preamble-chem-packages', eval=TRUE>>=
+@
+%\input{assets/preamble/units.Rnw}
+<<child=here::here('assets/preamble/units.Rnw'), label='preamble-units', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Bibliographic metadata
+% ----------------------------------------------------------------------
+%\input{assets/preamble/uu-metadata.Rnw}
+<<child=here::here('assets/preamble/uu-metadata.Rnw'), label='preamble-uu-metadata', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% hyperref and cleveref packages and config
+% ----------------------------------------------------------------------
+%\input{assets/preamble/hyper-settings.Rnw}
+<<child=here::here('assets/preamble/hyper-settings.Rnw'), label='preamble-hyper-settings', eval=TRUE>>=
+@
+%\input{assets/preamble/cleveref-settings.Rnw}
+<<child=here::here('assets/preamble/cleveref-settings.Rnw'), label='preamble-cleveref-settings', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Custom LaTeX commands
+% ----------------------------------------------------------------------
+% Both of these children contain custom macros that may depend on other
+% loaded packages, such as glossaries or cleveref and so need to be last
+% latex-knitr contains commands that need to be known to *both* LaTeX and R
+% (e.g., \nonresmode{} used in plots). This entire file is read by R.Rnw
+%\input{assets/preamble/custom/latex-knitr.Rnw}
+<<child=here::here('assets/preamble/custom/latex-knitr.Rnw'), label='preamble-custom-knitr', eval=TRUE>>=
+@
+% macros that need only be known to LaTeX
+%\input{assets/preamble/custom/latex.Rnw}
+<<child=here::here('assets/preamble/custom/latex.Rnw'), label='preamble-custom-LaTeX', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Reactants (defined using chemmacros "reactants" module)
+% ----------------------------------------------------------------------
+%\input{assets/preamble/reactants.Rnw}
+<<child=here::here('assets/preamble/reactants.Rnw'), label='preamble-reactants', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% glossaries-extra and showlabels
+% ----------------------------------------------------------------------
+% glossaries need to be loaded *after* hyperref (for clickable glossary links)
+%\input{assets/preamble/glossaries-extra.Rnw}
+<<child=here::here('assets/preamble/glossaries-extra.Rnw'), label='preamble-glossaries-extra', eval=TRUE>>=
+@
+% showlabels needs to be called *after* hyperref
+% but also uses glossaries and cleveref commands
+%\input{assets/preamble/showlabels.Rnw}
+<<child=here::here('assets/preamble/showlabels.Rnw'), label='preamble-showlabels', eval=TRUE>>=
+@
+% ----------------------------------------------------------------------

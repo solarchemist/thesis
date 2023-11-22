@@ -1,0 +1,14 @@
+% In this chunk we establish a separate R environment
+% for the P03 manuscript code.
+
+%\input{assets/code/P03/100-main.Rnw}
+<<'0503P-manuscript-isolated', eval=TRUE, results="asis", warning=FALSE>>=
+res <-
+   IsolatedChild(
+      input = here::here('assets/code/P03/100-main.Rnw'),
+      # specify functions in globalEnv that we want to expose inside this child env
+      theme_default = theme_default,
+      theme_halfwidth = theme_halfwidth,
+      theme_plot_in_margin = theme_plot_in_margin,
+      print_with_axes_inside = print_with_axes_inside)
+@

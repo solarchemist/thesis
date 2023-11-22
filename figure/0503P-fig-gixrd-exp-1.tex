@@ -1,0 +1,5267 @@
+% Created by tikzDevice version 0.12.4 on 2023-12-15 02:03:37
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{luatex85}
+\documentclass{LuaUUThesis}
+\nonstopmode
+
+\usepackage{tikz}
+\usepackage{luatex85}
+\usepackage[active,tightpage,psfixbb]{preview}
+\usepackage{fontspec}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\linespread{1.05}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\PreviewEnvironment{pgfpicture}
+\setlength\PreviewBorder{0pt}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage[backend=biber]{biblatex}
+\usepackage{xfrac}
+\usetikzlibrary{ arrows, backgrounds, calc, decorations, decorations.markings, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, fadings, fit, positioning, shapes }
+\usepackage[ minimal=true, modules={ thermodynamics, units, orbital, reactions, redox, reactants, scheme} ]{chemmacros}
+\chemsetup{ formula=chemformula, chemformula/frac-style=nicefrac, reactions/list-entry={}, reactants/printreactants-style=xltabular, reactants/initiate=true }
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+\NewChemParticle{\oxide}{O^{2-}}
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+\NewChemParticle\ZnAc{Zn(OAc)2}
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\definesubmol\nobond{-[,1.2,,,draw=none]}
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+\usepackage{siunitx}
+\sisetup{ uncertainty-mode=compact, reset-text-family=false, text-family-to-math=false, text-series-to-math=false }
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+\DeclareSIUnit{\lines}{lines}
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+\DeclareSIUnit{\rpm}{rpm}
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+\DeclareSIUnit{\foot}{ft}
+\DeclareSIUnit{\sq}{sq}
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+\DeclareSIUnit{\angstrom}{Å}
+\usepackage{xifthen}
+\usepackage{xparse}
+\ExplSyntaxOn \NewExpandableDocumentCommand{\stringcase}{mO{}m}{ \str_case_e:nnF { #1 } { #3 } { #2 } } \ExplSyntaxOff  \NewDocumentCommand{\NonResonantModesShort}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2l}}} {B1l}{\textit{B}\textsubscript{\textup{1l}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2h}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1h}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLong}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2(low)}}} {B1l}{\textit{B}\textsubscript{\textup{1(low)}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2(high)}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1(high)}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{ \IfNoValueTF{#2}{ \NonResonantModesShort{#1} }{ \ifthenelse{\equal{#2}{long}}{ \NonResonantModesLong{#1} }{ \ifthenelse{\equal{#2}{short}}{ \NonResonantModesShort{#1} }{ \NonResonantModesShort{} } } } }  \NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{ \IfNoValueTF{#2}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\isempty{#2}}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\equal{#4}{diff}}{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2} } } }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2} } } } } } }   \NewDocumentCommand{\Eg}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{E_\text{g}}}{ \IfNoValueTF{#2}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\Rsq}{om}{ \IfNoValueTF{#1}{ \ensuremath{R^2{\,=\,}\num{#2}}}{ \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}   \NewDocumentCommand{\density}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{\rho}}{ \IfNoValueTF{#2}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\miller}{m}{ \num{#1} }
+\newcommand{\SweaveOpts}[1]{}  % do not interfere with LaTeX
+\newcommand{\SweaveInput}[1]{} % because they are not real TeX commands
+\newcommand{\Sexpr}[1]{}       % will only be parsed by R
+
+
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+
+\begin{document}
+
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor{fillColor}{RGB}{255,255,255}
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (341.11,211.03);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{255,255,255}
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] (  0.00,  0.00) rectangle (341.11,211.03);
+\end{scope}
+\begin{scope}
+\path[clip] (  7.50, 27.90) rectangle (336.11,206.03);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] (  7.50, 27.90) rectangle (336.11,206.03);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.84, 43.03) -- ( 35.84, 51.48);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.68, 45.85) -- ( 51.68, 54.30);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.32, 46.55) -- ( 57.32, 55.00);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.57, 47.26) -- ( 69.57, 55.71);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.24, 45.85) -- ( 82.24, 54.30);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.47, 40.92) -- (154.47, 49.37);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (185.36, 45.85) -- (185.36, 54.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (207.77, 40.92) -- (207.77, 49.37);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (222.50, 40.92) -- (222.50, 49.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.40, 68.38) -- ( 36.40, 76.83);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.92, 71.20) -- ( 50.92, 79.65);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.65, 68.38) -- ( 57.65, 76.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.84, 71.20) -- ( 69.84, 79.65);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.77, 72.61) -- ( 81.77, 81.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (185.10, 75.42) -- (185.10, 83.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (207.62, 65.56) -- (207.62, 74.01);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (222.41, 65.56) -- (222.41, 74.01);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (260.73, 65.56) -- (260.73, 74.01);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (269.46, 64.16) -- (269.46, 72.61);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (281.93, 64.16) -- (281.93, 72.61);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.95, 93.02) -- ( 35.95,101.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.87, 93.02) -- ( 56.87,101.47);
+\definecolor{drawColor}{RGB}{248,118,109}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.25, 93.02) -- ( 63.25,101.47);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.73, 94.43) -- ( 69.73,102.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.72, 90.21) -- (154.72, 98.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.05,118.37) -- ( 36.05,126.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.93,118.37) -- ( 56.93,126.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.70,119.78) -- ( 69.70,128.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (222.38,116.96) -- (222.38,125.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.91,147.24) -- ( 35.91,155.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.85,147.24) -- ( 56.85,155.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.59,148.65) -- ( 69.59,157.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.01,141.61) -- (155.01,150.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (221.95,141.61) -- (221.95,150.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.02,176.81) -- ( 34.02,185.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.13,176.81) -- ( 57.13,185.26);
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 42.01, 43.03) {100};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 57.86, 45.85) {101};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.49, 46.55) {002};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 75.75, 47.26) {101};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 88.42, 45.85) {200};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (160.64, 40.92) {102};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (191.53, 45.85) {211};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (213.95, 40.92) {220};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (228.67, 40.92) {110};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 42.57, 68.38) {100};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 57.09, 71.20) {101};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.83, 68.38) {002};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 76.02, 71.20) {101};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 87.95, 72.61) {200};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (191.27, 75.42) {211};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (213.79, 65.56) {220};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (228.58, 65.56) {110};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (266.90, 65.56) {310};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (275.63, 64.16) {103};
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (288.10, 64.16) {112};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 42.12, 93.02) {100};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.05, 93.02) {002};
+\definecolor{drawColor}{RGB}{248,118,109}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 69.42, 93.02) {110};
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 75.90, 94.43) {101};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (160.89, 90.21) {102};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 42.23,118.37) {100};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.10,118.37) {002};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 75.87,119.78) {101};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (228.55,116.96) {110};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 42.08,147.24) {100};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.03,147.24) {002};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 75.77,148.65) {101};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (161.18,141.61) {102};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at (228.12,141.61) {110};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 40.19,176.81) {100};
+
+\node[text=drawColor,rotate= 90.00,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 63.31,176.81) {002};
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44, 38.25) --
+	( 22.81, 39.23) --
+	( 23.18, 38.81) --
+	( 23.56, 40.64) --
+	( 23.93, 40.08) --
+	( 24.30, 39.37) --
+	( 24.68, 38.53) --
+	( 25.05, 39.37) --
+	( 25.42, 37.26) --
+	( 25.80, 40.22) --
+	( 26.17, 38.81) --
+	( 26.54, 40.64) --
+	( 26.92, 39.09) --
+	( 27.29, 37.82) --
+	( 27.66, 38.25) --
+	( 28.04, 39.94) --
+	( 28.41, 38.25) --
+	( 28.79, 38.25) --
+	( 29.16, 38.11) --
+	( 29.53, 37.96) --
+	( 29.91, 38.81) --
+	( 30.28, 38.81) --
+	( 30.65, 40.08) --
+	( 31.03, 37.82) --
+	( 31.40, 38.39) --
+	( 31.77, 38.53) --
+	( 32.15, 37.40) --
+	( 32.52, 39.09) --
+	( 32.89, 39.51) --
+	( 33.27, 37.68) --
+	( 33.64, 39.80) --
+	( 34.01, 39.94) --
+	( 34.39, 39.94) --
+	( 34.76, 40.36) --
+	( 35.13, 41.34) --
+	( 35.51, 41.48) --
+	( 35.88, 40.22) --
+	( 36.25, 39.94) --
+	( 36.63, 40.78) --
+	( 37.00, 41.06) --
+	( 37.37, 39.94) --
+	( 37.75, 39.37) --
+	( 38.12, 38.53) --
+	( 38.49, 39.23) --
+	( 38.87, 38.11) --
+	( 39.24, 38.81) --
+	( 39.61, 38.53) --
+	( 39.99, 37.26) --
+	( 40.36, 38.95) --
+	( 40.73, 38.67) --
+	( 41.11, 38.39) --
+	( 41.48, 37.82) --
+	( 41.86, 36.84) --
+	( 42.23, 37.40) --
+	( 42.60, 36.42) --
+	( 42.98, 37.82) --
+	( 43.35, 37.82) --
+	( 43.72, 38.25) --
+	( 44.10, 38.11) --
+	( 44.47, 38.39) --
+	( 44.84, 38.95) --
+	( 45.22, 37.12) --
+	( 45.59, 37.26) --
+	( 45.96, 37.54) --
+	( 46.34, 38.81) --
+	( 46.71, 38.25) --
+	( 47.08, 37.68) --
+	( 47.46, 39.51) --
+	( 47.83, 37.96) --
+	( 48.20, 39.65) --
+	( 48.58, 38.39) --
+	( 48.95, 40.22) --
+	( 49.32, 38.53) --
+	( 49.70, 38.67) --
+	( 50.07, 38.67) --
+	( 50.44, 40.50) --
+	( 50.82, 43.60) --
+	( 51.19, 44.02) --
+	( 51.56, 42.05) --
+	( 51.94, 45.71) --
+	( 52.31, 42.33) --
+	( 52.68, 40.08) --
+	( 53.06, 41.91) --
+	( 53.43, 40.36) --
+	( 53.80, 40.08) --
+	( 54.18, 38.39) --
+	( 54.55, 36.98) --
+	( 54.93, 38.53) --
+	( 55.30, 37.54) --
+	( 55.67, 39.51) --
+	( 56.05, 40.92) --
+	( 56.42, 41.06) --
+	( 56.79, 41.63) --
+	( 57.17, 40.92) --
+	( 57.54, 44.02) --
+	( 57.91, 40.64) --
+	( 58.29, 40.36) --
+	( 58.66, 39.51) --
+	( 59.03, 37.12) --
+	( 59.41, 37.54) --
+	( 59.78, 39.09) --
+	( 60.15, 38.25) --
+	( 60.53, 38.95) --
+	( 60.90, 39.65) --
+	( 61.27, 39.09) --
+	( 61.65, 38.53) --
+	( 62.02, 40.64) --
+	( 62.39, 37.96) --
+	( 62.77, 40.36) --
+	( 63.14, 38.39) --
+	( 63.51, 41.34) --
+	( 63.89, 38.39) --
+	( 64.26, 39.80) --
+	( 64.63, 38.39) --
+	( 65.01, 38.81) --
+	( 65.38, 38.81) --
+	( 65.75, 39.65) --
+	( 66.13, 38.95) --
+	( 66.50, 39.80) --
+	( 66.87, 40.08) --
+	( 67.25, 38.81) --
+	( 67.62, 38.95) --
+	( 67.99, 39.37) --
+	( 68.37, 41.20) --
+	( 68.74, 41.91) --
+	( 69.12, 43.17) --
+	( 69.49, 45.29) --
+	( 69.86, 43.74) --
+	( 70.24, 42.89) --
+	( 70.61, 42.61) --
+	( 70.98, 40.22) --
+	( 71.36, 40.92) --
+	( 71.73, 38.95) --
+	( 72.10, 38.67) --
+	( 72.48, 37.12) --
+	( 72.85, 36.56) --
+	( 73.22, 38.25) --
+	( 73.60, 38.95) --
+	( 73.97, 37.82) --
+	( 74.34, 36.70) --
+	( 74.72, 37.68) --
+	( 75.09, 37.96) --
+	( 75.46, 36.98) --
+	( 75.84, 36.70) --
+	( 76.21, 36.56) --
+	( 76.58, 36.56) --
+	( 76.96, 37.54) --
+	( 77.33, 37.12) --
+	( 77.70, 36.98) --
+	( 78.08, 37.54) --
+	( 78.45, 36.56) --
+	( 78.82, 38.11) --
+	( 79.20, 38.39) --
+	( 79.57, 39.51) --
+	( 79.94, 39.65) --
+	( 80.32, 38.39) --
+	( 80.69, 42.33) --
+	( 81.06, 41.63) --
+	( 81.44, 39.94) --
+	( 81.81, 44.58) --
+	( 82.19, 44.16) --
+	( 82.56, 43.03) --
+	( 82.93, 43.17) --
+	( 83.31, 42.33) --
+	( 83.68, 39.51) --
+	( 84.05, 39.51) --
+	( 84.43, 39.23) --
+	( 84.80, 38.25) --
+	( 85.17, 36.56) --
+	( 85.55, 38.11) --
+	( 85.92, 36.98) --
+	( 86.29, 37.54) --
+	( 86.67, 36.13) --
+	( 87.04, 36.70) --
+	( 87.41, 37.96) --
+	( 87.79, 35.85) --
+	( 88.16, 36.70) --
+	( 88.53, 35.71) --
+	( 88.91, 36.84) --
+	( 89.28, 36.27) --
+	( 89.65, 35.43) --
+	( 90.03, 36.56) --
+	( 90.40, 36.56) --
+	( 90.77, 36.70) --
+	( 91.15, 35.01) --
+	( 91.52, 35.01) --
+	( 91.89, 35.71) --
+	( 92.27, 35.99) --
+	( 92.64, 35.71) --
+	( 93.01, 36.84) --
+	( 93.39, 35.99) --
+	( 93.76, 36.27) --
+	( 94.13, 35.43) --
+	( 94.51, 36.42) --
+	( 94.88, 36.27) --
+	( 95.25, 36.42) --
+	( 95.63, 36.13) --
+	( 96.00, 35.57) --
+	( 96.38, 35.43) --
+	( 96.75, 35.71) --
+	( 97.12, 36.70) --
+	( 97.50, 35.15) --
+	( 97.87, 35.71) --
+	( 98.24, 36.27) --
+	( 98.62, 35.43) --
+	( 98.99, 36.27) --
+	( 99.36, 35.29) --
+	( 99.74, 36.27) --
+	(100.11, 36.56) --
+	(100.48, 35.71) --
+	(100.86, 35.71) --
+	(101.23, 35.43) --
+	(101.60, 35.99) --
+	(101.98, 34.87) --
+	(102.35, 35.57) --
+	(102.72, 35.01) --
+	(103.10, 35.15) --
+	(103.47, 35.85) --
+	(103.84, 35.99) --
+	(104.22, 36.70) --
+	(104.59, 34.87) --
+	(104.96, 35.99) --
+	(105.34, 37.54) --
+	(105.71, 35.99) --
+	(106.08, 35.29) --
+	(106.46, 35.99) --
+	(106.83, 34.44) --
+	(107.20, 35.57) --
+	(107.58, 35.99) --
+	(107.95, 36.70) --
+	(108.32, 36.84) --
+	(108.70, 35.99) --
+	(109.07, 35.71) --
+	(109.45, 35.29) --
+	(109.82, 36.13) --
+	(110.19, 35.29) --
+	(110.57, 35.15) --
+	(110.94, 34.02) --
+	(111.31, 35.57) --
+	(111.69, 35.43) --
+	(112.06, 35.71) --
+	(112.43, 35.29) --
+	(112.81, 35.15) --
+	(113.18, 34.87) --
+	(113.55, 35.99) --
+	(113.93, 34.73) --
+	(114.30, 36.27) --
+	(114.67, 34.87) --
+	(115.05, 35.71) --
+	(115.42, 36.42) --
+	(115.79, 34.73) --
+	(116.17, 35.29) --
+	(116.54, 35.71) --
+	(116.91, 35.57) --
+	(117.29, 35.85) --
+	(117.66, 35.71) --
+	(118.03, 37.26) --
+	(118.41, 36.27) --
+	(118.78, 36.84) --
+	(119.15, 35.71) --
+	(119.53, 35.01) --
+	(119.90, 35.71) --
+	(120.27, 35.99) --
+	(120.65, 34.73) --
+	(121.02, 35.57) --
+	(121.39, 36.13) --
+	(121.77, 35.99) --
+	(122.14, 35.57) --
+	(122.52, 35.43) --
+	(122.89, 36.27) --
+	(123.26, 34.58) --
+	(123.64, 35.43) --
+	(124.01, 35.01) --
+	(124.38, 35.29) --
+	(124.76, 35.71) --
+	(125.13, 37.54) --
+	(125.50, 35.43) --
+	(125.88, 36.56) --
+	(126.25, 36.13) --
+	(126.62, 35.43) --
+	(127.00, 35.15) --
+	(127.37, 35.43) --
+	(127.74, 35.01) --
+	(128.12, 35.57) --
+	(128.49, 34.58) --
+	(128.86, 35.57) --
+	(129.24, 36.56) --
+	(129.61, 35.43) --
+	(129.98, 35.85) --
+	(130.36, 34.58) --
+	(130.73, 35.71) --
+	(131.10, 35.43) --
+	(131.48, 35.29) --
+	(131.85, 34.73) --
+	(132.22, 35.29) --
+	(132.60, 34.87) --
+	(132.97, 35.29) --
+	(133.34, 35.43) --
+	(133.72, 35.85) --
+	(134.09, 34.73) --
+	(134.46, 35.57) --
+	(134.84, 36.27) --
+	(135.21, 35.01) --
+	(135.58, 35.57) --
+	(135.96, 34.30) --
+	(136.33, 36.27) --
+	(136.71, 35.99) --
+	(137.08, 34.16) --
+	(137.45, 35.01) --
+	(137.83, 35.43) --
+	(138.20, 36.42) --
+	(138.57, 34.44) --
+	(138.95, 35.43) --
+	(139.32, 35.71) --
+	(139.69, 36.42) --
+	(140.07, 36.13) --
+	(140.44, 35.43) --
+	(140.81, 34.44) --
+	(141.19, 35.01) --
+	(141.56, 35.99) --
+	(141.93, 35.71) --
+	(142.31, 35.01) --
+	(142.68, 36.56) --
+	(143.05, 35.01) --
+	(143.43, 34.02) --
+	(143.80, 36.13) --
+	(144.17, 34.87) --
+	(144.55, 35.29) --
+	(144.92, 35.15) --
+	(145.29, 35.15) --
+	(145.67, 35.43) --
+	(146.04, 35.99) --
+	(146.41, 35.71) --
+	(146.79, 35.57) --
+	(147.16, 35.29) --
+	(147.53, 35.43) --
+	(147.91, 35.43) --
+	(148.28, 34.58) --
+	(148.65, 36.13) --
+	(149.03, 35.15) --
+	(149.40, 36.70) --
+	(149.78, 34.58) --
+	(150.15, 34.44) --
+	(150.52, 35.43) --
+	(150.90, 34.87) --
+	(151.27, 36.84) --
+	(151.64, 35.43) --
+	(152.02, 35.85) --
+	(152.39, 35.57) --
+	(152.76, 36.84) --
+	(153.14, 35.71) --
+	(153.51, 37.40) --
+	(153.88, 35.99) --
+	(154.26, 36.56) --
+	(154.63, 36.56) --
+	(155.00, 36.98) --
+	(155.38, 35.57) --
+	(155.75, 36.42) --
+	(156.12, 35.57) --
+	(156.50, 36.13) --
+	(156.87, 35.43) --
+	(157.24, 35.57) --
+	(157.62, 36.56) --
+	(157.99, 36.42) --
+	(158.36, 35.85) --
+	(158.74, 34.30) --
+	(159.11, 35.29) --
+	(159.48, 36.13) --
+	(159.86, 34.87) --
+	(160.23, 35.71) --
+	(160.60, 34.87) --
+	(160.98, 35.99) --
+	(161.35, 35.85) --
+	(161.72, 35.99) --
+	(162.10, 35.29) --
+	(162.47, 34.87) --
+	(162.84, 35.01) --
+	(163.22, 36.13) --
+	(163.59, 34.16) --
+	(163.97, 35.57) --
+	(164.34, 34.58) --
+	(164.71, 33.60) --
+	(165.09, 34.58) --
+	(165.46, 34.87) --
+	(165.83, 35.15) --
+	(166.21, 35.71) --
+	(166.58, 35.85) --
+	(166.95, 35.99) --
+	(167.33, 35.01) --
+	(167.70, 35.57) --
+	(168.07, 34.87) --
+	(168.45, 35.01) --
+	(168.82, 35.85) --
+	(169.19, 35.01) --
+	(169.57, 35.01) --
+	(169.94, 36.56) --
+	(170.31, 34.87) --
+	(170.69, 34.73) --
+	(171.06, 37.12) --
+	(171.43, 34.44) --
+	(171.81, 35.71) --
+	(172.18, 35.15) --
+	(172.55, 35.15) --
+	(172.93, 35.43) --
+	(173.30, 35.85) --
+	(173.67, 35.71) --
+	(174.05, 34.44) --
+	(174.42, 34.73) --
+	(174.79, 35.29) --
+	(175.17, 35.01) --
+	(175.54, 34.73) --
+	(175.91, 35.99) --
+	(176.29, 35.29) --
+	(176.66, 34.73) --
+	(177.04, 35.01) --
+	(177.41, 35.43) --
+	(177.78, 34.87) --
+	(178.16, 35.15) --
+	(178.53, 35.99) --
+	(178.90, 35.29) --
+	(179.28, 36.42) --
+	(179.65, 34.87) --
+	(180.02, 34.44) --
+	(180.40, 33.74) --
+	(180.77, 34.87) --
+	(181.14, 36.56) --
+	(181.52, 37.40) --
+	(181.89, 36.56) --
+	(182.26, 36.13) --
+	(182.64, 35.43) --
+	(183.01, 37.54) --
+	(183.38, 37.96) --
+	(183.76, 39.65) --
+	(184.13, 40.50) --
+	(184.50, 41.63) --
+	(184.88, 43.60) --
+	(185.25, 43.46) --
+	(185.62, 41.77) --
+	(186.00, 42.89) --
+	(186.37, 39.65) --
+	(186.74, 40.08) --
+	(187.12, 39.65) --
+	(187.49, 38.95) --
+	(187.86, 35.57) --
+	(188.24, 37.12) --
+	(188.61, 36.98) --
+	(188.98, 36.56) --
+	(189.36, 35.71) --
+	(189.73, 35.01) --
+	(190.11, 35.43) --
+	(190.48, 34.44) --
+	(190.85, 36.27) --
+	(191.23, 35.43) --
+	(191.60, 35.57) --
+	(191.97, 34.44) --
+	(192.35, 34.58) --
+	(192.72, 35.71) --
+	(193.09, 35.57) --
+	(193.47, 35.29) --
+	(193.84, 35.15) --
+	(194.21, 34.58) --
+	(194.59, 34.02) --
+	(194.96, 34.87) --
+	(195.33, 35.01) --
+	(195.71, 34.44) --
+	(196.08, 34.87) --
+	(196.45, 35.71) --
+	(196.83, 35.29) --
+	(197.20, 34.44) --
+	(197.57, 35.43) --
+	(197.95, 35.15) --
+	(198.32, 34.87) --
+	(198.69, 35.71) --
+	(199.07, 35.71) --
+	(199.44, 35.15) --
+	(199.81, 35.01) --
+	(200.19, 34.73) --
+	(200.56, 34.44) --
+	(200.93, 35.43) --
+	(201.31, 34.87) --
+	(201.68, 35.43) --
+	(202.05, 36.27) --
+	(202.43, 36.13) --
+	(202.80, 35.99) --
+	(203.17, 34.30) --
+	(203.55, 35.15) --
+	(203.92, 36.13) --
+	(204.30, 34.58) --
+	(204.67, 35.43) --
+	(205.04, 35.29) --
+	(205.42, 36.42) --
+	(205.79, 35.71) --
+	(206.16, 35.01) --
+	(206.54, 35.15) --
+	(206.91, 36.84) --
+	(207.28, 35.85) --
+	(207.66, 35.71) --
+	(208.03, 35.71) --
+	(208.40, 36.98) --
+	(208.78, 35.01) --
+	(209.15, 35.85) --
+	(209.52, 36.98) --
+	(209.90, 36.56) --
+	(210.27, 35.85) --
+	(210.64, 36.27) --
+	(211.02, 34.73) --
+	(211.39, 33.88) --
+	(211.76, 35.99) --
+	(212.14, 35.85) --
+	(212.51, 34.30) --
+	(212.88, 33.74) --
+	(213.26, 35.01) --
+	(213.63, 35.71) --
+	(214.00, 34.02) --
+	(214.38, 36.42) --
+	(214.75, 35.57) --
+	(215.12, 36.13) --
+	(215.50, 34.58) --
+	(215.87, 35.85) --
+	(216.24, 35.57) --
+	(216.62, 34.58) --
+	(216.99, 35.71) --
+	(217.37, 35.57) --
+	(217.74, 35.85) --
+	(218.11, 35.29) --
+	(218.49, 35.29) --
+	(218.86, 34.58) --
+	(219.23, 35.71) --
+	(219.61, 35.85) --
+	(219.98, 36.13) --
+	(220.35, 35.71) --
+	(220.73, 35.99) --
+	(221.10, 35.85) --
+	(221.47, 36.13) --
+	(221.85, 36.84) --
+	(222.22, 37.54) --
+	(222.59, 36.13) --
+	(222.97, 36.56) --
+	(223.34, 37.26) --
+	(223.71, 36.56) --
+	(224.09, 35.01) --
+	(224.46, 36.27) --
+	(224.83, 35.71) --
+	(225.21, 35.43) --
+	(225.58, 35.15) --
+	(225.95, 35.57) --
+	(226.33, 36.27) --
+	(226.70, 35.85) --
+	(227.07, 35.15) --
+	(227.45, 35.29) --
+	(227.82, 36.13) --
+	(228.19, 35.99) --
+	(228.57, 34.73) --
+	(228.94, 33.88) --
+	(229.31, 33.74) --
+	(229.69, 35.15) --
+	(230.06, 34.87) --
+	(230.43, 34.44) --
+	(230.81, 34.30) --
+	(231.18, 35.85) --
+	(231.56, 35.43) --
+	(231.93, 35.15) --
+	(232.30, 34.58) --
+	(232.68, 34.30) --
+	(233.05, 34.87) --
+	(233.42, 34.58) --
+	(233.80, 35.71) --
+	(234.17, 35.15) --
+	(234.54, 34.30) --
+	(234.92, 35.71) --
+	(235.29, 35.01) --
+	(235.66, 34.87) --
+	(236.04, 35.29) --
+	(236.41, 33.60) --
+	(236.78, 35.15) --
+	(237.16, 34.44) --
+	(237.53, 34.58) --
+	(237.90, 34.58) --
+	(238.28, 34.30) --
+	(238.65, 35.01) --
+	(239.02, 34.87) --
+	(239.40, 34.87) --
+	(239.77, 34.87) --
+	(240.14, 33.88) --
+	(240.52, 34.44) --
+	(240.89, 34.87) --
+	(241.26, 34.73) --
+	(241.64, 33.88) --
+	(242.01, 35.15) --
+	(242.38, 34.87) --
+	(242.76, 34.44) --
+	(243.13, 35.57) --
+	(243.50, 34.73) --
+	(243.88, 34.16) --
+	(244.25, 35.15) --
+	(244.63, 35.29) --
+	(245.00, 34.73) --
+	(245.37, 34.73) --
+	(245.75, 34.44) --
+	(246.12, 34.73) --
+	(246.49, 34.87) --
+	(246.87, 34.87) --
+	(247.24, 34.30) --
+	(247.61, 34.02) --
+	(247.99, 35.57) --
+	(248.36, 34.73) --
+	(248.73, 36.42) --
+	(249.11, 34.73) --
+	(249.48, 34.02) --
+	(249.85, 34.02) --
+	(250.23, 33.88) --
+	(250.60, 35.85) --
+	(250.97, 34.58) --
+	(251.35, 35.15) --
+	(251.72, 33.88) --
+	(252.09, 35.15) --
+	(252.47, 35.99) --
+	(252.84, 33.32) --
+	(253.21, 35.15) --
+	(253.59, 35.15) --
+	(253.96, 34.44) --
+	(254.33, 35.15) --
+	(254.71, 35.15) --
+	(255.08, 34.44) --
+	(255.45, 34.44) --
+	(255.83, 33.46) --
+	(256.20, 36.56) --
+	(256.57, 35.15) --
+	(256.95, 36.27) --
+	(257.32, 36.13) --
+	(257.70, 35.99) --
+	(258.07, 35.99) --
+	(258.44, 35.43) --
+	(258.82, 36.56) --
+	(259.19, 36.84) --
+	(259.56, 35.43) --
+	(259.94, 35.71) --
+	(260.31, 37.54) --
+	(260.68, 38.53) --
+	(261.06, 37.68) --
+	(261.43, 37.12) --
+	(261.80, 37.54) --
+	(262.18, 37.68) --
+	(262.55, 36.27) --
+	(262.92, 37.26) --
+	(263.30, 35.99) --
+	(263.67, 36.56) --
+	(264.04, 35.29) --
+	(264.42, 35.71) --
+	(264.79, 34.87) --
+	(265.16, 35.57) --
+	(265.54, 35.57) --
+	(265.91, 37.68) --
+	(266.28, 36.13) --
+	(266.66, 35.85) --
+	(267.03, 35.71) --
+	(267.40, 35.99) --
+	(267.78, 35.15) --
+	(268.15, 35.43) --
+	(268.52, 35.57) --
+	(268.90, 37.26) --
+	(269.27, 35.99) --
+	(269.64, 35.71) --
+	(270.02, 35.85) --
+	(270.39, 36.98) --
+	(270.76, 34.58) --
+	(271.14, 36.84) --
+	(271.51, 35.01) --
+	(271.89, 35.57) --
+	(272.26, 35.71) --
+	(272.63, 35.43) --
+	(273.01, 35.01) --
+	(273.38, 35.29) --
+	(273.75, 36.56) --
+	(274.13, 35.15) --
+	(274.50, 34.87) --
+	(274.87, 33.74) --
+	(275.25, 34.44) --
+	(275.62, 34.73) --
+	(275.99, 35.85) --
+	(276.37, 34.44) --
+	(276.74, 35.01) --
+	(277.11, 33.88) --
+	(277.49, 34.16) --
+	(277.86, 34.87) --
+	(278.23, 34.16) --
+	(278.61, 34.30) --
+	(278.98, 34.16) --
+	(279.35, 34.30) --
+	(279.73, 34.16) --
+	(280.10, 34.73) --
+	(280.47, 35.01) --
+	(280.85, 35.01) --
+	(281.22, 34.30) --
+	(281.59, 35.43) --
+	(281.97, 34.73) --
+	(282.34, 35.29) --
+	(282.71, 34.44) --
+	(283.09, 35.99) --
+	(283.46, 34.16) --
+	(283.83, 35.15) --
+	(284.21, 34.73) --
+	(284.58, 35.15) --
+	(284.96, 34.87) --
+	(285.33, 34.73) --
+	(285.70, 34.73) --
+	(286.08, 35.57) --
+	(286.45, 34.44) --
+	(286.82, 34.73) --
+	(287.20, 35.57) --
+	(287.57, 34.30) --
+	(287.94, 34.87) --
+	(288.32, 35.85) --
+	(288.69, 34.30) --
+	(289.06, 35.15) --
+	(289.44, 34.44) --
+	(289.81, 36.13) --
+	(290.18, 36.13) --
+	(290.56, 35.15) --
+	(290.93, 36.42) --
+	(291.30, 35.85) --
+	(291.68, 34.87) --
+	(292.05, 34.73) --
+	(292.42, 35.85) --
+	(292.80, 36.13) --
+	(293.17, 35.85) --
+	(293.54, 36.42) --
+	(293.92, 36.70) --
+	(294.29, 34.87) --
+	(294.66, 34.87) --
+	(295.04, 33.46) --
+	(295.41, 35.01) --
+	(295.78, 35.15) --
+	(296.16, 34.44) --
+	(296.53, 35.15) --
+	(296.90, 34.87) --
+	(297.28, 33.60) --
+	(297.65, 33.32) --
+	(298.03, 34.44) --
+	(298.40, 33.88) --
+	(298.77, 34.87) --
+	(299.15, 33.74) --
+	(299.52, 35.01) --
+	(299.89, 34.73) --
+	(300.27, 33.88) --
+	(300.64, 34.30) --
+	(301.01, 35.01) --
+	(301.39, 34.44) --
+	(301.76, 34.73) --
+	(302.13, 33.88) --
+	(302.51, 34.73) --
+	(302.88, 33.32) --
+	(303.25, 34.30) --
+	(303.63, 34.87) --
+	(304.00, 34.02) --
+	(304.37, 35.57) --
+	(304.75, 33.74) --
+	(305.12, 35.43) --
+	(305.49, 35.01) --
+	(305.87, 33.88) --
+	(306.24, 35.29) --
+	(306.61, 35.15) --
+	(306.99, 36.13) --
+	(307.36, 35.71) --
+	(307.73, 35.15) --
+	(308.11, 34.30) --
+	(308.48, 35.43) --
+	(308.85, 35.15) --
+	(309.23, 36.27) --
+	(309.60, 36.13) --
+	(309.97, 34.16) --
+	(310.35, 34.30) --
+	(310.72, 34.16) --
+	(311.09, 34.87) --
+	(311.47, 35.15) --
+	(311.84, 34.87) --
+	(312.22, 34.02) --
+	(312.59, 35.29) --
+	(312.96, 35.29) --
+	(313.34, 35.01) --
+	(313.71, 34.16) --
+	(314.08, 35.71) --
+	(314.46, 34.58) --
+	(314.83, 34.87) --
+	(315.20, 34.87) --
+	(315.58, 34.02) --
+	(315.95, 34.02) --
+	(316.32, 36.13) --
+	(316.70, 35.01) --
+	(317.07, 35.29) --
+	(317.44, 34.16) --
+	(317.82, 35.57) --
+	(318.19, 34.02) --
+	(318.56, 34.02) --
+	(318.94, 34.30) --
+	(319.31, 34.30) --
+	(319.68, 34.44) --
+	(320.06, 34.30) --
+	(320.43, 34.58) --
+	(320.80, 34.87) --
+	(321.18, 34.44);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44, 64.86) --
+	( 22.81, 64.58) --
+	( 23.18, 63.03) --
+	( 23.56, 63.73) --
+	( 23.93, 62.33) --
+	( 24.30, 64.72) --
+	( 24.68, 65.42) --
+	( 25.05, 63.59) --
+	( 25.42, 63.87) --
+	( 25.80, 63.03) --
+	( 26.17, 63.73) --
+	( 26.54, 64.02) --
+	( 26.92, 64.30) --
+	( 27.29, 62.75) --
+	( 27.66, 61.20) --
+	( 28.04, 61.62) --
+	( 28.41, 64.02) --
+	( 28.79, 62.89) --
+	( 29.16, 63.03) --
+	( 29.53, 64.02) --
+	( 29.91, 64.02) --
+	( 30.28, 63.87) --
+	( 30.65, 61.62) --
+	( 31.03, 64.58) --
+	( 31.40, 62.33) --
+	( 31.77, 63.31) --
+	( 32.15, 62.33) --
+	( 32.52, 64.16) --
+	( 32.89, 64.86) --
+	( 33.27, 62.18) --
+	( 33.64, 63.59) --
+	( 34.01, 62.47) --
+	( 34.39, 63.17) --
+	( 34.76, 63.45) --
+	( 35.13, 63.87) --
+	( 35.51, 65.71) --
+	( 35.88, 63.03) --
+	( 36.25, 66.41) --
+	( 36.63, 65.56) --
+	( 37.00, 63.31) --
+	( 37.37, 64.30) --
+	( 37.75, 65.42) --
+	( 38.12, 62.89) --
+	( 38.49, 62.47) --
+	( 38.87, 62.33) --
+	( 39.24, 62.89) --
+	( 39.61, 62.18) --
+	( 39.99, 63.59) --
+	( 40.36, 63.17) --
+	( 40.73, 60.92) --
+	( 41.11, 64.16) --
+	( 41.48, 62.04) --
+	( 41.86, 62.89) --
+	( 42.23, 61.20) --
+	( 42.60, 61.76) --
+	( 42.98, 62.18) --
+	( 43.35, 62.89) --
+	( 43.72, 62.47) --
+	( 44.10, 62.89) --
+	( 44.47, 62.75) --
+	( 44.84, 63.73) --
+	( 45.22, 62.61) --
+	( 45.59, 62.47) --
+	( 45.96, 61.62) --
+	( 46.34, 61.34) --
+	( 46.71, 62.89) --
+	( 47.08, 62.33) --
+	( 47.46, 62.89) --
+	( 47.83, 62.89) --
+	( 48.20, 65.00) --
+	( 48.58, 62.04) --
+	( 48.95, 63.73) --
+	( 49.32, 65.71) --
+	( 49.70, 67.68) --
+	( 50.07, 64.30) --
+	( 50.44, 69.79) --
+	( 50.82, 69.51) --
+	( 51.19, 69.37) --
+	( 51.56, 66.55) --
+	( 51.94, 66.55) --
+	( 52.31, 66.69) --
+	( 52.68, 66.13) --
+	( 53.06, 63.87) --
+	( 53.43, 64.86) --
+	( 53.80, 63.73) --
+	( 54.18, 64.02) --
+	( 54.55, 64.44) --
+	( 54.93, 64.30) --
+	( 55.30, 63.17) --
+	( 55.67, 65.00) --
+	( 56.05, 63.59) --
+	( 56.42, 65.56) --
+	( 56.79, 64.72) --
+	( 57.17, 65.56) --
+	( 57.54, 64.86) --
+	( 57.91, 64.44) --
+	( 58.29, 64.16) --
+	( 58.66, 65.28) --
+	( 59.03, 63.73) --
+	( 59.41, 63.17) --
+	( 59.78, 65.14) --
+	( 60.15, 63.17) --
+	( 60.53, 64.30) --
+	( 60.90, 63.73) --
+	( 61.27, 63.73) --
+	( 61.65, 62.47) --
+	( 62.02, 63.17) --
+	( 62.39, 63.03) --
+	( 62.77, 64.30) --
+	( 63.14, 64.72) --
+	( 63.51, 62.89) --
+	( 63.89, 63.59) --
+	( 64.26, 62.89) --
+	( 64.63, 63.17) --
+	( 65.01, 65.00) --
+	( 65.38, 62.75) --
+	( 65.75, 64.58) --
+	( 66.13, 61.62) --
+	( 66.50, 65.14) --
+	( 66.87, 63.31) --
+	( 67.25, 65.85) --
+	( 67.62, 63.31) --
+	( 67.99, 64.02) --
+	( 68.37, 66.55) --
+	( 68.74, 65.28) --
+	( 69.12, 67.96) --
+	( 69.49, 67.25) --
+	( 69.86, 68.52) --
+	( 70.24, 68.24) --
+	( 70.61, 67.96) --
+	( 70.98, 65.56) --
+	( 71.36, 66.27) --
+	( 71.73, 62.47) --
+	( 72.10, 64.02) --
+	( 72.48, 61.76) --
+	( 72.85, 62.61) --
+	( 73.22, 62.89) --
+	( 73.60, 61.06) --
+	( 73.97, 62.61) --
+	( 74.34, 62.75) --
+	( 74.72, 61.76) --
+	( 75.09, 61.34) --
+	( 75.46, 61.20) --
+	( 75.84, 61.34) --
+	( 76.21, 63.03) --
+	( 76.58, 63.59) --
+	( 76.96, 61.34) --
+	( 77.33, 62.18) --
+	( 77.70, 62.47) --
+	( 78.08, 61.90) --
+	( 78.45, 62.61) --
+	( 78.82, 62.89) --
+	( 79.20, 63.17) --
+	( 79.57, 63.73) --
+	( 79.94, 64.30) --
+	( 80.32, 66.13) --
+	( 80.69, 68.80) --
+	( 81.06, 69.51) --
+	( 81.44, 68.10) --
+	( 81.81, 69.65) --
+	( 82.19, 71.20) --
+	( 82.56, 69.65) --
+	( 82.93, 68.66) --
+	( 83.31, 66.55) --
+	( 83.68, 64.02) --
+	( 84.05, 63.73) --
+	( 84.43, 60.78) --
+	( 84.80, 61.90) --
+	( 85.17, 60.50) --
+	( 85.55, 62.33) --
+	( 85.92, 62.75) --
+	( 86.29, 60.92) --
+	( 86.67, 60.64) --
+	( 87.04, 61.06) --
+	( 87.41, 60.07) --
+	( 87.79, 60.92) --
+	( 88.16, 60.35) --
+	( 88.53, 61.34) --
+	( 88.91, 59.65) --
+	( 89.28, 60.50) --
+	( 89.65, 60.21) --
+	( 90.03, 61.48) --
+	( 90.40, 61.62) --
+	( 90.77, 61.20) --
+	( 91.15, 59.79) --
+	( 91.52, 59.51) --
+	( 91.89, 59.65) --
+	( 92.27, 61.06) --
+	( 92.64, 61.90) --
+	( 93.01, 60.07) --
+	( 93.39, 62.18) --
+	( 93.76, 60.35) --
+	( 94.13, 59.93) --
+	( 94.51, 59.51) --
+	( 94.88, 60.07) --
+	( 95.25, 60.50) --
+	( 95.63, 60.35) --
+	( 96.00, 60.21) --
+	( 96.38, 59.93) --
+	( 96.75, 60.21) --
+	( 97.12, 60.35) --
+	( 97.50, 61.20) --
+	( 97.87, 59.93) --
+	( 98.24, 59.51) --
+	( 98.62, 60.50) --
+	( 98.99, 61.34) --
+	( 99.36, 60.07) --
+	( 99.74, 59.93) --
+	(100.11, 59.93) --
+	(100.48, 59.51) --
+	(100.86, 60.35) --
+	(101.23, 60.07) --
+	(101.60, 60.07) --
+	(101.98, 59.51) --
+	(102.35, 59.79) --
+	(102.72, 61.20) --
+	(103.10, 59.93) --
+	(103.47, 59.79) --
+	(103.84, 61.48) --
+	(104.22, 61.62) --
+	(104.59, 59.65) --
+	(104.96, 60.78) --
+	(105.34, 59.37) --
+	(105.71, 60.64) --
+	(106.08, 59.51) --
+	(106.46, 60.78) --
+	(106.83, 60.78) --
+	(107.20, 60.35) --
+	(107.58, 59.79) --
+	(107.95, 59.93) --
+	(108.32, 60.78) --
+	(108.70, 59.79) --
+	(109.07, 60.64) --
+	(109.45, 58.95) --
+	(109.82, 60.07) --
+	(110.19, 59.65) --
+	(110.57, 59.93) --
+	(110.94, 60.07) --
+	(111.31, 60.64) --
+	(111.69, 59.79) --
+	(112.06, 59.65) --
+	(112.43, 59.93) --
+	(112.81, 60.92) --
+	(113.18, 60.35) --
+	(113.55, 60.50) --
+	(113.93, 60.07) --
+	(114.30, 59.79) --
+	(114.67, 60.92) --
+	(115.05, 61.20) --
+	(115.42, 59.79) --
+	(115.79, 59.93) --
+	(116.17, 59.93) --
+	(116.54, 60.21) --
+	(116.91, 60.35) --
+	(117.29, 61.34) --
+	(117.66, 60.50) --
+	(118.03, 59.79) --
+	(118.41, 60.07) --
+	(118.78, 60.50) --
+	(119.15, 59.93) --
+	(119.53, 59.79) --
+	(119.90, 60.50) --
+	(120.27, 59.65) --
+	(120.65, 59.79) --
+	(121.02, 60.78) --
+	(121.39, 60.50) --
+	(121.77, 60.21) --
+	(122.14, 60.78) --
+	(122.52, 60.21) --
+	(122.89, 60.64) --
+	(123.26, 59.23) --
+	(123.64, 60.64) --
+	(124.01, 60.07) --
+	(124.38, 60.21) --
+	(124.76, 59.37) --
+	(125.13, 59.65) --
+	(125.50, 60.21) --
+	(125.88, 60.07) --
+	(126.25, 60.07) --
+	(126.62, 59.79) --
+	(127.00, 59.37) --
+	(127.37, 59.93) --
+	(127.74, 60.64) --
+	(128.12, 59.09) --
+	(128.49, 59.65) --
+	(128.86, 60.50) --
+	(129.24, 59.79) --
+	(129.61, 59.93) --
+	(129.98, 60.64) --
+	(130.36, 60.21) --
+	(130.73, 60.21) --
+	(131.10, 60.50) --
+	(131.48, 59.51) --
+	(131.85, 59.93) --
+	(132.22, 60.21) --
+	(132.60, 58.81) --
+	(132.97, 60.21) --
+	(133.34, 59.51) --
+	(133.72, 61.06) --
+	(134.09, 60.07) --
+	(134.46, 60.78) --
+	(134.84, 60.64) --
+	(135.21, 60.35) --
+	(135.58, 60.50) --
+	(135.96, 60.35) --
+	(136.33, 59.37) --
+	(136.71, 58.95) --
+	(137.08, 59.09) --
+	(137.45, 59.79) --
+	(137.83, 60.07) --
+	(138.20, 61.20) --
+	(138.57, 59.65) --
+	(138.95, 59.93) --
+	(139.32, 59.51) --
+	(139.69, 59.79) --
+	(140.07, 59.79) --
+	(140.44, 59.93) --
+	(140.81, 60.50) --
+	(141.19, 59.65) --
+	(141.56, 59.37) --
+	(141.93, 59.23) --
+	(142.31, 59.09) --
+	(142.68, 59.79) --
+	(143.05, 59.79) --
+	(143.43, 59.23) --
+	(143.80, 60.35) --
+	(144.17, 59.23) --
+	(144.55, 60.21) --
+	(144.92, 58.81) --
+	(145.29, 61.34) --
+	(145.67, 58.95) --
+	(146.04, 58.52) --
+	(146.41, 59.51) --
+	(146.79, 59.93) --
+	(147.16, 61.06) --
+	(147.53, 59.51) --
+	(147.91, 59.93) --
+	(148.28, 60.21) --
+	(148.65, 58.66) --
+	(149.03, 59.23) --
+	(149.40, 60.64) --
+	(149.78, 58.95) --
+	(150.15, 60.64) --
+	(150.52, 59.93) --
+	(150.90, 59.65) --
+	(151.27, 60.21) --
+	(151.64, 59.65) --
+	(152.02, 59.65) --
+	(152.39, 60.78) --
+	(152.76, 59.51) --
+	(153.14, 59.65) --
+	(153.51, 60.92) --
+	(153.88, 60.64) --
+	(154.26, 59.51) --
+	(154.63, 60.64) --
+	(155.00, 60.50) --
+	(155.38, 59.79) --
+	(155.75, 61.06) --
+	(156.12, 60.07) --
+	(156.50, 61.06) --
+	(156.87, 60.50) --
+	(157.24, 60.50) --
+	(157.62, 59.93) --
+	(157.99, 59.93) --
+	(158.36, 58.81) --
+	(158.74, 59.23) --
+	(159.11, 61.06) --
+	(159.48, 60.07) --
+	(159.86, 58.81) --
+	(160.23, 58.81) --
+	(160.60, 58.95) --
+	(160.98, 59.37) --
+	(161.35, 59.37) --
+	(161.72, 60.50) --
+	(162.10, 60.35) --
+	(162.47, 58.38) --
+	(162.84, 59.23) --
+	(163.22, 58.38) --
+	(163.59, 59.23) --
+	(163.97, 59.65) --
+	(164.34, 59.79) --
+	(164.71, 58.81) --
+	(165.09, 61.34) --
+	(165.46, 59.23) --
+	(165.83, 59.23) --
+	(166.21, 59.23) --
+	(166.58, 60.35) --
+	(166.95, 59.51) --
+	(167.33, 59.51) --
+	(167.70, 59.79) --
+	(168.07, 59.93) --
+	(168.45, 59.93) --
+	(168.82, 60.35) --
+	(169.19, 59.37) --
+	(169.57, 59.23) --
+	(169.94, 59.37) --
+	(170.31, 60.64) --
+	(170.69, 59.79) --
+	(171.06, 59.93) --
+	(171.43, 59.79) --
+	(171.81, 59.09) --
+	(172.18, 60.07) --
+	(172.55, 59.23) --
+	(172.93, 60.50) --
+	(173.30, 58.66) --
+	(173.67, 60.92) --
+	(174.05, 59.93) --
+	(174.42, 60.07) --
+	(174.79, 61.90) --
+	(175.17, 58.95) --
+	(175.54, 59.37) --
+	(175.91, 59.23) --
+	(176.29, 59.23) --
+	(176.66, 60.07) --
+	(177.04, 59.37) --
+	(177.41, 59.23) --
+	(177.78, 59.23) --
+	(178.16, 59.79) --
+	(178.53, 59.37) --
+	(178.90, 59.93) --
+	(179.28, 60.50) --
+	(179.65, 59.09) --
+	(180.02, 60.50) --
+	(180.40, 59.51) --
+	(180.77, 60.07) --
+	(181.14, 59.09) --
+	(181.52, 60.21) --
+	(181.89, 61.20) --
+	(182.26, 62.18) --
+	(182.64, 61.62) --
+	(183.01, 63.31) --
+	(183.38, 64.44) --
+	(183.76, 65.85) --
+	(184.13, 69.93) --
+	(184.50, 71.06) --
+	(184.88, 73.03) --
+	(185.25, 74.58) --
+	(185.62, 70.21) --
+	(186.00, 66.97) --
+	(186.37, 68.24) --
+	(186.74, 65.71) --
+	(187.12, 63.17) --
+	(187.49, 62.33) --
+	(187.86, 61.06) --
+	(188.24, 61.76) --
+	(188.61, 63.59) --
+	(188.98, 60.21) --
+	(189.36, 60.35) --
+	(189.73, 59.79) --
+	(190.11, 60.07) --
+	(190.48, 59.51) --
+	(190.85, 60.35) --
+	(191.23, 59.65) --
+	(191.60, 60.35) --
+	(191.97, 59.23) --
+	(192.35, 60.35) --
+	(192.72, 59.65) --
+	(193.09, 59.65) --
+	(193.47, 59.37) --
+	(193.84, 59.37) --
+	(194.21, 59.79) --
+	(194.59, 60.21) --
+	(194.96, 60.92) --
+	(195.33, 58.81) --
+	(195.71, 59.51) --
+	(196.08, 59.09) --
+	(196.45, 60.21) --
+	(196.83, 59.23) --
+	(197.20, 59.93) --
+	(197.57, 59.09) --
+	(197.95, 58.66) --
+	(198.32, 59.51) --
+	(198.69, 58.10) --
+	(199.07, 60.21) --
+	(199.44, 60.64) --
+	(199.81, 59.65) --
+	(200.19, 60.07) --
+	(200.56, 59.23) --
+	(200.93, 59.93) --
+	(201.31, 60.35) --
+	(201.68, 59.79) --
+	(202.05, 60.35) --
+	(202.43, 59.37) --
+	(202.80, 58.95) --
+	(203.17, 60.07) --
+	(203.55, 60.64) --
+	(203.92, 60.35) --
+	(204.30, 58.81) --
+	(204.67, 59.93) --
+	(205.04, 61.06) --
+	(205.42, 60.78) --
+	(205.79, 59.79) --
+	(206.16, 60.35) --
+	(206.54, 60.92) --
+	(206.91, 61.06) --
+	(207.28, 61.76) --
+	(207.66, 61.20) --
+	(208.03, 61.62) --
+	(208.40, 62.47) --
+	(208.78, 60.21) --
+	(209.15, 61.76) --
+	(209.52, 59.65) --
+	(209.90, 59.93) --
+	(210.27, 59.93) --
+	(210.64, 59.09) --
+	(211.02, 60.78) --
+	(211.39, 59.65) --
+	(211.76, 58.95) --
+	(212.14, 60.35) --
+	(212.51, 59.37) --
+	(212.88, 58.81) --
+	(213.26, 59.65) --
+	(213.63, 59.79) --
+	(214.00, 60.35) --
+	(214.38, 60.50) --
+	(214.75, 59.79) --
+	(215.12, 59.51) --
+	(215.50, 59.79) --
+	(215.87, 59.37) --
+	(216.24, 59.65) --
+	(216.62, 60.50) --
+	(216.99, 60.07) --
+	(217.37, 59.93) --
+	(217.74, 58.81) --
+	(218.11, 60.21) --
+	(218.49, 60.07) --
+	(218.86, 59.65) --
+	(219.23, 59.93) --
+	(219.61, 60.35) --
+	(219.98, 59.93) --
+	(220.35, 59.93) --
+	(220.73, 61.06) --
+	(221.10, 61.76) --
+	(221.47, 60.35) --
+	(221.85, 61.06) --
+	(222.22, 62.04) --
+	(222.59, 62.04) --
+	(222.97, 61.34) --
+	(223.34, 59.93) --
+	(223.71, 61.48) --
+	(224.09, 61.48) --
+	(224.46, 60.50) --
+	(224.83, 60.78) --
+	(225.21, 60.21) --
+	(225.58, 60.78) --
+	(225.95, 61.06) --
+	(226.33, 58.66) --
+	(226.70, 62.04) --
+	(227.07, 59.09) --
+	(227.45, 58.81) --
+	(227.82, 59.23) --
+	(228.19, 59.37) --
+	(228.57, 58.95) --
+	(228.94, 59.79) --
+	(229.31, 60.78) --
+	(229.69, 59.09) --
+	(230.06, 59.37) --
+	(230.43, 60.50) --
+	(230.81, 59.93) --
+	(231.18, 60.50) --
+	(231.56, 59.37) --
+	(231.93, 59.93) --
+	(232.30, 59.37) --
+	(232.68, 59.65) --
+	(233.05, 59.79) --
+	(233.42, 59.09) --
+	(233.80, 59.79) --
+	(234.17, 60.07) --
+	(234.54, 59.79) --
+	(234.92, 59.23) --
+	(235.29, 59.37) --
+	(235.66, 60.07) --
+	(236.04, 60.07) --
+	(236.41, 59.65) --
+	(236.78, 59.65) --
+	(237.16, 59.51) --
+	(237.53, 59.51) --
+	(237.90, 60.21) --
+	(238.28, 59.23) --
+	(238.65, 59.23) --
+	(239.02, 58.95) --
+	(239.40, 59.51) --
+	(239.77, 61.34) --
+	(240.14, 59.09) --
+	(240.52, 59.79) --
+	(240.89, 59.65) --
+	(241.26, 59.93) --
+	(241.64, 59.09) --
+	(242.01, 59.23) --
+	(242.38, 60.92) --
+	(242.76, 59.93) --
+	(243.13, 59.79) --
+	(243.50, 58.81) --
+	(243.88, 59.65) --
+	(244.25, 58.66) --
+	(244.63, 58.52) --
+	(245.00, 59.09) --
+	(245.37, 58.81) --
+	(245.75, 58.81) --
+	(246.12, 58.66) --
+	(246.49, 60.07) --
+	(246.87, 60.64) --
+	(247.24, 60.21) --
+	(247.61, 58.81) --
+	(247.99, 60.07) --
+	(248.36, 58.52) --
+	(248.73, 59.65) --
+	(249.11, 59.09) --
+	(249.48, 59.09) --
+	(249.85, 59.65) --
+	(250.23, 59.23) --
+	(250.60, 59.65) --
+	(250.97, 58.81) --
+	(251.35, 58.95) --
+	(251.72, 59.65) --
+	(252.09, 58.95) --
+	(252.47, 58.66) --
+	(252.84, 59.37) --
+	(253.21, 59.65) --
+	(253.59, 59.37) --
+	(253.96, 59.65) --
+	(254.33, 59.51) --
+	(254.71, 59.79) --
+	(255.08, 59.09) --
+	(255.45, 60.64) --
+	(255.83, 59.37) --
+	(256.20, 58.81) --
+	(256.57, 60.07) --
+	(256.95, 59.79) --
+	(257.32, 58.66) --
+	(257.70, 60.78) --
+	(258.07, 60.78) --
+	(258.44, 61.76) --
+	(258.82, 61.20) --
+	(259.19, 62.61) --
+	(259.56, 62.75) --
+	(259.94, 62.75) --
+	(260.31, 64.02) --
+	(260.68, 61.76) --
+	(261.06, 62.89) --
+	(261.43, 61.06) --
+	(261.80, 61.76) --
+	(262.18, 61.06) --
+	(262.55, 63.45) --
+	(262.92, 60.50) --
+	(263.30, 62.75) --
+	(263.67, 61.34) --
+	(264.04, 59.65) --
+	(264.42, 60.21) --
+	(264.79, 61.76) --
+	(265.16, 60.07) --
+	(265.54, 61.48) --
+	(265.91, 61.90) --
+	(266.28, 60.21) --
+	(266.66, 60.21) --
+	(267.03, 60.50) --
+	(267.40, 61.34) --
+	(267.78, 59.93) --
+	(268.15, 60.92) --
+	(268.52, 60.92) --
+	(268.90, 61.76) --
+	(269.27, 61.06) --
+	(269.64, 62.04) --
+	(270.02, 62.33) --
+	(270.39, 60.78) --
+	(270.76, 61.76) --
+	(271.14, 60.78) --
+	(271.51, 61.62) --
+	(271.89, 60.64) --
+	(272.26, 60.50) --
+	(272.63, 60.64) --
+	(273.01, 59.79) --
+	(273.38, 59.37) --
+	(273.75, 60.50) --
+	(274.13, 60.21) --
+	(274.50, 60.07) --
+	(274.87, 60.07) --
+	(275.25, 59.37) --
+	(275.62, 59.23) --
+	(275.99, 59.37) --
+	(276.37, 59.09) --
+	(276.74, 59.37) --
+	(277.11, 58.81) --
+	(277.49, 59.23) --
+	(277.86, 59.79) --
+	(278.23, 58.95) --
+	(278.61, 59.23) --
+	(278.98, 60.07) --
+	(279.35, 59.65) --
+	(279.73, 60.07) --
+	(280.10, 60.07) --
+	(280.47, 59.51) --
+	(280.85, 60.35) --
+	(281.22, 59.79) --
+	(281.59, 60.35) --
+	(281.97, 60.92) --
+	(282.34, 60.21) --
+	(282.71, 61.20) --
+	(283.09, 60.50) --
+	(283.46, 60.07) --
+	(283.83, 59.93) --
+	(284.21, 59.51) --
+	(284.58, 59.93) --
+	(284.96, 58.95) --
+	(285.33, 59.37) --
+	(285.70, 59.51) --
+	(286.08, 58.81) --
+	(286.45, 60.07) --
+	(286.82, 60.64) --
+	(287.20, 60.35) --
+	(287.57, 61.20) --
+	(287.94, 59.79) --
+	(288.32, 60.07) --
+	(288.69, 61.90) --
+	(289.06, 60.50) --
+	(289.44, 60.07) --
+	(289.81, 61.48) --
+	(290.18, 61.06) --
+	(290.56, 61.34) --
+	(290.93, 61.76) --
+	(291.30, 60.35) --
+	(291.68, 62.18) --
+	(292.05, 60.35) --
+	(292.42, 59.93) --
+	(292.80, 60.78) --
+	(293.17, 60.50) --
+	(293.54, 60.21) --
+	(293.92, 60.07) --
+	(294.29, 59.23) --
+	(294.66, 60.07) --
+	(295.04, 58.24) --
+	(295.41, 60.21) --
+	(295.78, 59.23) --
+	(296.16, 59.65) --
+	(296.53, 59.65) --
+	(296.90, 59.09) --
+	(297.28, 59.37) --
+	(297.65, 59.09) --
+	(298.03, 58.81) --
+	(298.40, 59.79) --
+	(298.77, 59.93) --
+	(299.15, 59.51) --
+	(299.52, 58.24) --
+	(299.89, 58.81) --
+	(300.27, 59.79) --
+	(300.64, 59.93) --
+	(301.01, 58.24) --
+	(301.39, 59.79) --
+	(301.76, 59.79) --
+	(302.13, 59.65) --
+	(302.51, 59.51) --
+	(302.88, 59.51) --
+	(303.25, 59.09) --
+	(303.63, 58.81) --
+	(304.00, 59.93) --
+	(304.37, 58.38) --
+	(304.75, 58.38) --
+	(305.12, 59.79) --
+	(305.49, 59.51) --
+	(305.87, 58.95) --
+	(306.24, 59.79) --
+	(306.61, 60.21) --
+	(306.99, 60.50) --
+	(307.36, 60.07) --
+	(307.73, 59.65) --
+	(308.11, 59.23) --
+	(308.48, 59.65) --
+	(308.85, 59.37) --
+	(309.23, 59.93) --
+	(309.60, 60.07) --
+	(309.97, 59.37) --
+	(310.35, 59.37) --
+	(310.72, 59.37) --
+	(311.09, 59.65) --
+	(311.47, 60.50) --
+	(311.84, 59.93) --
+	(312.22, 59.93) --
+	(312.59, 59.51) --
+	(312.96, 60.07) --
+	(313.34, 59.51) --
+	(313.71, 59.09) --
+	(314.08, 59.09) --
+	(314.46, 59.93) --
+	(314.83, 58.52) --
+	(315.20, 59.79) --
+	(315.58, 59.51) --
+	(315.95, 59.93) --
+	(316.32, 59.37) --
+	(316.70, 59.09) --
+	(317.07, 57.96) --
+	(317.44, 59.93) --
+	(317.82, 58.24) --
+	(318.19, 58.81) --
+	(318.56, 58.81) --
+	(318.94, 59.23) --
+	(319.31, 59.09) --
+	(319.68, 59.79) --
+	(320.06, 59.09) --
+	(320.43, 58.95) --
+	(320.80, 58.52) --
+	(321.18, 59.09);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44, 88.66) --
+	( 22.81, 89.36) --
+	( 23.18, 88.66) --
+	( 23.56, 87.81) --
+	( 23.93, 88.09) --
+	( 24.30, 88.24) --
+	( 24.68, 87.95) --
+	( 25.05, 87.39) --
+	( 25.42, 88.09) --
+	( 25.80, 89.22) --
+	( 26.17, 89.08) --
+	( 26.54, 87.25) --
+	( 26.92, 86.83) --
+	( 27.29, 88.09) --
+	( 27.66, 87.81) --
+	( 28.04, 87.53) --
+	( 28.41, 86.55) --
+	( 28.79, 88.80) --
+	( 29.16, 89.22) --
+	( 29.53, 86.69) --
+	( 29.91, 88.09) --
+	( 30.28, 86.97) --
+	( 30.65, 85.98) --
+	( 31.03, 88.24) --
+	( 31.40, 88.94) --
+	( 31.77, 87.81) --
+	( 32.15, 89.08) --
+	( 32.52, 85.98) --
+	( 32.89, 87.39) --
+	( 33.27, 89.78) --
+	( 33.64, 87.95) --
+	( 34.01, 88.38) --
+	( 34.39, 90.35) --
+	( 34.76, 86.69) --
+	( 35.13, 89.64) --
+	( 35.51, 90.91) --
+	( 35.88, 90.07) --
+	( 36.25, 90.77) --
+	( 36.63, 88.52) --
+	( 37.00, 89.64) --
+	( 37.37, 87.81) --
+	( 37.75, 88.94) --
+	( 38.12, 87.95) --
+	( 38.49, 88.24) --
+	( 38.87, 86.97) --
+	( 39.24, 87.53) --
+	( 39.61, 88.09) --
+	( 39.99, 87.25) --
+	( 40.36, 87.67) --
+	( 40.73, 88.80) --
+	( 41.11, 86.41) --
+	( 41.48, 88.38) --
+	( 41.86, 86.83) --
+	( 42.23, 85.84) --
+	( 42.60, 86.26) --
+	( 42.98, 86.83) --
+	( 43.35, 87.11) --
+	( 43.72, 86.55) --
+	( 44.10, 87.67) --
+	( 44.47, 87.53) --
+	( 44.84, 86.69) --
+	( 45.22, 86.69) --
+	( 45.59, 87.81) --
+	( 45.96, 87.81) --
+	( 46.34, 89.36) --
+	( 46.71, 87.11) --
+	( 47.08, 91.05) --
+	( 47.46, 87.25) --
+	( 47.83, 87.95) --
+	( 48.20, 89.08) --
+	( 48.58, 88.24) --
+	( 48.95, 90.21) --
+	( 49.32, 90.63) --
+	( 49.70, 94.01) --
+	( 50.07, 94.01) --
+	( 50.44, 96.54) --
+	( 50.82, 94.99) --
+	( 51.19, 95.14) --
+	( 51.56, 94.85) --
+	( 51.94, 93.16) --
+	( 52.31, 92.60) --
+	( 52.68, 90.91) --
+	( 53.06, 89.64) --
+	( 53.43, 90.35) --
+	( 53.80, 88.66) --
+	( 54.18, 87.11) --
+	( 54.55, 89.64) --
+	( 54.93, 89.64) --
+	( 55.30, 89.22) --
+	( 55.67, 91.33) --
+	( 56.05, 89.64) --
+	( 56.42, 91.05) --
+	( 56.79, 90.49) --
+	( 57.17, 92.18) --
+	( 57.54, 89.64) --
+	( 57.91, 91.62) --
+	( 58.29, 89.93) --
+	( 58.66, 88.80) --
+	( 59.03, 88.09) --
+	( 59.41, 87.95) --
+	( 59.78, 91.33) --
+	( 60.15, 88.38) --
+	( 60.53, 89.22) --
+	( 60.90, 89.64) --
+	( 61.27, 86.97) --
+	( 61.65, 90.21) --
+	( 62.02, 88.66) --
+	( 62.39, 88.66) --
+	( 62.77, 89.22) --
+	( 63.14, 88.66) --
+	( 63.51, 90.63) --
+	( 63.89, 88.94) --
+	( 64.26, 88.80) --
+	( 64.63, 88.66) --
+	( 65.01, 88.09) --
+	( 65.38, 88.52) --
+	( 65.75, 88.09) --
+	( 66.13, 86.83) --
+	( 66.50, 87.81) --
+	( 66.87, 88.80) --
+	( 67.25, 88.66) --
+	( 67.62, 89.78) --
+	( 67.99, 89.36) --
+	( 68.37, 90.21) --
+	( 68.74, 90.63) --
+	( 69.12, 90.77) --
+	( 69.49, 94.85) --
+	( 69.86, 90.77) --
+	( 70.24, 91.90) --
+	( 70.61, 92.74) --
+	( 70.98, 91.05) --
+	( 71.36, 88.94) --
+	( 71.73, 88.09) --
+	( 72.10, 87.95) --
+	( 72.48, 88.24) --
+	( 72.85, 84.86) --
+	( 73.22, 86.26) --
+	( 73.60, 87.39) --
+	( 73.97, 86.97) --
+	( 74.34, 87.25) --
+	( 74.72, 86.97) --
+	( 75.09, 86.55) --
+	( 75.46, 86.55) --
+	( 75.84, 85.56) --
+	( 76.21, 85.42) --
+	( 76.58, 86.55) --
+	( 76.96, 87.39) --
+	( 77.33, 87.11) --
+	( 77.70, 85.28) --
+	( 78.08, 88.38) --
+	( 78.45, 87.11) --
+	( 78.82, 89.50) --
+	( 79.20, 89.64) --
+	( 79.57, 90.77) --
+	( 79.94, 94.99) --
+	( 80.32, 95.28) --
+	( 80.69, 98.37) --
+	( 81.06, 98.66) --
+	( 81.44,101.89) --
+	( 81.81,100.21) --
+	( 82.19, 97.67) --
+	( 82.56, 96.40) --
+	( 82.93, 92.60) --
+	( 83.31, 91.90) --
+	( 83.68, 90.35) --
+	( 84.05, 88.94) --
+	( 84.43, 89.36) --
+	( 84.80, 87.39) --
+	( 85.17, 85.84) --
+	( 85.55, 86.12) --
+	( 85.92, 85.84) --
+	( 86.29, 85.56) --
+	( 86.67, 86.41) --
+	( 87.04, 84.57) --
+	( 87.41, 85.56) --
+	( 87.79, 84.43) --
+	( 88.16, 85.00) --
+	( 88.53, 86.69) --
+	( 88.91, 84.43) --
+	( 89.28, 86.26) --
+	( 89.65, 86.55) --
+	( 90.03, 85.00) --
+	( 90.40, 86.26) --
+	( 90.77, 86.12) --
+	( 91.15, 86.41) --
+	( 91.52, 84.86) --
+	( 91.89, 84.72) --
+	( 92.27, 84.57) --
+	( 92.64, 85.14) --
+	( 93.01, 86.41) --
+	( 93.39, 85.14) --
+	( 93.76, 84.86) --
+	( 94.13, 85.00) --
+	( 94.51, 86.55) --
+	( 94.88, 84.57) --
+	( 95.25, 86.12) --
+	( 95.63, 85.42) --
+	( 96.00, 85.84) --
+	( 96.38, 84.86) --
+	( 96.75, 85.00) --
+	( 97.12, 85.14) --
+	( 97.50, 85.42) --
+	( 97.87, 85.00) --
+	( 98.24, 85.00) --
+	( 98.62, 84.57) --
+	( 98.99, 86.55) --
+	( 99.36, 86.12) --
+	( 99.74, 85.14) --
+	(100.11, 85.00) --
+	(100.48, 85.28) --
+	(100.86, 85.56) --
+	(101.23, 84.57) --
+	(101.60, 84.29) --
+	(101.98, 84.86) --
+	(102.35, 84.15) --
+	(102.72, 85.00) --
+	(103.10, 85.56) --
+	(103.47, 85.56) --
+	(103.84, 86.12) --
+	(104.22, 84.43) --
+	(104.59, 83.73) --
+	(104.96, 84.57) --
+	(105.34, 84.86) --
+	(105.71, 85.28) --
+	(106.08, 84.43) --
+	(106.46, 84.86) --
+	(106.83, 85.00) --
+	(107.20, 85.56) --
+	(107.58, 84.29) --
+	(107.95, 85.00) --
+	(108.32, 84.57) --
+	(108.70, 84.57) --
+	(109.07, 85.42) --
+	(109.45, 85.56) --
+	(109.82, 85.14) --
+	(110.19, 84.43) --
+	(110.57, 85.42) --
+	(110.94, 84.01) --
+	(111.31, 85.28) --
+	(111.69, 84.72) --
+	(112.06, 85.70) --
+	(112.43, 84.86) --
+	(112.81, 84.86) --
+	(113.18, 85.00) --
+	(113.55, 85.98) --
+	(113.93, 85.42) --
+	(114.30, 84.72) --
+	(114.67, 84.57) --
+	(115.05, 85.42) --
+	(115.42, 85.56) --
+	(115.79, 84.01) --
+	(116.17, 85.42) --
+	(116.54, 85.56) --
+	(116.91, 86.26) --
+	(117.29, 85.28) --
+	(117.66, 85.00) --
+	(118.03, 85.14) --
+	(118.41, 85.56) --
+	(118.78, 85.00) --
+	(119.15, 85.70) --
+	(119.53, 84.43) --
+	(119.90, 84.57) --
+	(120.27, 84.29) --
+	(120.65, 84.72) --
+	(121.02, 84.86) --
+	(121.39, 84.43) --
+	(121.77, 85.70) --
+	(122.14, 84.72) --
+	(122.52, 85.14) --
+	(122.89, 84.29) --
+	(123.26, 84.86) --
+	(123.64, 84.57) --
+	(124.01, 83.87) --
+	(124.38, 85.14) --
+	(124.76, 85.28) --
+	(125.13, 85.00) --
+	(125.50, 84.57) --
+	(125.88, 84.57) --
+	(126.25, 84.15) --
+	(126.62, 85.00) --
+	(127.00, 84.57) --
+	(127.37, 84.86) --
+	(127.74, 84.15) --
+	(128.12, 84.86) --
+	(128.49, 85.56) --
+	(128.86, 83.73) --
+	(129.24, 83.87) --
+	(129.61, 84.29) --
+	(129.98, 85.14) --
+	(130.36, 85.14) --
+	(130.73, 84.15) --
+	(131.10, 83.45) --
+	(131.48, 85.14) --
+	(131.85, 85.14) --
+	(132.22, 84.15) --
+	(132.60, 84.72) --
+	(132.97, 83.17) --
+	(133.34, 84.57) --
+	(133.72, 83.87) --
+	(134.09, 83.87) --
+	(134.46, 84.57) --
+	(134.84, 84.72) --
+	(135.21, 84.43) --
+	(135.58, 83.59) --
+	(135.96, 83.31) --
+	(136.33, 85.84) --
+	(136.71, 83.59) --
+	(137.08, 85.56) --
+	(137.45, 85.14) --
+	(137.83, 85.28) --
+	(138.20, 84.01) --
+	(138.57, 84.86) --
+	(138.95, 84.72) --
+	(139.32, 85.28) --
+	(139.69, 84.29) --
+	(140.07, 84.72) --
+	(140.44, 85.00) --
+	(140.81, 84.57) --
+	(141.19, 84.29) --
+	(141.56, 84.72) --
+	(141.93, 84.57) --
+	(142.31, 84.86) --
+	(142.68, 84.57) --
+	(143.05, 85.28) --
+	(143.43, 84.01) --
+	(143.80, 84.57) --
+	(144.17, 84.86) --
+	(144.55, 84.72) --
+	(144.92, 83.73) --
+	(145.29, 85.14) --
+	(145.67, 85.00) --
+	(146.04, 84.86) --
+	(146.41, 84.43) --
+	(146.79, 84.57) --
+	(147.16, 85.00) --
+	(147.53, 84.01) --
+	(147.91, 84.72) --
+	(148.28, 84.57) --
+	(148.65, 84.72) --
+	(149.03, 84.01) --
+	(149.40, 84.57) --
+	(149.78, 84.72) --
+	(150.15, 84.01) --
+	(150.52, 84.43) --
+	(150.90, 85.56) --
+	(151.27, 84.43) --
+	(151.64, 84.72) --
+	(152.02, 85.00) --
+	(152.39, 85.70) --
+	(152.76, 84.72) --
+	(153.14, 85.56) --
+	(153.51, 85.14) --
+	(153.88, 85.00) --
+	(154.26, 86.12) --
+	(154.63, 86.55) --
+	(155.00, 86.41) --
+	(155.38, 86.97) --
+	(155.75, 84.43) --
+	(156.12, 83.73) --
+	(156.50, 85.00) --
+	(156.87, 86.12) --
+	(157.24, 84.86) --
+	(157.62, 86.41) --
+	(157.99, 84.15) --
+	(158.36, 84.43) --
+	(158.74, 85.42) --
+	(159.11, 84.72) --
+	(159.48, 83.87) --
+	(159.86, 84.43) --
+	(160.23, 83.59) --
+	(160.60, 85.14) --
+	(160.98, 83.87) --
+	(161.35, 84.72) --
+	(161.72, 83.59) --
+	(162.10, 84.86) --
+	(162.47, 85.84) --
+	(162.84, 84.86) --
+	(163.22, 83.59) --
+	(163.59, 84.15) --
+	(163.97, 84.29) --
+	(164.34, 85.00) --
+	(164.71, 84.29) --
+	(165.09, 84.86) --
+	(165.46, 85.28) --
+	(165.83, 84.72) --
+	(166.21, 85.14) --
+	(166.58, 84.29) --
+	(166.95, 83.73) --
+	(167.33, 84.72) --
+	(167.70, 84.72) --
+	(168.07, 84.15) --
+	(168.45, 84.86) --
+	(168.82, 85.28) --
+	(169.19, 84.15) --
+	(169.57, 84.43) --
+	(169.94, 84.86) --
+	(170.31, 85.42) --
+	(170.69, 84.01) --
+	(171.06, 83.59) --
+	(171.43, 84.01) --
+	(171.81, 85.28) --
+	(172.18, 83.17) --
+	(172.55, 85.00) --
+	(172.93, 83.59) --
+	(173.30, 85.00) --
+	(173.67, 84.01) --
+	(174.05, 84.01) --
+	(174.42, 84.01) --
+	(174.79, 84.15) --
+	(175.17, 83.59) --
+	(175.54, 84.29) --
+	(175.91, 85.00) --
+	(176.29, 84.15) --
+	(176.66, 85.28) --
+	(177.04, 85.42) --
+	(177.41, 85.14) --
+	(177.78, 85.42) --
+	(178.16, 83.31) --
+	(178.53, 84.15) --
+	(178.90, 84.72) --
+	(179.28, 85.70) --
+	(179.65, 84.01) --
+	(180.02, 83.73) --
+	(180.40, 85.56) --
+	(180.77, 84.29) --
+	(181.14, 85.14) --
+	(181.52, 86.83) --
+	(181.89, 87.67) --
+	(182.26, 89.36) --
+	(182.64, 89.50) --
+	(183.01, 91.47) --
+	(183.38, 94.57) --
+	(183.76, 96.68) --
+	(184.13, 98.52) --
+	(184.50, 99.08) --
+	(184.88,101.19) --
+	(185.25, 98.94) --
+	(185.62, 99.64) --
+	(186.00, 94.71) --
+	(186.37, 92.32) --
+	(186.74, 88.38) --
+	(187.12, 87.53) --
+	(187.49, 87.67) --
+	(187.86, 86.41) --
+	(188.24, 87.25) --
+	(188.61, 85.42) --
+	(188.98, 86.12) --
+	(189.36, 85.56) --
+	(189.73, 84.86) --
+	(190.11, 84.43) --
+	(190.48, 85.28) --
+	(190.85, 84.72) --
+	(191.23, 85.70) --
+	(191.60, 84.57) --
+	(191.97, 85.14) --
+	(192.35, 85.98) --
+	(192.72, 85.14) --
+	(193.09, 84.57) --
+	(193.47, 84.15) --
+	(193.84, 86.41) --
+	(194.21, 84.86) --
+	(194.59, 84.29) --
+	(194.96, 84.86) --
+	(195.33, 84.29) --
+	(195.71, 84.01) --
+	(196.08, 83.73) --
+	(196.45, 83.87) --
+	(196.83, 83.17) --
+	(197.20, 85.56) --
+	(197.57, 84.15) --
+	(197.95, 83.45) --
+	(198.32, 84.01) --
+	(198.69, 84.43) --
+	(199.07, 84.43) --
+	(199.44, 85.00) --
+	(199.81, 83.59) --
+	(200.19, 83.73) --
+	(200.56, 83.87) --
+	(200.93, 83.31) --
+	(201.31, 84.43) --
+	(201.68, 84.15) --
+	(202.05, 85.00) --
+	(202.43, 85.00) --
+	(202.80, 85.00) --
+	(203.17, 83.31) --
+	(203.55, 84.29) --
+	(203.92, 84.86) --
+	(204.30, 84.86) --
+	(204.67, 85.14) --
+	(205.04, 87.53) --
+	(205.42, 85.28) --
+	(205.79, 85.14) --
+	(206.16, 85.98) --
+	(206.54, 86.41) --
+	(206.91, 85.42) --
+	(207.28, 87.95) --
+	(207.66, 87.39) --
+	(208.03, 87.39) --
+	(208.40, 86.69) --
+	(208.78, 85.00) --
+	(209.15, 85.28) --
+	(209.52, 84.57) --
+	(209.90, 84.72) --
+	(210.27, 83.73) --
+	(210.64, 84.01) --
+	(211.02, 84.29) --
+	(211.39, 83.73) --
+	(211.76, 84.57) --
+	(212.14, 83.73) --
+	(212.51, 84.86) --
+	(212.88, 84.43) --
+	(213.26, 83.73) --
+	(213.63, 83.87) --
+	(214.00, 84.43) --
+	(214.38, 83.73) --
+	(214.75, 84.29) --
+	(215.12, 84.29) --
+	(215.50, 85.28) --
+	(215.87, 84.43) --
+	(216.24, 84.29) --
+	(216.62, 84.86) --
+	(216.99, 85.00) --
+	(217.37, 84.72) --
+	(217.74, 84.01) --
+	(218.11, 84.29) --
+	(218.49, 85.00) --
+	(218.86, 85.42) --
+	(219.23, 84.57) --
+	(219.61, 85.28) --
+	(219.98, 85.70) --
+	(220.35, 84.43) --
+	(220.73, 85.14) --
+	(221.10, 85.42) --
+	(221.47, 84.57) --
+	(221.85, 85.98) --
+	(222.22, 85.00) --
+	(222.59, 85.70) --
+	(222.97, 85.98) --
+	(223.34, 84.29) --
+	(223.71, 85.84) --
+	(224.09, 84.57) --
+	(224.46, 85.14) --
+	(224.83, 84.57) --
+	(225.21, 85.14) --
+	(225.58, 85.70) --
+	(225.95, 85.28) --
+	(226.33, 84.72) --
+	(226.70, 84.29) --
+	(227.07, 85.00) --
+	(227.45, 84.01) --
+	(227.82, 83.59) --
+	(228.19, 84.01) --
+	(228.57, 83.59) --
+	(228.94, 83.31) --
+	(229.31, 85.28) --
+	(229.69, 85.14) --
+	(230.06, 84.01) --
+	(230.43, 84.72) --
+	(230.81, 84.43) --
+	(231.18, 84.43) --
+	(231.56, 84.86) --
+	(231.93, 84.01) --
+	(232.30, 83.87) --
+	(232.68, 83.87) --
+	(233.05, 84.43) --
+	(233.42, 83.87) --
+	(233.80, 83.87) --
+	(234.17, 85.00) --
+	(234.54, 83.73) --
+	(234.92, 84.43) --
+	(235.29, 84.01) --
+	(235.66, 84.01) --
+	(236.04, 83.59) --
+	(236.41, 84.57) --
+	(236.78, 83.45) --
+	(237.16, 84.01) --
+	(237.53, 84.57) --
+	(237.90, 84.01) --
+	(238.28, 83.17) --
+	(238.65, 83.73) --
+	(239.02, 83.31) --
+	(239.40, 85.56) --
+	(239.77, 83.73) --
+	(240.14, 84.15) --
+	(240.52, 84.15) --
+	(240.89, 85.28) --
+	(241.26, 84.15) --
+	(241.64, 84.86) --
+	(242.01, 83.87) --
+	(242.38, 83.59) --
+	(242.76, 83.59) --
+	(243.13, 83.87) --
+	(243.50, 83.73) --
+	(243.88, 84.15) --
+	(244.25, 83.73) --
+	(244.63, 84.15) --
+	(245.00, 83.59) --
+	(245.37, 84.72) --
+	(245.75, 83.45) --
+	(246.12, 84.01) --
+	(246.49, 85.42) --
+	(246.87, 85.14) --
+	(247.24, 83.45) --
+	(247.61, 84.15) --
+	(247.99, 84.01) --
+	(248.36, 84.15) --
+	(248.73, 84.15) --
+	(249.11, 84.86) --
+	(249.48, 84.43) --
+	(249.85, 84.01) --
+	(250.23, 84.01) --
+	(250.60, 84.29) --
+	(250.97, 84.29) --
+	(251.35, 83.45) --
+	(251.72, 85.14) --
+	(252.09, 85.42) --
+	(252.47, 84.72) --
+	(252.84, 83.45) --
+	(253.21, 84.29) --
+	(253.59, 84.29) --
+	(253.96, 84.29) --
+	(254.33, 83.73) --
+	(254.71, 83.87) --
+	(255.08, 83.45) --
+	(255.45, 84.43) --
+	(255.83, 83.73) --
+	(256.20, 85.28) --
+	(256.57, 84.29) --
+	(256.95, 84.29) --
+	(257.32, 85.14) --
+	(257.70, 84.57) --
+	(258.07, 86.26) --
+	(258.44, 86.41) --
+	(258.82, 86.69) --
+	(259.19, 89.22) --
+	(259.56, 88.09) --
+	(259.94, 87.53) --
+	(260.31, 89.78) --
+	(260.68, 89.64) --
+	(261.06, 88.24) --
+	(261.43, 86.83) --
+	(261.80, 86.55) --
+	(262.18, 87.81) --
+	(262.55, 85.42) --
+	(262.92, 85.84) --
+	(263.30, 85.14) --
+	(263.67, 84.86) --
+	(264.04, 86.69) --
+	(264.42, 85.56) --
+	(264.79, 85.56) --
+	(265.16, 85.56) --
+	(265.54, 85.00) --
+	(265.91, 83.87) --
+	(266.28, 85.98) --
+	(266.66, 84.15) --
+	(267.03, 85.42) --
+	(267.40, 84.29) --
+	(267.78, 86.41) --
+	(268.15, 84.86) --
+	(268.52, 84.86) --
+	(268.90, 86.41) --
+	(269.27, 85.70) --
+	(269.64, 84.86) --
+	(270.02, 86.83) --
+	(270.39, 85.84) --
+	(270.76, 86.26) --
+	(271.14, 86.26) --
+	(271.51, 85.28) --
+	(271.89, 84.57) --
+	(272.26, 84.86) --
+	(272.63, 85.70) --
+	(273.01, 84.43) --
+	(273.38, 84.57) --
+	(273.75, 85.14) --
+	(274.13, 83.73) --
+	(274.50, 84.72) --
+	(274.87, 83.73) --
+	(275.25, 84.43) --
+	(275.62, 84.72) --
+	(275.99, 84.15) --
+	(276.37, 85.14) --
+	(276.74, 84.01) --
+	(277.11, 85.00) --
+	(277.49, 83.31) --
+	(277.86, 83.03) --
+	(278.23, 85.00) --
+	(278.61, 85.14) --
+	(278.98, 83.45) --
+	(279.35, 84.72) --
+	(279.73, 85.14) --
+	(280.10, 85.28) --
+	(280.47, 85.00) --
+	(280.85, 85.14) --
+	(281.22, 85.84) --
+	(281.59, 85.28) --
+	(281.97, 85.56) --
+	(282.34, 85.84) --
+	(282.71, 85.00) --
+	(283.09, 84.15) --
+	(283.46, 84.29) --
+	(283.83, 84.29) --
+	(284.21, 83.87) --
+	(284.58, 84.72) --
+	(284.96, 83.73) --
+	(285.33, 85.28) --
+	(285.70, 84.01) --
+	(286.08, 84.01) --
+	(286.45, 84.01) --
+	(286.82, 85.00) --
+	(287.20, 85.00) --
+	(287.57, 84.15) --
+	(287.94, 85.00) --
+	(288.32, 84.15) --
+	(288.69, 85.56) --
+	(289.06, 85.14) --
+	(289.44, 85.42) --
+	(289.81, 85.70) --
+	(290.18, 86.41) --
+	(290.56, 85.98) --
+	(290.93, 85.00) --
+	(291.30, 86.12) --
+	(291.68, 85.42) --
+	(292.05, 85.28) --
+	(292.42, 85.14) --
+	(292.80, 85.42) --
+	(293.17, 85.28) --
+	(293.54, 84.57) --
+	(293.92, 84.15) --
+	(294.29, 84.57) --
+	(294.66, 84.86) --
+	(295.04, 83.31) --
+	(295.41, 84.43) --
+	(295.78, 84.43) --
+	(296.16, 83.59) --
+	(296.53, 84.01) --
+	(296.90, 84.86) --
+	(297.28, 83.87) --
+	(297.65, 84.01) --
+	(298.03, 84.29) --
+	(298.40, 83.59) --
+	(298.77, 83.17) --
+	(299.15, 84.15) --
+	(299.52, 84.15) --
+	(299.89, 83.03) --
+	(300.27, 84.15) --
+	(300.64, 84.43) --
+	(301.01, 84.43) --
+	(301.39, 83.17) --
+	(301.76, 83.73) --
+	(302.13, 84.01) --
+	(302.51, 84.72) --
+	(302.88, 83.87) --
+	(303.25, 84.01) --
+	(303.63, 84.01) --
+	(304.00, 85.00) --
+	(304.37, 83.45) --
+	(304.75, 84.29) --
+	(305.12, 84.15) --
+	(305.49, 83.87) --
+	(305.87, 84.29) --
+	(306.24, 86.41) --
+	(306.61, 83.31) --
+	(306.99, 85.14) --
+	(307.36, 84.43) --
+	(307.73, 84.43) --
+	(308.11, 84.15) --
+	(308.48, 84.29) --
+	(308.85, 83.59) --
+	(309.23, 84.01) --
+	(309.60, 84.57) --
+	(309.97, 84.15) --
+	(310.35, 85.14) --
+	(310.72, 83.73) --
+	(311.09, 83.87) --
+	(311.47, 83.03) --
+	(311.84, 83.59) --
+	(312.22, 84.43) --
+	(312.59, 83.31) --
+	(312.96, 84.43) --
+	(313.34, 84.29) --
+	(313.71, 84.72) --
+	(314.08, 83.73) --
+	(314.46, 84.57) --
+	(314.83, 84.15) --
+	(315.20, 84.72) --
+	(315.58, 83.59) --
+	(315.95, 84.29) --
+	(316.32, 83.45) --
+	(316.70, 83.45) --
+	(317.07, 83.17) --
+	(317.44, 83.73) --
+	(317.82, 82.88) --
+	(318.19, 84.86) --
+	(318.56, 84.15) --
+	(318.94, 83.59) --
+	(319.31, 82.88) --
+	(319.68, 84.43) --
+	(320.06, 83.45) --
+	(320.43, 84.15) --
+	(320.80, 85.14) --
+	(321.18, 84.43);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44,112.88) --
+	( 22.81,112.60) --
+	( 23.18,112.74) --
+	( 23.56,112.32) --
+	( 23.93,112.60) --
+	( 24.30,113.44) --
+	( 24.68,113.30) --
+	( 25.05,113.44) --
+	( 25.42,115.41) --
+	( 25.80,112.17) --
+	( 26.17,113.86) --
+	( 26.54,112.60) --
+	( 26.92,114.29) --
+	( 27.29,115.27) --
+	( 27.66,113.44) --
+	( 28.04,112.03) --
+	( 28.41,113.44) --
+	( 28.79,111.75) --
+	( 29.16,111.89) --
+	( 29.53,111.75) --
+	( 29.91,114.57) --
+	( 30.28,114.01) --
+	( 30.65,113.30) --
+	( 31.03,112.88) --
+	( 31.40,113.02) --
+	( 31.77,113.02) --
+	( 32.15,112.88) --
+	( 32.52,114.01) --
+	( 32.89,113.86) --
+	( 33.27,114.71) --
+	( 33.64,113.02) --
+	( 34.01,115.69) --
+	( 34.39,112.32) --
+	( 34.76,114.15) --
+	( 35.13,114.99) --
+	( 35.51,116.54) --
+	( 35.88,115.13) --
+	( 36.25,115.55) --
+	( 36.63,114.99) --
+	( 37.00,115.27) --
+	( 37.37,113.72) --
+	( 37.75,113.44) --
+	( 38.12,115.55) --
+	( 38.49,111.89) --
+	( 38.87,115.55) --
+	( 39.24,111.33) --
+	( 39.61,112.17) --
+	( 39.99,112.88) --
+	( 40.36,111.75) --
+	( 40.73,111.75) --
+	( 41.11,112.17) --
+	( 41.48,113.44) --
+	( 41.86,113.86) --
+	( 42.23,110.91) --
+	( 42.60,110.77) --
+	( 42.98,112.03) --
+	( 43.35,115.55) --
+	( 43.72,112.17) --
+	( 44.10,113.86) --
+	( 44.47,112.03) --
+	( 44.84,114.99) --
+	( 45.22,112.03) --
+	( 45.59,114.99) --
+	( 45.96,114.15) --
+	( 46.34,114.57) --
+	( 46.71,113.86) --
+	( 47.08,116.40) --
+	( 47.46,116.54) --
+	( 47.83,118.37) --
+	( 48.20,120.48) --
+	( 48.58,121.75) --
+	( 48.95,128.79) --
+	( 49.32,131.61) --
+	( 49.70,136.25) --
+	( 50.07,136.11) --
+	( 50.44,140.90) --
+	( 50.82,139.63) --
+	( 51.19,139.49) --
+	( 51.56,131.89) --
+	( 51.94,127.38) --
+	( 52.31,121.89) --
+	( 52.68,120.06) --
+	( 53.06,117.95) --
+	( 53.43,117.10) --
+	( 53.80,114.29) --
+	( 54.18,114.01) --
+	( 54.55,115.84) --
+	( 54.93,115.98) --
+	( 55.30,115.69) --
+	( 55.67,114.15) --
+	( 56.05,117.24) --
+	( 56.42,116.26) --
+	( 56.79,116.12) --
+	( 57.17,117.10) --
+	( 57.54,115.41) --
+	( 57.91,114.99) --
+	( 58.29,113.72) --
+	( 58.66,114.71) --
+	( 59.03,114.99) --
+	( 59.41,115.27) --
+	( 59.78,114.85) --
+	( 60.15,113.72) --
+	( 60.53,114.43) --
+	( 60.90,113.30) --
+	( 61.27,114.15) --
+	( 61.65,112.32) --
+	( 62.02,115.13) --
+	( 62.39,116.40) --
+	( 62.77,114.15) --
+	( 63.14,113.44) --
+	( 63.51,114.57) --
+	( 63.89,113.16) --
+	( 64.26,114.01) --
+	( 64.63,114.57) --
+	( 65.01,114.57) --
+	( 65.38,114.99) --
+	( 65.75,115.98) --
+	( 66.13,112.46) --
+	( 66.50,115.69) --
+	( 66.87,114.57) --
+	( 67.25,113.02) --
+	( 67.62,115.27) --
+	( 67.99,117.38) --
+	( 68.37,114.01) --
+	( 68.74,116.40) --
+	( 69.12,117.81) --
+	( 69.49,118.65) --
+	( 69.86,118.23) --
+	( 70.24,118.65) --
+	( 70.61,119.07) --
+	( 70.98,115.55) --
+	( 71.36,113.86) --
+	( 71.73,114.99) --
+	( 72.10,112.88) --
+	( 72.48,112.17) --
+	( 72.85,113.16) --
+	( 73.22,113.72) --
+	( 73.60,114.29) --
+	( 73.97,111.33) --
+	( 74.34,111.19) --
+	( 74.72,111.61) --
+	( 75.09,111.75) --
+	( 75.46,112.88) --
+	( 75.84,112.74) --
+	( 76.21,113.44) --
+	( 76.58,114.57) --
+	( 76.96,114.57) --
+	( 77.33,115.69) --
+	( 77.70,117.10) --
+	( 78.08,120.62) --
+	( 78.45,123.58) --
+	( 78.82,131.89) --
+	( 79.20,136.11) --
+	( 79.57,145.83) --
+	( 79.94,149.91) --
+	( 80.32,154.42) --
+	( 80.69,159.91) --
+	( 81.06,158.64) --
+	( 81.44,153.57) --
+	( 81.81,145.13) --
+	( 82.19,135.83) --
+	( 82.56,129.92) --
+	( 82.93,122.31) --
+	( 83.31,117.95) --
+	( 83.68,113.72) --
+	( 84.05,113.86) --
+	( 84.43,115.98) --
+	( 84.80,112.46) --
+	( 85.17,113.58) --
+	( 85.55,112.17) --
+	( 85.92,111.33) --
+	( 86.29,112.60) --
+	( 86.67,112.46) --
+	( 87.04,112.17) --
+	( 87.41,111.19) --
+	( 87.79,111.05) --
+	( 88.16,112.46) --
+	( 88.53,112.60) --
+	( 88.91,110.63) --
+	( 89.28,112.60) --
+	( 89.65,110.63) --
+	( 90.03,111.75) --
+	( 90.40,111.05) --
+	( 90.77,110.63) --
+	( 91.15,110.06) --
+	( 91.52,110.34) --
+	( 91.89,109.78) --
+	( 92.27,110.20) --
+	( 92.64,109.92) --
+	( 93.01,109.64) --
+	( 93.39,110.63) --
+	( 93.76,108.94) --
+	( 94.13,109.78) --
+	( 94.51,111.33) --
+	( 94.88,110.20) --
+	( 95.25,112.03) --
+	( 95.63,108.94) --
+	( 96.00,110.63) --
+	( 96.38,109.50) --
+	( 96.75,111.19) --
+	( 97.12,109.78) --
+	( 97.50,110.06) --
+	( 97.87,110.77) --
+	( 98.24,110.20) --
+	( 98.62,110.06) --
+	( 98.99,110.34) --
+	( 99.36,110.20) --
+	( 99.74,109.92) --
+	(100.11,108.94) --
+	(100.48,110.91) --
+	(100.86,109.64) --
+	(101.23,112.03) --
+	(101.60,110.06) --
+	(101.98,110.77) --
+	(102.35,110.20) --
+	(102.72,109.64) --
+	(103.10,110.63) --
+	(103.47,110.34) --
+	(103.84,109.64) --
+	(104.22,109.08) --
+	(104.59,109.92) --
+	(104.96,110.63) --
+	(105.34,110.34) --
+	(105.71,109.50) --
+	(106.08,111.19) --
+	(106.46,110.77) --
+	(106.83,108.94) --
+	(107.20,109.92) --
+	(107.58,109.36) --
+	(107.95,109.22) --
+	(108.32,109.92) --
+	(108.70,110.48) --
+	(109.07,109.92) --
+	(109.45,110.20) --
+	(109.82,110.06) --
+	(110.19,110.34) --
+	(110.57,109.64) --
+	(110.94,110.77) --
+	(111.31,111.33) --
+	(111.69,108.94) --
+	(112.06,110.34) --
+	(112.43,109.64) --
+	(112.81,110.63) --
+	(113.18,109.36) --
+	(113.55,110.34) --
+	(113.93,110.20) --
+	(114.30,111.05) --
+	(114.67,111.75) --
+	(115.05,111.61) --
+	(115.42,110.77) --
+	(115.79,112.88) --
+	(116.17,111.75) --
+	(116.54,112.03) --
+	(116.91,111.61) --
+	(117.29,110.91) --
+	(117.66,109.92) --
+	(118.03,110.77) --
+	(118.41,109.36) --
+	(118.78,110.34) --
+	(119.15,110.77) --
+	(119.53,111.05) --
+	(119.90,110.06) --
+	(120.27,109.92) --
+	(120.65,109.50) --
+	(121.02,109.64) --
+	(121.39,110.77) --
+	(121.77,109.50) --
+	(122.14,110.77) --
+	(122.52,110.20) --
+	(122.89,110.48) --
+	(123.26,108.37) --
+	(123.64,109.92) --
+	(124.01,110.48) --
+	(124.38,110.34) --
+	(124.76,109.36) --
+	(125.13,109.64) --
+	(125.50,108.94) --
+	(125.88,109.64) --
+	(126.25,108.94) --
+	(126.62,109.78) --
+	(127.00,109.36) --
+	(127.37,109.78) --
+	(127.74,110.06) --
+	(128.12,109.22) --
+	(128.49,109.08) --
+	(128.86,109.08) --
+	(129.24,109.92) --
+	(129.61,110.91) --
+	(129.98,109.92) --
+	(130.36,109.92) --
+	(130.73,110.63) --
+	(131.10,109.64) --
+	(131.48,111.33) --
+	(131.85,108.79) --
+	(132.22,108.79) --
+	(132.60,108.79) --
+	(132.97,108.65) --
+	(133.34,109.64) --
+	(133.72,109.78) --
+	(134.09,109.78) --
+	(134.46,109.50) --
+	(134.84,108.65) --
+	(135.21,110.34) --
+	(135.58,110.20) --
+	(135.96,110.06) --
+	(136.33,109.92) --
+	(136.71,108.23) --
+	(137.08,110.63) --
+	(137.45,109.22) --
+	(137.83,108.65) --
+	(138.20,108.94) --
+	(138.57,109.08) --
+	(138.95,109.78) --
+	(139.32,108.94) --
+	(139.69,108.51) --
+	(140.07,109.22) --
+	(140.44,110.34) --
+	(140.81,108.23) --
+	(141.19,109.78) --
+	(141.56,110.06) --
+	(141.93,108.94) --
+	(142.31,109.36) --
+	(142.68,109.22) --
+	(143.05,108.23) --
+	(143.43,108.65) --
+	(143.80,109.22) --
+	(144.17,108.79) --
+	(144.55,108.79) --
+	(144.92,109.64) --
+	(145.29,110.34) --
+	(145.67,109.78) --
+	(146.04,108.51) --
+	(146.41,109.50) --
+	(146.79,108.94) --
+	(147.16,108.23) --
+	(147.53,109.36) --
+	(147.91,109.36) --
+	(148.28,109.78) --
+	(148.65,109.22) --
+	(149.03,109.08) --
+	(149.40,109.08) --
+	(149.78,110.63) --
+	(150.15,109.08) --
+	(150.52,110.06) --
+	(150.90,111.33) --
+	(151.27,109.64) --
+	(151.64,109.22) --
+	(152.02,110.20) --
+	(152.39,110.06) --
+	(152.76,108.94) --
+	(153.14,110.63) --
+	(153.51,110.91) --
+	(153.88,109.78) --
+	(154.26,109.22) --
+	(154.63,109.92) --
+	(155.00,110.48) --
+	(155.38,110.06) --
+	(155.75,111.33) --
+	(156.12,110.48) --
+	(156.50,110.34) --
+	(156.87,109.08) --
+	(157.24,109.64) --
+	(157.62,109.22) --
+	(157.99,110.20) --
+	(158.36,110.34) --
+	(158.74,110.06) --
+	(159.11,109.78) --
+	(159.48,109.22) --
+	(159.86,109.78) --
+	(160.23,110.20) --
+	(160.60,108.94) --
+	(160.98,109.92) --
+	(161.35,109.08) --
+	(161.72,109.78) --
+	(162.10,110.06) --
+	(162.47,109.22) --
+	(162.84,109.36) --
+	(163.22,108.94) --
+	(163.59,109.78) --
+	(163.97,109.78) --
+	(164.34,109.08) --
+	(164.71,110.34) --
+	(165.09,108.65) --
+	(165.46,108.79) --
+	(165.83,108.94) --
+	(166.21,109.64) --
+	(166.58,109.22) --
+	(166.95,108.65) --
+	(167.33,108.79) --
+	(167.70,109.36) --
+	(168.07,108.94) --
+	(168.45,109.50) --
+	(168.82,109.36) --
+	(169.19,109.08) --
+	(169.57,109.22) --
+	(169.94,109.92) --
+	(170.31,109.50) --
+	(170.69,110.20) --
+	(171.06,109.50) --
+	(171.43,109.64) --
+	(171.81,109.22) --
+	(172.18,108.94) --
+	(172.55,109.64) --
+	(172.93,109.08) --
+	(173.30,108.94) --
+	(173.67,109.50) --
+	(174.05,108.51) --
+	(174.42,109.78) --
+	(174.79,110.06) --
+	(175.17,108.79) --
+	(175.54,108.79) --
+	(175.91,110.20) --
+	(176.29,110.91) --
+	(176.66,110.63) --
+	(177.04,109.22) --
+	(177.41,109.78) --
+	(177.78,111.47) --
+	(178.16,109.64) --
+	(178.53,111.05) --
+	(178.90,111.05) --
+	(179.28,111.61) --
+	(179.65,110.91) --
+	(180.02,110.77) --
+	(180.40,113.58) --
+	(180.77,112.60) --
+	(181.14,118.09) --
+	(181.52,121.05) --
+	(181.89,125.83) --
+	(182.26,135.55) --
+	(182.64,142.31) --
+	(183.01,152.73) --
+	(183.38,162.31) --
+	(183.76,160.62) --
+	(184.13,163.99) --
+	(184.50,158.93) --
+	(184.88,153.43) --
+	(185.25,147.80) --
+	(185.62,133.02) --
+	(186.00,127.10) --
+	(186.37,124.00) --
+	(186.74,119.07) --
+	(187.12,116.96) --
+	(187.49,113.16) --
+	(187.86,113.58) --
+	(188.24,111.05) --
+	(188.61,111.47) --
+	(188.98,112.60) --
+	(189.36,110.63) --
+	(189.73,111.19) --
+	(190.11,110.77) --
+	(190.48,110.34) --
+	(190.85,110.48) --
+	(191.23,109.64) --
+	(191.60,110.20) --
+	(191.97,109.22) --
+	(192.35,110.63) --
+	(192.72,109.78) --
+	(193.09,110.20) --
+	(193.47,109.36) --
+	(193.84,110.63) --
+	(194.21,110.34) --
+	(194.59,110.91) --
+	(194.96,108.94) --
+	(195.33,109.22) --
+	(195.71,109.78) --
+	(196.08,109.36) --
+	(196.45,110.20) --
+	(196.83,109.08) --
+	(197.20,109.78) --
+	(197.57,110.06) --
+	(197.95,110.91) --
+	(198.32,109.36) --
+	(198.69,110.06) --
+	(199.07,110.48) --
+	(199.44,110.06) --
+	(199.81,108.37) --
+	(200.19,110.20) --
+	(200.56,109.64) --
+	(200.93,110.20) --
+	(201.31,110.48) --
+	(201.68,110.77) --
+	(202.05,109.92) --
+	(202.43,110.48) --
+	(202.80,110.63) --
+	(203.17,110.06) --
+	(203.55,111.61) --
+	(203.92,110.48) --
+	(204.30,111.89) --
+	(204.67,111.61) --
+	(205.04,114.85) --
+	(205.42,116.82) --
+	(205.79,116.54) --
+	(206.16,119.64) --
+	(206.54,122.45) --
+	(206.91,122.59) --
+	(207.28,118.09) --
+	(207.66,118.23) --
+	(208.03,117.24) --
+	(208.40,115.84) --
+	(208.78,112.60) --
+	(209.15,113.02) --
+	(209.52,111.61) --
+	(209.90,111.05) --
+	(210.27,110.34) --
+	(210.64,110.91) --
+	(211.02,108.79) --
+	(211.39,110.06) --
+	(211.76,109.64) --
+	(212.14,108.79) --
+	(212.51,109.92) --
+	(212.88,109.64) --
+	(213.26,110.20) --
+	(213.63,110.91) --
+	(214.00,109.92) --
+	(214.38,109.78) --
+	(214.75,110.06) --
+	(215.12,108.51) --
+	(215.50,109.36) --
+	(215.87,110.77) --
+	(216.24,108.23) --
+	(216.62,109.78) --
+	(216.99,108.23) --
+	(217.37,108.51) --
+	(217.74,110.20) --
+	(218.11,110.06) --
+	(218.49,109.92) --
+	(218.86,108.65) --
+	(219.23,109.08) --
+	(219.61,110.48) --
+	(219.98,110.77) --
+	(220.35,111.05) --
+	(220.73,110.34) --
+	(221.10,110.34) --
+	(221.47,112.03) --
+	(221.85,111.61) --
+	(222.22,111.47) --
+	(222.59,111.33) --
+	(222.97,112.32) --
+	(223.34,112.32) --
+	(223.71,110.77) --
+	(224.09,110.20) --
+	(224.46,109.08) --
+	(224.83,109.50) --
+	(225.21,110.34) --
+	(225.58,110.77) --
+	(225.95,109.50) --
+	(226.33,109.78) --
+	(226.70,110.20) --
+	(227.07,109.92) --
+	(227.45,110.48) --
+	(227.82,109.08) --
+	(228.19,109.08) --
+	(228.57,110.06) --
+	(228.94,109.64) --
+	(229.31,109.08) --
+	(229.69,108.79) --
+	(230.06,109.36) --
+	(230.43,108.79) --
+	(230.81,110.20) --
+	(231.18,110.34) --
+	(231.56,110.63) --
+	(231.93,109.78) --
+	(232.30,109.36) --
+	(232.68,108.37) --
+	(233.05,109.78) --
+	(233.42,108.79) --
+	(233.80,109.50) --
+	(234.17,108.79) --
+	(234.54,109.78) --
+	(234.92,109.92) --
+	(235.29,109.50) --
+	(235.66,108.65) --
+	(236.04,109.64) --
+	(236.41,108.65) --
+	(236.78,109.92) --
+	(237.16,109.64) --
+	(237.53,108.94) --
+	(237.90,110.06) --
+	(238.28,109.08) --
+	(238.65,108.94) --
+	(239.02,108.94) --
+	(239.40,109.78) --
+	(239.77,109.64) --
+	(240.14,109.64) --
+	(240.52,109.22) --
+	(240.89,109.50) --
+	(241.26,109.36) --
+	(241.64,109.78) --
+	(242.01,108.37) --
+	(242.38,108.23) --
+	(242.76,109.92) --
+	(243.13,109.92) --
+	(243.50,108.51) --
+	(243.88,109.08) --
+	(244.25,109.64) --
+	(244.63,109.22) --
+	(245.00,108.51) --
+	(245.37,108.51) --
+	(245.75,108.51) --
+	(246.12,109.36) --
+	(246.49,109.64) --
+	(246.87,108.23) --
+	(247.24,109.50) --
+	(247.61,109.64) --
+	(247.99,109.22) --
+	(248.36,108.23) --
+	(248.73,108.94) --
+	(249.11,109.64) --
+	(249.48,109.64) --
+	(249.85,109.92) --
+	(250.23,109.78) --
+	(250.60,108.79) --
+	(250.97,109.64) --
+	(251.35,109.50) --
+	(251.72,108.37) --
+	(252.09,109.64) --
+	(252.47,108.51) --
+	(252.84,110.20) --
+	(253.21,110.34) --
+	(253.59,109.36) --
+	(253.96,107.95) --
+	(254.33,110.48) --
+	(254.71,109.36) --
+	(255.08,108.65) --
+	(255.45,110.63) --
+	(255.83,111.05) --
+	(256.20,112.17) --
+	(256.57,110.63) --
+	(256.95,114.57) --
+	(257.32,116.40) --
+	(257.70,118.93) --
+	(258.07,123.86) --
+	(258.44,124.28) --
+	(258.82,123.02) --
+	(259.19,127.24) --
+	(259.56,127.52) --
+	(259.94,123.58) --
+	(260.31,122.17) --
+	(260.68,117.67) --
+	(261.06,119.36) --
+	(261.43,118.65) --
+	(261.80,116.26) --
+	(262.18,114.71) --
+	(262.55,113.44) --
+	(262.92,113.58) --
+	(263.30,111.61) --
+	(263.67,113.86) --
+	(264.04,111.33) --
+	(264.42,111.47) --
+	(264.79,110.91) --
+	(265.16,112.60) --
+	(265.54,112.32) --
+	(265.91,111.05) --
+	(266.28,110.48) --
+	(266.66,110.20) --
+	(267.03,111.89) --
+	(267.40,111.05) --
+	(267.78,109.36) --
+	(268.15,111.47) --
+	(268.52,111.05) --
+	(268.90,111.19) --
+	(269.27,110.77) --
+	(269.64,111.61) --
+	(270.02,111.33) --
+	(270.39,114.43) --
+	(270.76,110.63) --
+	(271.14,111.05) --
+	(271.51,111.05) --
+	(271.89,111.75) --
+	(272.26,108.94) --
+	(272.63,111.33) --
+	(273.01,111.75) --
+	(273.38,110.48) --
+	(273.75,109.36) --
+	(274.13,110.20) --
+	(274.50,109.08) --
+	(274.87,111.61) --
+	(275.25,111.05) --
+	(275.62,110.63) --
+	(275.99,108.65) --
+	(276.37,109.78) --
+	(276.74,109.22) --
+	(277.11,109.78) --
+	(277.49,110.06) --
+	(277.86,111.33) --
+	(278.23,109.92) --
+	(278.61,110.63) --
+	(278.98,112.03) --
+	(279.35,112.74) --
+	(279.73,113.02) --
+	(280.10,113.44) --
+	(280.47,112.03) --
+	(280.85,112.74) --
+	(281.22,112.74) --
+	(281.59,112.17) --
+	(281.97,111.89) --
+	(282.34,113.30) --
+	(282.71,111.47) --
+	(283.09,111.19) --
+	(283.46,111.61) --
+	(283.83,110.77) --
+	(284.21,109.22) --
+	(284.58,108.79) --
+	(284.96,112.32) --
+	(285.33,110.63) --
+	(285.70,110.34) --
+	(286.08,109.50) --
+	(286.45,112.17) --
+	(286.82,111.61) --
+	(287.20,114.29) --
+	(287.57,114.29) --
+	(287.94,116.26) --
+	(288.32,116.40) --
+	(288.69,116.82) --
+	(289.06,118.23) --
+	(289.44,119.78) --
+	(289.81,118.09) --
+	(290.18,119.78) --
+	(290.56,118.93) --
+	(290.93,117.24) --
+	(291.30,115.98) --
+	(291.68,114.01) --
+	(292.05,112.88) --
+	(292.42,111.05) --
+	(292.80,112.46) --
+	(293.17,109.92) --
+	(293.54,109.92) --
+	(293.92,110.34) --
+	(294.29,111.19) --
+	(294.66,110.06) --
+	(295.04,110.77) --
+	(295.41,108.65) --
+	(295.78,111.05) --
+	(296.16,109.78) --
+	(296.53,109.36) --
+	(296.90,109.22) --
+	(297.28,110.20) --
+	(297.65,109.64) --
+	(298.03,108.79) --
+	(298.40,108.23) --
+	(298.77,109.50) --
+	(299.15,109.08) --
+	(299.52,109.50) --
+	(299.89,108.37) --
+	(300.27,110.20) --
+	(300.64,109.08) --
+	(301.01,108.37) --
+	(301.39,108.79) --
+	(301.76,109.36) --
+	(302.13,108.23) --
+	(302.51,108.23) --
+	(302.88,108.94) --
+	(303.25,109.78) --
+	(303.63,109.92) --
+	(304.00,109.36) --
+	(304.37,109.50) --
+	(304.75,108.79) --
+	(305.12,109.08) --
+	(305.49,110.20) --
+	(305.87,108.94) --
+	(306.24,110.48) --
+	(306.61,111.33) --
+	(306.99,109.50) --
+	(307.36,109.50) --
+	(307.73,109.92) --
+	(308.11,109.78) --
+	(308.48,109.22) --
+	(308.85,110.48) --
+	(309.23,109.64) --
+	(309.60,109.36) --
+	(309.97,109.64) --
+	(310.35,109.92) --
+	(310.72,109.50) --
+	(311.09,109.36) --
+	(311.47,110.34) --
+	(311.84,109.78) --
+	(312.22,108.51) --
+	(312.59,108.09) --
+	(312.96,109.92) --
+	(313.34,109.50) --
+	(313.71,110.20) --
+	(314.08,108.94) --
+	(314.46,110.20) --
+	(314.83,109.36) --
+	(315.20,109.64) --
+	(315.58,109.08) --
+	(315.95,108.23) --
+	(316.32,110.06) --
+	(316.70,108.23) --
+	(317.07,108.94) --
+	(317.44,109.22) --
+	(317.82,109.22) --
+	(318.19,107.95) --
+	(318.56,108.51) --
+	(318.94,108.79) --
+	(319.31,108.51) --
+	(319.68,109.08) --
+	(320.06,108.79) --
+	(320.43,109.08) --
+	(320.80,108.79) --
+	(321.18,109.08);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44,140.90) --
+	( 22.81,140.62) --
+	( 23.18,140.34) --
+	( 23.56,140.20) --
+	( 23.93,142.31) --
+	( 24.30,140.48) --
+	( 24.68,142.31) --
+	( 25.05,136.96) --
+	( 25.42,141.46) --
+	( 25.80,141.32) --
+	( 26.17,140.90) --
+	( 26.54,140.20) --
+	( 26.92,142.45) --
+	( 27.29,142.17) --
+	( 27.66,140.06) --
+	( 28.04,139.92) --
+	( 28.41,141.89) --
+	( 28.79,139.07) --
+	( 29.16,140.06) --
+	( 29.53,139.49) --
+	( 29.91,140.62) --
+	( 30.28,139.77) --
+	( 30.65,138.65) --
+	( 31.03,139.63) --
+	( 31.40,141.32) --
+	( 31.77,142.17) --
+	( 32.15,140.62) --
+	( 32.52,140.34) --
+	( 32.89,141.89) --
+	( 33.27,142.17) --
+	( 33.64,140.90) --
+	( 34.01,141.04) --
+	( 34.39,141.46) --
+	( 34.76,140.20) --
+	( 35.13,144.14) --
+	( 35.51,141.75) --
+	( 35.88,143.58) --
+	( 36.25,144.00) --
+	( 36.63,141.46) --
+	( 37.00,140.34) --
+	( 37.37,141.89) --
+	( 37.75,140.06) --
+	( 38.12,143.29) --
+	( 38.49,140.76) --
+	( 38.87,139.63) --
+	( 39.24,140.34) --
+	( 39.61,137.38) --
+	( 39.99,141.46) --
+	( 40.36,141.32) --
+	( 40.73,140.62) --
+	( 41.11,139.35) --
+	( 41.48,142.17) --
+	( 41.86,140.76) --
+	( 42.23,140.76) --
+	( 42.60,139.92) --
+	( 42.98,139.63) --
+	( 43.35,140.48) --
+	( 43.72,141.75) --
+	( 44.10,140.48) --
+	( 44.47,140.90) --
+	( 44.84,140.34) --
+	( 45.22,141.61) --
+	( 45.59,143.01) --
+	( 45.96,145.83) --
+	( 46.34,144.84) --
+	( 46.71,145.69) --
+	( 47.08,146.11) --
+	( 47.46,152.87) --
+	( 47.83,153.43) --
+	( 48.20,161.88) --
+	( 48.58,166.53) --
+	( 48.95,178.78) --
+	( 49.32,181.46) --
+	( 49.70,190.33) --
+	( 50.07,198.49) --
+	( 50.44,190.75) --
+	( 50.82,190.75) --
+	( 51.19,178.08) --
+	( 51.56,169.77) --
+	( 51.94,156.95) --
+	( 52.31,150.34) --
+	( 52.68,148.36) --
+	( 53.06,144.28) --
+	( 53.43,143.86) --
+	( 53.80,143.72) --
+	( 54.18,142.45) --
+	( 54.55,142.87) --
+	( 54.93,140.62) --
+	( 55.30,145.55) --
+	( 55.67,144.14) --
+	( 56.05,141.89) --
+	( 56.42,145.41) --
+	( 56.79,145.55) --
+	( 57.17,144.42) --
+	( 57.54,142.73) --
+	( 57.91,144.00) --
+	( 58.29,142.73) --
+	( 58.66,142.45) --
+	( 59.03,142.17) --
+	( 59.41,144.28) --
+	( 59.78,140.06) --
+	( 60.15,142.03) --
+	( 60.53,143.01) --
+	( 60.90,142.17) --
+	( 61.27,138.79) --
+	( 61.65,142.03) --
+	( 62.02,143.01) --
+	( 62.39,142.03) --
+	( 62.77,142.31) --
+	( 63.14,141.89) --
+	( 63.51,140.34) --
+	( 63.89,140.48) --
+	( 64.26,142.17) --
+	( 64.63,139.35) --
+	( 65.01,139.63) --
+	( 65.38,140.20) --
+	( 65.75,141.61) --
+	( 66.13,140.48) --
+	( 66.50,140.76) --
+	( 66.87,140.90) --
+	( 67.25,142.17) --
+	( 67.62,141.46) --
+	( 67.99,143.72) --
+	( 68.37,142.17) --
+	( 68.74,145.55) --
+	( 69.12,147.10) --
+	( 69.49,145.69) --
+	( 69.86,146.53) --
+	( 70.24,144.70) --
+	( 70.61,145.69) --
+	( 70.98,142.73) --
+	( 71.36,141.18) --
+	( 71.73,139.92) --
+	( 72.10,141.04) --
+	( 72.48,140.20) --
+	( 72.85,139.77) --
+	( 73.22,137.52) --
+	( 73.60,139.21) --
+	( 73.97,139.77) --
+	( 74.34,138.65) --
+	( 74.72,140.62) --
+	( 75.09,140.62) --
+	( 75.46,140.48) --
+	( 75.84,140.48) --
+	( 76.21,143.86) --
+	( 76.58,143.86) --
+	( 76.96,148.79) --
+	( 77.33,150.90) --
+	( 77.70,154.14) --
+	( 78.08,166.39) --
+	( 78.45,180.89) --
+	( 78.82,185.54) --
+	( 79.20,207.93) --
+	( 79.57,220.46) --
+	( 79.94,238.20) --
+	( 80.32,247.22) --
+	( 80.69,234.54) --
+	( 81.06,228.77) --
+	( 81.44,211.73) --
+	( 81.81,190.75) --
+	( 82.19,177.79) --
+	( 82.56,161.46) --
+	( 82.93,154.28) --
+	( 83.31,145.83) --
+	( 83.68,144.14) --
+	( 84.05,141.18) --
+	( 84.43,138.79) --
+	( 84.80,139.35) --
+	( 85.17,139.21) --
+	( 85.55,142.87) --
+	( 85.92,139.35) --
+	( 86.29,139.07) --
+	( 86.67,137.24) --
+	( 87.04,139.92) --
+	( 87.41,138.51) --
+	( 87.79,138.51) --
+	( 88.16,139.77) --
+	( 88.53,139.63) --
+	( 88.91,140.90) --
+	( 89.28,140.06) --
+	( 89.65,138.08) --
+	( 90.03,137.94) --
+	( 90.40,137.94) --
+	( 90.77,137.24) --
+	( 91.15,135.83) --
+	( 91.52,137.52) --
+	( 91.89,137.66) --
+	( 92.27,137.52) --
+	( 92.64,137.10) --
+	( 93.01,135.97) --
+	( 93.39,137.52) --
+	( 93.76,136.82) --
+	( 94.13,135.97) --
+	( 94.51,136.11) --
+	( 94.88,135.83) --
+	( 95.25,137.24) --
+	( 95.63,136.96) --
+	( 96.00,136.39) --
+	( 96.38,135.41) --
+	( 96.75,135.83) --
+	( 97.12,137.10) --
+	( 97.50,138.23) --
+	( 97.87,135.13) --
+	( 98.24,136.25) --
+	( 98.62,135.83) --
+	( 98.99,135.97) --
+	( 99.36,137.24) --
+	( 99.74,136.96) --
+	(100.11,136.11) --
+	(100.48,136.25) --
+	(100.86,135.97) --
+	(101.23,136.25) --
+	(101.60,137.80) --
+	(101.98,134.56) --
+	(102.35,136.39) --
+	(102.72,135.13) --
+	(103.10,136.25) --
+	(103.47,136.39) --
+	(103.84,136.25) --
+	(104.22,136.68) --
+	(104.59,135.13) --
+	(104.96,134.71) --
+	(105.34,137.94) --
+	(105.71,137.38) --
+	(106.08,137.10) --
+	(106.46,135.83) --
+	(106.83,135.97) --
+	(107.20,135.41) --
+	(107.58,134.99) --
+	(107.95,134.56) --
+	(108.32,135.83) --
+	(108.70,134.56) --
+	(109.07,135.83) --
+	(109.45,136.11) --
+	(109.82,136.11) --
+	(110.19,136.11) --
+	(110.57,136.54) --
+	(110.94,135.27) --
+	(111.31,138.23) --
+	(111.69,136.39) --
+	(112.06,136.25) --
+	(112.43,136.25) --
+	(112.81,137.24) --
+	(113.18,136.25) --
+	(113.55,135.27) --
+	(113.93,135.83) --
+	(114.30,139.21) --
+	(114.67,138.37) --
+	(115.05,138.37) --
+	(115.42,138.79) --
+	(115.79,138.37) --
+	(116.17,139.77) --
+	(116.54,136.96) --
+	(116.91,137.80) --
+	(117.29,137.24) --
+	(117.66,135.97) --
+	(118.03,136.82) --
+	(118.41,137.38) --
+	(118.78,135.41) --
+	(119.15,136.96) --
+	(119.53,135.97) --
+	(119.90,136.54) --
+	(120.27,136.68) --
+	(120.65,134.99) --
+	(121.02,137.94) --
+	(121.39,133.86) --
+	(121.77,136.25) --
+	(122.14,136.11) --
+	(122.52,135.27) --
+	(122.89,135.13) --
+	(123.26,135.41) --
+	(123.64,135.27) --
+	(124.01,134.56) --
+	(124.38,135.27) --
+	(124.76,136.11) --
+	(125.13,136.68) --
+	(125.50,136.68) --
+	(125.88,136.54) --
+	(126.25,135.41) --
+	(126.62,135.13) --
+	(127.00,133.72) --
+	(127.37,134.71) --
+	(127.74,134.99) --
+	(128.12,136.39) --
+	(128.49,134.99) --
+	(128.86,134.56) --
+	(129.24,136.25) --
+	(129.61,135.55) --
+	(129.98,134.14) --
+	(130.36,135.27) --
+	(130.73,136.25) --
+	(131.10,135.69) --
+	(131.48,134.99) --
+	(131.85,135.69) --
+	(132.22,134.71) --
+	(132.60,135.13) --
+	(132.97,136.39) --
+	(133.34,136.39) --
+	(133.72,136.39) --
+	(134.09,136.39) --
+	(134.46,135.69) --
+	(134.84,135.55) --
+	(135.21,134.99) --
+	(135.58,135.97) --
+	(135.96,135.27) --
+	(136.33,135.69) --
+	(136.71,134.56) --
+	(137.08,135.41) --
+	(137.45,136.82) --
+	(137.83,134.42) --
+	(138.20,133.72) --
+	(138.57,135.27) --
+	(138.95,136.54) --
+	(139.32,136.54) --
+	(139.69,135.55) --
+	(140.07,134.42) --
+	(140.44,134.99) --
+	(140.81,135.41) --
+	(141.19,135.97) --
+	(141.56,135.69) --
+	(141.93,136.25) --
+	(142.31,135.41) --
+	(142.68,134.28) --
+	(143.05,136.54) --
+	(143.43,135.41) --
+	(143.80,135.97) --
+	(144.17,135.55) --
+	(144.55,135.55) --
+	(144.92,135.41) --
+	(145.29,135.69) --
+	(145.67,134.71) --
+	(146.04,134.71) --
+	(146.41,135.55) --
+	(146.79,134.85) --
+	(147.16,134.56) --
+	(147.53,135.83) --
+	(147.91,135.83) --
+	(148.28,136.39) --
+	(148.65,135.69) --
+	(149.03,134.71) --
+	(149.40,135.83) --
+	(149.78,134.99) --
+	(150.15,134.14) --
+	(150.52,134.85) --
+	(150.90,135.83) --
+	(151.27,134.71) --
+	(151.64,136.25) --
+	(152.02,135.41) --
+	(152.39,134.85) --
+	(152.76,135.55) --
+	(153.14,136.96) --
+	(153.51,136.96) --
+	(153.88,136.82) --
+	(154.26,135.97) --
+	(154.63,136.54) --
+	(155.00,136.54) --
+	(155.38,138.23) --
+	(155.75,135.97) --
+	(156.12,136.25) --
+	(156.50,135.97) --
+	(156.87,136.96) --
+	(157.24,136.39) --
+	(157.62,135.83) --
+	(157.99,136.25) --
+	(158.36,135.69) --
+	(158.74,136.25) --
+	(159.11,134.56) --
+	(159.48,134.42) --
+	(159.86,135.83) --
+	(160.23,134.85) --
+	(160.60,135.13) --
+	(160.98,134.42) --
+	(161.35,135.13) --
+	(161.72,134.99) --
+	(162.10,134.99) --
+	(162.47,134.99) --
+	(162.84,135.27) --
+	(163.22,135.69) --
+	(163.59,134.71) --
+	(163.97,136.82) --
+	(164.34,134.28) --
+	(164.71,135.83) --
+	(165.09,136.39) --
+	(165.46,135.55) --
+	(165.83,134.42) --
+	(166.21,136.25) --
+	(166.58,134.56) --
+	(166.95,136.39) --
+	(167.33,135.97) --
+	(167.70,135.55) --
+	(168.07,135.41) --
+	(168.45,135.13) --
+	(168.82,134.99) --
+	(169.19,134.85) --
+	(169.57,135.13) --
+	(169.94,134.99) --
+	(170.31,135.55) --
+	(170.69,135.55) --
+	(171.06,135.41) --
+	(171.43,133.58) --
+	(171.81,136.11) --
+	(172.18,135.69) --
+	(172.55,134.99) --
+	(172.93,137.10) --
+	(173.30,137.24) --
+	(173.67,135.83) --
+	(174.05,136.25) --
+	(174.42,135.97) --
+	(174.79,135.83) --
+	(175.17,135.13) --
+	(175.54,136.68) --
+	(175.91,135.41) --
+	(176.29,136.11) --
+	(176.66,136.11) --
+	(177.04,136.25) --
+	(177.41,137.10) --
+	(177.78,137.52) --
+	(178.16,137.10) --
+	(178.53,138.65) --
+	(178.90,138.08) --
+	(179.28,139.07) --
+	(179.65,139.77) --
+	(180.02,141.04) --
+	(180.40,145.27) --
+	(180.77,152.59) --
+	(181.14,160.76) --
+	(181.52,172.87) --
+	(181.89,189.62) --
+	(182.26,207.08) --
+	(182.64,223.98) --
+	(183.01,245.53) --
+	(183.38,251.30) --
+	(183.76,253.27) --
+	(184.13,248.91) --
+	(184.50,229.47) --
+	(184.88,205.68) --
+	(185.25,188.78) --
+	(185.62,171.88) --
+	(186.00,165.97) --
+	(186.37,155.26) --
+	(186.74,145.97) --
+	(187.12,145.27) --
+	(187.49,146.96) --
+	(187.86,139.21) --
+	(188.24,141.04) --
+	(188.61,139.07) --
+	(188.98,138.23) --
+	(189.36,136.96) --
+	(189.73,138.23) --
+	(190.11,136.11) --
+	(190.48,138.79) --
+	(190.85,138.23) --
+	(191.23,137.38) --
+	(191.60,135.69) --
+	(191.97,136.11) --
+	(192.35,136.96) --
+	(192.72,137.66) --
+	(193.09,136.11) --
+	(193.47,136.82) --
+	(193.84,135.41) --
+	(194.21,136.82) --
+	(194.59,137.66) --
+	(194.96,134.42) --
+	(195.33,135.27) --
+	(195.71,136.54) --
+	(196.08,135.41) --
+	(196.45,137.52) --
+	(196.83,136.96) --
+	(197.20,136.39) --
+	(197.57,136.54) --
+	(197.95,135.83) --
+	(198.32,136.82) --
+	(198.69,136.39) --
+	(199.07,137.94) --
+	(199.44,136.68) --
+	(199.81,136.11) --
+	(200.19,136.68) --
+	(200.56,135.83) --
+	(200.93,138.08) --
+	(201.31,137.52) --
+	(201.68,135.55) --
+	(202.05,139.49) --
+	(202.43,138.51) --
+	(202.80,137.10) --
+	(203.17,138.79) --
+	(203.55,140.76) --
+	(203.92,141.46) --
+	(204.30,145.27) --
+	(204.67,145.97) --
+	(205.04,148.08) --
+	(205.42,152.45) --
+	(205.79,153.57) --
+	(206.16,160.47) --
+	(206.54,163.29) --
+	(206.91,162.16) --
+	(207.28,155.69) --
+	(207.66,154.00) --
+	(208.03,145.97) --
+	(208.40,143.01) --
+	(208.78,141.04) --
+	(209.15,141.61) --
+	(209.52,140.06) --
+	(209.90,136.82) --
+	(210.27,135.27) --
+	(210.64,135.97) --
+	(211.02,136.39) --
+	(211.39,136.54) --
+	(211.76,137.52) --
+	(212.14,135.97) --
+	(212.51,134.56) --
+	(212.88,135.83) --
+	(213.26,135.27) --
+	(213.63,135.97) --
+	(214.00,135.55) --
+	(214.38,134.85) --
+	(214.75,134.85) --
+	(215.12,134.56) --
+	(215.50,135.83) --
+	(215.87,134.42) --
+	(216.24,135.41) --
+	(216.62,135.27) --
+	(216.99,134.99) --
+	(217.37,135.55) --
+	(217.74,134.71) --
+	(218.11,135.83) --
+	(218.49,136.25) --
+	(218.86,136.39) --
+	(219.23,137.24) --
+	(219.61,138.93) --
+	(219.98,136.25) --
+	(220.35,136.11) --
+	(220.73,136.39) --
+	(221.10,138.65) --
+	(221.47,139.07) --
+	(221.85,137.66) --
+	(222.22,137.10) --
+	(222.59,136.25) --
+	(222.97,136.54) --
+	(223.34,137.66) --
+	(223.71,138.23) --
+	(224.09,135.55) --
+	(224.46,135.83) --
+	(224.83,137.24) --
+	(225.21,136.11) --
+	(225.58,135.69) --
+	(225.95,135.97) --
+	(226.33,135.97) --
+	(226.70,136.39) --
+	(227.07,135.41) --
+	(227.45,135.97) --
+	(227.82,136.82) --
+	(228.19,136.39) --
+	(228.57,135.27) --
+	(228.94,136.25) --
+	(229.31,136.39) --
+	(229.69,136.25) --
+	(230.06,136.39) --
+	(230.43,136.54) --
+	(230.81,137.38) --
+	(231.18,134.71) --
+	(231.56,135.69) --
+	(231.93,136.39) --
+	(232.30,135.97) --
+	(232.68,136.11) --
+	(233.05,134.99) --
+	(233.42,134.42) --
+	(233.80,135.27) --
+	(234.17,135.55) --
+	(234.54,137.10) --
+	(234.92,134.85) --
+	(235.29,134.00) --
+	(235.66,133.72) --
+	(236.04,136.54) --
+	(236.41,135.97) --
+	(236.78,134.00) --
+	(237.16,136.39) --
+	(237.53,134.00) --
+	(237.90,135.83) --
+	(238.28,135.69) --
+	(238.65,134.28) --
+	(239.02,135.83) --
+	(239.40,135.13) --
+	(239.77,133.72) --
+	(240.14,135.83) --
+	(240.52,134.42) --
+	(240.89,133.86) --
+	(241.26,134.56) --
+	(241.64,134.99) --
+	(242.01,134.71) --
+	(242.38,134.42) --
+	(242.76,136.54) --
+	(243.13,135.55) --
+	(243.50,134.42) --
+	(243.88,134.71) --
+	(244.25,135.55) --
+	(244.63,136.11) --
+	(245.00,135.69) --
+	(245.37,134.42) --
+	(245.75,135.27) --
+	(246.12,134.99) --
+	(246.49,133.72) --
+	(246.87,134.99) --
+	(247.24,134.71) --
+	(247.61,135.13) --
+	(247.99,136.39) --
+	(248.36,134.71) --
+	(248.73,135.69) --
+	(249.11,135.97) --
+	(249.48,136.82) --
+	(249.85,135.55) --
+	(250.23,136.39) --
+	(250.60,134.71) --
+	(250.97,134.28) --
+	(251.35,136.25) --
+	(251.72,135.83) --
+	(252.09,136.25) --
+	(252.47,135.41) --
+	(252.84,134.99) --
+	(253.21,136.11) --
+	(253.59,136.25) --
+	(253.96,135.83) --
+	(254.33,137.52) --
+	(254.71,138.08) --
+	(255.08,137.38) --
+	(255.45,140.06) --
+	(255.83,141.18) --
+	(256.20,144.00) --
+	(256.57,148.08) --
+	(256.95,155.26) --
+	(257.32,156.95) --
+	(257.70,160.19) --
+	(258.07,164.56) --
+	(258.44,170.33) --
+	(258.82,169.63) --
+	(259.19,165.40) --
+	(259.56,166.25) --
+	(259.94,166.11) --
+	(260.31,159.21) --
+	(260.68,153.57) --
+	(261.06,152.59) --
+	(261.43,149.49) --
+	(261.80,144.28) --
+	(262.18,144.42) --
+	(262.55,143.86) --
+	(262.92,139.49) --
+	(263.30,140.20) --
+	(263.67,138.23) --
+	(264.04,137.52) --
+	(264.42,137.52) --
+	(264.79,139.49) --
+	(265.16,139.21) --
+	(265.54,138.93) --
+	(265.91,137.24) --
+	(266.28,139.49) --
+	(266.66,138.08) --
+	(267.03,137.38) --
+	(267.40,137.94) --
+	(267.78,138.23) --
+	(268.15,136.39) --
+	(268.52,139.07) --
+	(268.90,137.24) --
+	(269.27,138.37) --
+	(269.64,138.65) --
+	(270.02,138.08) --
+	(270.39,138.23) --
+	(270.76,137.52) --
+	(271.14,138.51) --
+	(271.51,138.37) --
+	(271.89,139.21) --
+	(272.26,136.96) --
+	(272.63,138.23) --
+	(273.01,136.39) --
+	(273.38,137.52) --
+	(273.75,136.11) --
+	(274.13,136.96) --
+	(274.50,135.41) --
+	(274.87,138.93) --
+	(275.25,137.38) --
+	(275.62,136.96) --
+	(275.99,136.82) --
+	(276.37,136.82) --
+	(276.74,138.08) --
+	(277.11,138.08) --
+	(277.49,137.52) --
+	(277.86,140.48) --
+	(278.23,139.07) --
+	(278.61,141.18) --
+	(278.98,141.46) --
+	(279.35,144.00) --
+	(279.73,144.98) --
+	(280.10,145.41) --
+	(280.47,144.28) --
+	(280.85,143.86) --
+	(281.22,142.31) --
+	(281.59,142.45) --
+	(281.97,142.73) --
+	(282.34,140.90) --
+	(282.71,137.80) --
+	(283.09,139.92) --
+	(283.46,137.10) --
+	(283.83,139.21) --
+	(284.21,138.65) --
+	(284.58,138.93) --
+	(284.96,139.07) --
+	(285.33,140.76) --
+	(285.70,140.48) --
+	(286.08,143.44) --
+	(286.45,142.73) --
+	(286.82,144.56) --
+	(287.20,150.62) --
+	(287.57,154.28) --
+	(287.94,156.67) --
+	(288.32,158.78) --
+	(288.69,161.60) --
+	(289.06,159.21) --
+	(289.44,162.31) --
+	(289.81,159.49) --
+	(290.18,154.42) --
+	(290.56,157.38) --
+	(290.93,149.49) --
+	(291.30,147.66) --
+	(291.68,144.98) --
+	(292.05,143.44) --
+	(292.42,140.06) --
+	(292.80,140.48) --
+	(293.17,139.21) --
+	(293.54,139.35) --
+	(293.92,137.52) --
+	(294.29,137.94) --
+	(294.66,137.94) --
+	(295.04,135.13) --
+	(295.41,135.27) --
+	(295.78,135.55) --
+	(296.16,134.85) --
+	(296.53,134.99) --
+	(296.90,135.13) --
+	(297.28,134.71) --
+	(297.65,135.41) --
+	(298.03,136.25) --
+	(298.40,135.41) --
+	(298.77,136.39) --
+	(299.15,134.99) --
+	(299.52,134.85) --
+	(299.89,135.69) --
+	(300.27,134.99) --
+	(300.64,134.56) --
+	(301.01,135.55) --
+	(301.39,134.85) --
+	(301.76,135.55) --
+	(302.13,134.42) --
+	(302.51,134.00) --
+	(302.88,134.99) --
+	(303.25,134.85) --
+	(303.63,134.71) --
+	(304.00,136.25) --
+	(304.37,135.13) --
+	(304.75,134.99) --
+	(305.12,135.83) --
+	(305.49,135.41) --
+	(305.87,135.13) --
+	(306.24,135.69) --
+	(306.61,134.56) --
+	(306.99,135.55) --
+	(307.36,135.41) --
+	(307.73,137.52) --
+	(308.11,135.97) --
+	(308.48,134.28) --
+	(308.85,134.56) --
+	(309.23,136.68) --
+	(309.60,135.41) --
+	(309.97,134.99) --
+	(310.35,135.83) --
+	(310.72,135.83) --
+	(311.09,133.86) --
+	(311.47,135.55) --
+	(311.84,136.25) --
+	(312.22,134.99) --
+	(312.59,134.99) --
+	(312.96,136.54) --
+	(313.34,134.99) --
+	(313.71,135.97) --
+	(314.08,135.83) --
+	(314.46,135.13) --
+	(314.83,134.99) --
+	(315.20,134.14) --
+	(315.58,135.41) --
+	(315.95,135.55) --
+	(316.32,135.41) --
+	(316.70,136.68) --
+	(317.07,135.27) --
+	(317.44,134.00) --
+	(317.82,135.13) --
+	(318.19,134.00) --
+	(318.56,134.42) --
+	(318.94,135.83) --
+	(319.31,134.00) --
+	(319.68,134.71) --
+	(320.06,133.72) --
+	(320.43,134.28) --
+	(320.80,134.14) --
+	(321.18,134.71);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44,170.19) --
+	( 22.81,169.91) --
+	( 23.18,171.32) --
+	( 23.56,170.75) --
+	( 23.93,175.40) --
+	( 24.30,170.05) --
+	( 24.68,171.88) --
+	( 25.05,172.87) --
+	( 25.42,171.88) --
+	( 25.80,171.46) --
+	( 26.17,171.04) --
+	( 26.54,171.88) --
+	( 26.92,171.74) --
+	( 27.29,170.89) --
+	( 27.66,173.43) --
+	( 28.04,170.61) --
+	( 28.41,172.87) --
+	( 28.79,169.91) --
+	( 29.16,167.66) --
+	( 29.53,171.88) --
+	( 29.91,168.92) --
+	( 30.28,172.30) --
+	( 30.65,169.77) --
+	( 31.03,169.77) --
+	( 31.40,172.44) --
+	( 31.77,171.04) --
+	( 32.15,171.46) --
+	( 32.52,172.30) --
+	( 32.89,170.47) --
+	( 33.27,172.73) --
+	( 33.64,172.16) --
+	( 34.01,173.43) --
+	( 34.39,172.87) --
+	( 34.76,171.46) --
+	( 35.13,174.42) --
+	( 35.51,173.01) --
+	( 35.88,169.35) --
+	( 36.25,172.30) --
+	( 36.63,171.04) --
+	( 37.00,170.61) --
+	( 37.37,172.02) --
+	( 37.75,170.75) --
+	( 38.12,170.75) --
+	( 38.49,170.05) --
+	( 38.87,170.33) --
+	( 39.24,173.99) --
+	( 39.61,171.04) --
+	( 39.99,172.30) --
+	( 40.36,168.64) --
+	( 40.73,170.05) --
+	( 41.11,170.33) --
+	( 41.48,172.58) --
+	( 41.86,170.19) --
+	( 42.23,170.89) --
+	( 42.60,172.73) --
+	( 42.98,171.32) --
+	( 43.35,172.87) --
+	( 43.72,171.88) --
+	( 44.10,169.49) --
+	( 44.47,170.89) --
+	( 44.84,172.73) --
+	( 45.22,171.04) --
+	( 45.59,171.88) --
+	( 45.96,173.57) --
+	( 46.34,175.40) --
+	( 46.71,175.82) --
+	( 47.08,179.48) --
+	( 47.46,180.89) --
+	( 47.83,182.30) --
+	( 48.20,194.69) --
+	( 48.58,203.00) --
+	( 48.95,212.58) --
+	( 49.32,212.15) --
+	( 49.70,219.62) --
+	( 50.07,220.18) --
+	( 50.44,222.43) --
+	( 50.82,211.45) --
+	( 51.19,202.16) --
+	( 51.56,193.14) --
+	( 51.94,186.81) --
+	( 52.31,180.75) --
+	( 52.68,178.36) --
+	( 53.06,174.56) --
+	( 53.43,171.46) --
+	( 53.80,174.13) --
+	( 54.18,173.71) --
+	( 54.55,172.44) --
+	( 54.93,172.73) --
+	( 55.30,171.88) --
+	( 55.67,171.18) --
+	( 56.05,173.99) --
+	( 56.42,169.77) --
+	( 56.79,174.13) --
+	( 57.17,175.26) --
+	( 57.54,173.43) --
+	( 57.91,171.46) --
+	( 58.29,170.89) --
+	( 58.66,171.60) --
+	( 59.03,173.01) --
+	( 59.41,167.66) --
+	( 59.78,172.30) --
+	( 60.15,169.77) --
+	( 60.53,169.35) --
+	( 60.90,170.89) --
+	( 61.27,170.75) --
+	( 61.65,168.08) --
+	( 62.02,169.63) --
+	( 62.39,168.78) --
+	( 62.77,170.89) --
+	( 63.14,171.74) --
+	( 63.51,171.60) --
+	( 63.89,169.06) --
+	( 64.26,168.92) --
+	( 64.63,167.37) --
+	( 65.01,169.91) --
+	( 65.38,171.32) --
+	( 65.75,171.32) --
+	( 66.13,171.18) --
+	( 66.50,169.49) --
+	( 66.87,168.08) --
+	( 67.25,169.91) --
+	( 67.62,171.46) --
+	( 67.99,171.32) --
+	( 68.37,168.92) --
+	( 68.74,171.88) --
+	( 69.12,169.77) --
+	( 69.49,171.60) --
+	( 69.86,174.42) --
+	( 70.24,170.05) --
+	( 70.61,172.73) --
+	( 70.98,171.18) --
+	( 71.36,166.95) --
+	( 71.73,171.46) --
+	( 72.10,166.81) --
+	( 72.48,167.66) --
+	( 72.85,167.09) --
+	( 73.22,166.11) --
+	( 73.60,168.22) --
+	( 73.97,169.06) --
+	( 74.34,170.89) --
+	( 74.72,166.95) --
+	( 75.09,166.95) --
+	( 75.46,168.78) --
+	( 75.84,173.43) --
+	( 76.21,172.44) --
+	( 76.58,172.87) --
+	( 76.96,180.05) --
+	( 77.33,184.27) --
+	( 77.70,193.28) --
+	( 78.08,206.94) --
+	( 78.45,215.53) --
+	( 78.82,230.74) --
+	( 79.20,261.86) --
+	( 79.57,280.17) --
+	( 79.94,282.70) --
+	( 80.32,290.03) --
+	( 80.69,280.31) --
+	( 81.06,267.78) --
+	( 81.44,241.58) --
+	( 81.81,220.32) --
+	( 82.19,206.80) --
+	( 82.56,197.09) --
+	( 82.93,182.72) --
+	( 83.31,175.12) --
+	( 83.68,173.15) --
+	( 84.05,171.88) --
+	( 84.43,168.78) --
+	( 84.80,166.67) --
+	( 85.17,167.37) --
+	( 85.55,167.66) --
+	( 85.92,167.66) --
+	( 86.29,166.67) --
+	( 86.67,167.66) --
+	( 87.04,167.09) --
+	( 87.41,167.66) --
+	( 87.79,170.75) --
+	( 88.16,167.80) --
+	( 88.53,168.08) --
+	( 88.91,165.97) --
+	( 89.28,165.97) --
+	( 89.65,166.11) --
+	( 90.03,166.11) --
+	( 90.40,165.26) --
+	( 90.77,164.98) --
+	( 91.15,165.68) --
+	( 91.52,164.70) --
+	( 91.89,164.84) --
+	( 92.27,164.98) --
+	( 92.64,165.12) --
+	( 93.01,164.56) --
+	( 93.39,164.28) --
+	( 93.76,164.70) --
+	( 94.13,164.28) --
+	( 94.51,163.57) --
+	( 94.88,164.28) --
+	( 95.25,164.28) --
+	( 95.63,165.26) --
+	( 96.00,165.40) --
+	( 96.38,163.29) --
+	( 96.75,164.70) --
+	( 97.12,165.26) --
+	( 97.50,164.70) --
+	( 97.87,163.85) --
+	( 98.24,164.28) --
+	( 98.62,163.85) --
+	( 98.99,164.28) --
+	( 99.36,163.57) --
+	( 99.74,163.01) --
+	(100.11,163.57) --
+	(100.48,164.56) --
+	(100.86,163.85) --
+	(101.23,164.70) --
+	(101.60,164.42) --
+	(101.98,164.42) --
+	(102.35,163.57) --
+	(102.72,164.42) --
+	(103.10,163.85) --
+	(103.47,163.57) --
+	(103.84,163.99) --
+	(104.22,162.02) --
+	(104.59,167.09) --
+	(104.96,164.28) --
+	(105.34,163.29) --
+	(105.71,163.71) --
+	(106.08,163.71) --
+	(106.46,164.56) --
+	(106.83,162.02) --
+	(107.20,163.85) --
+	(107.58,163.71) --
+	(107.95,164.14) --
+	(108.32,164.84) --
+	(108.70,164.14) --
+	(109.07,163.71) --
+	(109.45,164.70) --
+	(109.82,164.56) --
+	(110.19,162.59) --
+	(110.57,163.85) --
+	(110.94,164.98) --
+	(111.31,164.42) --
+	(111.69,164.84) --
+	(112.06,165.83) --
+	(112.43,164.98) --
+	(112.81,165.68) --
+	(113.18,163.99) --
+	(113.55,166.25) --
+	(113.93,165.54) --
+	(114.30,166.53) --
+	(114.67,166.67) --
+	(115.05,170.33) --
+	(115.42,168.22) --
+	(115.79,166.25) --
+	(116.17,169.91) --
+	(116.54,167.09) --
+	(116.91,167.23) --
+	(117.29,164.70) --
+	(117.66,164.98) --
+	(118.03,164.28) --
+	(118.41,163.99) --
+	(118.78,163.99) --
+	(119.15,164.56) --
+	(119.53,165.54) --
+	(119.90,163.57) --
+	(120.27,163.01) --
+	(120.65,162.87) --
+	(121.02,164.56) --
+	(121.39,165.97) --
+	(121.77,164.28) --
+	(122.14,164.14) --
+	(122.52,163.85) --
+	(122.89,165.68) --
+	(123.26,161.46) --
+	(123.64,163.99) --
+	(124.01,162.16) --
+	(124.38,162.73) --
+	(124.76,164.14) --
+	(125.13,164.42) --
+	(125.50,163.15) --
+	(125.88,161.46) --
+	(126.25,164.98) --
+	(126.62,161.46) --
+	(127.00,161.74) --
+	(127.37,164.14) --
+	(127.74,165.26) --
+	(128.12,162.16) --
+	(128.49,164.70) --
+	(128.86,163.29) --
+	(129.24,163.57) --
+	(129.61,163.99) --
+	(129.98,163.85) --
+	(130.36,161.88) --
+	(130.73,163.01) --
+	(131.10,163.71) --
+	(131.48,163.99) --
+	(131.85,163.01) --
+	(132.22,165.83) --
+	(132.60,164.56) --
+	(132.97,165.12) --
+	(133.34,163.01) --
+	(133.72,163.85) --
+	(134.09,162.87) --
+	(134.46,166.25) --
+	(134.84,163.57) --
+	(135.21,165.83) --
+	(135.58,164.28) --
+	(135.96,162.59) --
+	(136.33,164.28) --
+	(136.71,163.71) --
+	(137.08,162.87) --
+	(137.45,162.73) --
+	(137.83,164.42) --
+	(138.20,163.01) --
+	(138.57,163.15) --
+	(138.95,163.85) --
+	(139.32,163.15) --
+	(139.69,163.85) --
+	(140.07,165.26) --
+	(140.44,164.84) --
+	(140.81,163.99) --
+	(141.19,163.29) --
+	(141.56,163.99) --
+	(141.93,163.71) --
+	(142.31,164.98) --
+	(142.68,163.85) --
+	(143.05,164.84) --
+	(143.43,164.14) --
+	(143.80,164.56) --
+	(144.17,163.71) --
+	(144.55,163.85) --
+	(144.92,165.40) --
+	(145.29,164.42) --
+	(145.67,164.14) --
+	(146.04,162.87) --
+	(146.41,165.54) --
+	(146.79,163.71) --
+	(147.16,164.42) --
+	(147.53,163.43) --
+	(147.91,163.29) --
+	(148.28,163.29) --
+	(148.65,162.87) --
+	(149.03,162.59) --
+	(149.40,162.73) --
+	(149.78,164.84) --
+	(150.15,163.43) --
+	(150.52,164.70) --
+	(150.90,163.85) --
+	(151.27,162.87) --
+	(151.64,164.42) --
+	(152.02,163.57) --
+	(152.39,162.73) --
+	(152.76,164.14) --
+	(153.14,163.15) --
+	(153.51,163.99) --
+	(153.88,164.70) --
+	(154.26,164.70) --
+	(154.63,165.40) --
+	(155.00,165.26) --
+	(155.38,165.40) --
+	(155.75,165.83) --
+	(156.12,163.29) --
+	(156.50,164.14) --
+	(156.87,164.98) --
+	(157.24,162.87) --
+	(157.62,163.15) --
+	(157.99,163.15) --
+	(158.36,162.73) --
+	(158.74,162.02) --
+	(159.11,163.43) --
+	(159.48,163.57) --
+	(159.86,165.54) --
+	(160.23,164.14) --
+	(160.60,163.43) --
+	(160.98,162.45) --
+	(161.35,165.83) --
+	(161.72,164.28) --
+	(162.10,163.71) --
+	(162.47,163.99) --
+	(162.84,161.60) --
+	(163.22,163.71) --
+	(163.59,162.73) --
+	(163.97,163.43) --
+	(164.34,163.29) --
+	(164.71,164.56) --
+	(165.09,163.29) --
+	(165.46,166.67) --
+	(165.83,164.70) --
+	(166.21,162.59) --
+	(166.58,164.28) --
+	(166.95,163.57) --
+	(167.33,163.71) --
+	(167.70,162.59) --
+	(168.07,162.87) --
+	(168.45,163.99) --
+	(168.82,163.85) --
+	(169.19,165.26) --
+	(169.57,164.14) --
+	(169.94,163.15) --
+	(170.31,163.01) --
+	(170.69,165.54) --
+	(171.06,164.56) --
+	(171.43,163.85) --
+	(171.81,164.28) --
+	(172.18,163.01) --
+	(172.55,164.56) --
+	(172.93,162.59) --
+	(173.30,164.28) --
+	(173.67,166.25) --
+	(174.05,163.57) --
+	(174.42,164.28) --
+	(174.79,165.12) --
+	(175.17,163.99) --
+	(175.54,164.70) --
+	(175.91,165.12) --
+	(176.29,163.57) --
+	(176.66,163.99) --
+	(177.04,163.43) --
+	(177.41,167.23) --
+	(177.78,164.28) --
+	(178.16,166.67) --
+	(178.53,167.66) --
+	(178.90,169.21) --
+	(179.28,171.18) --
+	(179.65,169.06) --
+	(180.02,175.40) --
+	(180.40,177.23) --
+	(180.77,184.13) --
+	(181.14,191.59) --
+	(181.52,211.73) --
+	(181.89,238.49) --
+	(182.26,261.02) --
+	(182.64,283.13) --
+	(183.01,288.34) --
+	(183.38,301.15) --
+	(183.76,289.18) --
+	(184.13,283.69) --
+	(184.50,252.43) --
+	(184.88,235.53) --
+	(185.25,218.91) --
+	(185.62,200.33) --
+	(186.00,190.61) --
+	(186.37,185.40) --
+	(186.74,175.54) --
+	(187.12,172.30) --
+	(187.49,170.19) --
+	(187.86,170.47) --
+	(188.24,168.78) --
+	(188.61,168.50) --
+	(188.98,167.66) --
+	(189.36,165.68) --
+	(189.73,166.11) --
+	(190.11,166.67) --
+	(190.48,164.70) --
+	(190.85,164.28) --
+	(191.23,164.28) --
+	(191.60,165.54) --
+	(191.97,165.68) --
+	(192.35,164.84) --
+	(192.72,164.70) --
+	(193.09,165.40) --
+	(193.47,165.54) --
+	(193.84,163.99) --
+	(194.21,164.42) --
+	(194.59,164.28) --
+	(194.96,166.11) --
+	(195.33,162.59) --
+	(195.71,165.26) --
+	(196.08,164.98) --
+	(196.45,162.45) --
+	(196.83,163.01) --
+	(197.20,164.70) --
+	(197.57,165.83) --
+	(197.95,163.71) --
+	(198.32,165.12) --
+	(198.69,163.57) --
+	(199.07,165.83) --
+	(199.44,165.26) --
+	(199.81,164.14) --
+	(200.19,163.71) --
+	(200.56,166.67) --
+	(200.93,165.40) --
+	(201.31,164.14) --
+	(201.68,165.54) --
+	(202.05,164.56) --
+	(202.43,167.09) --
+	(202.80,166.81) --
+	(203.17,168.78) --
+	(203.55,170.33) --
+	(203.92,169.35) --
+	(204.30,176.53) --
+	(204.67,178.64) --
+	(205.04,179.77) --
+	(205.42,186.10) --
+	(205.79,189.06) --
+	(206.16,186.53) --
+	(206.54,185.54) --
+	(206.91,186.81) --
+	(207.28,180.19) --
+	(207.66,180.05) --
+	(208.03,173.29) --
+	(208.40,173.57) --
+	(208.78,166.53) --
+	(209.15,167.66) --
+	(209.52,166.95) --
+	(209.90,163.99) --
+	(210.27,164.28) --
+	(210.64,164.42) --
+	(211.02,163.71) --
+	(211.39,163.99) --
+	(211.76,164.42) --
+	(212.14,162.02) --
+	(212.51,164.14) --
+	(212.88,162.73) --
+	(213.26,163.99) --
+	(213.63,161.74) --
+	(214.00,163.29) --
+	(214.38,164.56) --
+	(214.75,164.84) --
+	(215.12,162.73) --
+	(215.50,162.59) --
+	(215.87,164.14) --
+	(216.24,163.15) --
+	(216.62,164.98) --
+	(216.99,162.31) --
+	(217.37,163.57) --
+	(217.74,163.15) --
+	(218.11,165.40) --
+	(218.49,162.59) --
+	(218.86,164.42) --
+	(219.23,162.45) --
+	(219.61,162.87) --
+	(219.98,165.40) --
+	(220.35,168.22) --
+	(220.73,164.28) --
+	(221.10,165.83) --
+	(221.47,164.84) --
+	(221.85,161.74) --
+	(222.22,167.37) --
+	(222.59,165.12) --
+	(222.97,166.11) --
+	(223.34,163.71) --
+	(223.71,164.42) --
+	(224.09,163.43) --
+	(224.46,163.01) --
+	(224.83,165.26) --
+	(225.21,164.70) --
+	(225.58,164.42) --
+	(225.95,166.11) --
+	(226.33,163.99) --
+	(226.70,164.98) --
+	(227.07,164.70) --
+	(227.45,164.28) --
+	(227.82,163.01) --
+	(228.19,163.57) --
+	(228.57,163.99) --
+	(228.94,162.87) --
+	(229.31,164.98) --
+	(229.69,162.59) --
+	(230.06,162.87) --
+	(230.43,165.26) --
+	(230.81,164.42) --
+	(231.18,163.15) --
+	(231.56,163.43) --
+	(231.93,163.43) --
+	(232.30,165.40) --
+	(232.68,164.56) --
+	(233.05,164.14) --
+	(233.42,162.73) --
+	(233.80,163.71) --
+	(234.17,162.87) --
+	(234.54,163.29) --
+	(234.92,161.46) --
+	(235.29,162.87) --
+	(235.66,162.87) --
+	(236.04,163.29) --
+	(236.41,162.16) --
+	(236.78,161.88) --
+	(237.16,162.02) --
+	(237.53,162.59) --
+	(237.90,162.87) --
+	(238.28,162.45) --
+	(238.65,162.73) --
+	(239.02,163.01) --
+	(239.40,164.28) --
+	(239.77,164.28) --
+	(240.14,163.29) --
+	(240.52,163.15) --
+	(240.89,161.88) --
+	(241.26,162.87) --
+	(241.64,162.73) --
+	(242.01,162.87) --
+	(242.38,163.71) --
+	(242.76,163.43) --
+	(243.13,163.15) --
+	(243.50,162.16) --
+	(243.88,163.85) --
+	(244.25,161.74) --
+	(244.63,165.40) --
+	(245.00,162.59) --
+	(245.37,161.60) --
+	(245.75,163.99) --
+	(246.12,163.15) --
+	(246.49,163.57) --
+	(246.87,162.87) --
+	(247.24,163.99) --
+	(247.61,163.71) --
+	(247.99,163.01) --
+	(248.36,163.15) --
+	(248.73,163.71) --
+	(249.11,163.85) --
+	(249.48,162.45) --
+	(249.85,164.70) --
+	(250.23,163.99) --
+	(250.60,162.02) --
+	(250.97,166.11) --
+	(251.35,163.01) --
+	(251.72,163.29) --
+	(252.09,162.59) --
+	(252.47,163.71) --
+	(252.84,167.66) --
+	(253.21,166.95) --
+	(253.59,165.40) --
+	(253.96,166.53) --
+	(254.33,166.95) --
+	(254.71,167.23) --
+	(255.08,167.37) --
+	(255.45,172.16) --
+	(255.83,172.44) --
+	(256.20,175.12) --
+	(256.57,179.06) --
+	(256.95,187.37) --
+	(257.32,196.24) --
+	(257.70,200.89) --
+	(258.07,204.27) --
+	(258.44,202.16) --
+	(258.82,204.97) --
+	(259.19,202.16) --
+	(259.56,199.76) --
+	(259.94,197.23) --
+	(260.31,185.54) --
+	(260.68,185.54) --
+	(261.06,179.91) --
+	(261.43,174.84) --
+	(261.80,175.26) --
+	(262.18,169.49) --
+	(262.55,169.21) --
+	(262.92,170.47) --
+	(263.30,168.92) --
+	(263.67,166.25) --
+	(264.04,167.80) --
+	(264.42,167.37) --
+	(264.79,167.80) --
+	(265.16,166.81) --
+	(265.54,166.95) --
+	(265.91,165.26) --
+	(266.28,164.84) --
+	(266.66,167.94) --
+	(267.03,164.84) --
+	(267.40,166.11) --
+	(267.78,165.83) --
+	(268.15,165.54) --
+	(268.52,164.56) --
+	(268.90,166.95) --
+	(269.27,166.67) --
+	(269.64,165.40) --
+	(270.02,165.83) --
+	(270.39,168.22) --
+	(270.76,167.94) --
+	(271.14,166.11) --
+	(271.51,164.56) --
+	(271.89,166.95) --
+	(272.26,165.40) --
+	(272.63,163.01) --
+	(273.01,166.39) --
+	(273.38,165.68) --
+	(273.75,166.39) --
+	(274.13,162.31) --
+	(274.50,165.26) --
+	(274.87,165.54) --
+	(275.25,165.68) --
+	(275.62,165.12) --
+	(275.99,166.53) --
+	(276.37,165.54) --
+	(276.74,165.68) --
+	(277.11,166.11) --
+	(277.49,168.22) --
+	(277.86,165.26) --
+	(278.23,169.06) --
+	(278.61,170.89) --
+	(278.98,170.75) --
+	(279.35,172.58) --
+	(279.73,171.74) --
+	(280.10,173.29) --
+	(280.47,173.71) --
+	(280.85,168.64) --
+	(281.22,167.80) --
+	(281.59,170.19) --
+	(281.97,168.36) --
+	(282.34,168.36) --
+	(282.71,167.66) --
+	(283.09,167.80) --
+	(283.46,164.98) --
+	(283.83,167.94) --
+	(284.21,167.52) --
+	(284.58,169.63) --
+	(284.96,168.78) --
+	(285.33,170.75) --
+	(285.70,169.77) --
+	(286.08,173.71) --
+	(286.45,177.65) --
+	(286.82,178.78) --
+	(287.20,184.69) --
+	(287.57,191.17) --
+	(287.94,191.45) --
+	(288.32,201.31) --
+	(288.69,199.20) --
+	(289.06,196.10) --
+	(289.44,197.65) --
+	(289.81,194.13) --
+	(290.18,186.24) --
+	(290.56,182.72) --
+	(290.93,181.74) --
+	(291.30,177.51) --
+	(291.68,174.98) --
+	(292.05,170.61) --
+	(292.42,168.64) --
+	(292.80,166.25) --
+	(293.17,166.95) --
+	(293.54,165.68) --
+	(293.92,165.26) --
+	(294.29,165.83) --
+	(294.66,164.84) --
+	(295.04,164.42) --
+	(295.41,165.68) --
+	(295.78,165.68) --
+	(296.16,163.71) --
+	(296.53,162.87) --
+	(296.90,164.28) --
+	(297.28,163.43) --
+	(297.65,162.59) --
+	(298.03,163.15) --
+	(298.40,162.16) --
+	(298.77,163.99) --
+	(299.15,162.16) --
+	(299.52,164.56) --
+	(299.89,162.31) --
+	(300.27,163.29) --
+	(300.64,163.57) --
+	(301.01,163.01) --
+	(301.39,161.04) --
+	(301.76,162.87) --
+	(302.13,162.73) --
+	(302.51,161.74) --
+	(302.88,161.74) --
+	(303.25,161.88) --
+	(303.63,163.57) --
+	(304.00,163.29) --
+	(304.37,162.02) --
+	(304.75,163.15) --
+	(305.12,163.99) --
+	(305.49,162.02) --
+	(305.87,163.29) --
+	(306.24,163.15) --
+	(306.61,165.26) --
+	(306.99,163.85) --
+	(307.36,164.14) --
+	(307.73,163.99) --
+	(308.11,163.57) --
+	(308.48,162.73) --
+	(308.85,164.28) --
+	(309.23,163.29) --
+	(309.60,163.29) --
+	(309.97,162.31) --
+	(310.35,162.87) --
+	(310.72,163.15) --
+	(311.09,162.59) --
+	(311.47,162.59) --
+	(311.84,161.88) --
+	(312.22,163.57) --
+	(312.59,163.43) --
+	(312.96,160.05) --
+	(313.34,163.43) --
+	(313.71,162.16) --
+	(314.08,163.15) --
+	(314.46,163.71) --
+	(314.83,162.73) --
+	(315.20,162.87) --
+	(315.58,162.87) --
+	(315.95,163.57) --
+	(316.32,163.85) --
+	(316.70,163.01) --
+	(317.07,162.73) --
+	(317.44,162.73) --
+	(317.82,163.43) --
+	(318.19,161.18) --
+	(318.56,161.46) --
+	(318.94,162.59) --
+	(319.31,162.73) --
+	(319.68,162.73) --
+	(320.06,162.59) --
+	(320.43,162.02) --
+	(320.80,162.16) --
+	(321.18,162.87);
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (318.06, 36.60) {$\theta=\ang{0.05}$};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (318.06, 61.24) {$\theta=\ang{0.15}$};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (318.06, 86.59) {$\theta=\ang{0.25}$};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (319.04,111.23) {$\theta=\ang{1}$};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (319.04,136.86) {$\theta=\ang{3}$};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.78] at (319.04,165.02) {$\theta=\ang{6}$};
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round] (  7.50, 27.90) rectangle (336.11,206.03);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 22.44, 25.40) --
+	( 22.44, 27.90);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 97.12, 25.40) --
+	( 97.12, 27.90);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (171.81, 25.40) --
+	(171.81, 27.90);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (246.49, 25.40) --
+	(246.49, 27.90);
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (321.18, 25.40) --
+	(321.18, 27.90);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 22.44, 17.89) {30};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at ( 97.12, 17.89) {40};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (171.81, 17.89) {50};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (246.49, 17.89) {60};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.80] at (321.18, 17.89) {70};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.00] at (171.81,  6.94) {$2\theta$/\unit{\degree}};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{gray}{0.85}
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round,line cap=round,fill=fillColor] ( 90.57,185.49) rectangle (174.17,197.12);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] ( 92.57,186.49) rectangle (102.21,196.12);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{248,118,109}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.54,191.30) -- (101.25,191.30);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{248,118,109}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.64] at ( 99.60,191.30) {a};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] (119.76,186.49) rectangle (129.40,196.12);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.72,191.30) -- (128.43,191.30);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{76,74,74}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.64] at (126.78,191.30) {a};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] (144.06,186.49) rectangle (153.70,196.12);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.02,191.30) -- (152.73,191.30);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,176,246}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.64] at (151.08,191.30) {a};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (103.21,188.55) {ZnO};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (130.40,188.55) {Hm};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (341.11,211.03);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base west,inner sep=0pt, outer sep=0pt, scale=  0.80] at (154.70,188.55) {\ch{SnO2}};
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

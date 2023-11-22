@@ -1,0 +1,233 @@
+\chapter{Optical quantum confinement in low-dimensional ZnO}
+\label{ch:quantum-confinement}
+
+Chemistry graduates are commonly taught the concept of the triad of
+\emph{structure}, \emph{composition}, \emph{property},
+to underscore that a material's properties are determined by its
+chemical structure and chemical composition.
+While this is certainly true, it is not the whole truth.
+There are other parameters along which a material's properties can
+be tailored.
+Nanosized semiconductor crystals, despite having the same structure and composition
+as bulk materials, can have their electronic and optical properties
+systematically controlled by just \emph{one} parameter: size.
+This is caused by \emph{quantum confinement}, which opens up another way to tailor
+the optical and electronic properties of semiconductors.
+
+Quantum confinement effects can become apparent when the distance between allowed
+energy levels exceed $kT$.
+In semiconductors the \gls{Fermi_level} lies \emph{in} the \gls{band_gap},
+and as the \gls{DOS} in the bulk is generally much smaller near the band edges,
+confinement effects (splitting of energy levels) can remain apparent even for fairly
+large particle sizes.
+Contrast this to metals, where the \gls{Fermi_level} lies in the \emph{centre} of a band,
+where the \gls{DOS} is usually large and the distance between energy levels
+thus small even for very small particles \cite{Delerue2004}.
+%
+Quantum confinement is the effect wherein the energy level spacing (the potential difference
+between energy levels) in the material increases as its particle size decreases.
+Other phenomena are also affected as nanocrystals are shrunk \cite[p.\ 114]{Delerue2004},
+such as
+the spin-orbit coupling,
+the electron--hole Coulomb interaction, and
+the electron--hole exchange interaction,
+but this chapter will limit itself to the quantum confinement effect.
+
+Quantum confinement provides a way to perturb the semiconductor's band structure
+by an (external) parameter, in this case the particle size,
+which we have explored in this thesis.
+But there are many other ways to perturb the band structure, for example by
+external pressure (causing uniaxial strain in non-centrosymmetric structures),
+or temperature, or electric field effects (Stark effects, ionization effects),
+or magnetic field effects (Landau splitting, the Zeeman effect) \cite{Pankove1975}.
+Common for all of them is that they require a sustained external force
+(\ie, energy) to maintain the perturbation.
+In contrast, the particle size is a permanent perturbation
+of the material.
+
+
+Based on the Schrödinger equation, which shows that when particles become nanosized
+the electronic states would be \emph{squeezed}, and based on the free-electron gas model
+for metals, \textcite{Frohlich1937} predicted that nanoparticles would have very
+different values of specific heat of their electrons compared to the bulk metal \cite{Linke2023}.
+Although correct, observing this effect in metals would require exceedingly small
+particle sizes (as we discussed above).
+\textcite{Sandomirskii1963} was the first to point out that the effect of
+quantum confinement should be more easily achievable in semiconductors (owing
+to their smaller effective electron mass and thus larger \gls{exciton_Bohr_radius}),
+and cause a measurable shift in the optical absorption edge.
+By the early 1980s experimental observations of quantum effects in thin films
+were well established \cite{Linke2023}, and was soon followed by evidence of
+quantum size effects in \emph{colloidal} \glsdisp{NP}{nanoparticles} \cite{Brus1984a}.
+
+In semiconductors quantum confinement can be approximately described by
+a simple particle-in-a-box model and its most distinctive effect is that
+the band gap becomes size dependent \cite{Law2004}.
+This occurs when the dimension of the semiconductor is commensurable
+or smaller than the diameter of its \glstext{exciton_Bohr_radius}, which results
+in an increase of the exciton binding energy (caused by electron--hole-pairs
+being forced closer together than in the bulk) \cite{Jimenez2016}
+and the loss of translational symmetry (due to the smaller size of the particle),
+causing a splitting of the energy levels instead of the continuous bands
+in the infinite periodic solid.
+The size at which this effect manifests itself for different materials depends
+on their chemical composition
+(actually the \glstext{exciton_Bohr_radius} which depends sensitively on
+the effective mass of the electron which of course depends on the lattice
+and its composition).
+
+A particle that is quantum-confined along all three dimensions is called
+a \glsdisp{QD}{quantum dot (QD)}, a 2D confined material is called a quantum wire
+(or rod, depending on aspect ratio%
+\footnote{%
+   With regard to nomenclature, rods generally have a lower aspect ratio
+   than wires, with the cutoff usually at \num{10} (although this definition
+   is neither official nor always adhered to) \cite{Jeevanandam2018}.}%
+), and a 1D confined material is a quantum well (ultrathin film).
+
+
+An exciton is a quasiparticle made up of an electron and a hole in a bound state,
+attracted to each other by the electrostatic Coulomb force.
+In materials with large \glsdisp{relative_permittivity}{dielectric constant}
+(such as semiconductors) the Coulomb interaction between electrons and holes
+is effectively screened, generally causing excitons to have a radius larger than
+the lattice spacing (so called Wannier--Mott excitons).
+An exciton forms when a photon is absorbed by a semiconductor crystal,
+generating an electron in the \gls{CB} and a hole in the \gls{VB},
+and as the electron and hole relaxes across the \gls{band_gap} to recombine, the
+energy released by recombination from the excited state back to the ground state
+is the sum of three contributions, \namely,
+the electron and hole confinement energy,
+the exciton binding energy,
+and the band gap energy \cite{Abdellah2015}.
+%
+The exciton binding energy is the energy difference due to the exciton
+having slightly less energy than the unbound electron and hole
+(this energy depends on the material).
+And the confinement energy is due to the size of the particle literally
+restricting the exciton's movement across the finite lattice which increases
+its energy and thus its radius.
+So by varying the size of a \gls{QD}, the confinement energy of the exciton
+can be controlled, which in turn affects its transition probability and thus
+its optical behaviour.
+
+For a direct semiconductor (such as \ZnO) the optical quantum confinement is simply
+the electronic quantum confinement, whereas for an indirect semiconductor (such as \hematite)
+the optical quantum confinement is the combined effect of the electronic quantum confinement
+and the vibrational quantum confinement \cite{Edvinsson2018}
+(indirect transitions are not vertical in an energy-band diagram and thus involve
+the nuclear coordinate; recall that phonons are effectively nuclear motions of freedom).
+
+The exciton can be described as a electron (negative charge) orbiting a hole
+(positive charge) at a certain radius, which is analogous to a hydrogen atom.
+However, the exciton binding energy is much smaller and the exciton radius much
+larger than the energy or Bohr radius of a hydrogen atom.
+The \glsdisp{exciton_Bohr_radius}{exciton Bohr radius}, \glsname{exciton_Bohr_radius},
+\marginpar{\scriptsize%
+%\input{assets/aux/fig/fig_0500-probability-exciton-radius.Rnw}
+<<child=here::here('assets/aux/fig/fig_0500-probability-exciton-radius.Rnw'), label='0500-marginfig-probability-exciton-radius', warning=FALSE, cache=TRUE>>=
+@
+}
+can be expressed in terms of the hydrogenic radius, $a_0$:
+\begin{equation}\label{eq:exciton-radius}
+% https://tex.stackexchange.com/questions/62274/how-do-i-write-%C4%A7-in-latex-for-the-reduced-planck-constant
+\glsname{exciton_Bohr_radius} =
+\frac{%
+   \glsdisp{Planck_constant}{\hbar}^2\glsname{relative_permittivity}\glsname{vacuum_permittivity}}{%
+   \mu\glsname{elementary_charge}^2} =
+\frac{\glsname{relative_permittivity}}{\mu/\glsname{electron_mass}}\glsdisp{exciton_Bohr_radius}{a_0},%
+\enspace\mathrm{where}~
+\mu = \frac{\glsname{electron_mass}m_\mathrm{h}}{\glsname{electron_mass} + m_\mathrm{h}}
+\end{equation}
+where $\mu$ is the so called reduced mass, and \glsname{relative_permittivity}
+is the dielectric constant of the semiconductor.
+
+For bulk \ZnO, $\glsname{exciton_Bohr_radius}=\qty{2.3}{\nm}$
+but can vary a lot depending on what values of effective masses are used
+when calculating it.
+Note that this radius defines the maximum on a \emph{probability distribution} function,
+$P(r) = 4r^2/\glsname{exciton_Bohr_radius}^3\exp(-2r/\glsname{exciton_Bohr_radius})$,
+which means that a majority (two thirds, to be precise) of exciton radii will actually
+be larger than \glsname{exciton_Bohr_radius}, and one third smaller
+(illustration in the margin shows $P(r)$ in the interval $0<r<5\glsname{exciton_Bohr_radius}$),
+leading to quantum confinement effects being observed in systems even when their
+average particle size is larger than the \gls{exciton_Bohr_radius}, as observed
+in our own work (\cref{P3}) and by others \cite{Meulenkamp1998,Jacobsson2011}.
+
+To describe this distribution of exciton radii, one speaks of different
+\emph{confinement regimes}.
+When the \gls{QD} size is larger than several exciton radii ($d\gg\glsname{exciton_Bohr_radius}$)
+we are in the weak confinement regime, where the Coulomb interaction between the electron
+and hole dominates, and thus the exciton is confined, but not the electron and hole
+individually (the character of the exciton as a quasiparticle is conserved) \cite{Kayanuma1988}.
+%
+When the \gls{QD} size is smaller than the exciton radii ($d<\glsname{exciton_Bohr_radius}$)
+we are in the strong confinement regime,
+where the quantum confinement energy is much larger than the Coulomb interaction
+and thus both the electron and hole are independently confined.
+In this regime the electron--hole exchange energy is larger than
+the spin--orbit interaction \cite[p.\ 115]{Delerue2004}.
+%
+The transition between the strong and weak regimes occurs when the \gls{QD} size
+is approximately equal to the \gls{exciton_Bohr_radius},
+$d/\glsname{exciton_Bohr_radius}\approx\numrange[range-phrase={\ensuremath{\sim}}]{1}{3}$.
+
+
+As we have seen, in the quantum confinement regime the energy required to create excitons
+will be larger than in the bulk and this energy will increase with decreasing particle size.
+This means that by decreasing the particle size of a photocatalyst, we
+can increase the reactivity of the photogenerated electrons and/or holes (depending
+on whether both band edges shift with particle size).
+Of course, by increasing the band gap we also further restric the amount of
+solar photons the photocatalyst can absorb (\cf\ \cref{fig:solarspectrum-photoec}),
+which may or may not be crippling.
+%
+The \glsfirst{band_gap}, of the photocatalyst in a quantum-confined system can be described as
+a modification of the bulk band gap, $E_\mathrm{g,bulk}$ \cite{Edvinsson2018}:
+\begin{equation}\label{eq:Eg-quantum-confined}
+\Eg{} = E_\mathrm{g,bulk} +
+   \frac{\glsname{Planck_constant}^2}{8R^2}\left(\frac{1}{m_\mathrm{e}^\ast} + \frac{1}{m_\mathrm{h}^\ast}\right) -
+   \frac{1.8\glsname{elementary_charge}^2}{\glsname{relative_permittivity}R} +
+   \frac{\glsname{elementary_charge}^2}{R}\sum_{n=1}^{\infty}\alpha_n\left(\frac{r_\mathrm{e} + r_\mathrm{h}}{R}\right)^{2n}
+\end{equation}
+where the second term is the increased kinetic energy of the electron--hole pair
+due to being restricted inside a sphere with radius $R$
+($m_\mathrm{e}^\ast$ and $m_\mathrm{h}^\ast$ are the effective mass of the electron and hole, respectively),
+the third term is the Coulomb attraction in a screened environment,
+and the fourth term is an average polarization
+(where $\alpha_n$ is the polarizability, $r_\mathrm{e}$ and $r_\mathrm{h}$ the coordinate
+of the electrons and holes with the particle) \cite{Edvinsson2018}.
+As the particles grow and $R$ increases \glsname{band_gap} will approach $E_\mathrm{g,bulk}$.
+This gives a physical motivation for a functional dependence between the
+band gap, $\glsname{band_gap}/\unit{\eV}$, and the particle diameter, $d/\unit{\nm}$:
+\begin{equation}\label{eq:Eg-from-diameter}
+\Eg{} = C_1 + \frac{C_2}{d} + \frac{C_3}{d^2}
+\end{equation}
+where the constants $C_1=\num{3.30}$, $C_2=\num{0.293}$, and $C_3=\num{3.94}$ were
+determined in previous work by \textcite{Jacobsson2011}.
+We utilized this model in \cref{P3} to estimate the band gap and particle diameter
+of \ZnO\ \glsplural{QD} from a series of \gls{UV-Vis} spectra.
+
+\Cref{eq:Eg-from-diameter} can be rearranged to express the particle diameter, $d/\unit{\nm}$,
+in terms of the \glsdisp{band_gap}{band gap}, $\glsname{band_gap}/\unit{\eV}$:
+\begin{equation}\label{eq:diameter-from-Eg}
+d = \frac{2C_3}{-C_2 + \sqrt{C_2^2 - 4C_3\left(C_1 - \glsname{band_gap}\right)}}.
+\end{equation}
+The functional dependence between size and band gap is thus $d\propto\glsname{band_gap}^{-1/2}$.
+In \cref{results:P21-tracking-growth-ZnO-QDs} I investigated the \ZnO\ \gls{QD} growth
+over time based on this relationship.
+
+
+Several material properties are expected to depend strongly on particle size
+in quantum confinement regime.
+Apart from optical and electronic properties, which matter greatly for a
+photocatalyst, particle size will also affect phonon modes and exciton--phonon coupling,
+which I have explored in \cref{P4} (for particle sizes above the weak confinement regime).
+
+
+Literature suggests that the exciton binding energy is usually smaller than the
+lattice vibrational energy (LO phonons) in many semiconductors \cite{Adachi1999a},
+which is supported by our findings in \cref{P4} ($E(\mathrm{LO})=\qty{71.33+-0.05}{\meV}$
+for the smallest particle sizes studied, \cf\ \cref{fig:P25-UVRaman-meanLOLO-vs-diameter}),
+but only by about \qty{10}{\meV} if we assume the commonly cited \ZnO\ exciton binding energy
+of \qty{60}{\meV}.

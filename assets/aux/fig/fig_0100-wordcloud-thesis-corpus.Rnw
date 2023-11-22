@@ -1,0 +1,480 @@
+% note, using the same "child" in more than one chunk like this required option
+% knitr.duplicate.label = "allow" to be set.
+% https://bookdown.org/yihui/rmarkdown-cookbook/duplicate-label.html
+%\input{assets/aux/chunks/0100-wordcloud-sql-db.Rnw}
+<<'0100-bcf-zotero-sql-read', child=here::here('assets/aux/chunks/0100-wordcloud-sql-db.Rnw')>>=
+@
+
+%\input{assets/aux/chunks/0100-wordcloud-hsl-colour.Rnw}
+<<'0100-bcf-hsl-colour', child=here::here('assets/aux/chunks/0100-wordcloud-hsl-colour.Rnw')>>=
+@
+
+<<'0100-bcf-corpus-bibliography', eval=FALSE, cache=FALSE>>=
+# Get citation keys for all bibliography entries cited in this thesis
+# Note, this will fail if thesis.bcf does not exist, or if the previous LaTeX compilation failed
+# (a failed compilation usually leaves an incomplete thesis.bcf, which will cause it to have syntax errors)
+# It is therefore a good idea to include thesis.bcf in your version control, so you can restore
+# the latest working copy in case the previous LaTeX compilation fails and leaves an incomplete one.
+bcfcitekeys <-
+   xml2::read_xml(here::here("thesis.bcf")) %>%
+   xml2::xml_find_all(".//bcf:citekey", flatten = TRUE) %>%
+   xml2::xml_text() %>%
+   unique()
+# zdbcit contains only the Zotero database entries that are currently cited in the thesis
+zdbcit <-
+   zotero %>%
+   # careful, this check for distinct DOIs also limits us to those database entries
+   # that have DOIs (which is far from all of them), in fact, it is overly restrictive
+   # dplyr::distinct(DOI, .keep_all = TRUE) %>%
+   # if we don't restrict to DOI-only entries, it might be a good idea to at least
+   # limit to only entries with non-empty "EXTRA" field
+   dplyr::filter(!is.na(EXTRA)) %>%
+   # the EXTRA field can contain all kinds of stuff, so we have to extract the citation key
+   # citation keys followed immediately by newline character is causing our regex to fail to match
+   # for that reason, first replace all "\n" with space
+   dplyr::mutate(EXTRA = gsub(pattern = "\n", replace = " ", x = EXTRA, fixed = TRUE)) %>%
+   # extract the citation key part
+   dplyr::mutate(citationstring = stringr::str_extract(EXTRA, "Citation Key: [\\w-]+")) %>%
+   dplyr::filter(!is.na(citationstring)) %>%
+   # save the citation key itself in its own column
+   # https://tidyr.tidyverse.org/reference/separate.html
+   tidyr::separate(citationstring, c(NA, "citationkey"), ": ") %>%
+   # drop all entries that were not included in the thesis.bcf file
+   dplyr::filter(citationkey %in% bcfcitekeys) %>%
+   # remove duplicates
+   dplyr::distinct(citationkey, .keep_all = TRUE) %>%
+   # remove specific Zotero entries (non-English, or other reasons)
+   dplyr::filter(!(citationkey %in% c("vonEibner1911", "Smekal1923", "Kramers1925", "Landsberg1928a", "Knoll1932", "Knoll1932a", "Knoll1932b", "Siegbahn1968", "Naturvardsverket2017")))
+save(zdbcit, file = here::here("assets/references/zotero.rda"))
+@
+
+<<'0100-bcf-corpus-words', cache=FALSE, results="markup">>=
+# I don't want to share my entire Zotero SQLite library file with the world
+# As you can see in the previous chunk, the intersection of the cited works (bcf file)
+# and the Zotero library (SQLite file), is saved to the dataframe zdbcit which is saved
+# to disk.
+zdbcit <- LoadRData2Variable(path = here::here("assets/references/zotero.rda"))
+custom.stopwords <- c(
+   common::numbers2words(seq(1,10)),
+   "1st", "2nd", "3rd", paste0(seq(4,10), "th"),
+   "{001}",
+   "case",
+   "due",
+   "edition",
+   "elicits",
+   "enables",
+   "et",
+   "k",
+   "kll",
+   "l",
+   "mr",
+   "n",
+   "new",
+   "nih",
+   "r4photobiology",
+   "rr",
+   "upon",
+   "using",
+   "used",
+   "use",
+   "versus",
+   "via",
+   "xi",
+   "xii",
+   "xxxi",
+   "zn097fe202o4")
+bcf.titlewords <-
+   zdbcit %>%
+   pull(TITLE) %>%
+   # collapse all article titles into a single string, separated by space
+   stringr::str_flatten(collapse = " ") %>%
+   # remove HTML tags (<span class="nocase">, </span>, <sub>, etc.)
+   # note! I tried to use "<\\/?[\\=\\w\\s"]+>", but never got it to work because the quote inside <...>
+   # was always escaped by R. Easier to just match "any char" inside the brackets.
+   gsub('<\\/?.+?>', '', x = .) %>%
+   # remove punctuation (colon, ampersand, comma, period, parentheses, apostrophes, question mark)
+   gsub("[:&,.)\"('%’‘”“\\?]", "", x = .) %>%
+   # replace other hyphen characters with regular hyphen
+   # + \U002D unicode hyphen minus
+   # + \U2212 unicode minus sign
+   # CAREFUL with the order inside the brackets! Despite not being actual hyphens, seems gsub
+   # happily interprets the whole bracket as a regex range if it gets the chance!
+   gsub("[\U002D\U2212–−‐]", "-", x = .) %>%
+   # replace double or triple-hyphens with single one
+   gsub("---?", "-", x = .) %>%
+   # preserve multi-word phrases (temporarily replace intra-phrase whitespace with plus sign) or
+   # replace word/phrase variations with our canonical version
+   # note: a single plus sign is replaced by space, two plus signs are replaced by a hyphen
+   gsub(pattern = "0[- ]?[Dd][-\\s+]",                       replacement = "low++dimensional", x = .) %>%
+   # 1-D, 1D, or 1 D (or ditto for lower-case) followed by hyphen or one or more spaces
+   gsub(pattern = "1[- ]?[Dd][-\\s+]",                       replacement = "low++dimensional", x = .) %>%
+   gsub(pattern = "2[- ]?[Dd][-\\s+]",                       replacement = "2D", x = .) %>%
+   gsub(pattern = "3[- ]?[Dd][-\\s+]",                       replacement = "3D", x = .) %>%
+   gsub(pattern = "α-Fe[2\U2082]O[3\U2083]",                 replacement = "fe2o3", x = .) %>%
+   gsub(pattern = "[Aa]tomic[- ][Ll]ayer[- ][Dd]eposition",  replacement = "atomic+layer+deposition", x = .) %>%
+   gsub(pattern = "[Bb]and[- ]?[Ee]dges?",                   replacement = "band+edge", x = .) %>%
+   gsub(pattern = "[Bb]and[- ]?[Gg]aps?",                    replacement = "band+gap", x = .) %>%
+   gsub(pattern = "[Cc]admium [Ss]ul(f|ph)ide",              replacement = "cadmium+sulfide", x = .) %>%
+   gsub(pattern = "[Cc]hemical[- ][Bb]ath[- ][Dd]eposition", replacement = "chemical+bath+deposition", x = .) %>%
+   gsub(pattern = "[Cc]limate[- ][Cc]hange",                 replacement = "climate+change", x = .) %>%
+   gsub(pattern = "[Cc]onduction[- ][Bb]ands?",              replacement = "conduction+band", x = .) %>%
+   gsub(pattern = "[Cc]ore[- ]?[Ss]hells?",                  replacement = "core++shell", x = .) %>%
+   gsub(pattern = "[Dd]ye[- ][Ss]ensiti[zs]ed",              replacement = "dye++sensitised", x = .) %>%
+   gsub(pattern = "[Ee]lectrochemical [Dd]eposition",        replacement = "electrodeposition", x = .) %>%
+   gsub(pattern = "[Ee]lectron[- ][Pp]honon",                replacement = "electron++phonon", x = .) %>%
+   gsub(pattern = "[Ee]nergy[- ][Cc]onversion",              replacement = "energy+conversion", x = .) %>%
+   gsub(pattern = "[Ff]lat[- ][Bb]and",                      replacement = "flatband", x = .) %>%
+   gsub(pattern = "[Ff][Tt][- ]?[Ii][Rr]",                   replacement = "ftir", x = .) %>%
+   gsub(pattern = "[Gg]reat[- ][Bb]ritain",                  replacement = "great+britain", x = .) %>%
+   gsub(pattern = "[Hh]igh[- ][Qq]uality",                   replacement = "high+quality", x = .) %>%
+   gsub(pattern = "[Hh]igh[- ][Tt]emperature",               replacement = "high+temperature", x = .) %>%
+   gsub(pattern = "iii[- ]v",                                replacement = "iii++v", x = .) %>%
+   gsub(pattern = "ii[- ]vi",                                replacement = "ii++vi", x = .) %>%
+   gsub(pattern = "[Ii]n[- ]?[Ss]itu",                       replacement = "in+situ", x = .) %>%
+   gsub(pattern = "[Ii]ron[- ]?[Mm]onoxide",                 replacement = "iron+monoxide", x = .) %>%
+   gsub(pattern = "[Ll]ight[- ][Ee]mitting [Dd]iodes?",      replacement = "led", x = .) %>%
+   gsub(pattern = "[Ll]ow[- ]?[Dd]imensional",               replacement = "low++dimensional", x = .) %>%
+   gsub(pattern = "[Mm]ethylene [Bb]lue",                    replacement = "methylene+blue", x = .) %>%
+   gsub(pattern = "n-type",                                  replacement = "n++type", x = .) %>%
+   gsub(pattern = "[Oo]ne[- ]?[Dd]imensional",               replacement = "low++dimensional", x = .) %>%
+   gsub(pattern = "[Pp]honon[- ][Pp]honon",                  replacement = "phonon++phonon", x = .) %>%
+   gsub(pattern = "[Pp]hoto-?catalytic [Dd]egradation",      replacement = "photocatalytic+degradation", x = .) %>%
+   gsub(pattern = "[Pp]hoto-?electrochemical [Cc]ells?",     replacement = "photoelectrochemical+cell", x = .) %>%
+   gsub(pattern = "[Pp]hoto-?electrolysis [Cc]ells?",        replacement = "photoelectrolysis+cell", x = .) %>%
+   gsub(pattern = "[Pp]owder[- ]?[Dd]iffraction",            replacement = "powder+diffraction", x = .) %>%
+   gsub(pattern = "p-type",                                  replacement = "p++type", x = .) %>%
+   gsub(pattern = "[Qq]uantum[- ][Cc]onfinement",            replacement = "quantum+confinement", x = .) %>%
+   gsub(pattern = "[Qq]uantum[- ][Dd]ots?",                  replacement = "quantum+dot", x = .) %>%
+   gsub(pattern = "[Rr]esonance[- ][Rr]aman",                replacement = "resonance+raman", x = .) %>%
+   gsub(pattern = "[Ss]ize[- ][Dd]ependent",                 replacement = "size++dependent", x = .) %>%
+   gsub(pattern = "[Ss]olar [Cc]ells?",                      replacement = "solar+cell", x = .) %>%
+   gsub(pattern = "[Ss]ol[- ][Gg]els?",                      replacement = "sol++gel", x = .) %>%
+   gsub(pattern = "[Ss]olar[- ][Hh]ydrogen",                 replacement = "solar+hydrogen", x = .) %>%
+   gsub(pattern = "[Ss]olar[- ]to[- ][Hh]ydrogen",           replacement = "solar++to++hydrogen", x = .) %>%
+   gsub(pattern = "[Ss]trontium [Tt]itanate",                replacement = "strontium+titanate", x = .) %>%
+   gsub(pattern = "[Tt]hin[- ][Ff]ilms?",                    replacement = "thin+film", x = .) %>%
+   gsub(pattern = "[Tt]hree[- ]?[Dd]imensional",             replacement = "3D", x = .) %>%
+   gsub(pattern = "[Tt]itania",                              replacement = "titanium+dioxide", x = .) %>%
+   gsub(pattern = "[Tt]itanium [Aa]lkoxide",                 replacement = "titanium+alkoxide", x = .) %>%
+   gsub(pattern = "[Tt]itanium [Dd]ioxide",                  replacement = "titanium+dioxide", x = .) %>%
+   gsub(pattern = "[Tt]itanium [Oo]xide",                    replacement = "titanium+dioxide", x = .) %>%
+   gsub(pattern = "[Tt]wo[- ]?[Dd]imensional",               replacement = "2D", x = .) %>%
+   gsub(pattern = "[Uu]ltra[- ][Tt]hin[- ][Ff]ilms?",        replacement = "ultra++thin+film", x = .) %>%
+   gsub(pattern = "[Vv]alence[- ][Bb]ands?",                 replacement = "valence+band", x = .) %>%
+   gsub(pattern = "[Vv]isible[- ][Ll]ight",                  replacement = "visible+light", x = .) %>%
+   gsub(pattern = "[Ww]ater[- ]?[Ss]plitting",               replacement = "water+splitting", x = .) %>%
+   gsub(pattern = "[Ww]ave-?[Ll]ength",                      replacement = "wavelength", x = .) %>%
+   gsub(pattern = "[Xx]-?[Rr]ays?",                          replacement = "x++ray", x = .) %>%
+   gsub(pattern = "[Zz]ero[- ]?[Dd]imensional",              replacement = "low++dimensional", x = .) %>%
+   gsub(pattern = "[Zz]inc [Dd]ioxide",                      replacement = "zinc+oxide", x = .) %>%
+   gsub(pattern = "[Zz]inc [Ff]errite",                      replacement = "zinc+ferrite", x = .) %>%
+   gsub(pattern = "[Zz]inc [Oo]xide",                        replacement = "zinc+oxide", x = .) %>%
+   # replace remaining space, hyphen or forward slash (not "+") with space
+   # (str_split returns an array of vectors in a list)
+   # regex pitfall: don't put hyphen in between two other chars - defines a range, not what we want!
+   stringr::str_split(pattern = "[/ -]") %>%
+   # convert list back to vector!
+   unlist(use.names = FALSE) %>%
+   # replace the plus-signs with whitespace again (double-plus replaced with hyphen)
+   gsub("++", "-", x = ., fixed = TRUE) %>%
+   gsub("+", " ", x = ., fixed = TRUE) %>%
+   # enframe returns a tibble with two columns, "nrow" and "words"
+   tibble::enframe(x = ., name = "nrow", value = "words") %>%
+   select(words) %>%
+   # convert everything to lowercase, then remove common stop-words
+   mutate(words = stringr::str_to_lower(words)) %>%
+   # remove common stopwords
+   filter(!(words %in% tm::stopwords("english"))) %>%
+   # remove custom stopwords and other unimportant words
+   filter(!(words %in% custom.stopwords)) %>%
+   # remove words that are just numbers (produces warning: "NAs introduced by coercion", which we suppress)
+   # https://stackoverflow.com/questions/35924707/checking-if-vector-components-are-numeric
+   filter(is.na(suppressWarnings(as.numeric(words)))) %>%
+   # remove empty strings (probably introduced when we replaced hyphens)
+   filter(words != "") %>%
+   # adjust commonly occurring chemical formulae to our canonical version
+   # note: since we have reset all words to lower-case above, we at least need to add back correct capitalisation
+   mutate(words = gsub(pattern = "^ag$", replacement = "Ag", x = words)) %>%
+   mutate(words = gsub(pattern = "^al$", replacement = "Al", x = words)) %>%
+   mutate(words = gsub(pattern = "^al[2\U2082]o[3\U2083]", replacement = "Al\U2082O\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^alumina", replacement = "Al\U2082O\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^corundum$", replacement = "Al\U2082O\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^ammonia$", replacement = "NH\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^au$", replacement = "Au", x = words)) %>%
+   mutate(words = gsub(pattern = "^gold$", replacement = "Au", x = words)) %>%
+   mutate(words = gsub(pattern = "^cadmium sulfide$", replacement = "CdS", x = words)) %>%
+   mutate(words = gsub(pattern = "^carbon dioxide$", replacement = "CO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^cds$", replacement = "CdS", x = words)) %>%
+   mutate(words = gsub(pattern = "^cdse$", replacement = "CdSe", x = words)) %>%
+   mutate(words = gsub(pattern = "^cadmium$", replacement = "Cd", x = words)) %>%
+   mutate(words = gsub(pattern = "^co[2\U2082]$", replacement = "CO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^fes2$", replacement = "FeS\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^fto$", replacement = "FTO", x = words)) %>%
+   mutate(words = gsub(pattern = "^gallium$", replacement = "Ga", x = words)) %>%
+   mutate(words = gsub(pattern = "^gap$", replacement = "GaP", x = words)) %>%
+   mutate(words = gsub(pattern = "^h[ae]?ematite", replacement = "hematite", x = words)) %>%
+   mutate(words = gsub(pattern = "^hydrogen", replacement = "H\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "iii-v", replacement = "III-V", x = words)) %>%
+   mutate(words = gsub(pattern = "ii-vi", replacement = "II-VI", x = words)) %>%
+   mutate(words = gsub(pattern = "^iron$", replacement = "Fe", x = words)) %>%
+   mutate(words = gsub(pattern = "^iron monoxide$", replacement = "FeO", x = words)) %>%
+   mutate(words = gsub(pattern = "^ito$", replacement = "ITO", x = words)) %>%
+   mutate(words = gsub(pattern = "^magh[ae]?emite", replacement = "maghemite", x = words)) %>%
+   mutate(words = gsub(pattern = "^magnesium", replacement = "Mg", x = words)) %>%
+   mutate(words = gsub(pattern = "^magnetite", replacement = "magnetite", x = words)) %>%
+   mutate(words = gsub(pattern = "^iron oxide", replacement = "fe2o3", x = words)) %>%
+   mutate(words = gsub(pattern = "fe[2\U2082]o[3\U2083]", replacement = "Fe\U2082O\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "fe2o3", replacement = "Fe\U2082O\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^pbs", replacement = "PbS", x = words)) %>%
+   mutate(words = gsub(pattern = "^pt$", replacement = "Pt", x = words)) %>%
+   mutate(words = gsub(pattern = "^ru$", replacement = "Ru", x = words)) %>%
+   mutate(words = gsub(pattern = "ruo[2\U2082]", replacement = "RuO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^selenium$", replacement = "Se", x = words)) %>%
+   mutate(words = gsub(pattern = "^sic$", replacement = "SiC", x = words)) %>%
+   mutate(words = gsub(pattern = "^silicon$", replacement = "Si", x = words)) %>%
+   mutate(words = gsub(pattern = "^sio[2\U2082]", replacement = "SiO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^sno[2\U2082]", replacement = "SnO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^ta[2\U2082]o[5\U2085]$", replacement = "Ta\U2082O\U2085", x = words)) %>%
+   mutate(words = gsub(pattern = "^ta[3\U2083]n[5\U2085]$", replacement = "Ta\U2083N\U2085", x = words)) %>%
+   mutate(words = gsub(pattern = "^taon$", replacement = "TaON", x = words)) %>%
+   mutate(words = gsub(pattern = "^tio[2\U2082]$", replacement = "TiO\U2082", x = words)) %>%
+   # created by lower-casing and removing parentheses from Ti(IV)
+   mutate(words = gsub(pattern = "^tiiv$", replacement = "Ti", x = words)) %>%
+   mutate(words = gsub(pattern = "^titanium dioxide$", replacement = "TiO\U2082", x = words)) %>%
+   mutate(words = gsub(pattern = "^water$", replacement = "H\U2082O", x = words)) %>%
+   mutate(words = gsub(pattern = "^wo[3\U2083]$", replacement = "WO\U2083", x = words)) %>%
+   mutate(words = gsub(pattern = "^w[uü]rtzite", replacement = "ZnO", x = words)) %>%
+   mutate(words = gsub(pattern = "^zno.*", replacement = "ZnO", x = words)) %>%
+   mutate(words = gsub(pattern = "^zincite", replacement = "ZnO", x = words)) %>%
+   mutate(words = gsub(pattern = "^zinc oxide.*", replacement = "ZnO", x = words)) %>%
+   # plural to singular or vice versa (whichever we want to keep)
+   mutate(words = gsub(pattern = "^agents$", replacement = "agent", x = words)) %>%
+   mutate(words = gsub(pattern = "^anodes$", replacement = "anode", x = words)) %>%
+   mutate(words = gsub(pattern = "^applications$", replacement = "application", x = words)) %>%
+   mutate(words = gsub(pattern = "^arrays$", replacement = "array", x = words)) %>%
+   mutate(words = gsub(pattern = "^atoms$", replacement = "atom", x = words)) %>%
+   mutate(words = gsub(pattern = "^bands$", replacement = "band", x = words)) %>%
+   mutate(words = gsub(pattern = "^baths$", replacement = "bath", x = words)) %>%
+   mutate(words = gsub(pattern = "^benefits$", replacement = "benefit", x = words)) %>%
+   mutate(words = gsub(pattern = "^bohrs$", replacement = "Bohr", x = words)) %>%
+   mutate(words = gsub(pattern = "^bonds$", replacement = "bond", x = words)) %>%
+   mutate(words = gsub(pattern = "^boundaries$", replacement = "boundary", x = words)) %>%
+   mutate(words = gsub(pattern = "^catalysts$", replacement = "catalyst", x = words)) %>%
+   mutate(words = gsub(pattern = "^cells$", replacement = "cell", x = words)) %>%
+   mutate(words = gsub(pattern = "^chemicals$", replacement = "chemical", x = words)) %>%
+   mutate(words = gsub(pattern = "^colloidal$", replacement = "colloids", x = words)) %>%
+   mutate(words = gsub(pattern = "^colou?rs?$", replacement = "colour", x = words)) %>%
+   mutate(words = gsub(pattern = "^complexes$", replacement = "complex", x = words)) %>%
+   mutate(words = gsub(pattern = "^conditions$", replacement = "condition", x = words)) %>%
+   mutate(words = gsub(pattern = "^contributions$", replacement = "contribution", x = words)) %>%
+   mutate(words = gsub(pattern = "^crystals$", replacement = "crystal", x = words)) %>%
+   mutate(words = gsub(pattern = "^defects$", replacement = "defect", x = words)) %>%
+   mutate(words = gsub(pattern = "^developments", replacement = "development", x = words)) %>%
+   mutate(words = gsub(pattern = "^devices", replacement = "device", x = words)) %>%
+   mutate(words = gsub(pattern = "^diffractograms", replacement = "diffractogram", x = words)) %>%
+   mutate(words = gsub(pattern = "^dyes$", replacement = "dye", x = words)) %>%
+   mutate(words = gsub(pattern = "^earths$", replacement = "Earth", x = words)) %>%
+   mutate(words = gsub(pattern = "^effects$", replacement = "effect", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrocatalysts$", replacement = "electrocatalyst", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrodes$", replacement = "electrode", x = words)) %>%
+   mutate(words = gsub(pattern = "^electronics$", replacement = "electronic", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrons$", replacement = "electron", x = words)) %>%
+   mutate(words = gsub(pattern = "^emission$", replacement = "emissions", x = words)) %>%
+   mutate(words = gsub(pattern = "^energies$", replacement = "energy", x = words)) %>%
+   mutate(words = gsub(pattern = "^excitons$", replacement = "exciton", x = words)) %>%
+   mutate(words = gsub(pattern = "^films$", replacement = "film", x = words)) %>%
+   mutate(words = gsub(pattern = "^functions$", replacement = "function", x = words)) %>%
+   mutate(words = gsub(pattern = "^heterojunctions$", replacement = "heterojunction", x = words)) %>%
+   mutate(words = gsub(pattern = "^heterostructures$", replacement = "heterostructure", x = words)) %>%
+   mutate(words = gsub(pattern = "^hybrids$", replacement = "hybrid", x = words)) %>%
+   mutate(words = gsub(pattern = "^improvements$", replacement = "improvement", x = words)) %>%
+   mutate(words = gsub(pattern = "^interfaces$", replacement = "interface", x = words)) %>%
+   mutate(words = gsub(pattern = "^investigations$", replacement = "investigation", x = words)) %>%
+   mutate(words = gsub(pattern = "^junctions$", replacement = "junction", x = words)) %>%
+   mutate(words = gsub(pattern = "^kinetics$", replacement = "kinetic", x = words)) %>%
+   mutate(words = gsub(pattern = "^layers$", replacement = "layer", x = words)) %>%
+   mutate(words = gsub(pattern = "^levels$", replacement = "level", x = words)) %>%
+   mutate(words = gsub(pattern = "^liquids$", replacement = "liquid", x = words)) %>%
+   mutate(words = gsub(pattern = "^materials$", replacement = "material", x = words)) %>%
+   mutate(words = gsub(pattern = "^matrices$", replacement = "matrix", x = words)) %>%
+   mutate(words = gsub(pattern = "^mechanisms$", replacement = "mechanism", x = words)) %>%
+   mutate(words = gsub(pattern = "^methods$", replacement = "method", x = words)) %>%
+   mutate(words = gsub(pattern = "^measurements$", replacement = "measurement", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanobelts$", replacement = "nanobelt", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanoclusters$", replacement = "nanocluster", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanocrystals$", replacement = "nanocrystal", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanofibers$", replacement = "nanofiber", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanoflowers$", replacement = "nanoflower", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanomaterials$", replacement = "nanomaterial", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanoparticles$", replacement = "nanoparticle", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanopillars$", replacement = "nanopillar", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanorods$", replacement = "nanorod", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanotubes$", replacement = "nanotube", x = words)) %>%
+   mutate(words = gsub(pattern = "^nanowires$", replacement = "nanowire", x = words)) %>%
+   mutate(words = gsub(pattern = "^oxides$", replacement = "oxide", x = words)) %>%
+   mutate(words = gsub(pattern = "^perovskites$", replacement = "perovskite", x = words)) %>%
+   mutate(words = gsub(pattern = "^phonons$", replacement = "phonon", x = words)) %>%
+   mutate(words = gsub(pattern = "^photoanodes$", replacement = "photoanode", x = words)) %>%
+   mutate(words = gsub(pattern = "^photocatalysts$", replacement = "photocatalyst", x = words)) %>%
+   mutate(words = gsub(pattern = "^photoelectrodes$", replacement = "photoelectrode", x = words)) %>%
+   mutate(words = gsub(pattern = "^plasmons$", replacement = "plasmon", x = words)) %>%
+   mutate(words = gsub(pattern = "^pollutants$", replacement = "pollutant", x = words)) %>%
+   mutate(words = gsub(pattern = "^potentials$", replacement = "potential", x = words)) %>%
+   mutate(words = gsub(pattern = "^processes", replacement = "process", x = words)) %>%
+   mutate(words = gsub(pattern = "^reactions$", replacement = "reaction", x = words)) %>%
+   mutate(words = gsub(pattern = "^semiconductors$", replacement = "semiconductor", x = words)) %>%
+   mutate(words = gsub(pattern = "^simulations$", replacement = "simulation", x = words)) %>%
+   mutate(words = gsub(pattern = "^solutions$", replacement = "solution", x = words)) %>%
+   mutate(words = gsub(pattern = "^structures$",  replacement = "structure", x = words)) %>%
+   mutate(words = gsub(pattern = "^studies", replacement = "study", x = words)) %>%
+   mutate(words = gsub(pattern = "^substrates$",  replacement = "substrate", x = words)) %>%
+   mutate(words = gsub(pattern = "^surfaces", replacement = "surface", x = words)) %>%
+   mutate(words = gsub(pattern = "^syntheses$", replacement = "synthesis", x = words)) %>%
+   mutate(words = gsub(pattern = "^systems", replacement = "system", x = words)) %>%
+   mutate(words = gsub(pattern = "^temperatures", replacement = "temperature", x = words)) %>%
+   mutate(words = gsub(pattern = "^transformations", replacement = "transformation", x = words)) %>%
+   mutate(words = gsub(pattern = "^vibrations$", replacement = "vibration", x = words)) %>%
+   # # Other word replacements - change to our canonical version
+   mutate(words = gsub(pattern = "^anodically$", replacement = "anodic", x = words)) %>%
+   mutate(words = gsub(pattern = "^anodization$", replacement = "anodisation", x = words)) %>%
+   mutate(words = gsub(pattern = "^behavior$", replacement = "behaviour", x = words)) %>%
+   mutate(words = gsub(pattern = "^biologically$", replacement = "biology", x = words)) %>%
+   mutate(words = gsub(pattern = "^cathodically$", replacement = "cathodic", x = words)) %>%
+   mutate(words = gsub(pattern = "^characterization$", replacement = "characterisation", x = words)) %>%
+   mutate(words = gsub(pattern = "^complexing$", replacement = "complex", x = words)) %>%
+   mutate(words = gsub(pattern = "^conductive$", replacement = "conductivity", x = words)) %>%
+   mutate(words = gsub(pattern = "^decolorization$", replacement = "decolourisation", x = words)) %>%
+   mutate(words = gsub(pattern = "^dependent$", replacement = "dependence", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrodeposited$", replacement = "electrodeposition", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrodepositing$", replacement = "electrodeposition", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrosynthesi[sz]ed$", replacement = "electrosynthesis", x = words)) %>%
+   mutate(words = gsub(pattern = "^engineered$", replacement = "engineering", x = words)) %>%
+   mutate(words = gsub(pattern = "^environmentally$", replacement = "environmental", x = words)) %>%
+   mutate(words = gsub(pattern = "^growing$", replacement = "growth", x = words)) %>%
+   mutate(words = gsub(pattern = "^grown$", replacement = "growth", x = words)) %>%
+   mutate(words = gsub(pattern = "^hierarchically$", replacement = "hierarchical", x = words)) %>%
+   mutate(words = gsub(pattern = "^hydrophilicity$", replacement = "hydrophilic", x = words)) %>%
+   mutate(words = gsub(pattern = "^improving$", replacement = "improvement", x = words)) %>%
+   mutate(words = gsub(pattern = "^measuring$", replacement = "measurement", x = words)) %>%
+   mutate(words = gsub(pattern = "^resonant$", replacement = "resonance", x = words)) %>%
+   # other capitalisations
+   mutate(words = gsub(pattern = "^3d$", replacement = "3D", x = words)) %>%
+   mutate(words = gsub(pattern = "^atomic layer deposition$", replacement = "ALD", x = words)) %>%
+   mutate(words = gsub(pattern = "^atr$", replacement = "ATR", x = words)) %>%
+   mutate(words = gsub(pattern = "^chemical bath deposition$", replacement = "CBD", x = words)) %>%
+   mutate(words = gsub(pattern = "^electrodeposition$", replacement = "electrodeposition", x = words)) %>%
+   mutate(words = gsub(pattern = "^fityk$", replacement = "Fityk", x = words)) %>%
+   # raman should look for that string everywhere, not only as a separate string
+   # (that is, do not surround the pattern with ^...$)
+   mutate(words = gsub(pattern = "raman", replacement = "Raman", x = words)) %>%
+   mutate(words = gsub(pattern = "fermi", replacement = "Fermi", x = words)) %>%
+   mutate(words = gsub(pattern = "^ftir$", replacement = "FTIR", x = words)) %>%
+   mutate(words = gsub(pattern = "great britain", replacement = "Great Britain", x = words)) %>%
+   mutate(words = gsub(pattern = "^imagej$", replacement = "ImageJ", x = words)) %>%
+   mutate(words = gsub(pattern = "^ir$", replacement = "IR", x = words)) %>%
+   mutate(words = gsub(pattern = "^iupac$", replacement = "IUPAC", x = words)) %>%
+   mutate(words = gsub(pattern = "^jcpds$", replacement = "JCPDS", x = words)) %>%
+   mutate(words = gsub(pattern = "kelvin", replacement = "Kelvin", x = words)) %>%
+   mutate(words = gsub(pattern = "mössbauer", replacement = "Mössbauer", x = words)) %>%
+   mutate(words = gsub(pattern = "tauc", replacement = "Tauc", x = words)) %>%
+   mutate(words = gsub(pattern = "^led$", replacement = "LED", x = words)) %>%
+   mutate(words = gsub(pattern = "^auger$", replacement = "Auger", x = words)) %>%
+   mutate(words = gsub(pattern = "lewis", replacement = "Lewis", x = words)) %>%
+   mutate(words = gsub(pattern = "li-ion", replacement = "Li-ion", x = words)) %>%
+   mutate(words = gsub(pattern = "schottky", replacement = "Schottky", x = words)) %>%
+   mutate(words = gsub(pattern = "^sun$", replacement = "Sun", x = words)) %>%
+   mutate(words = gsub(pattern = "mott-schottky", replacement = "Mott-Schottky", x = words)) %>%
+   mutate(words = gsub(pattern = "^ups$", replacement = "UPS", x = words)) %>%
+   mutate(words = gsub(pattern = "^xps$", replacement = "XPS", x = words)) %>%
+   mutate(words = gsub(pattern = "^van der waals$", replacement = "van der Waals", x = words)) %>%
+   mutate(words = gsub(pattern = "^r$", replacement = "R", x = words)) %>%
+   mutate(words = gsub(pattern = "^kα$", replacement = "Kα", x = words)) %>%
+   # count the frequency so we can sort by it
+   group_by(words) %>%
+   summarise(n = n(), .groups = "keep") %>%
+   arrange(desc(n))
+# print all the words that make up the wordcloud to CSV, for easy access
+# makes it easier to inspect the list of words making up the cloud, identifying flaws in this chunk's logic, etc.
+readr::write_csv(
+   x = bcf.titlewords,
+   file = here::here("assets/rdata/wordcloud.csv"),
+   append = FALSE)
+bcf.number.uniquewords <-
+   bcf.titlewords %>% arrange(words) %>% pull(words) %>% unique() %>% length()
+@
+
+<<'0100-bcf-wordcloud-paths', cache=FALSE>>=
+titlewords_html   <- here::here("figure", "0100-fig-bcf-titlewords.html")
+titlewords_pdf    <- here::here("figure", "0100-fig-bcf-titlewords.pdf")
+@
+
+<<'0100-bcf-wordcloud', cache=FALSE>>=
+# To regenerate the wordcloud (word positions and colours) clear the cache for this chunk
+# Note the use of map(), because rep() did not work (evaluates inner function *before* repeating,
+# but we want to repeat the function call n times). map() returns a list.
+word_colours <- purrr::map(
+   1:length(bcf.titlewords$words),
+   ~ random_hsl_color(10, 50)) %>%
+   unlist()
+# set the 101th word and above to a less visible gray colour (this limit is a matter of aesthetics)
+word_colours[101:length(word_colours)] <- "hsl(0,0%,50%)"
+# create the wordcloud
+bcf_titlewords_cloud <- wordcloud2::wordcloud2(
+   # sqrt() function makes the less-frequent words larger relative to the most frequent words
+   data = bcf.titlewords %>% mutate(n = sqrt(n)),
+   # I tried to simply: rep("random-dark", length(n)) but that produced an empty plot
+   # so I have re-created the color randomiser function and call it n times
+   # in order to be able to use a muted colour for a whole subset of words
+   color = word_colours,
+   # size is a matter of aesthetics
+   # note that less than approx 0.36 causes cloud to not fill out
+   # the entire rectangle (making it look more rounded)
+   size = 0.38)
+# saveWidget() creates HTML file on disk
+htmlwidgets::saveWidget(widget = bcf_titlewords_cloud, file = titlewords_html, selfcontained = FALSE)
+# webshot() converts saved HTML file to PDF
+# (would have been better if we could convert to TeX/TikZ to preserve fonts etc.)
+# the following assignment is to prevent printout of returned string (which we don't care about)
+bcfwebshot <- webshot2::webshot(
+   url = titlewords_html,
+   file = titlewords_pdf,
+   zoom = 2, # visibly improves text resolution
+   # relation between width and height is the golden ratio, 1.61803
+   vwidth = 992,
+   vheight = 613, # 744,
+   # selector = "canvas", # no effect, screenshot is still a US letter portrait page
+   # cliprect = "viewport", # also no effect, screenshot is still a US letter portrait page
+   # a long delay before capturing the screenshot is necessary because
+   # the wordcloud takes several seconds to fully load
+   delay = 20)
+# copy PDF file to assets/images/ for safe-keeping, since figure/ folder is regularly nuked
+file.copy(
+   from = titlewords_pdf,
+   to = here::here("assets/images", basename(titlewords_pdf)),
+   overwrite = TRUE)
+@
+
+
+\begin{figure}[tbp]
+\centering
+<<'0100-fig-wordcloud-titles-cited-works', cache=FALSE, echo=FALSE, results="asis">>=
+titlewords_pdf %>%
+   basename() %>%
+   sub("\\.pdf$", "", x = .) %>%
+   paste0(
+      #                        l     b      r     t
+      "\\includegraphics[trim={1.2cm 14.9cm 1.2cm 1.2cm},clip,width=",
+      opts_chunk$get("out.width"),
+      "]{",
+      .,
+      "}") %>%
+   cat(.)
+@
+\caption[Word cloud of all titles in the bibliography]{%
+   A dynamically generated word cloud of the most common words in all
+   \emph{titles} of works cited in this thesis.
+   The titles form a corpus of \num{\Sexpr{bcf.number.uniquewords}} unique words across
+   \num{\Sexpr{dim(zdbcit)[1]}} cited works.
+   With the \num{100} most frequent words highlighted in colour.}
+\label{fig:0100-wordcloud-thesis-corpus}
+\end{figure}

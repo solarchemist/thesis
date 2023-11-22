@@ -1,0 +1,9 @@
+% \input{assets/code/P25/301-nonresonant.Rnw}
+<<child=here::here('assets/code/P25/301-nonresonant.Rnw'), label='0525P-301-nonresonant'>>=
+@
+
+
+
+% \input{assets/code/P25/302-resonant.Rnw}
+<<child=here::here('assets/code/P25/302-resonant.Rnw'), label='0525P-302-resonant'>>=
+@

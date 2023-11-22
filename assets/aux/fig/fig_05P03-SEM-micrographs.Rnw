@@ -1,0 +1,116 @@
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/1208-7B0504-016}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{1}{\um}}; % scalebar
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{38.63}k}; %Mag
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{3}{\kV}}; % EHT
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{2.9}{\mm}}; %working distance
+    \fill [black] (0.05,-0.03) rectangle (0.05+109/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{ZnO}
+\label{fig:SEM-prePC-ZnO}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/0609-7B0212-002}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{1}{\um}};
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{30.22}k};
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{3}{\kV}};
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{7.9}{\mm}};
+    \fill [black] (0.05,-0.03) rectangle (0.05+86/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{\ch{Fe2O3} 35 ALD cycles}
+\label{fig:SEM-prePC-Fe2O3-35}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/0921-7B0407-001-512px}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    % scalelength divided by half as image cropped by half
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{1}{\um}};
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{3}{\kV}};
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{2.1}{\mm}};
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{11.21}k};
+    \fill [black] (0.05,-0.03) rectangle (0.05+64/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{\ch{Fe2O3} 87 ALD cycles}
+\label{fig:SEM-prePC-Fe2O3-87}
+\end{subfigure}%
+\\%
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/0820-7B0116-002}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{1}{\um}};
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{2}{\kV}};
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{5.9}{\mm}};
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{30.16}k};
+    \fill [black] (0.05,-0.03) rectangle (0.05+86/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{Pre PC, no anneal}
+\label{fig:SEM-87-prePC-noanneal}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/0328-7B0402-006}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{200}{\nm}};
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{3}{\kV}};
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{2.8}{\mm}};
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{76.19}k};
+    \fill [black] (0.05,-0.03) rectangle (0.05+54/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{Post anneal}
+\label{fig:SEM-87-prePC-postanneal}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.31\textwidth}
+\centering
+\begin{tikzpicture}
+  \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{results/P03/SEM/0318-7B0407-003}};
+  \begin{scope}[x={(image.south east)},y={(image.north west)},inner sep=0pt,text=black,font=\tiny]
+    % \draw[help lines,xstep=.1,ystep=.1] (0,-0.1) grid (1,1);
+    \node (scalelength) [anchor=west] at (0.05,-0.06) {\qty{200}{\nm}};
+    \node (EHT) [anchor=center] at (0.61,-0.06) {\faBolt\,\qty{12}{\kV}};
+    \node (WD) [anchor=east] at (0.95,-0.06) {\faMicroscope\,\qty{8.9}{\mm}};
+    \node (mag) [anchor=center] at (0.39,-0.06) {\faTimes\,\num{154.95}k};
+    \fill [black] (0.05,-0.03) rectangle (0.05+108/1024,-0.03+0.02);
+  \end{scope}
+\end{tikzpicture}
+\caption{Post broadband PC}
+\label{fig:SEM-post-broadbandPC}
+\end{subfigure}%
+\caption[SEM micrographs \ch{ZnO}/\ch{Fe2O3} nanorods]{%
+  Top row: \protect\gls{SEM} micrographs of photocatalyst before \protect\gls{PC},
+  (\subref{fig:SEM-prePC-ZnO}) \ZnO\ nanorods prior to \ironox-coating, and
+  (\subref{fig:SEM-prePC-Fe2O3-35}) after 35 cycles and
+  (\subref{fig:SEM-prePC-Fe2O3-87}) 87 cycles.
+  Bottom row: a specimen
+  (\subref{fig:SEM-87-prePC-noanneal}) before annealing,
+  (\subref{fig:SEM-87-prePC-postanneal}) after annealing, and
+  (\subref{fig:SEM-post-broadbandPC}) after broadband irradiation during a \protect\gls{PC} experiment.
+}
+\label{fig:SEM-87-all-steps}
+\end{figure}

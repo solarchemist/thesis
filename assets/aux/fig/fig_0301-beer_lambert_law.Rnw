@@ -1,0 +1,74 @@
+%%%%%%%%%%%%%%
+% PARAMETERS %
+%%%%%%%%%%%%%%
+\definecolor{LBParticlesColor}{RGB}{193,154,107} % Particles color
+\def\cols{15}                        % Number of columns
+\def\rows{30}                        % Number of rows
+\def\SquareUnit{.25}                 % Lengths of unit square edges (cm)
+\pgfmathsetmacro\RmaxParticle{.1}    % Maximum particle radius
+\def\BeforeLight{3}                  % Light path before particle cloud
+
+\begin{tikzpicture}[%
+   scale = 0.75,%
+   font=\scriptsize,%
+   x = \SquareUnit cm,%
+   y = \SquareUnit cm,%
+   line width = 1pt]
+
+%%%%%%%%%%%%%%
+% LIGHT PATH %
+%%%%%%%%%%%%%%
+%-> Before particles cloud
+\draw[%
+   red,
+   decoration = {markings, mark = at position 0.8 with {\arrow[]{latex}}},
+   postaction = {decorate}] %
+   (-\BeforeLight,{\rows*\SquareUnit/2})--++(\BeforeLight,0) node[midway, above, black]{$I_0$};
+
+%-> Trespassing particles cloud
+\draw[%
+   decoration = {color change, start color = red, end color = red!20!white},
+   decorate] (0,{\rows*\SquareUnit/2})--++(\cols*\SquareUnit,0);
+
+%-> After particles cloud
+\draw[%
+   red!20!white,
+   decoration = {markings, mark = at position 0.8 with {\arrow[]{latex}}},
+   postaction = {decorate}] %
+   ({\cols*\SquareUnit},{\rows*\SquareUnit/2})--++
+   (\BeforeLight,0) node[midway, above, black]{$I$};
+
+%%%%%%%%%%%%%%%%%%%
+% PARTICLES CLOUD %
+%%%%%%%%%%%%%%%%%%%
+%-> Lua version (FASTER)
+\foreach \i in {1,...,\cols}{
+   \foreach \j in {1,...,\rows}{
+      \edef\radius{\pr{\RmaxParticle*math.random()}}
+      \edef\l{\pr{\SquareUnit-2*\radius}}
+      \edef\x{\pr{(\i-1)*\SquareUnit+\radius+\l*math.random()}}
+      \edef\y{\pr{(\j-1)*\SquareUnit+\radius+\l*math.random()}}
+      \fill[LBParticlesColor] (\x,\y) circle[radius=\radius];
+   }
+}
+
+%-> pgfmath version (uncomment it if you want to try)
+% Some time compilation gives too high number computation problem
+% \foreach \i in {1,...,\cols}{
+% 	\foreach \j in {1,...,\rows}{
+%       \pgfmathsetmacro\radius{\RmaxParticle*\rnd}
+%       \pgfmathsetmacro\l{\SquareUnit-2*\radius}
+%       \pgfmathsetmacro\x{(\i-1)*\SquareUnit+\radius+\l*\rnd}
+%       \pgfmathsetmacro\y{(\j-1)*\SquareUnit+\radius+\l*\rnd}
+%       \fill[LBParticlesColor] (\x,\y) circle[radius=\radius];
+%    }
+% }
+
+%%%%%%%%%%%%%%%%%%
+% LENGTH QUOTING %
+%%%%%%%%%%%%%%%%%%
+\draw[|<->|, > = latex, line width = .8pt,black] %
+   ($(0,\rows*\SquareUnit)+(0,1)$)--++
+   (\cols*\SquareUnit,0) node[midway, above]{$L$};
+
+\end{tikzpicture}

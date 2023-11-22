@@ -1,0 +1,609 @@
+% For symbols, there are two entry types: @symbol and @number.
+% The required fields are `name` or `parent`. If the `name` is missing, then
+% `description` is also required.
+
+% Descriptions should not end with punctuation (this is better left to LaTeX to manage).
+
+
+<<'glossary-symbols', echo=FALSE, cache=FALSE>>=
+# I have inserted an empty group in front of symbol names using math in order
+# to protect those symbols from automated case-changing by glossaries commands.
+# https://github.com/nlct/bib2gls/blob/730f91a7ba62cbc038a5f547ed17785f2227bbb2/src/doc/bib2gls-begin.tex#L2736
+gls.symbols <- dplyr::bind_rows(
+tibble(
+   BIBTEXKEY = "absorbance",
+   NAME = "{}\\ensuremath{A}",
+   SORT = "absorbance",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{absorbance}, the decadic logarithm of the incident spectral radiant power divided by the",
+      "transmitted spectral radiant power, $A=\\log\\left(\\frac{I_0}{I}\\right)$, assuming",
+      "reflection or scattering is negligible \\cite{Braslavsky2007,Cohen2008,IUPAC2012,Verhoeven1996}"
+   ),
+   TEXT = "absorbance",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "absorbance, \\ensuremath{A}"),
+tibble(
+   BIBTEXKEY = "absorption_coefficient",
+   NAME = "{}\\ensuremath{\\alpha}",
+   SORT = "absorption coefficient",
+   SEE = "absorbance",
+   DESCRIPTION = paste(
+      "\\emph{absorption coefficient}, energy absorbed per unit time and unit volume divided by the",
+      "incoming energy flux in a media \\cite{Edvinsson2018}.",
+      "It expresses the extent to which incident light is damped as it passes through a material"
+   ),
+   TEXT = "absorption coefficient",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "absorption coefficient, \\ensuremath{\\alpha}"),
+tibble(
+   BIBTEXKEY = "absolute_temperature",
+   NAME = "{}\\ensuremath{T}",
+   SORT = "temperature, absolute",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{absolute temperature} on the Kelvin scale, where \\num{0} is at absolute zero"
+   ),
+   TEXT = "absolute temperature",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\kelvin",
+   FIRST = "absolute temperature, \\ensuremath{T}"),
+tibble(
+   BIBTEXKEY = "band_gap",
+   NAME = "{}\\ensuremath{E_\\mathrm{g}}",
+   SORT = "band gap",
+   SEE = "VB,CB",
+   DESCRIPTION = paste(
+      "\\emph{band gap}, the energy separating the top of the valence band",
+      "from the bottom of the conduction band. In semiconductors and insulators",
+      "the band gap is an interval where electronic states are forbidden"
+   ),
+   TEXT = "\\Eg{}",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\eV",
+   FIRST = "band gap, \\ensuremath{E_\\mathrm{g}}"),
+tibble(
+   BIBTEXKEY = "binding_energy",
+   NAME = "{}\\ensuremath{E_\\mathrm{B}}",
+   SORT = "binding energy",
+   SEE = "PES,BE",
+   DESCRIPTION = paste(
+      "\\emph{binding energy}, the difference between the total energy of the system",
+      "before and after emission of a core-level electron"
+   ),
+   TEXT = "binding energy",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\eV",
+   FIRST = "binding energy, \\ensuremath{E_\\mathrm{B}}"),
+tibble(
+   BIBTEXKEY = "exciton_Bohr_radius",
+   NAME = "{}\\ensuremath{a_\\mathrm{B}}",
+   SORT = "Bohr radius",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{exciton Bohr radius}, the radius of the exciton in a bulk semiconductor.",
+      "Not to be confused with the Bohr radius,",
+      "$a_0=\\qty{",
+      formatC(1e10 * as.numeric(syms$bohrrada0), format = "f", digits = 3),
+      # below works, but looks unwieldy and in m instead of nm or Å (necessary to show error on the last digit)
+      # common::siunitx.uncertainty(
+      #    syms$bohrrada0 %>% as.numeric(),
+      #    syms_with_errors$bohrrada0 %>% errors(),
+      #    digits = 10)["siunitx"] %>% unname(),
+      "}{\\angstrom}$,",
+      "which is the most probable distance",
+      "between the nucleus and \\ch{\\electron} in a \\ch{H} atom"
+   ),
+   TEXT = "exciton Bohr radius",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\nm",
+   FIRST = "exciton Bohr radius, \\ensuremath{a_\\mathrm{B}}"),
+tibble(
+   BIBTEXKEY = "Boltzmann_constant",
+   NAME = "{}\\ensuremath{k}",
+   SORT = "Boltzmann constant",
+   SEE = "",
+   DESCRIPTION = paste(
+      "the \\emph{Boltzmann constant}",
+      "is a proportionality factor that relates the average thermal energy of particles",
+      "in a gas with the thermodynamic temperature of the gas"
+   ),
+   TEXT = "Boltzmann constant",
+   EXACT = "1",
+   VALUE = as.character(print(syms$k, digits=7)),
+   UNIT = "\\joule\\per\\kelvin",
+   FIRST = "Boltzmann constant, \\ensuremath{k}"),
+tibble(
+   BIBTEXKEY = "electron_mass",
+   NAME = "{}\\ensuremath{m_\\mathrm{e}}",
+   SORT = "electron mass",
+   SEE = "",
+   # https://en.wikipedia.org/wiki/Electron_mass
+   DESCRIPTION = paste(
+      "\\emph{mass of a stationary electron},",
+      "also known as the invariant mass of the electron"
+   ),
+   TEXT = "electron mass",
+   EXACT = "",
+   # function that prints value with with error in LaTeX/siunitx syntax
+   # https://github.com/solarchemist/R-common/blob/master/R/siunitx.R
+   VALUE = common::siunitx.uncertainty(
+      syms$me %>% as.numeric(),
+      syms_with_errors$me %>% errors(),
+      digits = 10)["siunitx"] %>% unname(),
+   UNIT = "\\kg",
+   FIRST = "electron mass, \\ensuremath{m_\\mathrm{e}}"),
+tibble(
+   BIBTEXKEY = "elementary_charge",
+   NAME = "{}\\ensuremath{q_\\mathrm{e}}",
+   SORT = "elementary charge",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{elementary charge}, the negative electric charge carried by a single electron"
+   ),
+   TEXT = "elementary charge",
+   EXACT = "1",
+   VALUE = as.character(print(syms$e, digits=9)),
+   UNIT = "\\coulomb",
+   FIRST = "elementary charge, \\ensuremath{q_\\mathrm{e}}"),
+# tibble(
+#    BIBTEXKEY = "Fermi_function",
+#    NAME = "{}\\ensuremath{f(E)}",
+#    SORT = "Fermi function",
+#    SEE = "",
+#    DESCRIPTION = paste(
+#       "the Fermi function gives the probability that a given available",
+#       "electron energy state will be occupied at a given temperature",
+#       "$f(E) = \\frac{1}{\\exp\\left(\\frac{E - \\glsname{Fermi_level}}{kT}\\right) + 1}$"
+#    ),
+#    TEXT = "Fermi function",
+#    EXACT = "",
+#    VALUE = "",
+#    UNIT = "",
+#    FIRST = "Fermi function, \\ensuremath{f(E)}"),
+# https://eng.libretexts.org/Bookshelves/Materials_Science/Supplemental_Modules_(Materials_Science)/Semiconductors/Fermi_level
+# Note on choice of symbol: I seriously considered using \varepsilon instead of E_F, but decided against
+# because \varepsilon is already used by molar attenuation coeff, which is very established usage
+# I don't think use of varepsilon letter for Fermi level as common.
+tibble(
+   BIBTEXKEY = "Fermi_level",
+   NAME = "{}\\ensuremath{E_\\mathrm{F}}",
+   SORT = "Fermi level",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{Fermi level}, the energy at which all of the lower energy states of",
+      "a material at \\qty{0}{\\kelvin} are occupied while all of the",
+      "higher states are unoccupied. At non-zero temperatures it is",
+      "the energy level at which a state has \\qty{50}{\\percent} chance",
+      "of being occupied"
+   ),
+   TEXT = "Fermi level",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\eV",
+   FIRST = "Fermi level, \\ensuremath{E_\\mathrm{F}}"),
+tibble(
+   BIBTEXKEY = "flatband_potential",
+   NAME = "{}\\ensuremath{E_\\mathrm{fb}}",
+   SORT = "flatband potential",
+   SEE = "Fermi_level",
+   # https://en.wikipedia.org/wiki/Flat_band_potential
+   DESCRIPTION = paste(
+      "\\emph{flatband potential} of a semiconductor,",
+      "potential where the Fermi level of the semiconductor",
+      "must be equal to the redox Fermi level of the electrolyte"
+   ),
+   TEXT = "flatband potential",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "flatband potential, \\ensuremath{E_\\mathrm{fb}}"),
+tibble(
+   BIBTEXKEY = "frequency",
+   NAME = "{}\\ensuremath{\\nu}",
+   SORT = "frequency",
+   SEE = "wavelength",
+   DESCRIPTION = paste(
+      "\\emph{frequency} of electromagnetic radiation (the inverse of wavelength)"
+   ),
+   TEXT = "frequency",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\Hz",
+   FIRST = "frequency, \\ensuremath{\\nu}"),
+# tibble(
+#    BIBTEXKEY = "Gibbs_energy",
+#    NAME = "\\state[superscript={}]{G}",
+#    SORT = "Gibbs energy",
+#    SEE = "",
+#    DESCRIPTION = paste(
+#       "Gibbs energy, the thermodynamic maximum reversible work",
+#       "at constant temperature and pressure"
+#    ),
+#    TEXT = "Gibbs energy",
+#    EXACT = "",
+#    VALUE = "",
+#    UNIT = "",
+#    FIRST = "Gibbs energy, \\state{G}"),
+tibble(
+   BIBTEXKEY = "kinetic_energy",
+   NAME = "{}\\ensuremath{E_\\mathrm{k}}",
+   SORT = "kinetic energy",
+   SEE = "work_function,PES",
+   DESCRIPTION = paste(
+      "\\emph{kinetic energy}, the amount of momentum owned by an emitted electron",
+      "in a \\glsname{PES} experiment. Read \\cite{Greczynski2023} for details"
+   ),
+   TEXT = "kinetic energy",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\eV",
+   FIRST = "kinetic energy, \\ensuremath{E_\\mathrm{k}}"),
+# tibble(
+#    BIBTEXKEY = "molar_attenuation_coefficient",
+#    NAME = "{}\\ensuremath{\\varepsilon}",
+#    SORT = "coefficient, molar attenuation",
+#    SEE = "",
+#    DESCRIPTION = paste(
+#       "molar attenuation coefficient, also known as",
+#       "the molar extinction coefficient or molar absorptivity"
+#    ),
+#    TEXT = "molar attenuation coefficient",
+#    EXACT = "",
+#    VALUE = "",
+#    UNIT = "\\litre\\per\\mol\\per\\cm",
+#    FIRST = "molar attenuation coefficient, \\ensuremath{\\varepsilon}"),
+tibble(
+   BIBTEXKEY = "molar_mass",
+   NAME = "{}\\ensuremath{M}",
+   SORT = "mass, molar",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{molar mass}, formerly known as formula weight, is the mass of a sample",
+      "of a compound divided by the amount of substance in that sample.",
+      "It is different from the molecular mass, which is the mass of a given molecule"
+   ),
+   TEXT = "molar mass",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\gram\\per\\mol",
+   FIRST = ""),
+tibble(
+   BIBTEXKEY = "Planck_constant",
+   NAME = "{}\\ensuremath{h}",
+   SORT = "Planck constant",
+   SEE = "",
+   # https://en.wikipedia.org/wiki/Planck_constant
+   # https://physics.stackexchange.com/questions/598464/what-exactly-is-plancks-constant-how-did-they-calculate-it
+   DESCRIPTION = paste(
+      "\\emph{Planck constant}, a proportionality constant relating a photon's",
+      "energy to its frequency, and foundational to the quantization of light and matter.",
+      "The so called \\emph{reduced Planck constant} is $\\hbar = h / 2\\pi$"
+   ),
+   TEXT = "Planck constant",
+   EXACT = "1",
+   VALUE = as.character(print(syms$h, digits=9)),
+   UNIT = "\\joule\\second",
+   FIRST = "Planck constant, \\ensuremath{h}"),
+# tibble(
+#    BIBTEXKEY = "Planck_constant_in_eVs",
+#    NAME = "{}\\ensuremath{h}",
+#    SORT = "Planck constant, eVs",
+#    SEE = "",
+#    DESCRIPTION = paste(
+#       "Planck constant in \\unit{\\eV\\second}, derived",
+#       "$h/\\unit{\\eV\\second}=(h/\\unit{\\joule\\second})/(q_\\mathrm{e}/\\unit{\\coulomb})$"
+#    ),
+#    TEXT = "Planck constant",
+#    EXACT = "1",
+#    VALUE = as.character(print(syms$hev, digits=9)),
+#    UNIT = "\\eV\\second",
+#    FIRST = "Planck constant, \\ensuremath{h}"),
+tibble(
+   BIBTEXKEY = "raman_shift",
+   NAME = "{}\\ensuremath{\\Omega}",
+   SORT = "Raman shift",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{Raman shift} is a relative measure of the energy or frequency",
+      "\\emph{difference} between the Rayleigh line and the observed Raman scattering"
+   ),
+   TEXT = "\\ensuremath{\\Omega}",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\per\\cm",
+   FIRST = "\\ensuremath{\\Omega}"),
+tibble(
+   BIBTEXKEY = "relative_permittivity",
+   NAME = "{}\\ensuremath{\\varepsilon_\\mathrm{r}}",
+   SORT = "constant, dielectric",
+   SEE = "vacuum_permittivity",
+   DESCRIPTION = paste(
+      "\\emph{relative permittivity} (dielectric constant) of a material,",
+      "ratio of the frequency-dependent permittivity of the material and",
+      "the vacuum permittivity"
+   ),
+   TEXT = "relative permittivity",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "relative permittivity, \\ensuremath{\\varepsilon_\\mathrm{r}}"),
+tibble(
+   BIBTEXKEY = "irradiance",
+   NAME = "{}\\ensuremath{I}",
+   SORT = "irradiance",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{irradiance} or \\emph{intensity} is the radiation power per area that",
+      "is received at a surface. This notation is commonly used in applications",
+      "involving collimated beams of light, such as spectrometric analysis \\cite{Cohen2008}"
+   ),
+   TEXT = "irradiance",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "irradiance, \\ensuremath{I}"),
+tibble(
+   BIBTEXKEY = "photon_flux",
+   NAME = "{}\\ensuremath{\\Phi}",
+   SORT = "photon flux",
+   DESCRIPTION = paste(
+      "\\emph{photon flux}, the number of photons incident on a surface per unit time per unit area"
+   ),
+   TEXT = "photon flux",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\per\\second\\per\\square\\metre",
+   FIRST = "photon flux, \\ensuremath{\\Phi}"),
+tibble(
+   BIBTEXKEY = "reflectance",
+   NAME = "{}\\ensuremath{R}",
+   SORT = "reflectance",
+   SEE = "",
+   DESCRIPTION = paste(
+      "specular \\emph{reflectance}, usually in terms of an optically thin film.",
+      "See \\cref{methods:uvvis-spectroscopy}"
+   ),
+   TEXT = "reflectance",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\percent",
+   FIRST = "reflectance, \\ensuremath{R}"),
+tibble(
+   BIBTEXKEY = "scattering",
+   NAME = "{}\\ensuremath{S}",
+   SORT = "scattering",
+   SEE = "",
+   DESCRIPTION = paste(
+      "diffuse \\emph{scattering}, usually in terms of an optically thin film.",
+      "See \\cref{methods:uvvis-spectroscopy}"
+   ),
+   TEXT = "scattering",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "scattering, \\ensuremath{S}"),
+tibble(
+   BIBTEXKEY = "solubility_product",
+   NAME = "{}\\ensuremath{K_\\mathrm{sp}}",
+   SORT = "solubility product",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{solubility product},",
+      "the equilibrium constant for a solid substance dissolving in an aqueous solution"
+   ),
+   TEXT = "solubility product",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "solubility product, \\ensuremath{K_\\mathrm{sp}}"),
+# tibble(
+#    BIBTEXKEY = "spectral_photon_flux",
+#    NAME = "{}\\ensuremath{\\Phi_\\mathrm{\\lambda}}",
+#    SORT = "spectral photon flux",
+#    DESCRIPTION = paste(
+#       "number of photons incident on a surface per unit time per unit area per wavelength"
+#    ),
+#    TEXT = "spectral photon flux",
+#    EXACT = "",
+#    VALUE = "",
+#    UNIT = "\\per\\second\\per\\square\\metre\\per\\nm",
+#    FIRST = "spectral photon flux, \\ensuremath{\\Phi_\\lambda}"),
+# https://en.wikipedia.org/wiki/Flux#SI_radiometry_units
+# tibble(
+#    BIBTEXKEY = "spectral_irradiance",
+#    NAME = "{}\\ensuremath{I_\\mathrm{\\lambda}}",
+#    SORT = "spectral irradiance",
+#    SEE = "",
+#    DESCRIPTION = paste(
+#       "spectral irradiance, power per area per wavelength,",
+#       "incident on an absorbing surface"
+#    ),
+#    TEXT = "spectral irradiance",
+#    EXACT = "",
+#    VALUE = "",
+#    UNIT = "\\watt\\per\\square\\metre\\per\\nm",
+#    FIRST = "spectral irradiance, \\ensuremath{I_\\lambda}"),
+tibble(
+   BIBTEXKEY = "spectral_radiance",
+   NAME = "{}\\ensuremath{I_{(\\lambda,\\mathrm{T})}}",
+   SORT = "spectral radiance",
+   SEE = "",
+   DESCRIPTION = paste(
+      "the \\emph{spectral radiance}, or the specific radiative intensity,",
+      "of a black body in a cavity in thermodynamic equilibrium is isotropic,",
+      "time-independent and spatially homogeneous"
+   ),
+   TEXT = "spectral radiance",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "spectral radiance, \\ensuremath{I_{(\\lambda,\\mathrm{T})}}"),
+tibble(
+   BIBTEXKEY = "speed_of_light",
+   # c_0 more correct, but perhaps too confusing? I suggest leaving it as c.
+   NAME = "{}\\ensuremath{c}",
+   SORT = "speed of light",
+   SEE = "",
+   # https://www.forbes.com/sites/quora/2018/07/02/does-anything-other-than-light-travel-at-the-speed-of-light
+   DESCRIPTION = paste(
+      "\\emph{speed of light},",
+      "the speed limit of the universe. Photons",
+      # it seems glossaries does not support footnote inside an entry's description?
+      # The footnote symbol is shown (hyperref link goes elsewhere), but
+      # the footnote itself is nowhere to be found.
+      # https://stackoverflow.com/questions/4716520/latex-footnote-in-glossaries-entry
+      "can travel at this speed in vacuum. In some circumstances, even light in vacuum",
+      "travels at \\emph{less than} $c$ \\cite{Giovannini2015}.",
+      "In dry air, $c=\\qty{299709199}{\\metre\\per\\second}$ due to its",
+      "relative refractive index being $n=\\num{1.0002778}$ (at \\qty{15}{\\celsius},",
+      "\\qty{101.325}{\\kilo\\pascal}, and $\\glsname{wavelength}=\\qty{550}{\\nm}$).",
+      # the speed of light in air and refractive index data is from \cite{Pelant2012}
+      "In general, the speed of light in a medium is $c_\\mathrm{n}=c/n$, where $n$ is the refractive index"
+      # also see \cite[p. 34]{Cohen2008}
+   ),
+   TEXT = "speed of light",
+   EXACT = "1",
+   VALUE = as.character(print(syms$c0, digits=9)),
+   UNIT = "\\metre\\per\\second",
+   FIRST = "speed of light, \\ensuremath{c}"),
+# tibble(
+#    BIBTEXKEY = "Stefan_Boltzmann_constant",
+#    NAME = "{}\\ensuremath{\\sigma}",
+#    SORT = "Stefan Boltzmann constant",
+#    SEE = "",
+#    DESCRIPTION = "Stefan-Boltzmann constant",
+#    TEXT = "Stefan-Boltzmann constant",
+#    EXACT = "1",
+#    VALUE = as.character(print(syms$sigma0, digits=10)),
+#    UNIT = "\\watt\\per\\square\\metre\\per\\kelvin\\tothe{4}",
+#    FIRST = "Stefan-Boltzmann constant, \\ensuremath{\\sigma}"),
+tibble(
+   BIBTEXKEY = "annealing_temperature",
+   NAME = "{}\\ensuremath{T_\\mathrm{a}}",
+   SORT = "temperature, annealing",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{annealing temperature}"
+   ),
+   TEXT = "\\ensuremath{T_\\mathrm{a}}",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\celsius",
+   FIRST = "annealing temperature, \\ensuremath{T_\\mathrm{a}}"),
+tibble(
+   BIBTEXKEY = "transmittance",
+   NAME = "{}\\ensuremath{T}",
+   SORT = "transmittance",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{transmittance}, usually in terms of an optically thin film.",
+      "See \\cref{methods:uvvis-spectroscopy}"
+   ),
+   TEXT = "transmittance",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\percent",
+   FIRST = "transmittance, \\ensuremath{T}"),
+tibble(
+   BIBTEXKEY = "vacuum_level",
+   NAME = "{}\\ensuremath{E_\\mathrm{VAC}}",
+   SORT = "vacuum level",
+   SEE = "",
+   DESCRIPTION = paste(
+      "the local \\emph{vacuum level}, the energy level of an electron",
+      "at rest within a few nanometres from the surface, \\ie,",
+      "with zero \\glstext{kinetic_energy} with respect to the surface \\cite{Kahn2015}.",
+      "This is not the same as the vacuum level at infinity, $E_\\mathrm{VAC\\left(\\infty\\right)}$"
+   ),
+   TEXT = "vacuum level",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\eV",
+   FIRST = "vaccum level, \\ensuremath{E_\\mathrm{VAC}}"),
+tibble(
+   BIBTEXKEY = "vacuum_permittivity",
+   NAME = "{}\\ensuremath{\\varepsilon_0}",
+   SORT = "vacuum permittivity",
+   SEE = "",
+   DESCRIPTION = paste(
+      "\\emph{vacuum permittivity}, or",
+      "the absolute dielectric permittivity of classical vacuum, or",
+      "the permittivity of free space"
+   ),
+   TEXT = "vacuum permittivity",
+   EXACT = "0",
+   VALUE = common::siunitx.uncertainty(
+      syms$ep0 %>% as.numeric(),
+      syms_with_errors$ep0 %>% errors(),
+      digits = 10)["siunitx"] %>% unname(),
+   UNIT = "\\farad\\per\\metre",
+   FIRST = "vacuum permittivity, \\ensuremath{\\varepsilon_0}"),
+tibble(
+   BIBTEXKEY = "wavelength",
+   NAME = "{}\\ensuremath{\\lambda}",
+   SORT = "wavelength",
+   SEE = "frequency",
+   DESCRIPTION = paste(
+      "\\emph{wavelength} of electromagnetic radiation (the inverse of frequency)"
+   ),
+   TEXT = "wavelength",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "\\nano\\metre",
+   FIRST = "wavelength, \\ensuremath{\\lambda}"),
+tibble(
+   BIBTEXKEY = "work_function",
+   NAME = "{}\\ensuremath{\\phi}",
+   SORT = "work function",
+   SEE = "Fermi_level,PES,vacuum_level",
+   DESCRIPTION = paste(
+      "\\emph{work function}, the minimum amount of energy needed to remove",
+      "an electron from a solid to immediately outside its surface.",
+      "It is the difference between the \\gls{Fermi_level} and the \\gls{vacuum_level}"
+   ),
+   TEXT = "work function",
+   EXACT = "",
+   VALUE = "",
+   UNIT = "",
+   FIRST = "work function, \\ensuremath{\\phi}")
+)
+@
+
+
+<<'refresh-symbols-bib', eval=TRUE, cache=FALSE, warning=FALSE>>=
+symbols.bibfile <- here::here("assets/glossaries/symbols.bib")
+
+# NOTE: The BiBTeX format specifies that field names are case-insensitive.
+# But please note that bib2gls/glossaries-extra is not always insensitive to case!
+
+# add first column named CATEGORY with type SYMBOL for all rows
+# this silences df2bib() warning about "unknown or uninitialised column: CATEGORY"
+gls.symbols <- dplyr::bind_cols(CATEGORY="SYMBOL", gls.symbols)
+# add column AUTHOR, where each AUTHOR is a *list* of at least one element (can be NA)
+# this silences df2bib() warning about "Unknown or uninitialised column: `AUTHOR`"
+gls.symbols$AUTHOR <- list(as.numeric(NA))
+
+# generate the bibtex file symbols.bib
+# each entry now says @Symbol{...}
+bib2df::df2bib(x = gls.symbols, file = symbols.bibfile, append = FALSE)
+
+# Remove lines with empty See=... keys ("See={}") from the written bib-file.
+# Such empty See={} key otherwise stop bib2gls dead in its tracks.
+# We can use "grep -v" or "sed -i '/.../d'", the latter can edit in-place without fuss
+# Since we want to edit the file on disk, easier to use "system(...)" than base::grep(),
+# which is not really meant to work on files.
+# grep -v "[Ss]ee\s*=\s*{}" assets/glossaries/symbols.bib > assets/glossaries/symbols.bib
+# sed -i  "/[Ss]ee\s*=\s*{}/d" assets/glossaries/symbols.bib
+system(
+   command = paste("sed -i '/[Ss]ee\\s*=\\s*{}/d'", symbols.bibfile),
+   intern = FALSE)
+@

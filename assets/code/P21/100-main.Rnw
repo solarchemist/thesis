@@ -1,0 +1,271 @@
+<<'0521P-import-abs-spectra'>>=
+df.rawabs <- LoadRData2Variable(path = here::here("assets/data/P21/abs-spectra.rda.gz"))
+# This abs spectra collection was started 23 min after mixing the precursors
+df.abs <- df.rawabs
+# time can be constructed by reading the five last digits of sampleid
+# time.abs is the time (in minutes) since the first abs measurement
+df.abs$time.abs <- as.numeric(gsub("^N01A", "", df.abs$sampleid))
+# due to setting up the experiment, there was about 3 min between first and second spectrum
+# let's add that correction to time.abs (recall that first spectrum is t=0)
+df.abs$time.abs[which(df.abs$time.abs > 0)] <-
+   df.abs$time.abs[which(df.abs$time.abs > 0)] + 3
+# also shift *all* time values so that t=0 -> t=1
+# (this is to avoid warnings when log-transforming time axis)
+df.abs$time.abs <- df.abs$time.abs + 1
+# time.exp is the time (in minutes) since the mixing of the precursors
+df.abs$time.exp <- df.abs$time.abs + 23
+# The only apparent features in the spectra other than the ZnO band edge is
+# the small EtOH abs peak at approximately 910 nm
+# Lots of negative abs values in dataset, but never inside the 300-400nm range
+# it's safe to reset them to zero
+df.abs$intensity[which(df.abs$intensity < 0)] <- 0
+@
+
+
+<<'0521P-calculate-eV-sqabs'>>=
+# express wavelength as energy (convert nm to eV)
+df.abs$eV <- wavelength2energy(df.abs$wavelength)
+# square the measured abs (without any correction for negative values)
+df.abs$sqabs <- df.abs$intensity^2
+@
+
+
+<<'0521P-figref-abs-vs-wl', eval=FALSE>>=
+ggplot() +
+   geom_path(
+      data = df.abs,
+      aes(
+         x = wavelength,
+         y = intensity,
+         group = sampleid,
+         colour = log10(time.abs))) +
+   scale_colour_gradient(
+      low  = munsell::mnsl("2.5PB 2/4"),
+      high = munsell::mnsl("2.5PB 8/6"),
+      name = "$\\log_{10}(t/\\unit{\\minute})$") +
+   # highlight curves for t = 1, 1e2, 1e3, 1e4
+   geom_path(
+      data = df.abs %>%
+         filter(time.abs == 1) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   geom_path(
+      data = df.abs %>%
+         filter(time.abs == 10) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   geom_path(
+      data = df.abs %>%
+         filter(time.abs == 100) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   geom_path(
+      data = df.abs %>%
+         filter(time.abs == 1000) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   geom_path(
+      data = df.abs %>%
+         filter(time.abs == 10264) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   geom_line(
+      data = df.abs %>%
+         filter(time.abs == 102258) %>%
+         filter(wavelength > 350) %>%
+         filter(intensity < 1.75 & intensity > 0.1),
+      colour = "red",
+      aes(x = wavelength, y = intensity, group = sampleid)) +
+   scale_x_continuous(
+      # phantom in order to exactly align bottom of this subfigure with its neighbour
+      name = "$\\lambda$/\\unit{\\nm}\\phantom{$\\log_{10}$}",
+      expand = expansion(0, 0),
+      limits = c(310, 385),
+      sec.axis = sec_axis(
+         ~ 1239.842 / .,
+         name = "$E/\\unit{\\eV}$")) +
+   scale_y_continuous(
+      name = "Abs",
+      expand = expansion(0, 0),
+      limits = c(-0.01, 2.5)) + # 2.7
+   theme_halfwidth() +
+   theme(
+      legend.position = "none")
+@
+
+
+<<'0521P-sqabs-maxline'>>=
+# Limit data to this eV range
+E.range <- c(3.25, 4.00)
+df.abslim <- df.abs %>% filter(eV >= E.range[1] & eV <= E.range[2])
+# Set sqabs max (at E.range[1] and E.range[2])
+sqabs.max <- c(4.2, 2.8)
+# define maxline (a straight line which we will use to set highE limit)
+# make sure that sqabs.maxline$eV runs in the same direction as eV in spectra,
+# ie from high values to low values
+sqabs.maxline <- tibble(
+   eV = seq(
+      max(E.range),
+      min(E.range),
+      # more robust definition of number of datapoints in one spectrum
+      length.out = length(which(df.abslim$sampleid == unique(df.abslim$sampleid)[1]))))
+sqabs.maxline$sqabs <- seq(sqabs.max[1], sqabs.max[2], length.out = length(sqabs.maxline$eV))
+@
+
+<<'0521P-uvvistauc-fitting'>>=
+# to re-do the Tauc fits, set *.override to TRUE or delete the file on disk
+uvvistauc.override <- FALSE
+uvvistauc.file <- here::here("assets/data/P21/tauc-growth.rda")
+if (file.exists(uvvistauc.file) && !uvvistauc.override) {
+   # If file does exist AND override flag is FALSE
+   spectra <- common::LoadRData2Variable(path = uvvistauc.file)
+} else {
+   # make a condensed df (one row per sampleid, ie one row per spectrum)
+   spectra <- data.frame(sampleid = unique(df.abslim$sampleid))
+   spectra$time.abs <- unique(df.abslim$time.abs)
+   spectra$time.exp <- unique(df.abslim$time.exp)
+   # initialise columns that are assigned row-by-row inside loop below
+   spectra$sqabs.max.x <- NA
+   spectra$sqabs.max.y <- NA
+   spectra$interv.high.y <- NA
+   spectra$interv.low.y <- NA
+   # calculated optical band gap and associated parameters
+   spectra$fit.Eg <- NA
+   spectra$fit.adj.rsq <- NA
+   spectra$fit.points <- NA
+   # add a fitted = {TRUE,FALSE} column to df.abslim
+   df.abslim$fitted <- FALSE
+   for (s in 1:length(spectra$sampleid)) {
+      # temporarily store the current spectra in a variable for easier access inside loop
+      this.spectrum <-
+         df.abslim[which(df.abslim$sampleid == spectra$sampleid[s]), ]
+      above <- this.spectrum$sqabs > sqabs.maxline$sqabs
+      # points always intersect when above=TRUE, then FALSE or vice versa
+      # there may be more than one intersect (e.g., the spectrum can go up over the line,
+      # then dip below it, and go over it again, etc.
+      # Therefore, only consider the last (remember, the x-scale is flipped) intersection point
+      intersect.point <- which(diff(above) != 0)[length(which(diff(above) != 0))]
+      # max sqabs:
+      spectra$sqabs.max.y[s] <- this.spectrum$sqabs[intersect.point]
+      # corresponding energy value for max sqabs:
+      # (we only need this x-value for plotting the points below, and not for bandgap calc)
+      spectra$sqabs.max.x[s] <- this.spectrum$eV[intersect.point]
+      # interval limits in y-axis
+      spectra$interv.high.y[s] <- 0.8 * spectra$sqabs.max.y[s]
+      spectra$interv.low.y[s] <- 0.3 * spectra$sqabs.max.y[s]
+      # set fitted = TRUE for all points inside this interval
+      this.spectrum$fitted[which((this.spectrum$sqabs <= spectra$interv.high.y[s]) &
+                                    (this.spectrum$sqabs >= spectra$interv.low.y[s]))] <- TRUE
+      # replace the rows of the "fitted" column with that of this.spectrum
+      df.abslim$fitted[which(df.abslim$sampleid == spectra$sampleid[s])] <- this.spectrum$fitted
+      # CALCULATE LM PARAMS FOR A SPECTRUM
+      this.fit <-
+         lm(sqabs ~ eV, data = subset(this.spectrum, fitted == TRUE))
+      # x-intercept of fitted line (aka the band gap)
+      spectra$fit.Eg[s] <- -this.fit$coefficients[1] / this.fit$coefficients[2]
+      # adjusted R squared of fit
+      spectra$fit.adj.rsq[s] <- summary(this.fit)$adj.r.squared
+      # number of datapoints used for linear fit
+      spectra$fit.points[s] <- length(subset(this.spectrum, fitted == TRUE)$eV)
+   }
+   save(spectra, file = uvvistauc.file)
+}
+@
+
+
+<<'0521P-quality-control', eval=FALSE>>=
+# any R-square that are NA? 13, OK.
+na.fits <- spectra %>% filter(is.na(fit.adj.rsq))
+# What about poor R-square fits (less than 0.90)?
+# Only five (5) spectra
+poor.rsq.fits <- spectra %>% filter(fit.adj.rsq < 0.90)
+summary(spectra$fit.adj.rsq)
+#   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's
+# 0.7760  0.9853  0.9939  0.9879  0.9976  1.0000      13
+@
+
+
+<<'0521P-bandgap-vs-time', eval=FALSE>>=
+ggplot(data = spectra) +
+   geom_point(
+      aes(x = time.abs, y = fit.Eg),
+      size = 0.4) +
+   scale_x_log10(name = "Time/min") +
+   scale_y_continuous(name = "Band gap/eV")
+@
+
+
+<<'0521P-diameter-from-bandgap'>>=
+c <- 3.30
+b <- 0.293
+a <- 3.940
+spectra$diameter <- (2 * a) / (-b + sqrt(b^2 - 4 * a * (c - spectra$fit.Eg)))
+# linear fit of particle diameter vs log10(time)
+spectra$time.abs.log <- log10(spectra$time.abs)
+linfit.diameter.time <- lm(diameter ~ time.abs.log, data = spectra)
+# calculated diameter based on linear fit
+spectra$diameter.linfit <-
+   linfit.diameter.time$coefficients[2] * spectra$time.abs.log +
+   linfit.diameter.time$coefficients[1]
+@
+
+
+<<'0521P-radius-from-bandgap', eval=FALSE>>=
+spectra$radius <- spectra$diameter / 2
+# linear fit of particle radius vs log10(time)
+linfit.radius.time <- lm(radius ~ time.abs.log, data = spectra)
+# calculated radius based on linear fit
+spectra$radius.linfit <-
+   linfit.radius.time$coefficients[2] * spectra$time.abs.log +
+   linfit.radius.time$coefficients[1]
+@
+
+
+<<'0521P-diameter-vs-time', eval=FALSE>>=
+ggplot() +
+   coord_cartesian(ylim = c(3, 11)) +
+   # horizontal segments
+   geom_segment(
+      data = spectra %>% filter(time.abs %in% c(1, 10, 100, 1000, 10264, 102258)),
+      aes(x = 0, xend = time.abs.log, y = diameter, yend = diameter),
+      color = "red", alpha = 0.45, size = 0.6) +
+   # vertical segments
+   geom_segment(
+      data = spectra %>% filter(time.abs %in% c(1, 10, 100, 1000, 10264, 102258)),
+      aes(x = time.abs.log, xend = time.abs.log, y = 0, yend = diameter),
+      color = "red", alpha = 0.45, size = 0.6) +
+   # labels with time values
+   geom_text(
+      data = spectra %>% filter(time.abs %in% c(10, 100, 1000, 10264, 102258)),
+      x = 0, hjust = 0, vjust = -0.25, size = 2,
+      aes(y = diameter, label = paste0("$t=\\qty{", time.abs, "}{\\minute}$"))) +
+   # same colouring as the sister subfigure
+   scale_colour_gradient(
+      low  = munsell::mnsl("2.5PB 2/4"),
+      high = munsell::mnsl("2.5PB 8/6")) +
+   # full range of data
+   geom_point(
+      data = spectra,
+      aes(x = time.abs.log, y = diameter, colour = time.abs.log),
+      size = 0.8) +
+   scale_x_continuous(name = "$\\log_{10}(t/\\unit{\\minute})$") +
+   scale_y_continuous(
+      breaks = scales::pretty_breaks(n = 5),
+      name = "$d/\\unit{\\nm}$") +
+   theme_halfwidth() +
+   theme(legend.position = "none")
+@
+
+
+
+
+
+
+%\input{assets/code/P21/300-text.Rnw}
+<<'0521P-text', child=here::here('assets/code/P21/300-text.Rnw'), eval=TRUE, cache=TRUE>>=
+@

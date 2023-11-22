@@ -1,0 +1,37 @@
+\begin{figure}[tbp]
+\centering
+<<'0512P-fig-MB-abs-water-ethanol'>>=
+<<0512P-figref-MB-abs-coefficient>>
+<<0512P-figref-MB-water-fitted>>
+<<0512P-figref-MB-ethanol-fitted>>
+p.mb.abs.water <-
+   p.mb.abs.water +
+   theme_halfwidth() +
+   theme(
+      axis.title = element_blank(),
+      axis.text = element_text(size = rel(0.66)))
+p.mb.abs.etoh <-
+   p.mb.abs.etoh +
+   theme_halfwidth() +
+   theme(
+      axis.title = element_blank(),
+      axis.text = element_text(size = rel(0.66)))
+vp.coeff <- viewport(width = 1.00, height = 1.0, x = 0.00, y = 0.00, just = c("left", "bottom"))
+vp.water <- viewport(width = 0.30, height = 0.3, x = 0.98, y = 0.95, just = c("right", "top"))
+vp.etoh <-  viewport(width = 0.30, height = 0.3, x = 0.98, y = 0.30, just = c("right", "bottom"))
+print(p.mb.abs.coeff, vp = vp.coeff)
+print(p.mb.abs.water, vp = vp.water)
+print(p.mb.abs.etoh, vp = vp.etoh)
+@
+{\phantomsubcaption\label{fig-a:P12-MB-abs}}
+{\phantomsubcaption\label{fig-b:P12-MB-abs}}
+\caption[Methylene blue in \water\ and in \water:\EtOH\ solutions]{%
+   \protect\Glsfirst{absorption_coefficient}, for methylene blue in \water\ and
+   \ch{H2O:EtOH} (90:10 by volume), respectively.
+   Insets show the fitted Gaussian kernels (red line) and residual (azure) on top of
+   \protect\glsname{absorption_coefficient} (black dots), sum of kernels (blue line) for
+   (\subref{fig-a:P12-MB-abs}) \water\ and
+   (\subref{fig-b:P12-MB-abs}) \ch{H2O:EtOH}.
+   Fitting parameters are listed in \supplemental[short] of \protect\cref{P3}.}
+\label{fig:P12-MB-abs}
+\end{figure}

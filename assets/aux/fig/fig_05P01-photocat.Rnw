@@ -1,0 +1,108 @@
+<<'0501P-photocat-data-CC0'>>=
+# C/C0, remaining [dye]
+pcat.cc0 <- tibble::tribble(
+   ~id, ~material, ~CBD.time, ~CC0,
+   1,   "ZnO",           "0", 97,
+   2,   "ZnO/CdS",      "10", 85.56756,
+   3,   "ZnO/CdS",      "20", 59.98898,
+   4,   "ZnO/CdS",      "40", 56.70835,
+   5,   "ZnO/CdS",      "80", 85.52211)
+@
+
+<<'0501P-photocat-data-Abs'>>=
+pcat.Abs <- readr::read_csv(
+   file = here::here("assets/data/P01/photocat/Figure9b.csv"),
+   show_col_types = FALSE) %>%
+   # collapse all columns not named "wavelength" (from wide to long format)
+   pivot_longer(
+      cols = !c("wavelength"),
+      names_to = "CBD.time",
+      values_to = "Abs")
+@
+
+<<'0501P-fig-photocat-CC0'>>=
+p.cc0 <- ggplot(pcat.cc0) +
+   geom_col(aes(y = CC0, x = id, group = id, fill = as.numeric(CBD.time))) +
+   geom_text(
+      aes(
+         y = CC0, x = id,
+         label = paste0("\\qty{", formatC(CC0, format="f", digits=1), "}{\\percent}")),
+      hjust = 1.2, colour = "white", size = 2.5) +
+   scale_x_reverse(
+      breaks = pcat.cc0$id,
+      labels = paste0("\\qty{", pcat.cc0$CBD.time, "}{\\minute}")) +
+   scale_y_continuous(
+      name = "$C/C_0$",
+      sec.axis = dup_axis(),
+      expand = expansion(0, 0)) +
+   coord_flip() +
+   theme_halfwidth() +
+   theme(
+      legend.position = "none",
+      # regarding top/bottom, left/right, note the use of coord_flip() above
+      axis.title.x.bottom = element_blank(),
+      axis.title.x.top = element_text(size = rel(0.75)),
+      axis.ticks.x = element_blank(),
+      axis.text.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.ticks.y.right = element_blank(),
+      axis.text.y.right = element_blank(),
+      axis.text.y.left = element_text(size = rel(0.75)),
+      panel.border = element_blank(),
+      axis.line.y = element_line(colour = "gray30"),
+      axis.line.x.top = element_line(colour = "gray30"))
+@
+
+<<'0501P-fig-photocat-Abs'>>=
+p.abs <- ggplot(pcat.Abs) +
+   geom_path(
+      aes(x = wavelength, y = Abs, group = CBD.time, colour = as.numeric(CBD.time)),
+      linewidth = 1.0) +
+   geom_text_repel(
+      data = pcat.Abs %>% filter(wavelength >= 550 & wavelength < 550.5),
+      nudge_x = -20, segment.colour = NA, size = 2.5,
+      aes(
+         x = wavelength, y = Abs, label = paste0("\\qty{", CBD.time, "}{\\minute}"))) +
+   # EBT structure
+   annotate("text",
+      x = 515, y = 0.03, hjust = 0.5, vjust = 0,
+      label = paste0(
+         "\\footnotesize\\scalebox{0.65}{",
+         "\\chemfig{([:-30]*6((-=^[::+60]-[::+60]=^[::+60]-[::+60])=-(-OH)",
+         "=(-N=[::60]N-*6(=(-OH)-=(-S(=[::+90]O)(=[::-90]O)(-\\charge{20=",
+         "\\scalebox{0.7}{\\fscrm}}{O}-[,,,,draw=none]\\charge{160=",
+         "\\scalebox{0.7}{\\fscrp}}{Na}))-*6(-=(-NO_2)-=--)=-))-=-))}}")) +
+   scale_x_continuous(
+      name = "$\\lambda/\\unit{\\nm}$") +
+   scale_y_continuous(breaks = seq(0.02, 0.1, by = 0.02)) +
+   scale_colour_gradient(
+      guide = guide_colourbar(
+         title = "$t_\\mathrm{dep}/\\unit{\\minute}$",
+         title.position = "top")) +
+   theme_halfwidth() +
+   theme(
+      legend.position = c(0.02, 0.97),
+      legend.justification = c(0, 1),
+      legend.key.size = unit(0.75, "line"),
+      legend.direction = "horizontal")
+@
+
+% include only the same data as that we showed for UV-Vis
+\begin{figure}[btp]
+\centering
+<<'0501P-fig-photocat', dependson=c('0501P-fig-photocat-CC0', '0501P-fig-photocat-Abs')>>=
+# note, knitr caching may cause changes to plot components above to not be rendered
+vp.abs <- viewport(width=1.00, height=1.00, x=0.00, y=0.00, just = c("left", "bottom"))
+vp.cc0 <- viewport(width=0.35, height=0.40, x=0.98, y=0.97, just = c("right", "top"))
+print(p.abs, vp = vp.abs)
+print(p.cc0, vp = vp.cc0)
+@
+\caption[Photodegradation of EBT with ZnO/CdS]{%
+   Photocatalytic degradation of \protect\gls{EBT} (structure inset)
+   with \protect\gls{PC} made of \zincox\ \protect\gls{NR} array coated
+   with increasingly thicker layer of \CdS\ (tallied in deposition time, $t_\mathrm{dep}$).
+   Main plot shows the experimentally recorded \protect\gls{UV-Vis} spectra of the dye
+   for varying \CdS\ loading, and the inset barplot shows the calculated $C/C_0$
+   for (slightly different) \CdS\ loadings.}
+\label{fig:P01-photocat}
+\end{figure}

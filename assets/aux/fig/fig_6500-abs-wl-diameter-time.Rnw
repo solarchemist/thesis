@@ -1,0 +1,30 @@
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+%\input{assets/code/P21/100-main.Rnw}
+% fig.height was manually enlarged to make room for the secondary x-axis
+<<'0600-fig-abs-vs-wl', ref.label='0521P-figref-abs-vs-wl', eval=TRUE, warning=FALSE, fig.width=2.36, fig.height=1.76, out.width='2.36in'>>=
+@
+\caption{}
+\label{fig:6500-abs-vs-wavelength}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+%\input{assets/code/P21/100-main.Rnw}
+<<'0600-fig-diameter-vs-time', ref.label='0521P-diameter-vs-time', eval=TRUE, fig.width=2.36, fig.height=1.46, out.width='2.36in'>>=
+@
+\caption{}
+\label{fig:6500-diameter-vs-time}
+\end{subfigure}%
+\caption[Growing ZnO QDs tracked spectrophotometrically]{%
+   (\subref{fig:6500-abs-vs-wavelength})
+   Spectrophotometrically tracking the shifting band edge of growing \zincox\ \protect\glsplural{QD}.
+   As the experiment progressed, the band edge red-shifted (towards higher wavelengths or lower energies).
+   Red lines highlight recorded spectra at $t\approx\qtylist{0;10;100;1000;10000;100000}{\minute}$.
+   (\subref{fig:6500-diameter-vs-time})
+   Diameter of \zincox\ \protect\glsplural{QD} \versus\ time.
+}
+\label{fig:6500-ZnO-QD-tracked}
+\end{figure}

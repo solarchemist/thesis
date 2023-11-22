@@ -1,0 +1,352 @@
+%%% I chose to use the TikZ-based approach here (and not the pure R approach in ggplot2)
+%%% because I think this will be easier to tweak precisely graphically
+
+% create a local scope to contain all the newcommand declarations and this plot
+\bgroup
+
+% ----------------------------------------------------------------------
+% DEFINITIONS FOR TIKZ BANDGAPS PLOT
+% ----------------------------------------------------------------------
+% define fontstyle for the TiKZ plot
+\newcommand{\fnstyle}{\rmfamily}
+%-- Set grid dimensions
+\newcommand{\gridxmin}{-1}
+\newcommand{\gridymin}{-6}
+\newcommand{\gridxmax}{19.5}
+\newcommand{\gridymax}{4}
+%-- Footnote symbol container command
+%\newcommand{\defaultpH}{7}
+\newcommand{\deviatingpH}{}
+%-- Set band gap and edge size and position
+\newcommand{\bgxstart}{1.8cm}% x-coordinate of left-most band gap
+\newcommand{\bgxincrement}{0.7cm}% horizontal increment between each band gap
+% note: these length registers are defined globally, see \input{assets/preamble/custom.Rnw}
+\setlength{\bgxpos}{\bgxstart}
+\setlength{\bgedgewidth}{0.20cm}% horizontal width of band edges
+% fill opacity for band gap colour (used by TikZ)
+\newcommand{\bgfillopacity}{0.2}
+%-- Set energy unit
+\newcommand{\eunit}{eV}
+%-- Define SHE axis parameters
+\newcommand{\SHExpos}{1}%
+\newcommand{\SHExunit}{cm}%
+\newcommand{\SHEpu}{\SHExpos\SHExunit}
+\newcommand{\SHEaxistitle}{$E/\unit{\voltSHE}$}
+%-- Define AVS axis parameters
+% draw the secondary y-axis so it sits at the right margin (textwidth=120 mm)
+% but we must also take the shift of -1.490cm into consideration
+% except simply using the sum of 12 + 1.490 was too large (not sure why)
+\newcommand{\AVSxpos}{13.02} % note, you can't use \textwidth command in AVSxpos
+\newcommand{\AVSxunit}{cm}
+\newcommand{\AVSpu}{\AVSxpos\AVSxunit}
+\newcommand{\AVSaxistitle}{$E/\unit{\voltAVS}$}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% SHE AXIS DEFINITIONS
+% ----------------------------------------------------------------------
+\newcommand{\SHEaxis}{%
+   \begin{scope}[style=thick]
+   \draw[->] (\SHExpos, -4.75) -- coordinate (SHE axis) (\SHExpos, 2.75);
+   \foreach \SHE/\SHEV in {-4.5/4.5, -4/4.0, -3.5/3.5, -3.0/3.0, -2.5/2.5, -2.0/2.0, -1.5/1.5, -1.0/1.0, -0.5/0.5}
+      \draw (\SHEpu+4pt, \SHE cm) -- (\SHEpu+0pt, \SHE cm)
+         node[xshift=0pt, anchor=east, font=\scriptsize\fnstyle] {\num{\SHEV}};
+   % SHE zero level, label
+   \draw (\SHEpu+3pt, 0cm) -- (\SHEpu-3pt, 0cm)
+      node[name=SHEzero, xshift=3pt, anchor=east, font=\scriptsize\fnstyle, fill=white] {0};
+   \foreach \SHE/\SHEV in {0.5/0.5, 1.0/1.0, 1.5/1.5, 2.0/2.0}
+      \draw (\SHEpu+4pt, \SHE cm) -- (\SHEpu+0pt, \SHE cm)
+         node[xshift=0pt, anchor=east, font=\scriptsize\fnstyle] {\num{-\SHEV}};
+   \node[name=SHEaxistitle, font=\small\fnstyle, anchor=west, xshift=.5em]
+      at (\SHEpu, 2.75cm) {\SHEaxistitle};
+   \end{scope}%
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% AVS AXIS DEFINITIONS
+% ----------------------------------------------------------------------
+% NOTE: I want SHE = 0 V <==> AVS = -4.44 V
+\newcommand{\AVSaxis}{%
+   \begin{scope}[style=thick]
+   % AVS axis from break-off to zero (vacuum)
+   \draw (\AVSpu+3pt, 2.75cm) -- (\AVSpu-3pt, 2.75cm)
+      node[name=AVSzero, xshift=3pt, anchor=west, font=\scriptsize\fnstyle]
+      {\phantom{$-$}\num{0}};
+   \draw (\AVSxpos, 2.75) -- (\AVSxpos, 2.48);
+   % Segment length needs to be adjusted in proportion to y scale factor.
+   % 2mm at scale=1.00
+   \draw[decorate, decoration={name=zigzag, segment length=2.0mm}]
+      (\AVSxpos, 2.48) -- (\AVSxpos, 2.20);
+   \draw (\AVSxpos, 2.20) -- (\AVSxpos, 2.0);
+   % AVS axis up to -2.5 (break-off)
+   \draw[<-] (\AVSxpos, -5.0) -- coordinate(AVS axis) (\AVSxpos, 2.0);
+   \foreach \AVS/\AVSV in %
+      {-4.56/9.0, -4.06/8.5, -3.56/8.0, -3.06/7.5, -2.56/7.0, -2.06/6.5, -1.56/6.0, -1.06/5.5, -0.56/5.0, -0.06/4.5} %
+      \draw (\AVSpu-4pt, \AVS cm) -- (\AVSpu+0pt, \AVS cm)
+         node[anchor=west,font=\scriptsize\fnstyle] {\num{-\AVSV}};
+   \foreach \AVS/\AVSV in {0.44/4.0, 0.94/3.5, 1.44/3.0, 1.94/2.5}
+      \draw (\AVSpu-4pt, \AVS cm) -- (\AVSpu+0pt, \AVS cm)
+         node[anchor=west,font=\scriptsize\fnstyle] {\num{-\AVSV}};
+   \node[name=AVSaxistitle, font=\small\fnstyle, anchor=east, xshift=-.5em]
+      % note: y-coord 0cm is at the SHE=0V or AVS=
+      at (\AVSpu, 2.75cm) {\AVSaxistitle};
+   \end{scope}%
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% DRAWING THE BAND GAP
+% ----------------------------------------------------------------------
+\newcommand{\drawbg}[7]{%
+   % Argument 1: y coordinate of CB
+   % Argument 2: y coordinate of VB
+   % Argument 3: band gap
+   % Argument 4: fnsymbol
+   % Argument 5: title (name)
+   % Argument 6: secondary title
+   % Argument 7: fill colour (HTML code)
+
+   % - Check of pH argument
+   \ifthenelse{\isempty{#4}}{%
+      % No fnsymbol supplied
+      % \renewcommand{\deviatingpH}{} % this should not be necessary
+   }{%
+      % fnsymbol supplied
+      \renewcommand{\deviatingpH}{$^{#4}$}
+   }
+
+   % check colour argument
+   \ifthenelse{\isempty{#7}}{%
+      % No colour supplied
+      \definecolor{bgfill}{HTML}{dbdbdb}
+   }{%
+      % colour specified
+      \definecolor{bgfill}{HTML}{#7}
+   }
+
+   % style=... in this scope controls vertical and horizontal lines making up
+   % the "bracket" visualising each band gap
+   \begin{scope}[style=thick]
+      \draw (\bgxpos,-#1cm) node(CB) {} (\bgxpos,-#2cm) node(VB) {};
+      % Specifying width of CB and VB shelves
+      \draw (CB) node[name=CB_shelf, xshift=-\bgedgewidth] {};
+      \draw (VB) node[name=VB_shelf, xshift=-\bgedgewidth] {};
+
+      % draw a rectangle from CBE to VBE
+      % fill it white 100% opaque first, then draw new transparent fill on top
+      % in order to block out the H2 and H2O redox lines
+      \fill [color=white] (CB_shelf.west) rectangle (VB.east);
+      \fill [color=bgfill, fill opacity=\bgfillopacity] (CB_shelf.west) rectangle (VB.east);
+
+      % note: if you want to set fill opacity=X, don't forget to also specify
+      % text opacity=1, unless you want the text to be faded too.
+      % https://tex.stackexchange.com/questions/39037/tikz-use-opacity-for-fill-yet-leave-draw-lines-untouched
+
+      % - Check for secondary title
+      \ifthenelse{\isempty{#6}}{%
+         % No secondary title - only primary
+	   	\draw[draw=white] (CB_shelf.west) --%
+	   	node[anchor=south, font=\scriptsize\fnstyle, fill=white,
+            yshift=1pt, inner sep=1pt, scale=0.88]%0.82
+	   	{\ch{#5}\rlap{\deviatingpH}} (CB.east) -- %
+	   	node[anchor=south, font=\tiny\fnstyle, xshift=1pt, fill=none,
+            scale=1.05, rotate=90]%
+	   	{$E_\mathrm{g}=#3$~\eunit} (VB.east) -- (VB_shelf.west);
+	   	%
+      }{%
+         % Both primary and secondary title wanted
+         \node[above of=CB, xshift=-0.10cm, yshift=-0.75cm, anchor=south,
+            font=\scriptsize\fnstyle, inner sep=1pt, scale=0.88]%
+         {\ch{#5}\rlap{\deviatingpH}};
+         \draw[draw=white] (CB_shelf.west) -- node[anchor=south,
+            font=\scriptsize\fnstyle, yshift=1pt, inner sep=1pt, scale=0.88]%
+	   	{#6} (CB.east) -- %
+	   	node[anchor=south, font=\tiny\fnstyle, xshift=1pt, fill=none,
+            scale=1.05, rotate=90]%
+	   	{$E_\mathrm{g}=#3$~\eunit} (VB.east) -- (VB_shelf.west);
+      }
+      \draw (CB_shelf.west) -- (CB.east) -- (VB.east) -- (VB_shelf.west);
+   \end{scope}
+   \addtolength{\bgxpos}{\bgxincrement}
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% WATER REDUCTION POTENTIAL label and line
+% ----------------------------------------------------------------------
+\newcommand{\SHEwaterhydrogen}{%
+   \draw[red, dashed] (\SHEpu-0.58cm, 0cm)
+   node[anchor=east, font=\scriptsize\fnstyle, inner sep=0pt]
+   {\ch{H+}/\ch{H2}} -- (\AVSpu-3pt, 0cm);
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% WATER OXIDATION POTENTIAL label and line
+% ----------------------------------------------------------------------
+\newcommand{\SHEwateroxygen}{%
+   \draw[blue, dashed] (\SHEpu-0.58cm, -1.23cm)
+   node[anchor=east, font=\scriptsize\fnstyle, inner sep=0pt]
+   {\ch{O2}/\ch{H2O}} -- (\AVSpu-0pt, -1.23cm);
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% DEFINITION OF FOOTNOTES (these are manually placed)
+% ----------------------------------------------------------------------
+\newcommand{\setnotes}{%
+	% start by defining a common reference point
+	\node[name=setnotesorigin] at (15,-4.6) {};
+	% then define two lines using the origin above
+   \node[name=setnotesfirst, anchor=south west]
+      at (setnotesorigin.north east) {};
+   \node[name=setnotessecond, anchor=north west]
+      at (setnotesorigin.south east) {};
+
+	% first line
+   \node[name=notetopleft, anchor=south west, style=semithick, font=\scriptsize\fnstyle, scale=0.82]
+      at (setnotesfirst.south east)	{$^\ast$pH~1.7};
+   \node[name=notetopright, anchor=south west, style=semithick, font=\scriptsize\fnstyle, scale=0.82]
+      at (notetopleft.south east) {$^\dag$pH~unknown};
+
+	% second line
+   \node[name=notebottomleft, anchor=south west, style=semithick, font=\scriptsize\fnstyle, scale=0.82]
+      at (setnotessecond.south east) {$^\ddag$pH~14};
+   \node[name=notebottomright, anchor=south west, style=semithick, font=\scriptsize\fnstyle, scale=0.82]
+      at (notetopright.south west |- notebottomleft.south east) {$^\S$pH~2};
+
+	% box around the footnotes
+	\draw (notebottomleft.south west) rectangle (notetopright.north east);
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% DEFINITION OF TITLE (mainly for debugging)
+% ----------------------------------------------------------------------
+\newcommand{\printtitle}[1]{%
+	\node[name=thisisthetitlem, anchor=center, font=\bfseries\fnstyle, xshift=-8.75cm]%(18.5-1)*0.5=8.75
+	at (AVSaxistitle.south west) {#1};
+}
+% ----------------------------------------------------------------------
+
+
+\begin{figure}[tbp]
+% THIS IMAGE SPILLS INTO THE MARGINS. THIS IS INTENTIONAL
+% I want the left y-axis to align with the left page margin
+% this spacing depends on the hspace of the contents of the image's left y-axis
+\hspace{-1.490cm}%
+\begin{tikzpicture}[font=\scriptsize\fnstyle, xscale=1.00, yscale=1.00]
+\begin{pgfonlayer}{background}
+	% - On the background layer (drawn behind all other objects)
+	% Support grid
+	%\draw[step=1.0cm,gray!20] (\gridxmin,\gridymin) grid (\gridxmax,\gridymax);
+	% Draw dotted line at zero SHE potential (assuming pH 1)
+	\SHEwaterhydrogen
+	%- Draw dotted line at +1.23 SHE potential (assuming pH 1)
+	\SHEwateroxygen
+\end{pgfonlayer}
+
+% Draw SHE axis
+\SHEaxis
+% Draw AVS axis
+\AVSaxis
+
+% note that the colours here were taken from ggspectra (Aphalo2015) by
+% plotting a spectrum and manually extracting the colour at each wavelength
+% using a colour picker tool
+
+% all at pH 0
+\drawbg{-0.634}  {4.37}  {5}    {}  {ZrO2}   {}         {}
+\drawbg{-0.879}  {2.72}  {3.6}  {}  {ZnS}    {}         {}
+\drawbg{0.314}   {3.81}  {3.5}  {}  {SnO2}   {}         {}
+\drawbg{0.169}   {3.67}  {3.5}  {}  {NiO}    {}         {}
+\drawbg{-0.691}  {2.71}  {3.4}  {}  {SrTiO3} {}         {}
+\drawbg{0.113}   {3.31}  {3.2}  {}  {TiO2}   {anatase}  {}
+\drawbg{0.271}   {3.47}  {3.2}  {}  {ZnO}    {}         {}
+\drawbg{0.0131}  {3.01}  {3}    {}  {TiO2}   {rutile}   {1100a4}
+\drawbg{0.223}   {3.02}  {2.8}  {}  {FeTiO3} {}         {1600ff}
+\drawbg{-0.0489} {2.75}  {2.8}  {}  {In2O3}  {}         {1600ff}
+\drawbg{0.825}   {3.53}  {2.7}  {}  {WO3}    {}         {0000ff}
+\drawbg{-0.342}  {2.06}  {2.4}  {}  {CdS}    {}         {00ff00}
+\drawbg{0.849}   {3.05}  {2.2}  {}  {Fe2O3}  {hematite} {a0ff00}
+\drawbg{0.856}   {3.06}  {2.2}  {}  {CdO}    {}         {a0ff00}
+\drawbg{0.285}   {2.48}  {2.2}  {}  {Cu2O}   {}         {a0ff00}
+\drawbg{1.08}    {2.78}  {1.7}  {}  {CuO}    {}         {}
+
+
+<<'0100-bandgaps-all-tikz', eval=FALSE, results='asis'>>=
+# this is the code that produced the \drawbg commands above
+nernst.slope <- function(temperature = 25) {
+   F <- faraday.constant <-
+      constants::codata %>% filter(symbol == "F") %>% pull(value) %>% as.numeric()
+   R <- gas.constant <-
+      constants::codata %>% filter(symbol == "R") %>% pull(value) %>% as.numeric()
+   # don't forget to convert degrees Celsius to Kelvin in this formula
+   return((R * common::Celsius2Kelvin(temperature) * log(10)) / F)
+}
+
+potential.at.pH <- function(potential, pH, temperature = 25, new_pH = 0) {
+   new_potential <-
+      potential - nernst.slope(temperature = temperature) * (new_pH - pH)
+   return(new_potential)
+}
+
+tikz_materials <-
+   bandgaps::semiconductors %>%
+   filter(formula %in% c(
+      "ZrO2", "ZnS", "SnO2", "NiO",
+      "SrTiO3", "TiO2", "ZnO", "FeTiO3",
+      "In2O3", "WO3", "CdS", "Fe2O3",
+      "CdO", "Cu2O", "CuO")) %>%
+   select(CB, VB, Eg, pH, formula, polymorph) %>%
+   # recalculate CB and VB edge potentials for a new pH
+   mutate(CB = potential.at.pH(CB, pH, temperature = 25, new_pH = 1) %>%
+      formatC(digits=3, format="fg")) %>%
+   mutate(VB = potential.at.pH(VB, pH, temperature = 25, new_pH = 1) %>%
+      formatC(digits=3, format="fg")) %>%
+   # now we don't need the pH column anymore
+   select(-pH) %>%
+   # create LaTeX-appropriate strings...
+   mutate(CB = paste0("\\drawbg{", CB)) %>%
+   # fnsymb column is empty since we only show oxides
+   # so we will hack together an empty column in the right place
+   mutate(Eg = paste(Eg, "")) %>%
+   separate(Eg, sep = " ", c("Eg", "fnsymb")) %>%
+   mutate(polymorph = paste0(polymorph, "}  {}"))
+tikz_materials %>%
+   write.table(
+      row.names = F,
+      col.names = F,
+      sep = "}  {",
+      quote = F)
+@
+
+
+%\setnotes
+\end{tikzpicture}
+\caption[Band edges of semiconductor chalcogenides]{%
+   \protect\Gls{VB} and \protect\gls{CB} edges for bulk semiconductor chalcogenides
+   plotted at \pH{\,\num{0}} and \qty{298}{\kelvin} compared with the reduction potential
+   of \protect\glsdisp{HER}{hydrogen evolution} (red) and
+   \protect\glsdisp{OER}{oxygen evolution} (blue) from \water\ \vs\ both the
+   \protect\gls{SHE} and \protect\gls{AVS} reference scale (dataset from \cref{bandgaps}).
+   Materials are shown in order of decreasing band gap.
+   Note that \ZnO\ is unstable at this \pH, but since for all oxides
+   Nernstian dependence (see \cref{eq:nernstian-pH})
+   can safely be assumed, their band edges could be arbitrarily redrawn at any \pH.
+   Fill colour illustrates the \emph{absorbed} wavelength, based on
+   the spectral model developed by \textcite{Aphalo2015}
+   (the same colour model is used in \cref{sch:0302-tested-dyes}).}
+\label{fig:0100-bandgaps-all}
+\end{figure}
+
+% end local scope
+\egroup

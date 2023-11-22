@@ -1,0 +1,135 @@
+% glossaries need to be loaded *after* hyperref for clickable glossary links
+\usepackage[%
+   % The record option not only creates new keys (group and location) but also makes
+   % references to undefined entries trigger warnings rather than errors. This is
+   % necessary since the entries won’t be defined on the first LaTeX call
+   % (see pp. 57 in https://tug.org/TUGboat/tb40-1/tb124talbot-bib2gls.pdf).
+   % glossaries-extra v1.37 introduced the option record=nameref, which writes
+   % more detailed indexing information to the *.aux file.
+   record=nameref,%
+   abbreviations,%
+   symbols,%
+   % If you use one of the tabular-like styles with \printunsrtglossary, make sure
+   % to load glossaries-extra-stylemods which modifies the definition of \glsgroupskip
+   % to avoid the “Incomplete \iftrue” error that may otherwise occur.
+   % This is more conveniently loaded through the stylemods option
+   % stylemods=super,
+   nomain%
+]{glossaries-extra}
+
+% note that \glsaddkeys must be invoked *before* \GlsXtrLoadResources
+% https://tex.stackexchange.com/a/631710
+\glsaddkey{value}%   key/field
+   {}%               default value if field isn't used in \newglossaryentry
+   {\glsentryvalue}% command analogous to \glsentrytext
+   {\Glsentryvalue}% command analogous to \Glsentrytext
+   {\glsvalue}%      command analogous to \glstext
+   {\Glsvalue}%      command analogous to \Glstext
+   {\GLSvalue}%      command analogous to \GLStext
+
+\glsaddkey{unit}%   key/field
+   {}%              default value if field isn't used in \newglossaryentry
+   {\glsentryunit}% command analogous to \glsentrytext
+   {\Glsentryunit}% command analogous to \Glsentrytext
+   {\glsunit}%      command analogous to \glstext
+   {\Glsunit}%      command analogous to \Glstext
+   {\GLSunit}%      command analogous to \GLStext
+
+\glsaddkey{exact}%   key/field
+   {}%               default value if field isn't used in \newglossaryentry
+   {\glsentryexact}% command analogous to \glsentrytext
+   {\Glsentryexact}% command analogous to \Glsentrytext
+   {\glsexact}%      command analogous to \glstext
+   {\Glsexact}%      command analogous to \Glstext
+   {\GLSexact}%      command analogous to \GLStext
+
+\GlsXtrLoadResources[%
+   src={assets/glossaries/acronyms},%
+   sort={en-GB},% sort according to 'en-GB' locale
+   % in final mode, change from "selection=all" to
+   % selection=recorded and deps,%
+   % or alternatively, to
+   selection=recorded and deps and see]%
+   % in draft mode, I prefer including all entries, whether referenced or not
+   % selection=all]
+
+\GlsXtrLoadResources[%
+   src={assets/glossaries/symbols},%
+   sort={en-GB},% sort according to 'en-GB' locale
+   % in final mode, change from "selection=all" (which is useful for draft) to
+   % selection=recorded and deps,%
+   % or alternatively, to
+   selection=recorded and deps and see]%
+   % "selection=all" includes all entries, whether called in the document or not
+   % selection=all]
+
+% \glsdescwidth is the width of the description column in the symbol glossary list
+% \glspagelistwidth is the width of the page list column, if any
+% NOTE: the styles long4col and super4col do NOT use these lengths
+% NOTE: this length has been estimated by eye, but corresponds very closely to
+% textwidth of normal text (compared to the glossary preamble).
+\setlength{\glsdescwidth}{.90\textwidth}
+
+% define custom style=supermod that includes value/unit
+% https://tex.stackexchange.com/questions/415275/flush-glossaries-super-style-to-left
+% the SE answer above appears outdated---the code below is based directly
+% on glossaries-extra v1.50 source code
+\newglossarystyle{supermod}{%
+   \renewenvironment{theglossary}{%
+      \tablehead{}\tabletail{}%
+      \begin{supertabular}{@{}lp{\glsdescwidth}}%
+   }{%
+      \end{supertabular}%
+   }%
+   \renewcommand*{\glossaryheader}{}%
+   \renewcommand*{\glsgroupheading}[1]{}%
+   \renewcommand*{\glssubgroupheading}[4]{}%
+   % Note, \newline worked well to introduce a linebreak while staying inside the p{} column
+   % (in contrast to "\\" which forced the new line to start in the first column)
+   \renewcommand{\glossentry}[2]{%
+      \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+      % if field "value" is specified for this entry
+      \ifglshasfield{value}{##1}{%
+         % if field "exact" is set, use $\equiv$ sign instead of equals sign
+         \ifglshasfield{exact}{##1}{%
+            % we assume that field "exact" is always numeric one or zero
+            \ifthenelse{\glsentryexact{##1} = 1}{$\equiv$}{$=$}%
+         % if field "exact" is not set, but entry has "value" specified, treat as \thisexact=0
+         }{$=$}%
+         % if field "unit" is specified for this entry, print value *and* unit
+         % and if unitless, print just the value
+         \ifglshasfield{unit}{##1}{%
+            $\thinspace$\qty{\glsentryvalue{##1}}{\glsentryunit{##1}}\newline%
+         }{%
+            $\thinspace$\num{\glsentryvalue{##1}}\newline%
+         }%
+      }{%
+         % if field "value" is not specified, check if unit is specified
+         % the typical notation to express "unit of" is [d]=pm, but it's unsuitable
+         % because would mean repeating the symbol...
+         % I came up with this simple forward-slash notation as a work-around
+         \ifglshasfield{unit}{##1}{%
+            $/\unit{\glsentryunit{##1}}$\newline%
+         }{}%
+      }%
+      \glossentrydesc{##1}%
+      \glspostdescription%
+      % if you prefer page numbers and "see also" on their own line, add \newline
+      % before ##2 and remove the \space
+      \space ##2%
+      % change here to increase vertical space between symbol entries
+      \tabularnewline[0pt]
+   }%
+   % we are not using sub-entries, so this could be removed
+   \renewcommand{\subglossentry}[3]{%
+      &
+      \glssubentryitem{##2}%
+      \glstarget{##2}{\strut}\glossentrydesc{##2}\glspostdescription
+      \space ##3\tabularnewline
+   }%
+   \ifglsnogroupskip
+      \renewcommand*{\glsgroupskip}{}%
+   \else
+      \renewcommand*{\glsgroupskip}{& \tabularnewline}%
+   \fi
+}

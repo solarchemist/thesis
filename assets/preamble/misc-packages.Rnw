@@ -1,0 +1,58 @@
+% ifprintedition package supports documentclass options "webedition" and "printedition" and
+% the commands \ifprintedition and \ifwebedition (works like \ifdraft)
+% https://git.solarchemist.se/taha/ifprintedition
+\usepackage{ifprintedition}
+
+% https://blog.martisak.se/2020/05/03/top-ten-latex-packages/#microtype
+% http://www.khirevich.com/latex/microtype/
+\usepackage[%
+   % protrusion=true is a default setting of microtype
+   % NOTE, if protrusion is enabled, might be a good idea to DISABLE it for TOC, LoT, etc.
+   % to get nicer alignment of page numbers in those tables
+   protrusion=true,%
+   % another default setting of microtype
+   expansion,%
+   % final is inherited from documentclass
+   % we set it explicitly to apply microtype also in draft mode
+   final%
+]{microtype}
+
+\usepackage{csquotes}
+% markifdraft puts a git watermark at bottom centre of each sheet IN DRAFT MODE ONLY
+\usepackage[markifdraft]{gitinfo2}
+   \renewcommand{\gitMarkFormat}{\color{gray}\scriptsize\sffamily}
+% we use relsize to make URL font size smaller, see
+% https://tex.stackexchange.com/questions/109740/font-size-of-url-in-footnote
+\usepackage{relsize}
+% alias counter names (used to shorten "infobox:" to "ibx:")
+\usepackage{aliascnt}
+% fnpct handles multiple footnotes
+% https://tex.stackexchange.com/questions/28465/multiple-footnotes-at-one-point
+\usepackage{fnpct}
+% epigraphs next to chapter headings
+% https://tex.stackexchange.com/a/53378/10824
+\usepackage{epigraph}
+% https://anneurai.net/2017/10/18/thesis-formatting-in-latex/
+\setlength\epigraphwidth{0.67\textwidth}
+\setlength\epigraphrule{0pt}
+\setlength\beforeepigraphskip{0\baselineskip}
+\setlength\afterepigraphskip{2\baselineskip}
+\renewcommand*{\textflush}{flushright}
+\renewcommand*{\epigraphsize}{\footnotesize}
+% https://tex.stackexchange.com/questions/117597/inserting-a-creative-commons-licence-into-a-latex-document
+% the cc symbols from the fontawesome5 package sit better on the baseline (than ccicons)
+\usepackage{fontawesome5}
+% Academicons (at this time for the sake of the DOI icon, see bibliography config)
+\usepackage{academicons}
+% bandgaps illustration (TikZ) uses \isempty and thus requires xifthen
+% several command definitions use \isempty et al.
+\usepackage{xifthen}
+% we use \NewDocumentCommand to define some commands
+\usepackage{xparse}
+% xfrac supplies \sfrac (split-level fractions)
+\usepackage{xfrac}
+% ended up needing upright Greek symbols after all
+\usepackage{upgreek}
+% fancyvrb to support verbatim in footnotes
+% https://tex.stackexchange.com/questions/203/how-to-obtain-verbatim-text-in-a-footnote
+\usepackage{fancyvrb}

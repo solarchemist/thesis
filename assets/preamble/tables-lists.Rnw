@@ -1,0 +1,36 @@
+\usepackage{booktabs}
+% ctable used for certain complicated tables (e.g., tables with footnotes)
+% note: the ctable manual says "You must load ctable after tikz"
+\usepackage{ctable}
+\usepackage{tabularx}
+\usepackage{longtable}
+% Including headings down to the subsection level in main TOC
+\contentsdepth{subsection} % this command is defined in UUthesis class
+% Numbering of headings in main TOC down to the subsection level
+\numberingdepth{subsection} % this command is defined in UUthesis class
+% tocloft because we want custom "List of..." for Box environments and Hyperlinks
+% the option titles makes tocloft surrender control of the TOC title font, spacing, etc.
+% to the document's default behaviour (otherwise tocloft uses its own settings,
+% which resets fontface, weight, size, spacing, etc. of the following
+% lists: table of contents, list of figures, list of tables, list of schemes,
+% list of boxes, external hyperlinks
+% [titles] did not affect the following lists: list of papers, list of contribs,
+% list of reactions, list of corrections, list of symbols, list of abbreviations,
+% nor any of the regular chapter headers (incl. bibliography).
+\usepackage[titles]{tocloft}
+% https://tex.stackexchange.com/questions/18411/what-are-the-differences-between-using-paralist-vs-enumitem
+% https://tex.stackexchange.com/questions/146306/how-to-make-horizontal-lists
+% inline enables inline (in-paragraph, aka horizontal) lists
+\usepackage[inline]{enumitem}
+% TE remarked (correctly) that new paragraph after itemize list was missing vertical space
+% between it and the end of the list. It seems vspace that should be added for new paragraph
+% is not automatically added after itemize?
+% https://tex.stackexchange.com/questions/199118/modifying-whitespace-before-and-after-list-separately-using-enumitem-package
+% but rather than changing the behaviour for all itemize environments
+% \setlist{after=\vspace{\baselineskip}}
+% I prefer to let the author add this vspace on a per-list basis with
+% \begin{itemize}[after=\vspace{\baselineskip}]
+% [noadjust]{marginnote} "does not adjust the margin note at the height or depth of the current
+% line. This often results in vertical misplacement but seldom in
+% vertical extra space before or after the current line". Sounds good!
+\usepackage[noadjust]{marginnote}

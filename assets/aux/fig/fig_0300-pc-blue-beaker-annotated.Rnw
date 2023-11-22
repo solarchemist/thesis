@@ -1,0 +1,51 @@
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[c]{0.63\textwidth}
+\centering
+\begin{tikzpicture}[font=\sffamily\tiny]
+   \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[trim={20mm 22mm 0 10mm},clip,width=0.83\linewidth]{methods/photocatalysis/0117}};
+   % create coordinate system relative to image size
+   \begin{scope}[x={(image.south east)},y={(image.north west)}]
+      % \draw[help lines,xstep=.1,ystep=.1] (0,0) grid (1.2,1);
+      % identify components with nodes
+      \node (fan)      at (0.50,0.92) [rectangle] {}; % [rectangle,draw=red] {};
+      \node (sink)     at (0.50,0.74) [rectangle] {};
+      \node (led)      at (0.50,0.56) [rectangle] {};
+      \node (tube)     at (0.40,0.50) [rectangle] {}; % Aluminium tube
+      \node (sample)   at (0.55,0.38) [rectangle] {}; % Thin-film sample
+      \node (platform) at (0.55,0.32) [rectangle] {}; % Sample platform
+      % labels
+      \node[xshift=-15mm,fill=white,anchor=north east] (fanlabel) at (fan.south west) {Fan};
+      \node[xshift=-15mm,fill=white,anchor=north east] (sinklabel) at (sink.south west) {Heatsink};
+      \node[xshift=20mm,fill=white,anchor=north west] (ledlabel) at (led.south east) {LEDs};
+      \node[xshift=-10mm,fill=white,anchor=north east] (tubelabel) at (tube.south west) {Aluminium tube};
+      \node[xshift=10mm,fill=white,anchor=north west] (samplelabel) at (sample.south east) {Sample};
+      \node[xshift=10mm,fill=white,anchor=north west] (platformlabel) at (platform.south east) {Sample platform};
+      % connecting arrows
+      \draw [->,bend left=20,white,very thick] (fanlabel.north east) to (fan.west);
+      \draw [->,bend left=20,white,very thick] (sinklabel.north east) to (sink.west);
+      \draw [->,bend left=20,white,very thick] (ledlabel.west) to (led.north east);
+      \draw [->,bend left=20,white,very thick] (tubelabel.north east) to (tube.west);
+      \draw [->,bend left=20,white,very thick] (samplelabel.west) to (sample.north east);
+      \draw [->,bend left=20,white,very thick] (platformlabel.west) to (platform.north east);
+   \end{scope}
+\end{tikzpicture}
+\caption{}
+\label{fig:0400-pc-blue-beaker-annotated}
+\end{subfigure}%
+\,%
+\begin{subfigure}[c]{0.33\textwidth}
+\centering %trim= left bottom right top
+% {120mm 0 80mm 0} centers the beaker on the magnetic plate pretty well
+\includegraphics[trim={240mm 0 200mm 0},clip,width=\linewidth]{methods/photocatalysis/0305}
+\caption{}
+\label{fig:0400-pc-blue-beaker-running}
+\end{subfigure}
+\caption%
+[Setup for PC with blue light in beaker]%
+{(\subref{fig:0400-pc-blue-beaker-annotated}) The components of a typical PC experiment using blue light
+in a beaker with magnetic stirring. No condenser lenses or other optics. The dye degradation was tracked
+\exsitu\ by removing samples at set intervals.
+(\subref{fig:0400-pc-blue-beaker-running}) Photocatalysis in action. Photo courtesy of Tomas Edvinsson.}
+\label{fig:0400-pc-blue-beaker}
+\end{figure}

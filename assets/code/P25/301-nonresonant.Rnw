@@ -1,0 +1,103 @@
+\section[Non-resonant Raman in nano-dimensional ZnO]{Non-resonant Raman in nano-dimensional \ZnO}
+\label{results:P25-nonresonant-Raman}
+\seepaper{P4}[-\baselineskip]
+
+In this study, nano-dimensional \ZnO\ powders with particle sizes varying from
+\qtyrange{10}{150}{\nm} (synthesised by other workers in this laboratory \cite{Katea2017})
+were studied by non-resonant Raman spectroscopy using blue, green, red, and IR lasers.
+
+For the smallest particle size, \qty{10}{\nm}, corresponding to \qtylist{200;300;400}{\celsius},
+the spectra were plagued by fluorescence that could drown out the Raman modes,
+and more so at higher wavelength of excitation.
+This was likely due to minute organic residues.
+
+%\input{assets/code/P25/100-main.Rnw}
+\marginpar{\scriptsize%
+<<'0525P-fig-diameter-vs-temperature-logarithmic', ref.label='0525P-figref-diameter-vs-temperature-logarithmic', fig.width=1, out.width='20mm', fig.height=1.14, fig.align='default', eval=TRUE, warning=FALSE>>=
+# note on fig size for marginpar plots
+# fig.width = 1 #  1 in -> 2.54 cm
+# out.width = '20mm' # this is our marginparwidth
+# fig.height = 1.14 # makes plot panel almost square (width:height 113px/108px), and includes room for x-axis title on the outside of the panel. Visually, looking good.
+# fig.align = 'default' # default is to do no align adjustments
+@
+}
+The particle size, $d$, was determined using TOPAS full-profile fitting of the \ZnO\ \gls{PXRD} reflections,
+and we may note that $d$ increases logarithmically with \glsfirst{annealing_temperature},
+if the two lowest temperatures (\qtylist{200;300}{\celsius}) are excluded from the linear fit
+(blue line is the linear fit, note the $\log_{10}$ $y$-axis---all tick marks are
+equi-distant on the number line; the red ribbon shows the standard error of the TOPAS fit).
+
+
+We analyzed the the $c/a$ lattice axis ratio to find out if there were any variation
+in unit cell shape with particle size, and found no such variation within the
+estimated standard deviation (the pale yellow-coloured band in \cf\ \cref{fig:25P-pxrd-ca-ratio}).
+This puts to rest any lingering suspicion that the observed trend in the phonon--phonon
+signal was due to changing unit cell parameters (or due to strain from the rapid cooling step
+during synthesis).
+
+Another potentially confounding factor we wanted to control for was the well-known
+effect of local heating due to the laser beam incident on the sample \cite{Thyr2023},
+which may potentially cause phase transitions, oxidation of any intrinsically doped oxide,
+or a local thermal expansion in turn causing a peak shift.
+To assess this, we fitted both the Stokes and anti-Stokes of the same mode for
+all particle sizes (\cf\ \cref{fig:25P-sas-area-ratio,fig:25P-SI-sas-fityk-ratios}),
+under the assumption that any laser-induced heating would increase the probability
+of the crystallite being in a vibrationally excited state and thus strengthen the
+anti-Stokes signal. We saw no indication of that.
+
+The symmetry of space group \spacegroup{186} dictates that only the
+$A_1$, $E_1$ and $E_2$ optical modes of \ZnO\ are Raman active, but
+due to overtones and sum/diff modes the non-resonant spectra
+actually contain a multitude of peaks, which we have assigned after baseline
+subtraction and peak deconvolution
+(see \cref{box:vibrational-properties-ZnO}).
+
+Our access to non-resonant Raman spectra using both blue and green laser excitation
+(and varying particle sizes)
+allowed us to make reasonable assignments even in cases where a single observation
+might have been ambiguous.
+And by plotting the fitted Raman shift \vs\ particle size (\cref{fig:P25-bluegreenraman-bars+shifts})
+it was apparent that the \nonresmode{E1LO} mode and its overtone behaved differently
+(at least under blue laser excitation).
+Whereas all other modes showed practically no shift in \glsname{raman_shift} with
+particle size, the \nonresmode{E1LO} modes shifted to higher energy with increasing
+particle size, which brought it closer in energy to the \nonresmode{A1LO} mode.
+
+
+\clearpage
+%\input{assets/aux/box/box_vibrational-properties-ZnO.Rnw}
+<<child=here::here('assets/aux/box/box_vibrational-properties-ZnO.Rnw')>>=
+# \label{box:vibrational-properties-ZnO}
+@
+
+
+\begin{figure}[tbp]
+\centering
+<<'0525P-fig-bluegreen-bars+shifts', eval=TRUE, warning=FALSE>>=
+<<0525P-figref-bluegreenraman-barplots-fityk0513>>
+<<0525P-figref-bluegreenraman-centroids-fityk0513>>
+p.left <-
+   cowplot::ggdraw(p.blue) +
+   cowplot::draw_plot(p.green, x = 0, y = 0, width = 1, height = 1)
+cowplot::plot_grid(
+   p.left, # barplots
+   p.right, # Raman shifts
+   # relative widths set in this case to make the left plot appear slightly wider, looks better
+   rel_widths = c(1.1, 1),
+   # plots aligned vertically along top and bottom x-axes (only works because they use matching theme)
+   nrow = 1, align = "v", axis = "tb")
+@
+\caption[Fitted peak parameters of non-resonant Raman spectra]{%
+   Relative peak widths and heights (left panel) and Raman shifts (right panel) of peak-fitted
+   Raman spectra of both blue and green laser excitation.
+   Fitted peak widths and heights are represented as bars (height along the horizontal axis).
+   Some observed Raman modes have been excluded (modes with weak S/N, or those
+   observed for only a subset of particle sizes).
+   Interestingly, only the \nonresmode{E1LO} mode (and its overtone) show a visible shift
+   \vs\ particle size.
+   Note that the range in \glsname{raman_shift} of each subpanel has been kept precisely
+   the same to make the slopes visually equivalent.
+   Also note that there is a horizontal correspondence between the bars on the left
+   and their slopes on the right.}
+\label{fig:P25-bluegreenraman-bars+shifts}
+\end{figure}

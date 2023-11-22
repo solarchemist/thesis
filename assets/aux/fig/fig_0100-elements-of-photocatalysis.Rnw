@@ -1,0 +1,160 @@
+\begin{figure}[tbp]
+<<'0100-fig-elements-photocatalysis', dev='png', dpi=300, cache=FALSE, fig.width=9, fig.height=5.25, warning=FALSE>>=
+# fig.width and fig.height values in the chunk args are important for element boxes
+# to line up correctly
+ptable <-
+   periodicdata::values %>%
+   # set colour in the dataframe itself (preparation for scale_colour_identity below)
+   mutate(production.colour = case_when(
+      Production > 1e9 ~ "#07B248",
+      Production > 33e6 & Production <= 1e9 ~ "#C4E2BF",
+      Production > 1e6 & Production <= 33e6 ~ "#F4B521",
+      Production <= 1e6 ~ "#ED2025",
+      .default = "")) %>%
+   mutate(production.colour = factor(production.colour, c("#07B248", "#C4E2BF", "#F4B521", "#ED2025", ""))) %>%
+   mutate(production.label = case_when(
+      Production > 1e9 ~ ">1 Mt/yr",
+      Production > 33e6 & Production <= 1e9 ~ ">33 kt/yr",
+      Production > 1e6 & Production <= 33e6 ~ ">1 kt/yr",
+      Production <= 1e6 ~ "<1 kt/yr",
+      .default = "")) %>%
+   mutate(production.label = factor(production.label, c(">1 Mt/yr", ">33 kt/yr", ">1 kt/yr", "<1 kt/yr", ""))) %>%
+   # add d0, d10, non-metal status to dataset
+   left_join(tribble(
+      ~Symbol, ~pcat,
+      "Ti", "d0",
+      "V",  "d0",
+      "Zr", "d0",
+      "Nb", "d0",
+      "Mo", "d0",
+      "Ta", "d0",
+      "W",  "d0",
+      "Ce", "d0",
+      "Cu", "d10",
+      "Zn", "d10",
+      "Ga", "d10",
+      "Ge", "d10",
+      "Ag", "d10",
+      "Cd", "d10",
+      "In", "d10",
+      "Sn", "d10",
+      "Sb", "d10",
+      "Pb", "d10",
+      "Bi", "d10",
+      "N",  "non-metal",
+      "O",  "non-metal",
+      "S",  "non-metal"),
+      by = "Symbol")
+element <- data.frame(
+   box.size = 16,
+   name.size = 3.0)
+legend.mock.box <- tibble::tribble(
+   ~x,  ~y,       ~text, ~id,    ~label,
+   3.2, 2.8,      "",    "box",  "",
+   3.2, 2.8-0.25, "Mo",  "text", "",
+   3.2, 2.8+0.03, "8.4", "text", "Annual production (log)",
+   3.2, 2.8+0.28, "1.5", "text", "Market price (log)")
+ggplot() +
+   # lightly coloured boxes for all elements
+   geom_point(
+      data = ptable,
+      size = element$box.size, shape = 0, colour = "gray",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # lightly coloured element symbol for all elements
+   geom_text(
+      data = ptable,
+      size = element$name.size, colour = "gray", fontface = "bold",
+      aes(label = Symbol, y = IUPAC_Period, x = IUPAC_Group)) +
+   # lightly coloured fill production rates above 1 Mt/yr
+   geom_point(
+      data = ptable %>% filter(Production > 1e9),
+      size = element$box.size, shape = 15, alpha = 0.1, colour = "#07B248",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # lightly coloured fill production rates above 33 kt/yr
+   geom_point(
+      data = ptable %>% filter(Production > 33e6 & Production <= 1e9),
+      size = element$box.size, shape = 15, alpha = 0.1, colour = "#C4E2BF",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # lightly coloured fill production rates above 1 kt/yr
+   geom_point(
+      data = ptable %>% filter(Production > 1e6 & Production <= 33e6),
+      size = element$box.size, shape = 15, alpha = 0.1, colour = "#F4B521",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # lightly coloured fill production rates less than 1 kt/yr
+   geom_point(
+      data = ptable %>% filter(Production <= 1e6),
+      size = element$box.size, shape = 15, alpha = 0.1, colour = "#ED2025",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # highlight the elements of interest with deeper fill colours
+   geom_point(data = ptable %>% filter(Production > 1e9) %>% filter(pcat != ""),
+      size = element$box.size, shape = 15, aes(y = IUPAC_Period, x = IUPAC_Group, colour = production.colour)) +
+   geom_point(data = ptable %>% filter(Production > 33e6 & Production <= 1e9) %>% filter(pcat != ""),
+      size = element$box.size, shape = 15, aes(y = IUPAC_Period, x = IUPAC_Group, colour = production.colour)) +
+   geom_point(data = ptable %>% filter(Production > 1e6 & Production <= 33e6) %>% filter(pcat != ""),
+      size = element$box.size, shape = 15, aes(y = IUPAC_Period, x = IUPAC_Group, colour = production.colour)) +
+   geom_point(data = ptable %>% filter(Production <= 1e6) %>% filter(pcat != ""),
+      size = element$box.size, shape = 15, aes(y = IUPAC_Period, x = IUPAC_Group, colour = production.colour)) +
+   # highlight the box of elements of interest (d0, d10, select non-metals)
+   geom_point(
+      data = ptable %>% filter(pcat != ""),
+      size = element$box.size, shape = 0, colour = "black",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # highlight the name of elements of interest (d0, d10, select non-metals)
+   geom_text(
+      data = ptable %>% filter(pcat != ""),
+      size = element$name.size, colour = "black", fontface = "bold",
+      aes(label = Symbol, y = IUPAC_Period, x = IUPAC_Group)) +
+   # show (or not) atomic number range for La, Ac placeholder cells
+   geom_text(
+      data = ptable %>% filter(is.na(Atomic_Number)),
+      size = 0.75 * element$name.size, colour = "black", label = "",
+      aes(y = IUPAC_Period, x = IUPAC_Group)) +
+   # scales
+   scale_x_continuous(
+      breaks = seq(min(values$IUPAC_Group), max(values$IUPAC_Group)),
+      limits = c(min(values$IUPAC_Group) - 1, max(values$IUPAC_Group) + 1),
+      expand = c(0, 0)) +
+   scale_y_continuous(
+      trans = "reverse",
+      breaks = seq(min(values$IUPAC_Period), max(values$IUPAC_Period)),
+      limits = c(max(values$IUPAC_Period) + 1, min(values$IUPAC_Period) - 1.5),
+      expand = c(0, 0)) +
+   scale_colour_identity(
+      labels = levels(ptable$production.label),
+      breaks = levels(ptable$production.colour),
+      guide = guide_legend(
+         title = "Global production in 2010",
+         override.aes = list(size = 3),
+         title.position = "top")) +
+   theme(
+      # panel.border is a thin gray "frame" surounding the plot
+      panel.border = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      plot.margin = unit(c(0, 0, 0, 0), "line"),
+      # plot.margin = unit(c(0, 0, -0.85, -0.85), "line"),
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      # legend is manually centered atop the transition metal block
+      legend.position = c(0.45, 0.82),
+      legend.justification = c(0.5, 1),
+      legend.direction = "horizontal",
+      legend.key = element_rect(fill = NA, colour = NA),
+      # key.size had no effect on the legend key size! see guides() above instead
+      # key.width affects the horizontal spacing of the key, not the coloured box
+      legend.key.width = unit(2, "mm"),
+      legend.text = element_text(size = 10),
+      #legend.title = element_blank(),
+      legend.background = element_rect(fill = NA))
+@
+\caption[Chemical elements in photocatalytic compounds]{%
+   Photocatalytic compounds are often constituted of either
+   $d^0$ or $d^{10}$ cations (highlighted) and nitrogen or chalcogenide anions
+   (highlighted) \cite{Zhu2011,Maeda2011}.
+   For a photocatalyst to be relevant at the scale required for the global energy
+   transition, the constituent elements must also be readily available \cite{Vesborg2012}
+   (see colour legend).
+}
+\label{fig:0100-elements-of-photocatalysis}
+\end{figure}

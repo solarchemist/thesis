@@ -1,0 +1,26 @@
+\usepackage{babel}
+% \usepackage[utf8]{luainputenc} % don't think luainputenc is actually needed
+% https://en.wikibooks.org/wiki/LaTeX/Fonts
+% https://tex.stackexchange.com/questions/59403/what-font-packages-are-installed-in-tex-live
+% https://tex.stackexchange.com/questions/134079/font-setup-for-an-academic-thesis-no-computer-modern-wanted
+% https://tex.stackexchange.com/questions/412757/do-i-need-to-use-usepackaget1fontenc-if-i-use-lualatex
+% https://r2src.github.io/top10fonts/
+% http://www.khirevich.com/latex/font/
+\usepackage{fontspec}
+
+\setsansfont{Linux Biolinum O}
+% emulate the font settings in classicthesis
+% https://ctan.org/tex-archive/macros/latex/contrib/classicthesis
+% I tried Numbers=OldStyle with Pagella but did not like it
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella} % Palatino clone
+\linespread{1.05} % a bit more spread for Palatino
+
+% https://tex.stackexchange.com/questions/118244/what-is-the-difference-between-unicode-math-and-mathspec
+% https://tex.stackexchange.com/questions/198658/circled-equal-with-same-size-as-oplus-otimes-with-pdflatex
+% warning during compilation: "for best results, please load mathtools *before* unicode-math"
+% this was before I loaded mathtools, so I assume some other package loaded it (probably chemmacros)
+% so let's load it here, explicitly
+\usepackage{mathtools}
+\usepackage{unicode-math} % caused ominus/oplus inside chemfig to fail
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono} % like Bera; Scale=MatchLowercase

@@ -1,0 +1,31 @@
+\begin{infobox}[The vibrational properties of hematite]
+\label{box:vibrational-properties-Fe2O3}
+
+The vibrational modes of \glstext{hematite} (trigonal system, \cf\ \cref{tab:0300-pxrd-pdfs})
+at the Brillouin zone center are:
+\begin{equation}\label{eq:vibrational-modes-hematite}
+\Gamma_\mathrm{vibrational} =
+2A_\mathrm{1g} + % Raman
+2A_\mathrm{1u} + % optically silent
+3A_\mathrm{2g} + % optically silent
+2A_\mathrm{2u} + % IR
+5E_\mathrm{g}  + % Raman
+4E_\mathrm{u}    % IR
+\end{equation}
+
+The symmetrical modes (\emph{gerade}) are Raman active, and the asymmetrical modes
+(\emph{ungerade}) are \gls{IR} active, except for the $A_\mathrm{1u}$ and $A_\mathrm{2g}$
+modes which are optically silent \cite{Chernyshova2007}.
+That makes for six \gls{IR} modes: $4E_\mathrm{u}+2A_\mathrm{2u}$, \ie,
+four transverse ($E_\mathrm{u}$) with dipole moments perpendicular
+to the crystal $c$-axis and two longitudinal ($A_\mathrm{u}$) with dipole moments
+parallel to it \cite{Rendon1981}, and
+seven Raman modes: $5E_\mathrm{g} + 2A_\mathrm{1g}$.
+Furthermore, \glstext{hematite} is antiferromagnetic and its collective spin movement
+can be excited in a \emph{magnon}. The interaction of two magnons at
+anti-parallel spin sites in close proximity create a distinct and broad spectral
+feature in its Raman spectrum at \qty{1320}{\per\cm}
+\cite{Cornell2003,Owens2006,Massey1990,deFaria1997,Chamritski2005}
+which can be observed for the thickest film in \cref{fig:P03-Raman-405nm-stacked}.
+
+\end{infobox}

@@ -1,0 +1,56 @@
+% https://texample.net/tikz/examples/lambert-beer-law/
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FADING LIGHT DECORATION %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\pgfkeys{/pgf/decoration/.cd,
+         start color/.store in = \startcolor,
+         end color/.store in   = \endcolor
+        }
+
+\pgfdeclaredecoration{color change}{initial}{
+% Initial state
+\state{initial}[%
+    width                     = 0pt,
+    next state                = line,
+    persistent precomputation = {\pgfmathdivide{50}{\pgfdecoratedpathlength}%
+                                 \let\increment=\pgfmathresult%
+                                 \def\x{0}}]%
+{}%
+
+% Line state
+\state{line}[%
+    width                      = .5pt,
+    persistent postcomputation = {\pgfmathadd@{\x}{\increment}%
+                                  \let\x=\pgfmathresult}]%
+{%
+  \pgfsetlinewidth{\pgflinewidth}%
+  \pgfsetarrows{-}%
+  \pgfpathmoveto{\pgfpointorigin}%
+  \pgfpathlineto{\pgfqpoint{.75pt}{0pt}}%
+  \pgfsetstrokecolor{\endcolor!\x!\startcolor}%
+  \pgfusepath{stroke}%
+}%
+
+% Final state
+\state{final}{%
+  \pgfsetlinewidth{\pgflinewidth}%
+  \pgfpathmoveto{\pgfpointorigin}%
+  \color{\endcolor!\x!\startcolor}%
+  \pgfusepath{stroke}%
+}
+}
+\makeatother
+
+
+%%%%%%%%%%%%
+% COMMANDS %
+%%%%%%%%%%%%
+\def\pr#1{\directlua{tex.print(#1)}}
+
+\def\rnd{.%
+\pdfuniformdeviate10%
+\pdfuniformdeviate10%
+\pdfuniformdeviate10%
+}

@@ -1,0 +1,69 @@
+\begin{figure}[tbp]
+\centering
+
+\begin{tikzpicture}[inner sep=0pt, outer sep=1pt]
+  % sample (specimen)
+  \node [rectangle,fill=gray!60!yellow,minimum width=6cm,minimum height=0.8cm,anchor=center] (specimen) at (0,0) {};
+
+  % column bottom
+  \node [%
+    rectangle, yshift=1.5cm,%
+    inner sep=0pt, outer sep=0pt,%
+    shade,left color=gray!50!white,right color=gray,draw=gray!80!black,%
+    minimum width=0.8cm, minimum height=0.2cm] (column) at (specimen.north) {};
+  % column top, aligned with the horizontal center of column bottom
+  \fill[draw=gray!80!black,shade,left color=gray!50!white,right color=gray,inner sep=0pt,outer sep=0pt]
+    (column.north) -- ++(-0.5,0) -- ++(-0.3,1) -- ++(1.6,0) -- ++(-0.3,-1) -- cycle;
+
+  % % SE detector % (remnant from the original illustration by Eric Jensen, texample.net)
+  % \shade[left color=gray!50!white,right color=gray] (2.5,0) ++(135:2) --
+  %   ++(225:0.3) -- ++(135:0.8) -- ++(45:0.6) -- ++(315:0.8) -- cycle;
+
+  % labels
+  \begin{scope}[font=\scriptsize]
+    % direct beam
+    \node [yshift=-1.5cm] (directbeam) at (specimen.south) {Direct beam};
+    % intra-specimen interactions
+    \node [anchor=west,xshift=2mm] (phonons) at (specimen.west) {Phonons};
+    \node [anchor=east,xshift=-2mm] (excitons) at (specimen.east) {Excitons};
+    % top left quadrant
+    \node [xshift=-2cm,yshift=0.3cm] (BSE) at (column.south) {Backscattered \el};
+    \node [xshift=-3.5cm,yshift=-0.8cm] (SE) at (column.south) {Secondary \el};
+    % top right quadrant
+    \node [xshift=2cm,yshift=0.3cm] (Xcharacteristic) at (column.south) {Characteristic X-rays};
+    \node [xshift=3.5cm,yshift=-0.8cm] (Auger) at (column.south) {Auger \el};
+    % bottom right quadrant
+    \node [xshift=2cm,yshift=0.3cm] (Bremsstrahlung) at (directbeam) {Bremsstrahlung X-rays};
+    % bottom left quadrant
+    \node [xshift=-2cm,yshift=0.3cm] (elasticallyscattered) at (directbeam) {Inelastically scattered \el};
+  \end{scope}
+
+  % primary electrons (direct beam above the sample)
+  \draw[-{Latex},line width=0.8mm] (column.south) -- (specimen.north);
+  % direct beam below the sample
+  \draw[-{Latex},line width=0.5mm] (specimen.south) -- (directbeam);
+
+  % illustrate emitted X-rays (photons) as coiled lines
+  \begin{scope}[decoration={coil,amplitude=.4mm,segment length=2mm,post length=1mm},line width=0.2mm]
+    \draw[decorate,-{Latex}] ([xshift=1mm,yshift=1mm]specimen.north) -- (Xcharacteristic);
+    \draw[decorate,-{Latex}] ([xshift=1mm,yshift=-1mm]specimen.south) -- (Bremsstrahlung);
+  \end{scope}
+
+  % illustrate emitted electrons as solid lines
+  \begin{scope}[inner sep=0pt, outer sep=2pt,line width=0.2mm]
+    \draw[-{Latex}] ([xshift=-1mm,yshift=1mm]specimen.north) -- (SE);
+    \draw[-{Latex}] ([xshift=-1mm,yshift=1mm]specimen.north) -- (BSE);
+    \draw[-{Latex}] ([xshift=1mm,yshift=1mm]specimen.north) -- (Auger);
+    \draw[-{Latex}] ([xshift=-1mm,yshift=-1mm]specimen.south) -- (elasticallyscattered);
+  \end{scope}
+
+  % intra-specimen interactions
+  \begin{scope}[inner sep=0pt, outer sep=2pt,line width=0.2mm]
+      \draw[-{Latex}] ([xshift=-5mm]specimen.center) -- (phonons);
+      \draw[-{Latex}] ([xshift=5mm]specimen.center) -- (excitons);
+  \end{scope}
+\end{tikzpicture}
+\caption[SEM scattering]{%
+  Illustration of electron beam interactions with matter.}
+\label{fig:0305-electronbeam-interactions}
+\end{figure}

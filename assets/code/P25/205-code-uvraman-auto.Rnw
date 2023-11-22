@@ -1,0 +1,1385 @@
+<<'0525P-UVRaman-import'>>=
+if (!file.exists(here::here("assets/data/P25/uvraman-data.rda"))) {
+   this.files <-
+      list.files(
+         path = here::here("assets/data/P25/170907-SK-ZnO"),
+         pattern = "^\\d{3}.*\\.txt$",
+         full.names = TRUE)
+   data[["325"]][["raman"]] <- NULL
+   for (i in 1:length(this.files)) {
+      # Sort the current dataframe by increasing wavenumbers and save to tmp df
+      this.data <- arrange(read.table(this.files[i], col.names = c("wavenum", "intensity")), wavenum)
+      # add column with transform wavenum to energy (eV)
+      this.data$energy <- wavenum2energy(this.data$wavenum)
+      data[["325"]][["raman"]] <-
+         rbind(
+            data[["325"]][["raman"]],
+            cbind(
+               filename = basename(this.files[i]),
+               date = substr(basename(dirname(this.files[i])), 1, 6),
+               this.data,
+               # create an equidistant wavenum vector
+               # note that approx() will force-sort the output from low -> high,
+               # therefore we pre-sorted the df above (arrange(..., wavenum))
+               wavenum.interp =
+                  stats::approx(
+                     x = this.data$wavenum,
+                     y = this.data$intensity,
+                     method = "linear",
+                     n = length(this.data$wavenum))$x,
+               # and make a new intensity vector adjusted in the same manner
+               intensity.interp =
+                  stats::approx(
+                     x = this.data$wavenum,
+                     y = this.data$intensity,
+                     method = "linear",
+                     n = length(this.data$wavenum))$y,
+               # create an equidistant energy vector
+               energy.interp =
+                  stats::approx(
+                     x = this.data$energy,
+                     y = this.data$intensity,
+                     method = "linear",
+                     n = length(this.data$energy))$x))
+   }
+   # ... re-sort the rownames as well
+   row.names(data[["325"]][["raman"]]) <- seq(1, dim(data[["325"]][["raman"]])[1])
+   save(data, file = here::here("assets/data/P25/uvraman-data.rda"))
+} else {
+   data <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/uvraman-data.rda"))
+}
+@
+
+
+<<'0525P-UVRaman-meta'>>=
+# extract metadata fields from filename
+# The filename consists of metadata fields, each field separated by a hyphen
+# metadata correctly constructed (next step: transform matrix to df)
+meta[["325"]][["raman"]] <-
+   data.frame(
+      date = data[["325"]][["raman"]]$date,
+      structure(
+         matrix(
+            ncol = 7,
+            byrow = T,
+            data = unlist(strsplit((data[["325"]][["raman"]]$filename), "-"))),
+         dimnames =
+            list(
+               c(),
+               c("run",
+                 "well",
+                 "laserwl",
+                 "exposure_time",
+                 "laserpower",
+                 "accumulations",
+                 "objectivemag"))))
+# exposure time in sec multiplied with laser power in Watt equals energy in Joule
+# we dont state power in watt but in fractions of total power, which is not completely known (depends on objective lens, also I did not measure across different fractions of power (no "standard" curve for laser power))
+# in any case, stating power as seconds * percent (joule-fraction or joule-percent, if you will) is still useful as it makes it easier to check whether a particular point in parameter space has already been tested (low power times long exposure is equivalent to high power times short exposure).
+meta[["325"]][["raman"]]$joulefraction <-
+   paste0(as.numeric(sub("s$", "", meta[["325"]][["raman"]]$exposure_time)) *
+             # divide percent value by 100 to get the decimal fraction representation
+             0.01 * as.numeric(sub("%$", "", meta[["325"]][["raman"]]$laserpower)),
+          " J%")
+# clean up the metadata
+meta[["325"]][["raman"]]$exposure_time <- gsub("s$", " s", meta[["325"]][["raman"]]$exposure_time)
+meta[["325"]][["raman"]]$laserpower <- gsub("%$", " %", meta[["325"]][["raman"]]$laserpower)
+meta[["325"]][["raman"]]$accumulations <- gsub("acc$", " acc", meta[["325"]][["raman"]]$accumulations)
+meta[["325"]][["raman"]]$objectivemag <- gsub("\\s?\\.txt$", "", meta[["325"]][["raman"]]$objectivemag)
+# add samples.wells to metadata. Join using the $well column
+meta[["325"]][["raman"]] <-
+   right_join(meta[["325"]][["raman"]],
+              samples5.wells,
+              by = "well")
+# sort metadata in precisely the same manner as list of data files (by date, then run)
+meta[["325"]][["raman"]] <- arrange(meta[["325"]][["raman"]], date, run)
+@
+
+
+<<'0525P-UVRaman-join'>>=
+# join data and metadata
+# drop the $date column from metadata since it also exists in data.532 df
+dm[["325"]][["raman"]] <- cbind(data[["325"]][["raman"]], select(meta[["325"]][["raman"]], -date))
+dm[["325"]][["raman"]]$wnummax <- dm[["325"]][["raman"]]$wnummin <- as.numeric(NA)
+# make a note of scan wavenum limits (helps to determine whether static/extended)
+for (s in 1:length(unique(dm[["325"]][["raman"]]$run))) {
+   dm[["325"]][["raman"]]$wnummax[which(dm[["325"]][["raman"]]$run == unique(dm[["325"]][["raman"]]$run)[s])] <-
+      max(dm[["325"]][["raman"]]$wavenum[which(dm[["325"]][["raman"]]$run == unique(dm[["325"]][["raman"]]$run)[s])])
+   dm[["325"]][["raman"]]$wnummin[which(dm[["325"]][["raman"]]$run == unique(dm[["325"]][["raman"]]$run)[s])] <-
+      min(dm[["325"]][["raman"]]$wavenum[which(dm[["325"]][["raman"]]$run == unique(dm[["325"]][["raman"]]$run)[s])])
+}
+# cleanup
+dm[["325"]][["raman"]]$factor.accumulations <- factor(
+   dm[["325"]][["raman"]]$accumulations,
+   levels = accumulations.levels)
+# sort the labels according to diameter
+dm[["325"]][["raman"]]$factor.label <- factor(
+   dm[["325"]][["raman"]]$label,
+   levels = c(
+      "ZnO-bulk",
+      "ZnO-nano",
+      samples.info %>% pull(label) %>% rev()))
+@
+
+
+<<'0525P-UVRaman-create-series'>>=
+dm[["325"]][["ramanseries"]] <-
+   dm[["325"]][["raman"]] %>%
+   filter(joulefraction == "0.2 J%")
+@
+
+
+
+<<'0525P-UVRaman-series-create-separate-dataframes'>>=
+dm[["325"]][["raman-200"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(diameter == 10) %>%
+   filter(temperature == 200)
+dm[["325"]][["raman-300"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(diameter == 10) %>%
+   filter(temperature == 300)
+dm[["325"]][["raman-400"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(diameter == 10) %>%
+   filter(temperature == 400)
+dm[["325"]][["raman-500"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(temperature == 500)
+dm[["325"]][["raman-600"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(temperature == 600)
+dm[["325"]][["raman-700"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(temperature == 700)
+dm[["325"]][["raman-800"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(temperature == 800)
+dm[["325"]][["raman-900"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(temperature == 900)
+dm[["325"]][["raman-nano"]] <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(label == "ZnO-nano")
+@
+
+
+<<'0525P-UVRaman-pksbsl-series', eval=TRUE>>=
+# this chunk: peak and baseline fit each spectrum, followed by extracting baseline height for each peak
+overrides <- c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
+spectrum.names <- names(dm[["325"]])[grep("raman-", names(dm[["325"]]))]
+for (s in 1:length(spectrum.names)) {
+   # message(paste("s = ", s)) # for debugging
+   # save the name (string) of the current spectrum
+   this.spectrum <- spectrum.names[s]
+   pksbsl[["325"]][[this.spectrum]] <-
+      RamanWrapper(
+         data.exp = dm[["325"]][[this.spectrum]] %>%
+            select(wavenum.interp, intensity.interp) %>%
+            filter(wavenum.interp < 2600),
+         run = 1,
+         override = overrides[s],
+         jobfile =
+            paste0(
+               here::here("assets/data/P25"),
+               "/pkfit-325nm-Raman-",
+               sub("°", "", unique(dm[["325"]][["ramanseries"]]$label)[s]),
+               ".rda"))
+   # get the baseline under each peak so we can calculate mean baseline per peak x-range
+   # nested ifs to catch weird mismatching number of rows, only happens for (s equal 7 or 8)
+   if (s == 7) {
+      pksbsl[["325"]][[this.spectrum]][[1]]$data.peaks$basisl <-
+         # it seems each range is one element too long, so I trim each range manually
+         pksbsl[["325"]][[this.spectrum]][[1]]$data.basl$baseline$basisl[c(3:57, 97:137, 256:308, 367:478, 590:645)]
+   } else if (s == 8) {
+      pksbsl[["325"]][[this.spectrum]][[1]]$data.peaks$basisl <-
+         # it seems each range is one element too long, so I trim each range manually
+         pksbsl[["325"]][[this.spectrum]][[1]]$data.basl$baseline$basisl[c(27:129, 258:314, 424:542, 591:647)]
+      } else {
+         # carry on as usual for the rest of them...
+         pksbsl[["325"]][[this.spectrum]][[1]]$data.peaks$basisl <-
+            pksbsl[["325"]][[this.spectrum]][[1]]$data.basl$baseline$basisl[
+               pksbsl[["325"]][[this.spectrum]][[1]]$data.basl$baseline$peaks != 0]
+      }
+   # now group by peak number and calculate the mean baseline under each peak
+   pksbsl[["325"]][[this.spectrum]][[1]]$data.fit.parpk <-
+      right_join(
+         x = pksbsl[["325"]][[this.spectrum]][[1]]$data.fit.parpk,
+         y = pksbsl[["325"]][[this.spectrum]][[1]]$data.peaks %>%
+            group_by(peak) %>%
+            summarise(basisl = mean(basisl)),
+         by = "peak")
+}
+@
+
+
+<<'0525P-UVRaman-pksbsl-concatenate-dataframes'>>=
+raman.325.baseline  <- NULL  # $data.basl$baseline
+raman.325.fit.basl  <- NULL  # $data.fit.basl
+raman.325.fit.fitpk <- NULL  # $data.fit.fitpk
+raman.325.fit.parpk <- NULL  # $data.fit.parpk
+raman.325.peaks     <- NULL  # $data.peaks
+# we need to add a label to differentiate the spectra (factor.label)
+# which we do inside this loop
+for (p in 1:length(names(pksbsl[["325"]]))) {
+   raman.325.baseline <-
+      rbind(
+         raman.325.baseline,
+         data.frame(
+            factor.label = unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+            basisl = pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.basl$baseline$basisl))
+   raman.325.fit.basl <-
+      rbind(
+         raman.325.fit.basl,
+         cbind(
+            factor.label = unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+            pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.fit.basl,
+            labelpk =
+               paste(
+                  unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+                  pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.fit.basl$peak,
+                  sep = "-")))
+   raman.325.fit.fitpk <-
+      rbind(
+         raman.325.fit.fitpk,
+         cbind(
+            factor.label = unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+            pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.fit.fitpk,
+            labelpk =
+               paste(
+                  unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label),
+                  pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.fit.fitpk$peak,
+                  sep = "-")))
+   raman.325.fit.parpk <-
+      rbind(
+         raman.325.fit.parpk,
+         cbind(
+            factor.label = unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+            pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.fit.parpk))
+   raman.325.peaks <-
+      rbind(
+         raman.325.peaks,
+         cbind(
+            factor.label = unique(dm[["325"]][[names(pksbsl[["325"]])[p]]]$factor.label) %>% droplevels(),
+            pksbsl[["325"]][[names(pksbsl[["325"]])[p]]][[1]]$data.peaks))
+}
+# calc basisl + height (height including the baseline under that peak)
+raman.325.fit.parpk$height.incl.basisl <-
+   raman.325.fit.parpk$height + raman.325.fit.parpk$basisl
+# resort the columns
+raman.325.fit.parpk <-
+   raman.325.fit.parpk %>%
+   select(factor.label, peak, kernel, x, height, area, fwhm, basisl, height.incl.basisl, m, accept)
+@
+
+
+
+
+<<'0525P-figref-UVRaman-spectra-raw', eval=FALSE>>=
+this.data <-
+   dm[["325"]][["ramanseries"]] %>%
+   filter(label != "ZnO-nano") %>%
+   # 2800 is a good cutoff as it maintains the ordering of decreasing temperature among the spectra
+   filter(wavenum < 2800) %>%
+   right_join(
+      x=.,
+      # could not use the already existing <diameter> column because the three identical
+      # 10 nm character elements were treated as one by geom_dl and only shown once in the plot
+      # To circumvent that, created diameter_label below and added whitespace which is
+      # ignored by siunitx when printed. diameter_formatted is not actually used.
+      y = tibble::tribble(
+         ~label,        ~diameter_formatted, ~diameter_label,
+         "10nm-200°C",  "14(1)",             "10",
+         "10nm-300°C",  "10.3(5)",           " 10",
+         "10nm-400°C",  "10.2(4)",           "  10",
+         "20nm-500°C",  "17.9(5)",           "20",
+         "30nm-600°C",  "30.0(9)",           "30",
+         "60nm-700°C",  "56(2)",             "60",
+         "100nm-800°C", "102(7)",            "100",
+         "150nm-900°C", "150(10)",           "150"),
+      by = "label")
+p <- ggplot(this.data) +
+   geom_path(
+      aes(x = wavenum,
+          y = intensity,
+          group = filename,
+          colour = temperature)) +
+   scale_y_log10(
+      expand = expansion(mult = 0.01, add = 0),
+      name = "Intensity/\\num{E2}\\unit{\\counts}",
+      breaks = c(1E3, 1E4, 1E5),
+      labels = c("\\num{10}", "\\num{100}", "\\num{1000}")) +
+   annotation_logticks(base = 10, sides = "l", scaled = TRUE) +
+   scale_colour_gradientn(colours = colourscheme[1:8]) +
+   coord_cartesian(
+      # note: space around x-axis is controlled by both xlim and expand
+      xlim = c(175, 2800)) +
+   # Planck's constant * speed of light * 1E2 => 0.0001239842
+   scale_x_continuous(
+      expand = expansion(mult = 0.01, add = 0),
+      name = "Raman shift, $\\Omega$/\\unit{\\per\\cm}",
+      breaks = seq(from=575, by=575, length.out=4),
+      sec.axis =
+         sec_axis(
+            ~ . * 0.0001239842,
+            breaks = seq(0, 0.3, 0.05),
+            labels = function(x)x*1000,
+            name = "Energy, $E$/\\unit{\\milli\\eV}")) +
+   theme(axis.title = element_text(size = rel(0.75)))
+@
+
+
+
+<<'0525P-figref-UVRaman-baselines-removed', eval=FALSE>>=
+# UV-Raman spectra minus the fitted baseline and not including the nano ref
+this.data <-
+   data.frame(
+      y = dm[["325"]][["ramanseries"]] %>%
+         filter(factor.label != "ZnO-nano") %>%
+         droplevels() %>%
+         filter(wavenum.interp < 2600) %>%
+         pull(intensity.interp) -
+         raman.325.baseline %>%
+         filter(factor.label != "ZnO-nano") %>%
+         droplevels() %>% pull(basisl),
+      x = dm[["325"]][["ramanseries"]] %>%
+         filter(factor.label != "ZnO-nano") %>%
+         droplevels() %>%
+         filter(wavenum.interp < 2600) %>%
+         pull(wavenum.interp),
+      factor.label =
+         raman.325.baseline %>%
+         filter(factor.label != "ZnO-nano") %>%
+         droplevels() %>%
+         pull(factor.label))
+# identify the peaks of the highest sample (200C) for ggrepel arrows to point at
+this.data$label.peak <- ""
+this.data[which(this.data$factor.label == "10nm-200°C" & (this.data$x >= 574 & this.data$x <= 576)), ]$label.peak <- "1LO"
+this.data[which(this.data$factor.label == "10nm-200°C" & (this.data$x >= 1152 & this.data$x <= 1154)), ]$label.peak <- "2LO"
+this.data[which(this.data$factor.label == "10nm-200°C" & (this.data$x >= 1726 & this.data$x <= 1728)), ]$label.peak <- "3LO"
+this.data[which(this.data$factor.label == "10nm-200°C" & (this.data$x >= 2300 & this.data$x <= 2302)), ]$label.peak <- "4LO"
+# reset names of colourscheme to use factor.label as name
+this.scheme <-
+   setNames(
+      colourscheme[1:8],
+      this.data$factor.label %>% unique())
+q <- ggplot() +
+   # uses our predefined colour-scheme (qualitative scale)
+   scale_colour_manual(
+      values = this.scheme %>% unname(),
+      # just manually create the labels used in the legend
+      labels = c(
+         "10 nm", # (200°C)",
+         "10 nm", # (300°C)",
+         "10 nm", # (400°C)",
+         "20 nm",
+         "30 nm",
+         "60 nm",
+         "100 nm",
+         "150 nm")) +
+         # for some reason legend box width becomes based on the untypeset string, making it too wide
+         # "\\qty{10}{\\nm} (\\qty{200}{\\celsius})",
+         # "\\qty{10}{\\nm} (\\qty{300}{\\celsius})",
+         # "\\qty{10}{\\nm} (\\qty{400}{\\celsius})",
+         # "\\qty{20}{\\nm}",
+         # "\\qty{30}{\\nm}",
+         # "\\qty{60}{\\nm}",
+         # "\\qty{100}{\\nm}",
+         # "\\qty{150}{\\nm}")) +
+   coord_cartesian(
+      ylim = c(0, 6000),
+      xlim = c(165, 2600)) +
+   # the data
+   geom_line(
+      data = this.data,
+      aes(x,
+          y,
+          colour = factor.label)) +
+   # arrows and labels
+   geom_text_repel(
+      data = this.data,
+      aes(x, y, label = label.peak),
+      point.padding = 0.25,
+      size = 2,
+      nudge_x = 150,
+      nudge_y = 400,
+      segment.curvature = 1e-20,
+      hjust = 0,
+      arrow = arrow(length = unit(0.015, "npc"))) +
+   scale_y_continuous(
+      name = "Intensity/\\num{E2}\\unit{\\counts}",
+      breaks = c(0, 1E3, 2E3, 3E3, 4E3, 5E3, 6E3),
+      labels = c(0, 10, 20, 30, 40, 50, 60),
+      expand = expansion(mult = 0.02, add = 0)) +
+   scale_x_continuous(
+      expand = expansion(mult = 0.01, add = 0),
+      name = "Raman shift, $\\Omega$/\\unit{\\per\\cm}",
+      breaks = seq(from=575, by=575, length.out=4),
+      sec.axis =
+         sec_axis(# Planck's constant * speed of light * 1E2 => 0.0001239842
+            ~ . * 0.0001239842,
+            breaks = seq(0, 0.4, 0.05),
+            labels = function(x)x*1000,
+            name = "Energy, $E$/\\unit{\\milli\\eV}")) +
+   theme(axis.title = element_text(size = rel(0.75)))
+@
+
+
+
+<<'0525P-UVRaman-data-corrections'>>=
+### ================ ###
+### DATA CORRECTIONS ###
+### ================ ### note: we can only remove peaks, not individual kernels
+## corrections for 135nm-900C pkfit
+# remove pk#1
+raman.325.fit.basl <-
+   raman.325.fit.basl[
+      -which((raman.325.fit.basl$factor.label == "150nm-900°C") & (raman.325.fit.basl$peak == "1")), ]
+raman.325.fit.fitpk <-
+   raman.325.fit.fitpk[
+      -which((raman.325.fit.fitpk$factor.label == "150nm-900°C") & (raman.325.fit.fitpk$peak == "1")), ]
+raman.325.fit.parpk <-
+   raman.325.fit.parpk[
+      -which((raman.325.fit.parpk$factor.label == "150nm-900°C") & (raman.325.fit.parpk$peak == "1")), ]
+# remove pk#4
+raman.325.fit.basl <-
+   raman.325.fit.basl[
+      -which((raman.325.fit.basl$factor.label == "150nm-900°C") & (raman.325.fit.basl$peak == "4")), ]
+raman.325.fit.fitpk <-
+   raman.325.fit.fitpk[
+      -which((raman.325.fit.fitpk$factor.label == "150nm-900°C") & (raman.325.fit.fitpk$peak == "4")), ]
+raman.325.fit.parpk <-
+   raman.325.fit.parpk[
+      -which((raman.325.fit.parpk$factor.label == "150nm-900°C") & (raman.325.fit.parpk$peak == "4")), ]
+# rename pk#5 as pk#4
+raman.325.fit.basl$peak[
+   which((raman.325.fit.basl$factor.label == "150nm-900°C") & (raman.325.fit.basl$peak == "5"))] <- "4"
+raman.325.fit.fitpk$peak[
+   which((raman.325.fit.fitpk$factor.label == "150nm-900°C") & (raman.325.fit.fitpk$peak == "5"))] <- "4"
+raman.325.fit.parpk$peak[
+   which((raman.325.fit.parpk$factor.label == "150nm-900°C") & (raman.325.fit.parpk$peak == "5"))] <- "4"
+### corrections for 87nm-800C pkfit
+# remove pk#1
+raman.325.fit.basl <-
+   raman.325.fit.basl[
+      -which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "1")), ]
+raman.325.fit.fitpk <-
+   raman.325.fit.fitpk[
+      -which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "1")), ]
+raman.325.fit.parpk <-
+   raman.325.fit.parpk[
+      -which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "1")), ]
+# remove pk#4
+raman.325.fit.basl <-
+   raman.325.fit.basl[
+      -which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "4")), ]
+raman.325.fit.fitpk <-
+   raman.325.fit.fitpk[
+      -which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "4")), ]
+raman.325.fit.parpk <-
+   raman.325.fit.parpk[
+      -which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "4")), ]
+# rename pk#2 as pk#1
+raman.325.fit.basl$peak[
+   which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "2"))] <- "1"
+raman.325.fit.fitpk$peak[
+   which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "2"))] <- "1"
+raman.325.fit.parpk$peak[
+   which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "2"))] <- "1"
+# rename pk#3 as pk#2
+raman.325.fit.basl$peak[
+   which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "3"))] <- "2"
+raman.325.fit.fitpk$peak[
+   which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "3"))] <- "2"
+raman.325.fit.parpk$peak[
+   which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "3"))] <- "2"
+# rename pk#5 as pk#3
+raman.325.fit.basl$peak[
+   which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "5"))] <- "3"
+raman.325.fit.fitpk$peak[
+   which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "5"))] <- "3"
+raman.325.fit.parpk$peak[
+   which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "5"))] <- "3"
+# rename pk#6 as pk#4
+raman.325.fit.basl$peak[
+   which((raman.325.fit.basl$factor.label == "100nm-800°C") & (raman.325.fit.basl$peak == "6"))] <- "4"
+raman.325.fit.fitpk$peak[
+   which((raman.325.fit.fitpk$factor.label == "100nm-800°C") & (raman.325.fit.fitpk$peak == "6"))] <- "4"
+raman.325.fit.parpk$peak[
+   which((raman.325.fit.parpk$factor.label == "100nm-800°C") & (raman.325.fit.parpk$peak == "6"))] <- "4"
+@
+
+
+<<'0525P-UVRaman-peak-assignments', warning=FALSE>>=
+# this join throws a warning because factor.label is factor and label is just character
+raman.325.fit.parpk <-
+   left_join(
+      raman.325.fit.parpk,
+      samples.info %>% select(label, temperature, diameter, diameter_topas),
+      by = c("factor.label" = "label"))
+# make factor.label a factor column again (note that we don't reintroduce "ZnO-bulk" at this point)
+raman.325.fit.parpk$factor.label <-
+   factor(
+      raman.325.fit.parpk$factor.label,
+      levels =
+         c("ZnO-nano", "150nm-900°C", "100nm-800°C", "60nm-700°C",
+           "30nm-600°C", "20nm-500°C", "10nm-400°C", "10nm-300°C", "10nm-200°C"))
+# create a descriptive assignment based on peak number (LO number)
+raman.325.fit.parpk$assignment <-
+   paste0(raman.325.fit.parpk$peak, "LO")
+# 150nm-900C lacks a 1LO peak, and ZnO-nano lacks a 4LO peak
+# later plots/analysis will be easier if every spectrum has the same number of rows,
+# so we will add these peaks with NA values
+raman.325.fit.parpk <-
+   # rbind here because add_row was having a weird error for diameter_topas column
+   rbind(
+      raman.325.fit.parpk,
+      data.frame(
+         factor.label = factor(c("150nm-900°C", "ZnO-nano")),
+         peak = factor(c(1, 4)),
+         kernel = factor(rep(1, 2)),
+         x = as.numeric(NA),
+         height = as.numeric(NA),
+         area = as.numeric(NA),
+         fwhm = as.numeric(NA),
+         basisl = as.numeric(NA),
+         height.incl.basisl = as.numeric(NA),
+         m = as.numeric(NA),
+         accept = as.logical(NA),
+         temperature = c(900, NA),
+         diameter = factor(c(150, NA)),
+         diameter_topas =
+            c(samples.info %>% filter(label == "150nm-900°C") %>% pull(diameter_topas),
+              as.errors(NA, NA)),
+         assignment = c("1LO", "4LO")))
+# factorise the assignment column (so that 1LO, 2LO, 3LO, 4LO always follow that order)
+raman.325.fit.parpk$assignment <-
+   factor(raman.325.fit.parpk$assignment,
+          levels = c("1LO", "2LO", "3LO", "4LO"))
+# factorise the temperature column in the same manner
+raman.325.fit.parpk$temperature <-
+   factor(raman.325.fit.parpk$temperature,
+          levels = c(seq(200, 900, 100), NA))
+# to make later analysis easier, order the entire dataframe
+raman.325.fit.parpk <-
+   raman.325.fit.parpk %>%
+   arrange(desc(temperature), peak)
+@
+
+
+
+<<'0525P-UVRaman-relative-areas'>>=
+raman.325.fit.parpk$areaLOLO <- as.numeric(NA)
+# 2LO area over 1LO area
+raman.325.fit.parpk$areaLOLO[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$area /
+   subset(raman.325.fit.parpk, assignment == "1LO")$area
+# 3LO area over 2LO area
+raman.325.fit.parpk$areaLOLO[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$area /
+   subset(raman.325.fit.parpk, assignment == "2LO")$area
+# 4LO area over 3LO area
+raman.325.fit.parpk$areaLOLO[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$area /
+   subset(raman.325.fit.parpk, assignment == "3LO")$area
+@
+
+
+
+<<'0525P-UVRaman-relative-heights'>>=
+raman.325.fit.parpk$heightLOLO <- as.numeric(NA)
+# 2LO height over 1LO height
+raman.325.fit.parpk$heightLOLO[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$height /
+   subset(raman.325.fit.parpk, assignment == "1LO")$height
+# 3LO / 2LO
+raman.325.fit.parpk$heightLOLO[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$height /
+   subset(raman.325.fit.parpk, assignment == "2LO")$height
+# 4LO / 3LO
+raman.325.fit.parpk$heightLOLO[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$height /
+   subset(raman.325.fit.parpk, assignment == "3LO")$height
+@
+
+
+
+<<'0525P-UVRaman-relative-heightsinclbasl'>>=
+raman.325.fit.parpk$heightLOLO.incl.basisl <- as.numeric(NA)
+# 2LO / 1LO
+raman.325.fit.parpk$heightLOLO.incl.basisl[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$height.incl.basisl /
+   subset(raman.325.fit.parpk, assignment == "1LO")$height.incl.basisl
+# 3LO / 2LO
+raman.325.fit.parpk$heightLOLO.incl.basisl[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$height.incl.basisl /
+   subset(raman.325.fit.parpk, assignment == "2LO")$height.incl.basisl
+# 4LO / 3LO
+raman.325.fit.parpk$heightLOLO.incl.basisl[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$height.incl.basisl /
+   subset(raman.325.fit.parpk, assignment == "3LO")$height.incl.basisl
+@
+
+
+
+<<'0525P-UVRaman-relative-fwhm'>>=
+raman.325.fit.parpk$fwhmLOLO <- as.numeric(NA)
+# 2LO FWHM over 1LO FWHM
+raman.325.fit.parpk$fwhmLOLO[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$fwhm /
+   subset(raman.325.fit.parpk, assignment == "1LO")$fwhm
+# 3LO / 2LO
+raman.325.fit.parpk$fwhmLOLO[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$fwhm /
+   subset(raman.325.fit.parpk, assignment == "2LO")$fwhm
+# 4LO / 3LO
+raman.325.fit.parpk$fwhmLOLO[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$fwhm /
+   subset(raman.325.fit.parpk, assignment == "3LO")$fwhm
+@
+
+
+
+<<'0525P-UVRaman-difference-ramanshift'>>=
+# x(2LO) - x(1LO)
+raman.325.fit.parpk$shiftLOLO.diff <- as.numeric(NA)
+raman.325.fit.parpk$shiftLOLO.diff[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$x -
+   subset(raman.325.fit.parpk, assignment == "1LO")$x
+# x(3LO) - x(2LO)
+raman.325.fit.parpk$shiftLOLO.diff[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$x -
+   subset(raman.325.fit.parpk, assignment == "2LO")$x
+# x(4LO) - x(3LO)
+raman.325.fit.parpk$shiftLOLO.diff[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$x -
+   subset(raman.325.fit.parpk, assignment == "3LO")$x
+@
+
+
+
+<<'0525P-UVRaman-ratio-ramanshift'>>=
+# x(2LO) / x(1LO)
+raman.325.fit.parpk$shiftLOLO.ratio <- as.numeric(NA)
+raman.325.fit.parpk$shiftLOLO.ratio[which(raman.325.fit.parpk$assignment == "2LO")] <-
+   subset(raman.325.fit.parpk, assignment == "2LO")$x /
+   subset(raman.325.fit.parpk, assignment == "1LO")$x
+# x(3LO) / x(2LO)
+raman.325.fit.parpk$shiftLOLO.ratio[which(raman.325.fit.parpk$assignment == "3LO")] <-
+   subset(raman.325.fit.parpk, assignment == "3LO")$x /
+   subset(raman.325.fit.parpk, assignment == "2LO")$x
+# x(4LO) / x(3LO)
+raman.325.fit.parpk$shiftLOLO.ratio[which(raman.325.fit.parpk$assignment == "4LO")] <-
+   subset(raman.325.fit.parpk, assignment == "4LO")$x /
+   subset(raman.325.fit.parpk, assignment == "3LO")$x
+@
+
+
+
+<<'0525P-UVRaman-linear-model'>>=
+# linear fits with Raman shift vs mode number (we need a numeric column,
+# so we'll have to create a new one since $peak is string and factor)
+raman.325.fit.parpk$modenumber <- as.numeric(NA)
+raman.325.fit.parpk$modenumber[which(raman.325.fit.parpk$assignment == "1LO")] <- 1
+raman.325.fit.parpk$modenumber[which(raman.325.fit.parpk$assignment == "2LO")] <- 2
+raman.325.fit.parpk$modenumber[which(raman.325.fit.parpk$assignment == "3LO")] <- 3
+raman.325.fit.parpk$modenumber[which(raman.325.fit.parpk$assignment == "4LO")] <- 4
+# let's make some room for linear model parameters
+raman.325.fit.parpk$LO.lm.slope <- as.numeric(NA)
+raman.325.fit.parpk$LO.lm.incpt <- as.numeric(NA)
+raman.325.fit.parpk$LO.lm.rsq <- as.numeric(NA)
+# calculate linear fit for each spectrum
+for (i in 1:length(unique(raman.325.fit.parpk$factor.label))) {
+   this.fit <-
+      lm(x ~ modenumber,
+         data = raman.325.fit.parpk %>%
+            filter(str_detect(assignment, "LO")) %>%
+            filter(factor.label == unique(raman.325.fit.parpk$factor.label)[i]))
+   raman.325.fit.parpk$LO.lm.slope[
+      which(raman.325.fit.parpk$factor.label ==
+               unique(raman.325.fit.parpk$factor.label)[i])] <-
+      coef(this.fit)[2]
+   raman.325.fit.parpk$LO.lm.incpt[
+      which(raman.325.fit.parpk$factor.label ==
+               unique(raman.325.fit.parpk$factor.label)[i])] <-
+      coef(this.fit)[1]
+   raman.325.fit.parpk$LO.lm.rsq[
+      which(raman.325.fit.parpk$factor.label ==
+               unique(raman.325.fit.parpk$factor.label)[i])] <-
+      summary(this.fit)$adj.r.squared
+}
+@
+
+
+
+<<'0525P-UVRaman-converted-to-energy-scale'>>=
+raman.325.fit.parpk$x.eV <- wavenum2energy(raman.325.fit.parpk$x)
+# attempt at recalc area from cts*cm-1 to cts*eV
+raman.325.fit.parpk$area.eV <-
+   (raman.325.fit.parpk$area / raman.325.fit.parpk$x) * raman.325.fit.parpk$x.eV
+raman.325.fit.parpk$fwhm.eV <- wavenum2energy(raman.325.fit.parpk$fwhm)
+raman.325.fit.parpk$shiftLOLO.diff.eV <- wavenum2energy(raman.325.fit.parpk$shiftLOLO.diff)
+raman.325.fit.parpk$LO.lm.slope.eV <- wavenum2energy(raman.325.fit.parpk$LO.lm.slope)
+raman.325.fit.parpk$LO.lm.incpt.eV <- wavenum2energy(raman.325.fit.parpk$LO.lm.incpt)
+@
+
+
+
+<<'0525P-UVRaman-centroid-shifts'>>=
+# wavenumber scale
+centroid.shift <-
+   data.frame(peak = factor(c(1, 2,3, 4)),
+              mean =
+                 c(raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 1) %>%
+                      pull(x) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 2) %>%
+                      pull(x) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 3) %>%
+                      pull(x) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 4) %>%
+                      pull(x) %>%
+                      mean(na.rm = T)),
+              sd =
+                 c(raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 1) %>%
+                      pull(x) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 2) %>%
+                      pull(x) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 3) %>%
+                      pull(x) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 4) %>%
+                      pull(x) %>%
+                      sd(na.rm = T)))
+# using the energy scale
+centroid.energy <-
+   data.frame(peak = factor(c(1, 2,3, 4)),
+              mean =
+                 c(raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 1) %>%
+                      pull(x.eV) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 2) %>%
+                      pull(x.eV) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 3) %>%
+                      pull(x.eV) %>%
+                      mean(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 4) %>%
+                      pull(x.eV) %>%
+                      mean(na.rm = T)),
+              sd =
+                 c(raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 1) %>%
+                      pull(x.eV) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 2) %>%
+                      pull(x.eV) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 3) %>%
+                      pull(x.eV) %>%
+                      sd(na.rm = T),
+                   raman.325.fit.parpk %>%
+                      filter(factor.label != "ZnO-nano") %>%
+                      filter(peak == 4) %>%
+                      pull(x.eV) %>%
+                      sd(na.rm = T)))
+centroid.shift.idealised <-
+   data.frame(peak = factor(c(1, 2,3, 4)),
+              mean = seq(centroid.shift$mean[1],
+                         by = centroid.shift$mean[1],
+                         length.out = 4))
+@
+
+
+
+<<'0525P-figref-UVRaman-peaks-in-grid', eval=FALSE>>=
+# to be able to plot area between "ideal" centroid (and its overtones) and the observed centroid,
+# we need to include centroid.shift.idealised in the param dataframe
+this.parpk <-
+   raman.325.fit.parpk %>%
+   filter(factor.label != "ZnO-nano") %>%
+   droplevels() %>%
+   right_join(x = .,
+              centroid.shift.idealised %>% mutate(x.ideal = mean),
+              by = "peak") %>%
+   mutate(peak = paste0(peak, "LO"))
+# reverse factor.label order, so that this plot grid matches the two neighbouring plots
+this.parpk$factor.label <-
+   factor(this.parpk$factor.label,
+          levels = this.parpk$factor.label %>% levels() %>% rev())
+# To draw the lines in the plot using our pre-defined colourscheme
+# I find it's easier to add colours as column and then use scale_*_identity()
+# For this join to work without to much fuss, colourscheme must be dataframe
+colourscheme.df <-
+   data.frame(
+      colour = unname(colourscheme),
+      temperature = names(colourscheme))
+this.fitpk <-
+   raman.325.fit.fitpk %>%
+   filter(factor.label != "ZnO-nano") %>%
+   droplevels() %>%
+   mutate(peak = paste0(peak, "LO")) %>%
+   # create column that matches names in colourscheme
+   mutate(temperature = sub("^[0-9]+nm-", "", sub("°C$", "", factor.label))) %>%
+   # join with colours
+   left_join(colourscheme.df, by = "temperature")
+this.basl <-
+   raman.325.fit.basl %>%
+   filter(factor.label != "ZnO-nano") %>%
+   droplevels() %>%
+   mutate(peak = paste0(peak, "LO"))
+# custom logticks that only display on the left-most column of facets in grid
+# https://stackoverflow.com/a/20133166/1198249
+# https://ggplot2.tidyverse.org/reference/annotation_logticks.html
+# https://github.com/tidyverse/ggplot2/blob/master/R/annotation-logticks.r
+custom_logticks <-
+   function (base = 10, sides = "bl", outside = FALSE, scaled = TRUE,
+             short = unit(0.83, "pt"), mid = unit(1.68, "pt"), long = unit(2.5, "pt"),
+             colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL,
+             data = data.frame(x = NA), ...)   {
+      if (!is.null(color)) colour <- color
+      layer(geom = "logticks",
+            params = list(base = base,
+                          sides = sides,
+                          outside = outside,
+                          scaled = scaled,
+                          short = short,
+                          mid = mid,
+                          long = long,
+                          colour = colour,
+                          size = size,
+                          linetype = linetype,
+                          alpha = alpha,
+                          ...),
+            stat = "identity",
+            position = "identity",
+            data = data,
+            mapping = NULL,
+            inherit.aes = FALSE,
+            show.legend = FALSE)
+}
+# vertical limits of plot window
+this.ylim <- c(1E1, 6E3)
+# plot "kernels by peak" for all spectra in a nice grid
+# ok, so labeller does not work for some reason (just has no effect)
+# so we will just use mutate() inside each data call in the plot
+ggplot() +
+   facet_grid(
+      factor.label ~ peak,
+      scales = "free_x") +
+   # visualise expected shift for each mode# (x.ideal), and observed shift
+   # using near-vertical lines (geom_segment works, ggstraw does not because it assumes categorical y)
+   geom_segment(
+      data = this.parpk,
+      colour = alpha("black", 0.55),
+      aes(x = x.ideal, xend = x,
+          # make sure the top end of the vertical line is visible inside the plot area
+          y = 0, yend = max(this.ylim))) +
+   # use same colour scheme as the neighbouring plots
+   scale_colour_identity(aesthetics = "colour") +
+   # fitted peak
+   geom_line(
+      data = this.fitpk,
+      size = 1.5,
+      aes(x, y, colour = colour)) +
+   # experimental data
+   geom_point(
+      data = this.basl,
+      size = 0.02,
+      shape = 1,
+      colour = "black",
+      aes(x, y)) +
+   scale_y_log10(
+      # expand to make sure everything is visible, but yet not too much empty space
+      expand = expansion(mult = 0.06, add = 0),
+      labels = rlang::as_function(~ 0.01 * .)
+      ) +
+   # logticks, we draw them in a lighter colour and lighter size (too obstrusive otherwise)
+   custom_logticks(
+      side = "l",
+      data =
+         data.frame(
+            peak = "1LO",
+            factor.label =
+               factor(
+                  x = this.parpk$factor.label,
+                  levels = levels(this.parpk$factor.label)))) +
+   coord_cartesian(ylim = this.ylim) +
+   labs(y = "Intensity/\\num[retain-unity-mantissa=false]{1E2}\\unit{\\counts}",
+        x = "Raman shift, $\\Omega$/\\unit{\\per\\cm}") +
+   scale_x_continuous(
+      breaks = c(500, 650, 1100, 1250, 1650, 1800, 2200, 2350),
+      # with small adjustments of horizontal spacing to avoid overlaps
+      labels = c("500", "650", "1100", "1250\\enspace", "\\;1650", "1800\\enspace", "\\;2200", "2350"),
+      sec.axis =
+         sec_axis(
+            ~ . * 0.0001239842,
+            breaks =
+               c(0.060, 0.075,
+                 0.135,0.150,
+                 0.205, 0.220,
+                 0.275, 0.290),
+            labels = function(x)x*1000,
+            name = "Energy, $E$/\\unit{\\milli\\eV}")) +
+   # I considered staggering the x-axis labels, but opted to increase horizontal tick-mark distance instead.
+   # https://github.com/tidyverse/ggplot2/issues/1695
+   # https://stackoverflow.com/questions/33529116/ggplot2-stagger-axis-labels
+   theme(
+      legend.position = "none",
+      # remove both y- and x-axis facet labels
+      strip.text = element_blank(),
+      # decreasing spacing between facet panels
+      panel.spacing = unit(2, "pt"), # default was 5.5 pt
+      # hide secondary y-axis ticks and text
+      axis.ticks.y.right = element_blank(),
+      axis.text.y.right = element_blank())
+@
+
+
+
+<<'0525P-figref-UVRaman-heightLOLO-areaLOLO-fwhmLOLO-vs-diameter', eval=FALSE>>=
+## HEIGHT
+this.data <-
+   raman.325.fit.parpk %>%
+   # drop the 1LO/xLO for NA temperatures (reference samples)
+   filter(!is.na(temperature)) %>%
+   # due to buggy behaviour of add_row towards errors() cols, make diameter_topas just numeric()
+   mutate(diameter_topas = as.numeric(diameter_topas))
+# find the average value of the three 10 nm samples for each mode
+mean.10nm <-
+   this.data %>%
+   filter(diameter == 10) %>%
+   group_by(modenumber) %>%
+   summarise(mean.heightLOLO = mean(heightLOLO, na.rm = TRUE))
+# insert the averages into this.data
+for (m in 2:4) {
+   this.data <-
+      this.data %>%
+      add_row(
+         factor.label = "10nm-mean",
+         diameter = factor(10),
+         diameter_topas = this.data %>% filter(str_detect(factor.label, "^10nm")) %>% pull(diameter_topas) %>% mean(),
+         assignment = paste0(m, "LO"),
+         heightLOLO = mean.10nm %>% filter(modenumber == m) %>% pull(mean.heightLOLO),
+         modenumber = m)
+}
+p.height <-
+   ggplot(
+      this.data %>%
+         # drop the non-averaged 10nm rows
+         filter(!str_detect(factor.label, "^10nm-[0-9]"))) +
+   geom_path(
+      aes(x = diameter_topas,
+          y = heightLOLO,
+          group = assignment,
+          colour = assignment)) +
+   geom_point(
+      aes(x = diameter_topas,
+          y = heightLOLO,
+          group = assignment,
+          colour = assignment,
+          shape = assignment),
+      size = 2) +
+   labs(y = "$1\\mathrm{LO}/n\\mathrm{LO}$ (height)",
+        x = "Particle size/\\unit{\\nm}") +
+   scale_x_continuous(
+      breaks = seq(10, 150, length.out=5),
+      labels = seq(10, 150, length.out=5),
+      sec.axis =
+         dup_axis(
+            breaks = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+               pull(diameter_topas) %>% unique() %>% sort(),
+            labels = c("400", "", "", "700", "800", "900"),
+            name = "Annealing temperature/\\unit{\\celsius}")) +
+   scale_color_brewer(type = "qual", palette = 2, direction = -1) +
+   theme(
+      plot.margin = margin(r = 1.4, unit = "mm"),
+      axis.text = element_text(size = rel(0.75)),
+      axis.title = element_blank(),
+      legend.position = "none")
+## AREA
+this.data <-
+   raman.325.fit.parpk %>%
+   # drop the 1LO/xLO for NA temperatures (reference samples)
+   filter(!is.na(temperature)) %>%
+   # due to buggy behaviour of add_row towards errors() cols, make diameter_topas just numeric()
+   mutate(diameter_topas = as.numeric(diameter_topas))
+# find the average value of the three 10 nm samples for each mode
+mean.10nm <-
+   this.data %>%
+   filter(diameter == 10) %>%
+   group_by(modenumber) %>%
+   summarise(mean.areaLOLO = mean(areaLOLO, na.rm = TRUE))
+# insert the averages into this.data
+for (m in 2:4) {
+   this.data <-
+      this.data %>%
+      add_row(
+         factor.label = "10nm-mean",
+         diameter = factor(10),
+         diameter_topas = this.data %>% filter(str_detect(factor.label, "^10nm")) %>% pull(diameter_topas) %>% mean(),
+         assignment = paste0(m, "LO"),
+         areaLOLO = mean.10nm %>% filter(modenumber == m) %>% pull(mean.areaLOLO),
+         modenumber = m)
+}
+p.area <-
+   ggplot(
+      this.data %>%
+         # drop the non-averaged 10nm rows
+         filter(!str_detect(factor.label, "^10nm-[0-9]"))) +
+   geom_path(
+      aes(x = diameter_topas,
+          y = areaLOLO,
+          group = assignment,
+          colour = assignment)) +
+   geom_point(
+      aes(x = diameter_topas,
+          y = areaLOLO,
+          group = assignment,
+          colour = assignment,
+          shape = assignment),
+      size = 2) +
+   geom_label(
+      data = this.data %>%
+         filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+         filter(diameter == 100) %>% filter(modenumber == 4),
+      aes(x = diameter_topas,
+          y = areaLOLO,
+          label = paste0("$", modenumber, "\\text{LO}/", modenumber - 1, "\\text{LO}$"),
+          colour = assignment),
+      nudge_x = -20, nudge_y = 0.25, size = 2.5) +
+   geom_label(
+      data = this.data %>%
+         filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+         filter(diameter == 60) %>% filter(modenumber == 3),
+      aes(x = diameter_topas,
+          y = areaLOLO,
+          label = paste0("$", modenumber, "\\text{LO}/", modenumber - 1, "\\text{LO}$"),
+          colour = assignment),
+      nudge_x = 20, nudge_y = 0.3, size = 2.5) +
+   geom_label(
+      data = this.data %>%
+         filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+         filter(diameter == 60) %>% filter(modenumber == 2),
+      aes(x = diameter_topas,
+          y = areaLOLO,
+          label = paste0("$", modenumber, "\\text{LO}/", modenumber - 1, "\\text{LO}$"),
+          colour = assignment),
+      nudge_x = 20, nudge_y = -0.4, size = 2.5) +
+   labs(y = "$1\\mathrm{LO}/n\\mathrm{LO}$ (area)",
+        x = "Particle size/\\unit{\\nm}") +
+   scale_y_continuous(
+      breaks = c(1, 2),
+      labels = c("1.0", "2.0")) +
+   scale_x_continuous(
+      breaks = seq(10, 150, length.out=5),
+      labels = seq(10, 150, length.out=5),
+      sec.axis =
+         dup_axis(
+            breaks = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+               pull(diameter_topas) %>% unique() %>% sort(),
+            labels = c("400", "", "", "700", "800", "900"),
+            name = "Annealing temperature/\\unit{\\celsius}")) +
+   scale_color_brewer(
+      type = "qual",
+      palette = 2, direction = -1) +
+   theme(
+      plot.margin = margin(r = 1.4, unit = "mm"),
+      axis.text = element_text(size = rel(0.75)),
+      axis.title = element_blank(),
+      legend.position = "none")
+## FWHM
+this.data <-
+   raman.325.fit.parpk %>%
+   # drop the 1LO/xLO for NA temperatures (reference samples)
+   filter(!is.na(temperature)) %>%
+   # due to buggy behaviour of add_row towards errors() cols, make diameter_topas just numeric()
+   mutate(diameter_topas = as.numeric(diameter_topas))
+# find the average value of the d=10 nm samples for each mode
+mean.10nm <-
+   this.data %>%
+   filter(diameter == 10) %>%
+   group_by(modenumber) %>%
+   summarise(mean.fwhmLOLO = mean(fwhmLOLO, na.rm = TRUE))
+# insert the averages into this.data
+for (m in 2:4) {
+   this.data <-
+      this.data %>%
+      add_row(
+         factor.label = "10nm-mean",
+         diameter = factor(10),
+         diameter_topas = this.data %>% filter(str_detect(factor.label, "^10nm")) %>% pull(diameter_topas) %>% mean(),
+         assignment = paste0(m, "LO"),
+         fwhmLOLO = mean.10nm %>% filter(modenumber == m) %>% pull(mean.fwhmLOLO),
+         modenumber = m)
+}
+# calculate mean and sd of all FWHM LO/LO, add to df for inclusion in plot
+this.data %<>%
+   mutate(mean.fwhmLOLO = mean(fwhmLOLO, na.rm = TRUE),
+          sd.fwhmLOLO = sd(fwhmLOLO, na.rm = TRUE))
+p.fwhm <-
+   ggplot(
+      this.data %>%
+         # drop the non-averaged 10nm rows
+         filter(!str_detect(factor.label, "^10nm-[0-9]"))) +
+   # SD
+   geom_ribbon(
+      aes(x = diameter_topas,
+          ymin = mean.fwhmLOLO - sd.fwhmLOLO,
+          ymax = mean.fwhmLOLO + sd.fwhmLOLO,
+          group = 1),
+      fill = alpha("orange", 0.08)) +
+   # MEAN
+   geom_line(
+      aes(x = diameter_topas,
+          y = mean.fwhmLOLO,
+          group = 1),
+      size = 2,
+      colour = alpha("blue", 0.10)) +
+   # DATA, connecting lines
+   geom_path(
+      aes(x = diameter_topas,
+          y = fwhmLOLO,
+          group = assignment,
+          colour = assignment)) +
+   # DATA, points
+   geom_point(
+      aes(x = diameter_topas,
+          y = fwhmLOLO,
+          group = assignment,
+          colour = assignment,
+          shape = assignment),
+      size = 2) +
+   labs(y = "$1\\mathrm{LO}/n\\mathrm{LO}$ (FWHM)",
+        x = "Particle size/\\unit{\\nm}") +
+   scale_y_continuous(expand = expansion(mult = 0.1, add = 0)) +
+   scale_x_continuous(
+      breaks = seq(10, 150, length.out=5),
+      labels = seq(10, 150, length.out=5),
+      sec.axis =
+         dup_axis(
+            breaks = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+               pull(diameter_topas) %>% unique() %>% sort(),
+            labels = c("400", "", "", "700", "800", "900"),
+            name = "Annealing temperature/\\unit{\\celsius}")) +
+   scale_color_brewer(type = "qual", palette = 2, direction = -1) +
+   theme(
+      plot.margin = margin(r = 1.4, unit = "mm"),
+      axis.text = element_text(size = rel(0.75)),
+      axis.title = element_blank(),
+      legend.position = "none")
+p.grid <-
+   plot_grid(
+      p.height, p.area, p.fwhm, nrow = 1,
+      labels = c("Peak height", "Peak area", "Peak FWHM"),
+      label_x = c(0.19, 0.75, 0.50),
+      hjust = c(0, 0.5, 0.5),
+      # xy by trial and error for visually pleasing placement in top-right corner
+      label_size = 8.5, label_y = 0.88, vjust = 1)
+x.grob.top <- textGrob("Annealing temperature, $T_\\mathrm{a}$/\\unit{\\celsius}", gp = gpar(fontsize = 9))
+# sfrac causes a slightly smaller fontsize for some reason, so we compensate manually
+x.grob.left <- textGrob("$\\sfrac{n\\text{LO}}{\\left(n{-}1\\right)\\text{LO}}$", gp = gpar(fontsize = 14), rot = 90)
+x.grob.bottom <- textGrob("Particle size, $d$/\\unit{\\nm}", gp = gpar(fontsize = 9))
+gridExtra::grid.arrange(
+   arrangeGrob(
+      p.grid,
+      left = x.grob.left,
+      bottom = x.grob.bottom,
+      top = x.grob.top))
+@
+
+
+
+<<'0525P-figref-UVRaman-meanLOLO-vs-diameter', eval=FALSE>>=
+this.data <-
+   raman.325.fit.parpk %>%
+   # note that the mean LO-LO value recorded in LO.lm.incpt is
+   # the same for all assignments, so we just pick any one to avoid duplication
+   filter(assignment == "2LO") %>%
+   filter(!is.na(temperature)) %>%
+   # keep only the columns we care about in this plot and linear fitting
+   select(factor.label,
+          temperature,
+          diameter,
+          diameter_topas,
+          LO.lm.slope,
+          LO.lm.incpt,
+          LO.lm.rsq,
+          LO.lm.slope.eV,
+          LO.lm.incpt.eV)
+# find the average value of the 10 nm samples for each column
+mean.10nm <-
+   this.data %>%
+   group_by(diameter) %>%
+   summarise(mean.LO.lm.slope = mean(LO.lm.slope, na.rm = TRUE),
+             mean.LO.lm.incpt = mean(LO.lm.incpt, na.rm = TRUE),
+             mean.LO.lm.rsq = mean(LO.lm.rsq, na.rm = TRUE),
+             mean.LO.lm.slope.eV = mean(LO.lm.slope.eV, na.rm = TRUE),
+             mean.LO.lm.incpt.eV = mean(LO.lm.incpt.eV, na.rm = TRUE))
+# insert the average for 10 nm into this.data
+this.data <-
+   # switched from add_row to rbind (again) because of weird add_row behaviour
+   # perhaps related to changes in tibble v3.0?
+   # https://tibble.tidyverse.org/news/index.html#breaking-changes
+   rbind(
+      this.data,
+      data.frame(
+         factor.label = "10nm-mean",
+         temperature = NA,
+         diameter = 10,
+         diameter_topas = 10,
+         LO.lm.slope = mean.10nm %>% filter(diameter == 10) %>% pull(mean.LO.lm.slope),
+         LO.lm.incpt = mean.10nm %>% filter(diameter == 10) %>% pull(mean.LO.lm.incpt),
+         LO.lm.rsq = mean.10nm %>% filter(diameter == 10) %>% pull(mean.LO.lm.rsq),
+         LO.lm.slope.eV = mean.10nm %>% filter(diameter == 10) %>% pull(mean.LO.lm.slope.eV),
+         LO.lm.incpt.eV = mean.10nm %>% filter(diameter == 10) %>% pull(mean.LO.lm.incpt.eV)))
+# calculate params of linear fit (used in figure caption)
+fit_shift.d  <-
+   lm(data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")),
+      formula = LO.lm.slope ~ diameter_topas)
+fit_energy.d <-
+   lm(data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")),
+      formula = LO.lm.slope.eV ~ diameter_topas)
+fit_shift.T  <-
+   lm(data = this.data %>% filter(!is.na(temperature)) %>% mutate(temperature = as.numeric(as.character(temperature))),
+      formula = LO.lm.slope ~ temperature)
+fit_energy.T <-
+   lm(data = this.data %>% filter(!is.na(temperature)) %>% mutate(temperature = as.numeric(as.character(temperature))),
+      formula = LO.lm.slope.eV ~ temperature)
+## plot
+ggplot(this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]"))) +
+   stat_smooth(method = "lm", formula = "y ~ x", fullrange = TRUE,
+               aes(x = diameter_topas,
+                   y = LO.lm.slope,
+                   group = 1)) +
+   geom_point(aes(x = diameter_topas,
+                  y = LO.lm.slope)) +
+   geom_line(aes(x = diameter_topas,
+                 y = LO.lm.slope,
+                 group = 1)) +
+   labs(y = "LO--LO shift, $\\Delta\\Omega$/\\unit{\\per\\cm}",
+        x = "Particle size, $d$/\\unit{\\nm}") +
+   scale_y_continuous(sec.axis = sec_axis(~ . * 0.0001239842 * 1E3,
+                                          name = "LO--LO energy, $\\Delta{E}$/\\unit{\\meV}")) +
+   scale_x_continuous(breaks = seq(10, 150, 20),
+                      labels = seq(10, 150, 20),
+                      sec.axis =
+                         dup_axis(breaks = this.data %>%
+                                     filter(!str_detect(factor.label, "^10nm-[0-9]")) %>%
+                                     pull(diameter_topas) %>% as.numeric() %>% sort(),
+                          labels = c("", "500", "", "700", "800", "900"),
+                          name = "Annealing temperature, $T_\\text{a}$/\\unit{\\celsius}")) +
+   # lm params, Raman shift vs particle size (top-left corner)
+   geom_text(
+      # slice() to include only a single row, this avoids the "overplotted" look of the text
+      data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>% slice(1),
+      x = 10, y = 582.0,
+      hjust = 0, vjust = 1,
+      colour = "blue", size = 2.75,
+      aes(
+         label =
+            paste0(
+               "$\\Delta\\Omega = \\num[uncertainty-mode=compact]{",
+               formatC(unique(summary(fit_shift.d)$coefficients[2,1]), format = "fg", digits = 2),
+               "\\pm",
+               formatC(unique(summary(fit_shift.d)$coefficients[2,2]), format = "fg", digits = 1),
+               "}d + \\num[uncertainty-mode=compact]{",
+               formatC(unique(summary(fit_shift.d)$coefficients[1,1]), format = "fg", digits = 4),
+               "\\pm",
+               formatC(unique(summary(fit_shift.d)$coefficients[1,2]), format = "fg", digits = 1),
+               "}$"))) +
+   # lm params, Raman shift vs temperature (top-left corner)
+   geom_text(
+      data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>% slice(1),
+      x = 10, y = 582.75,
+      hjust = 0, vjust = 1,
+      colour = "blue", size = 2.75,
+      aes(
+         label =
+            paste0(
+               "$\\Delta\\Omega = \\num[uncertainty-mode=compact]{",
+               formatC(unique(summary(fit_shift.T)$coefficients[2,1]), format = "fg", digits = 2),
+               "\\pm",
+               formatC(unique(summary(fit_shift.T)$coefficients[2,2]), format = "fg", digits = 2),
+               "}T_\\text{a} + \\num[uncertainty-mode=compact]{",
+               formatC(unique(summary(fit_shift.T)$coefficients[1,1]), format = "fg", digits = 4),
+               "\\pm",
+               formatC(unique(summary(fit_shift.T)$coefficients[1,2]), format = "fg", digits = 1),
+               "}$"))) +
+   # lm params (bottom-right corner)
+   geom_text(
+      data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>% slice(1),
+      x = 150, y = 574.75,
+      hjust = 1, vjust = 0,
+      colour = "blue", size = 2.75,
+      aes(
+         label =
+            paste0(
+               "$\\Delta{E} = \\num[uncertainty-mode=compact]{",
+               # note: should use the same units as in the axis in question
+               # times 1000 makes meV
+               formatC(1E3*unique(summary(fit_energy.d)$coefficients[2,1]), format = "fg", digits = 2),
+               "\\pm",
+               formatC(1E3*unique(summary(fit_energy.d)$coefficients[2,2]), format = "fg", digits = 1),
+               "}d + \\num[uncertainty-mode=compact]{",
+               formatC(1E3*unique(summary(fit_energy.d)$coefficients[1,1]), format = "fg", digits = 4),
+               "\\pm",
+               formatC(1E3*unique(summary(fit_energy.d)$coefficients[1,2]), format = "fg", digits = 1),
+               "}$"))) +
+   geom_text(
+      data = this.data %>% filter(!str_detect(factor.label, "^10nm-[0-9]")) %>% slice(1),
+      x = 150, y = 575.50,
+      hjust = 1, vjust = 0,
+      colour = "blue", size = 2.75,
+      aes(
+         label =
+            paste0(
+               "$\\Delta{E} = \\num[uncertainty-mode=compact]{",
+               formatC(1E3*unique(summary(fit_energy.T)$coefficients[2,1]), format = "fg", digits = 2),
+               "\\pm",
+               formatC(1E3*unique(summary(fit_energy.T)$coefficients[2,2]), format = "fg", digits = 1),
+               "}T_\\text{a} + \\num[uncertainty-mode=compact]{",
+               formatC(1E3*unique(summary(fit_energy.T)$coefficients[1,1]), format = "fg", digits = 3),
+               "\\pm",
+               formatC(1E3*unique(summary(fit_energy.T)$coefficients[1,2]), format = "fg", digits = 1),
+               "}$"))) +
+   theme(
+      axis.title.y.right = element_text(vjust = 1),
+      axis.title = element_text(size = rel(1.25)),
+      axis.text = element_text(size = rel(1.10)),
+      axis.ticks.length = unit(1, "mm"))
+@

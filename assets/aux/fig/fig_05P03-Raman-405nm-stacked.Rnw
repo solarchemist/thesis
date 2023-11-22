@@ -1,0 +1,235 @@
+<<'0503P-construct-metadata', warning=FALSE>>=
+if (!file.exists(here::here("assets/data/P03/Raman/405nm.rda"))) {
+   m405 <- data.frame(
+      path =
+         list.files(
+            path = here::here("assets/data/P03/Raman/plot-series-405nm/"),
+            pattern = "*.txt",
+            full.names = TRUE))
+   m405$expname <- m405$path %>% basename() %>% sub("\\.txt$", "", x = .)
+   # extract structured metadata from expname (filename without extension)
+   m405 %<>%
+      # separate() *replaces* the expname column with the "into" columns
+      # NOTE: warning here about "Expected 8 pieces. Missing pieces filled with `NA` in 5 rows [2, 3, 4, 5, 6]." is expected.
+      tidyr::separate(
+         col = expname,
+         sep = "_",
+         into = c("sid", "composition", "laserpower", "laserwl", "objectivemag", "exposure_time", "accumulations", "misc"))
+   # additionally, let's create a specific column for number of ALD layers
+   m405 %<>%
+      # this returns the number of cycles, or the string "ZnO" (assumes the string ends with "ALD<stuff>", extracts "<stuff>")
+      mutate(ALD = gsub(".*?ALD(.*?)$", "\\1", composition)) %>%
+      # replace string "ZnO" with number zero
+      mutate(ALD = ifelse(ALD == "ZnO", 0, ALD))
+   m405$ALD <- as.numeric(m405$ALD)
+   d405 <- bind_cols(
+      renishaw::Raman2df(
+         datafilename = m405$path[1],
+         sampleid = m405$sid[1]),
+      ALD = m405$ALD[1])
+   for (i in 2:dim(m405)[1]) {
+      d405 <- bind_rows(
+         d405,
+         bind_cols(
+            renishaw::Raman2df(
+               datafilename = m405$path[i],
+               sampleid = m405$sid[i]),
+            ALD = m405$ALD[i]))
+   }
+   save(d405, file = here::here("assets/data/P03/Raman/405nm.rda"))
+} else {
+   d405 <- common::LoadRData2Variable(
+      path = here::here("assets/data/P03/Raman/405nm.rda"))
+}
+@
+
+<<'0503P-plot-preparation'>>=
+colourscheme <-
+   c("0"  = "#00b0f6",  # picton blue
+     "35" = "#ab9cbe",  # amethyst smoke
+     "50" = "#ecb600",  # gold
+     "62" = "#fbbda0",  # scallop seashell
+     "87" = "#f8766d")  # bittersweet
+colour.by.material <-
+   c("ZnO"  = "#00b0f6",  # same colour used in fig:P03-tem-NR-micrograph-lineprofile
+     "FeOx" = "#f8766d",  # same colour used in fig:P03-tem-NR-micrograph-lineprofile
+     "SnO"  = "#4c4a4a")  # dark gray
+
+df <- d405s <- d405 %>% filter(sampleid != "15B0203") %>% select(-ends_with("interp"))
+# let's stack the spectra (a sort of waterfall plot)
+sampleids <- df %>% pull(sampleid) %>% unique()
+ald_max <- df %>% pull(ALD) %>% max()
+for (i in 1:length(sampleids)) {
+   df %<>% mutate(
+      counts = ifelse(
+         sampleid == sampleids[i],
+         # factor 2.0 to increase vertical distance between spectra
+         # ALD + 1 just to avoid ALD being zero
+         counts + ((2.0 * ALD + 1) * ald_max),
+         counts))
+}
+# additional adjustments, simply for nicer visual appearance
+df %<>% mutate(counts = ifelse(sampleid == "7B0305", counts - 2000, counts))
+@
+
+
+<<'0503P-Raman-peak-assignment-deprecated', eval=FALSE>>=
+# Final peak assignment from fitting
+# The order of modes here MUST match the order in each *.peaks file
+raman.assignments <- list(
+   "0" = c( ### 7B1106
+      "ZnO E2h-E2l",     # 328.75
+      "SnO₂",            # 242.266 # cf SnO2 ref RRUFF spectra
+      "SnO₂",            # 181.636 # same as SnO2 ~170cm-1??
+      "ZnO E2h",         # 437.158
+      "ZnO A1LO",        # 582.2
+      "SnO₂ B2g",        # 783.022
+      "ZnO 2A1LO",       # 1156.44
+      "ZnO 2(E2h+E2l)",  # 1106.67
+      "ZnO E1LO",        # 566.038
+      "SnO₂ A1g"),       # 633.073 # less likely ZnO E2h+2E2l
+   "35" = c( ### 7B0305
+      "SnO₂",            # 166.236
+      "",                # 233.161 # hematite 225 shifted? But if so, where's the stronger 292?
+      "",                # 348.083 # ZnO E2h-E2l shifted 10cm-1?? no, likely something else, cf 87
+      "",                # 465.125
+      "ZnO A1LO",        # 582.537
+      "Fe-O stretch",    # 685.335
+      "",                # 844.055
+      "ZnO 2A1LO",       # 1154.05
+      "Hm 2m",           # 1337.78
+      ""),               # 1591.76 # weak, different iron oxide phase?
+   "50" = c( ### 7B0212
+      "SnO₂",            # 166.142
+      "",                # 350.792 # ZnO E2h-E2l shifted 10cm-1?? no, likely something else, cf 87
+      "",                # 470.914
+      "ZnO A1LO",        # 580.715
+      "",                # 652.83
+      "Fe-O stretch",    # 686.124
+      "",                # 819.984
+      "",                # 1103.19
+      "Hm 2m"),          # 1363.27
+   "62" = c( ### 7B0306
+      "",                # 348.626 # ZnO E2h-E2l shifted 10cm-1?? no, likely something else, cf 87
+      "",                # 230.541 # hematite??
+      "SnO₂",            # 171.278
+      "",                # 459.118
+      "ZnO E1LO",        # 573.663
+      "ZnO A1LO",        # 586.402
+      "Fe-O stretch",    # 680.055
+      "",                # 823.752
+      "",                # 879.35
+      "ZnO 2A1LO",       # 1155.85
+      "Hm 2m",           # 1348.54
+      ""),               # 1596.2 # weak, different iron oxide phase?
+   "87" = c( ### 7B0407
+      "SnO₂",            # 167.067
+      "Hm",              # 224.515
+      "Hm",              # 292.089
+      "",                # 353.561 # SiO2 substrate? does that make sense for the thickest sample? y-Fe2O3, cf deFaria1997?
+      "Hm",              # 410.288 # less likely ZnO E1TO
+      "Hm",              # 490.291
+      "ZnO A1LO",        # 578.324
+      "Fe-O stretch",    # 679.117 # Fe-O stretching mode
+      "",                # 1092.14 # SiO2 substrate?? does not make sense
+      "Hm 2m",           # 1320.32 # hematite two-magnon
+      "",                # 806.353 # one-magnon of hematite? cf Martin1977
+      "",                # 871.108
+      ""))               # 1588.65 # very weak, different iron oxide phase? y-Fe2O3, supported by Colomban2008, deFaria1997
+@
+
+
+<<'0503P-Raman-peak-assignment'>>=
+# take a simpler, quicker approach to plot labelling
+segments <- tribble(
+   ~x,     ~y,   ~bend, ~hjust, ~vjust, ~angle, ~shift, ~material, ~asnment,         ~ALD,
+   242.27, 3.5E3,  "l",    1.1,   0.45,     45, "242",  "SnO",     "SnO₂",           0, # cf SnO2 ref RRUFF spectra
+   328.75, 3.84E3, "l",    1.02,  0.45,     45, "329",  "ZnO",     "ZnO E2h-E2l",    0,
+   437.16, 4.5E3,  "l",    1.1,   0.65,     45, "437",  "ZnO",     "ZnO E2h",        0,
+   566.04, 5E3,    "l",    1.1,   0.15,     45, "566",  "ZnO",     "ZnO E1LO",       0,
+   582.20, 4.5E3,  "l",    1.1,   0.75,     45, "582",  "ZnO",     "ZnO A1LO",       0,
+   633.07, 3.5E3,  "l",    1.1,   0.45,     45, "633",  "SnO",     "SnO₂ A1g",       0, # less likely ZnO E2h+2E2l
+   783.02, 2.5E3,  "r",   -0.1,   0.45,      0, "783",  "SnO",     "SnO₂ B2g",       0,
+   1106.7, 2.2E3,  "r",   -0.1,   0.45,      0, "1107", "ZnO",     "ZnO 2(E2h+E2l)", 0,
+   1156.4, 3.0E3,  "r",   -0.1,   0.45,      0, "1156", "ZnO",     "ZnO 2A1LO",      0,
+   #
+   685.34, 9E3,    "r",   -0.1,   0.45,    -45, "685",  "FeOx",    "Fe-O",           35, # Fe-O stretching mode
+   #
+   348.6,  15E3,   "ur",  -0.1,   0.45,      0, "349",  "",        "?",              62, # unassigned
+   #
+   224.52, 19E3,   "ur",  -0.1,   0.45,      0, "225",  "FeOx",    "Hm",             87,
+   292.09, 18.4E3, "ur",  -0.1,   0.45,      0, "292",  "FeOx",    "Hm",             87,
+   410.29, 18E3,   "ur",  -0.1,   0.45,     45, "410",  "FeOx",    "Hm",             87, # less likely ZnO E1TO
+   490.29, 18E3,   "ur",  -0.1,   0.45,      0, "490",  "FeOx",    "Hm",             87,
+   679.12, 18E3,   "ur",  -0.1,   0.45,      0, "679",  "FeOx",    "Fe-O",           87, # Fe-O stretching mode
+   1320.3, 17E3,   "ur",  -0.1,   0.45,      0, "1320", "FeOx",    "Hm 2m",          87 # hematite two-magnon
+)
+# horizontal extent of bent part (in units of Raman shift)
+bent.h <- 35
+# vertical extent of bent part (in units of y-axis, counts)
+bent.v <- 400
+# vertical extent of straight vertical part (in units of y-axis)
+length.v <- 1200 # 1200
+# default behaviour is to plot segment extending downwards and to the left
+segments$xend  <- segments$x
+segments$xbend <- segments$x    - bent.h
+segments$yend  <- segments$y    - length.v
+segments$ybend <- segments$yend - bent.v
+# segments labelled "u" should extend upwards instead
+segments$yend[grepl("u", segments$bend)] <- segments$y[grepl("u", segments$bend)] + length.v
+segments$ybend[grepl("u", segments$bend)] <- segments$yend[grepl("u", segments$bend)] + bent.v
+# segments labelled "r" should point to the right (to decrease clutter)
+segments$xbend[grepl("r", segments$bend)] <- segments$x[grepl("r", segments$bend)] + bent.h
+@
+
+
+<<'0503P-figref-Raman-405nm-stacked', eval=FALSE>>=
+ggplot(df %>% filter(ALD %in% c(0, 50, 87))) +
+   coord_cartesian(ylim = c(0, 20E3)) +
+   geom_line(
+      aes(
+         x = wavenum,
+         y = counts,
+         group = sampleid)) +
+   geom_label_repel(
+      data = df %>% filter(wavenum > 1999 & wavenum < 2001) %>% filter(ALD %in% c(0, 50, 87)),
+      size = 2.5, hjust = 0.75,
+      aes(
+         wavenum, counts,
+         label = ifelse(
+            ALD > 0,
+            paste0("\\zincox+", ALD, "-\\ironox"),
+            "\\zincox"))) +
+   # vertical segments
+   geom_segment(
+      data = segments %>% filter(ALD %in% c(0, 87)),
+      aes(
+         x = x, xend = xend,
+         y = y, yend = yend,
+         colour = material),
+      # size is the width of the bars
+      size = 1.0) +
+   scale_x_continuous(expand = expansion(0, 0)) +
+   labs(x = "Raman shift, $\\Omega$/\\unit{\\per\\cm}", y = "Counts") +
+   scale_colour_manual(values = colour.by.material) +
+   theme(
+      legend.position = "none",
+      axis.ticks.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.y = element_blank(),
+      axis.title.x = element_text(size = rel(0.75)))
+@
+
+
+\begin{figure}[tbp]
+\centering
+<<'0503P-fig-Raman-405nm-stacked', ref.label='0503P-figref-Raman-405nm-stacked', eval=TRUE, fig.width=3.12, fig.height=1.93, out.width='3.12in'>>=
+@
+\caption[Raman spectra of \zincox/\ironox\ nanorod arrays]{%
+   Raman spectra ($\lambda_\text{exc}=\qty{405}{\nm}$) of
+   \zincox/\ironox\ \protect\gls{NR} arrays.
+   The short vertical line segments show the Raman shift of the peak fitted
+   center values (red for hematite or \ch{Fe-O} modes, blue for \ZnO,
+   and dark gray for \tinox).}
+\label{fig:P03-Raman-405nm-stacked}
+\end{figure}

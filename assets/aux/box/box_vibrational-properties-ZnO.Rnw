@@ -1,0 +1,68 @@
+\begin{infobox}[The vibrational properties of zinc oxide]
+\label{box:vibrational-properties-ZnO}
+
+The wurtzite structure has a hexagonal unit cell and belongs to space group
+\spacegroup{186} (\cf\ \cref{tab:0300-pxrd-pdfs}) ($C^4_\mathrm{6v}$ point-group symmetry).
+Wurtzite \ZnO\ has four atoms per unit cell (and due to the commonly chosen primitive unit
+cell, two formula units per unit cell) giving a total of \num{12} fundamental phonon modes.
+The vibrational modes of wurtzite \zincox\ at the Brillouin zone center thus
+belong to the following irreducible representations:
+\begin{equation}\label{eq:vibrational-modes-zincite}
+\Gamma_\mathrm{vibrational} =
+2A_1 +  % Raman and IR, optic branch
+2E_1 + % Raman and IR, optic branch
+2E_2 + % Raman
+2B_1 % Raman inactive, optically silent
+\end{equation}
+where the $A_1$ and $E_1$ modes (optical branches) are both Raman and IR active,
+the $E_2$ modes are Raman active, and the $B_1$ modes are Raman inactive.
+In addition (not shown) the $2A_1$ and $2E_1$ acoustic branches \cite{Loudon1964}.
+
+The following table lists all \ZnO\ Raman modes we observed in this work
+(first-order modes highlighted in bold, \cf\ \cref{P4}),
+with our proposed assignments.
+
+\begin{center}%
+\begin{tabular}[t]{lS[table-format=4.0]}%
+\toprule%
+Symmetry                                    & {$\Omega/\unit{\per\cm}$}\\%
+\midrule%
+\bfseries\nonresmode{E2l}[][long]           & 99    \\%
+\nonresmode{2E2l}[][long]                   & 204   \\%
+\bfseries\nonresmode{B1l}[][long]           & {---} \\%
+\nonresmode{E2h}[E2l][long][diff]           & 330   \\%
+\bfseries\nonresmode{A1TO}[][long]          & 384   \\%
+\bfseries\nonresmode{E1TO}[][long]          & 411   \\%
+\bfseries\nonresmode{E2h}[][long]           & 438   \\%
+\nonresmode{E2h}[E2l][long]                 & 541   \\%
+\midrule%
+\multicolumn{2}{r}{\smaller\textit{Continued on the right}}
+\end{tabular}%
+\hspace{2em}%
+\begin{tabular}[t]{lS[table-format=4.0]}%
+\toprule%
+Symmetry                                    & {$\Omega/\unit{\per\cm}$}\\\midrule%
+\bfseries\nonresmode{E1LO}[][long]          & 574   \\%
+\bfseries\nonresmode{B1h}[][long]           & {---} \\%
+\bfseries\nonresmode{A1LO}[][long]          & 581   \\%
+\nonresmode{E2h}[2E2l][long]                & 665   \\%
+\nonresmode{2E2h}[E2l][long]                & 983   \\%
+% math mode just to make the outermost parentheses look nicer
+$2\left(\nonresmode{E2h}[E2l][long]\right)$ & 1103  \\%
+\nonresmode{2E1LO}[][long]                  & 1143  \\%
+\nonresmode{2A1LO}[][long]                  & 1153  \\%
+\bottomrule%
+\end{tabular}%
+\end{center}
+
+The $A_1$ and $E_1$ modes are each split into LO and TO components due to the
+macroscopic electric fields associated with the LO phonons \cite{Ozgur2005}.
+The \nonresmode{E1TO} and \nonresmode{A1TO} modes reflect the strength of the
+polar lattice bonds \cite{Ozgur2005}.
+
+Note that our assignment of the \nonresmode{E1LO} and \nonresmode{A1LO} modes
+in this work are in the opposite order compared to some other workers \cite{Thyr2021,Ozgur2005,Ashkenov2003}.
+But this order is more consistent with the observed relative intensities of their respective overtones
+under the assumption that the stronger overtone should be the \nonresmode{2A1LO} mode.
+
+\end{infobox}

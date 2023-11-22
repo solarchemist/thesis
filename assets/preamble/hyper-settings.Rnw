@@ -1,0 +1,111 @@
+% hyperxmp makes it easy to include XMP metadata, integrates with hyperref
+\usepackage{hyperxmp}
+% http://tex.stackexchange.com/questions/41461/how-to-add-copyright-information-to-pdf-metadata
+% http://tex.stackexchange.com/questions/91433/error-using-hyperxmp-package
+\usepackage[%
+   pdfa=false,%
+   % option pdfa sets and disables the following:
+   % Enabled annotation flags: Print, NoZoom, NoRotate [PDF/A 6.5.3].
+   % Disabled annotation flags: Hidden, Invisible, NoView [PDF/A 6.5.3].
+   % Disabled: Launch action ([PDF/A 6.6.1].
+   % more details: http://www.tug.org/applications/hyperref/manual.html#x1-450005.26
+   % If you really want PDF standards, use pdfx package https://www.ctan.org/pkg/pdfx
+   % do NOT set pagebackref=true ==> Package biblatex Error: Incompatible package 'backref'
+   pagebackref=false]{hyperref}
+% hyperlinks do not show up in draft mode, unless you pass "final" to hyperref (see line 10 in thesis.Rnw)
+
+% both editions
+\hypersetup{%
+   % keeppdfinfo retains hyperref's author and keyword fields as-is
+   % this is a necessary work-around otherwise hyperxmp leaves these fields blank
+   % to conform with PDF/A and stuff. See note 1 in section 2.3 of the hyperxmp manual.
+   keeppdfinfo,
+   pdflang=en,%
+   % note: pdfcreator and pdfproducer should not be set
+   % https://tex.stackexchange.com/a/540673/10824
+   pdfauthor={\authorFirstName{} \authorSurname},%
+   % pdfpublisher requires hyperxmp
+   pdfpublisher={\authorFirstName{} \authorSurname},%
+   % pdfcopyright requires hyperxmp
+   % http://tex.stackexchange.com/questions/176856/newline-in-copyright-notice-string-xmp-pdf-metadata
+   pdfcopyright={%
+      \textcopyright\ CC-BY\ 2023\textLF%
+      You are free to share this material in any medium or format, and you are free to adapt this work for any purpose, even commercially, under the following terms:\textLF%
+      You must give appropriate credit, provide a link to the licence, and indicate if changes were made. You may not apply legal terms or technological measures that restricts others from doing anything this licence permits.},%
+   % pdfcontactaddress requires hyperxmp
+   pdfcontactaddress={%
+      Institutionen för kemi--Ångström,\textLF%
+      Uppsala universitet\textLF%
+      Lägerhyddsvägen 1},%
+   pdfcontactcity={Uppsala},%
+   pdfcontactcountry={Sweden},%
+   pdfcontactemail={\authorEmail},%
+   pdfcontactpostcode={75237},%
+   pdfcontacturl={https://solarchemist.se},%
+   pdfkeywords={\keywords},%
+   pdflicenseurl={https://creativecommons.org/licenses/by/4.0},%
+   pdfsubject={Uppsala university PhD thesis Structural chemistry},%
+   pdftitle={\dissertationTitle},%
+   pdftype={PhD thesis}%
+}
+
+% hyperref settings depending on edition
+\ifwebedition{%
+   \hypersetup{%
+      % % PDF/A-3b, see https://tex.stackexchange.com/a/535849/10824
+      % pdfapart=3, %set to 1 for PDF/A-1
+      bookmarks=true,%
+      bookmarksnumbered=true,%
+      % keep PDF bookmarks collapsed by default (should make it easier for new readers to orient themselves)
+      % https://tex.stackexchange.com/questions/288266/how-to-create-pdf-file-with-all-your-bookmarks-displayed
+      % if you decide you want to set the level, see the bookmark package's `openlevel=n` setting
+      bookmarksopen=false,%
+      % breaklinks=true,%
+      % https://tex.stackexchange.com/questions/263526/color-options-for-appearance-of-links-in-hyperref
+      % citecolor=thegreen,% set to black for print?
+      % colorlinks=true without explicitly setting any other *color settings makes all
+      % cross-references (TOC, glossary entries) red text, citations green text, etc.
+      % NOTE, any hover effects are due to the PDF reader and nothing we can control
+      % https://tex.stackexchange.com/questions/512833/make-href-in-latex-change-color-when-hover-above-text
+      % colorlinks=false puts a coloured box around all xref, citations, etc. while
+      % leaving the text colour unchanged
+      % Note that despite "false", DOI links in References are still coloured cyan
+      colorlinks=false,%
+      % hyperlink border colour
+      % linkbordercolor did not accept "none" or "false"
+      % https://tex.stackexchange.com/questions/148754/how-to-set-the-border-color-in-pdf-forms-to-none
+      % linkbordercolor= (empty value throws no errors, but draws the border black in Evince/Okular/Firefox)
+      % linkbordercolor={} (same result as empty value: black border)
+      % linkbordercolor=transparent (same result as empty value: black border)
+      % linkbordercolor=white (works, hidden border in all PDF readers I tested except Zotero)
+      % https://forums.zotero.org/discussion/93669/zotero-pdf-reader-incorrect-surrounding-box-size-of-hyperlinks-in-pdf-files
+      linkbordercolor=white,%
+      % linkbordercolor=transparent,%
+      % linkborderwidth=0pt =>  Undefined key 'linkborderwidth'
+      % borderwidth=0pt     =>  Undefined key `borderwidth' (huh, did not expect that, weird)
+      % pdfborder: width of PDF link border
+      % linkbordercolor=white combined with pdfborder=0pt causes the same issue in Zotero PDF reader
+      % perhaps pdfborder is not about link borders? hyperref docs is not clear
+      % pdfborder=0pt,%
+      % hidelinks works OK in Zotero too, but obviously now we have no linkboxes at all anywhere
+      % hidelinks,%
+      % filecolor=black,%
+      % hyperfootnotes=true,%
+      % hyperindex=true,%
+      % linkcolor=theblue,% set to black for print?
+      % linktoc=section,% linktoc=all does not color pagenums, no idea why. Have not been able to color both text and num.
+      % menucolor=black,%
+      % urlcolor=thered,% set to black for print?
+   }
+}{%
+   % print edition
+   % some metadata is still useful for the print PDF
+   \hypersetup{%
+      % https://tex.stackexchange.com/a/505947/10824
+      hidelinks,%
+      % % PDF/A-3b, see https://tex.stackexchange.com/a/535849/10824
+      % pdfapart=3, %set to 1 for PDF/A-1
+      % pdfaconformance=B,%
+      bookmarks=false,%
+   }
+}

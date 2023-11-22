@@ -1,0 +1,17 @@
+\begin{figure}[tbp]
+\centering
+<<'0512P-fig-MB-N04H-small-nostir-photodegradation', ref.label='0512P-figref-MB-N04H-small-nostir-photodegradation', eval=TRUE, warning=FALSE>>=
+@
+{\phantomsubcaption\label{fig-a:P12-MB-N04H-small-nostir-photodegradation}}
+{\phantomsubcaption\label{fig-b:P12-MB-N04H-small-nostir-photodegradation}}
+\caption[Photocatalytic degradation of MB with \ZnO\ QDs]{%
+   Optical absorption spectra recorded under 1~Sun illumination from $t=0$
+   (when ultra-small \ch{ZnO(EtOH)} nanoparticles were added to the \ch{MB(aq)} dye solution)
+   until $t>\qty{2}{\hour}$ with $\Delta t=\qty{1}{\minute}$.
+   The top inset (\subref{fig-a:P12-MB-N04H-small-nostir-photodegradation}) shows
+   the fitted height of the strongest methylene blue absorption peak vs time.
+   The bottom inset (\subref{fig-b:P12-MB-N04H-small-nostir-photodegradation}) shows
+   the result of a Tauc analysis on the band edge (the Tauc fits are highlighted by
+   the yellow lines intersecting the band edge region of each spectrum in the main plot).}
+\label{fig:P12-MB-N04H-small-nostir-photodegradation}
+\end{figure}

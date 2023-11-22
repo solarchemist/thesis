@@ -1,0 +1,110 @@
+% we use an `adjustbox` to center some wide figures or tables
+% this replaces my old \centerwide macro
+% https://tex.stackexchange.com/questions/39435/how-can-i-center-a-too-wide-table
+\usepackage{adjustbox}
+\usepackage{xcolor}
+   % "the"-colors borrowed from the microtype manual
+   \definecolor{thered}    {rgb} {0.65,0.04,0.07}
+   \definecolor{sectioning}{gray}{0.44}
+   \definecolor{thegrey}   {gray}{0.5}
+   \definecolor{theframe}  {gray}{0.75}
+   \definecolor{theshade}  {gray}{0.94}
+   % towards a document color scheme
+   \colorlet{thegreen}{green!40!black} % slightly darker to avoid clashing with \fxnote
+   \colorlet{theblue}{blue!60!black}
+% use the Uppsala university profile colours
+\ifprintedition{%
+   \usepackage{uuprintcolorscmyk}
+}{%
+   \usepackage{uuprintcolorsrgb}
+}
+\usepackage{graphicx}
+   \graphicspath{{assets/images/}{assets/photos/}}
+\usepackage{rotating} % sidewaysfigure
+\usepackage{tikz}
+% please *do not* remove the commented-out package name, the chunk 'Rnw-LaTeX-declarations' depends on it!
+\usetikzlibrary{%tikz
+   arrows,% elektromagnetiskt spektrum
+   backgrounds,% required by TikZ periodic table, mdframed boxes, elektromagnetiskt spektrum
+   calc,% required by TikZ periodic table, mdframed boxes, elektromagnetiskt spektrum
+   decorations,% required by SEM scattering picture
+   decorations.markings,% required by Beer-Lambert picture,
+   decorations.pathmorphing,% required by ED cell schematic
+   decorations.pathreplacing,% required by ED cell schematic
+   decorations.shapes,%
+   decorations.text,%
+   fadings,% required by SEM scattering picture
+   fit,% elektromagnetiskt spektrum
+   positioning,% we use it for below=of ..., and easier "node distance" setting, elektromagnetiskt spektrum
+   shapes% elektromagnetiskt spektrum
+}
+% pfg-spectra draws emission spectra for all elements and the visible-light spectrum
+\usepackage{pgf-spectra}
+% tikz-3dplot used to create the nanorod models in P03
+\usepackage{tikz-3dplot}
+% contour used in elektromagnetiskt spektrum TikZ illustration
+\usepackage{contour}
+% mdframed used to draw info boxes
+\usepackage[framemethod=TikZ]{mdframed}
+% added compatibility=false to make it work together with subcaption
+% https://tex.stackexchange.com/questions/31906/subcaption-package-compatibility-issue#31927
+\usepackage[%
+   font=small,%
+   labelsep=period,%
+   nooneline,%
+   compatibility=false%
+]{caption}
+\captionsetup[figure]{%
+   labelfont=it,%
+}
+\captionsetup[table]{%
+   labelfont=bf,%
+   % textfont only affects the caption text
+   textfont=it,%
+}
+% https://tex.stackexchange.com/questions/97094/how-to-change-the-display-of-subfigures-in-list-of-figures
+\usepackage[%
+   margin=0pt,%
+   % the += notation *adds* the declared option(s) to any previously declared options for this property
+   font+=small,%
+   labelformat=parens,%
+   labelsep=space,%
+   justification=centering,%
+   skip=6pt,%
+   % list=true to list sub-captions in List of Figures/Tables
+   list=false,%
+   % hypcap=true is ignored if set, according to log (why?)
+   hypcap=false%
+]{subcaption}
+
+% Typeset captions for figures/tables *beside* it instead of below/above (uses minipages,
+% defines environments SCfigure and SCtable)
+% https://tex.stackexchange.com/questions/29143/caption-on-the-side-of-a-figure
+% I have tested the sidecap package, but found some disappointments:
+% outercaption behaves like innercaption (weird, unless something is wrong with our documentclass),
+% caption does not utilise the available textwidth (limited to width of image, it seems?),
+% sidecaption text is bottom aligned (with no option to change?),
+% and separation between sidecaption and image is too small.
+% Still, the automatic determination of caption placement visavi left/right page is very useful,
+% and caption width can be increased (but I guess having it equal to image helps center the float),
+% and I guess we can live with bottom-aligned caption text.
+
+% Note: neither outercaption nor innercaption work as advertised, they never
+% detect left/right pages!
+% innercaption puts caption to the right of the figure on *all* pages
+% outercaption puts caption to the left of the figure on *all* pages
+% I have no idea how to fix this. Perhaps it's a bug in sidecap.
+\usepackage[%
+   innercaption,%
+   raggedright% no discernible effect though
+]{sidecap}
+% The space between the minipages is \sidecaptionsep, which we reset here
+% note that it's reset using renewcommand, and not setlength as could be assumed
+% \newlength\sidecaptionsep{6pt} -> error: command already defined...
+% \setlength\sidecaptionsep{6pt} -> error: not a number...
+\renewcommand{\sidecaptionsep}{10pt}
+% Set vertical alignment of side caption with its figure
+% https://latex.org/forum/viewtopic.php?t=12364
+% https://stackoverflow.com/questions/67309714/adjusting-side-caption-in-latex
+% "t" to top-align, "c" center, "b" bottom
+\sidecaptionvpos{figure}{b}

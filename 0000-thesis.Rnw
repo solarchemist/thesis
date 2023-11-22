@@ -1,0 +1,2572 @@
+%%%%%%%%
+% To compile the thesis:
+% $ Rscript -e "library(knitr); library(methods); knit('thesis.Rnw')"; latexmk -pdf -bibtex thesis
+% Note that latexmk settings are set in the ./.latexmkrc file
+%%%%%%%%
+
+\RequirePackage{luatex85}
+\PassOptionsToPackage{final}{graphicx}
+\PassOptionsToPackage{final}{hyperref}
+
+% For instructions on how to switch thesis to final mode, see \input{README.md}.
+% Please avoid using absolute paths in either LaTeX or R code
+% (in LaTeX code, use paths relative to the thesis root, and in R code please use the here::here() function).
+
+\documentclass[draft,webedition,openright,titles,swedish,english]{LuaUUThesis}
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+<<child=here::here('assets/preamble/preamble.Rnw'), label='preamble-LaTeX', cache=FALSE>>=
+@
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+\begin{document}
+% \VerbatimFootnotes activates fancyvrb
+\VerbatimFootnotes
+
+% ----------------------------------------------------------------------
+% R SETUP
+% ----------------------------------------------------------------------
+%\input{assets/preamble/R.Rnw}
+<<child=here::here('assets/preamble/R.Rnw'), label='preamble-R', cache=FALSE>>=
+@
+% ----------------------------------------------------------------------
+
+
+%%% FRONTMATTER
+% includes abstract, dedication, list of papers, list of contents, other TOCs, glossaries
+%\input{assets/components/frontmatter.Rnw}
+<<child=here::here('assets/components/frontmatter.Rnw'), label='latex-frontmatter'>>=
+@
+
+
+
+%%% MAIN MATTER
+\mainmatter
+
+
+%%% CHAPTER:
+%%% INTRODUCTION
+\chapter{Introduction}
+\label{ch:introduction}
+
+The Sun is the primary source of energy for all living organisms,
+and together with the cycle of day and night it is
+the motive force powering the planet \cite{Schneider2005}.
+Humans have always organized their lives and their settlements around the sun,
+to draw warmth from it or to seek shade from it, since the earliest civilizations
+\cite{Perlin2013}.
+The modern world has, over the last couple of centuries, slowly turned to fossil fuels
+for both domestic and industrial uses, and as we discovered more and more coal, gas,
+and oil we have allowed our industry, agriculture, transportation, and
+domiciles to become almost entirely dependent on them.
+The resultant soot and pollution were obvious to anyone, but the effect of
+\carbondiox\ on the climate perhaps less so. Still, the first scientific
+reports warning about its heating effect on the atmosphere were
+published so long ago \cite{Arrhenius1896,Tyndall1861,Jackson2019}
+that they predate the discovery of the electron \cite{Thomson1897}.
+By the end of the 1950s, anyone who read a mainstream newspaper
+would have been aware of the basic idea of climate change due to anthropogenic
+combustion of fossil fuels \cite{Hudson2023}.
+
+Fossil fuels are the remains of ancient flora and fauna, compressed deep inside the Earth
+for tens of millions of years. Importantly, these hydrocarbons
+have been removed from the biosphere for just as long.
+And we have been reintroducing them at a mind-boggling rate:
+in a single year, we burn \num{55} trillion tonnes (that's \qty{55e15}{\kg}) of
+this ancient carbon, which is by mass a hundred times more than everything
+alive today (if we only count the carbon atoms).
+Perhaps even more worryingly, over half of all the anthropogenic \gls{GHG} deposited
+into the atmosphere has occurred since 1990, and all around the world we are still
+prospecting for new oil and gas fields.
+
+Due to the urgency of transitioning the energy system to a renewable basis,
+scientific and technological advancements cannot solve it alone.
+To successfully transition the energy system and industry to the power of sunlight,
+economic incentives and policy must also align with this aim \cite{Nordhaus1972,Nordhaus1994,IRENA2019}.
+And our societies must realize the need for an energy diet that respects
+the physical limits of our biosphere \cite{Persson2022,Meadows1972}.
+
+
+
+
+%%%% SECTION
+\section{A plentiful source of exergy}
+\label{intro:solar-spectrum}
+
+
+The Sun is and always has been the main source of exergy in the solar system.
+From it light radiates in all directions (of the Sun's total radiance about
+two parts out of \num{100000} impinges Earth).
+Light is nature's way of transferring energy through space.%
+%\input{assets/aux/chunks/luminosity.Rnw}
+<<child=here::here('assets/aux/chunks/luminosity.Rnw')>>=
+@
+The day-side of Earth continuously receives
+\qty{\Sexpr{formatC(1e-12 * luminosity.hemispherical, format="fg", digits=3)}}{\tera\watt}
+of sunlight (just outside the atmosphere), which after correcting
+for Earth's albedo and the fraction irradiance absorbed by the atmosphere
+(\Sexpr{earth.albedo} and \Sexpr{atmospheric.absorption}, respectively)
+yields a solar power of
+\qty{\Sexpr{formatC(1e-12 * luminosity.sealevel, format="fg", digits=3)}}{\tera\watt}.%
+\seemore{\cref{photoec}}%
+This is instantaneous \emph{power}, and summing over the number of hours in a year
+yields an annual solar energy input of
+\qty{\Sexpr{formatC(luminosity.sealevel * 8766 * 3600 * 1e-18, format="fg", digits=7)}}{\exa\joule},
+which is around \num{10000} times greater than the world's annual energy consumption,%
+\footnote{%
+   Which was \qty{178899}{\TWh} or \qty{644}{\exa\joule} in 2022
+   (equivalent to 280 million barrels of oil per day) \cite{Wolfson2018}.
+}
+or in other words: in one hour the planet receives more solar energy than humanity
+expends in a whole year.
+Next to solar power all other energy forms pale in comparison.
+
+As far as we are concerned, sunlight is infinite, and only our imagination and
+technology limits what we can use it for.
+This is where modern chemistry and engineering comes into the fore.
+
+%\input{assets/aux/fig/fig_0100-solar-spectrum-decorated.Rnw}
+<<child=here::here('assets/aux/fig/fig_0100-solar-spectrum-decorated.Rnw'), label='0100-solar-spectrum-decorated'>>=
+# \label{fig:solarspectrum-photoec}
+# \label{tab:solarspectrum-amounts}
+@
+
+In this thesis, I will make the case for a more widespread use of photocatalysis
+for production of solar fuels and for the proliferation of photocatalysts for
+the degradation of environmental pollutants by exploiting low-dimensional
+\ZnO\ alone and in combination with \ch{CdS} and \ch{Fe2O3}.
+
+
+
+
+%%%% SECTION
+\section{The energy transition and resource scarcity}
+\label{intro:energy-transition}
+
+The idea of an energy system based on renewable power is not new at all.
+Exactly one hundred years ago, the evolutionary biologist \mbox{J.\ B.\ S.\ Haldane}
+laid out a practical vision for the future energy system of England, saying
+\cite{Haldane1923,Rajeshwar2008}
+\enquote{the country will be covered with rows of metallic windmills}
+feeding electricity through the grid to power stations where
+\enquote{the surplus power will be used for the electrolytic decomposition of water
+into oxygen and hydrogen}, and that the initial costs would be very considerable,
+but \enquote{energy will be as cheap in one part of the country as another, so that
+industry will be greatly decentralized; and that no smoke or ash will be produced}.
+Of course, by that time the United Kingdom had been burning fossil fuels
+for almost \qty{150}{\years} already, and people were getting really
+worried about the visible smoke and smog engulfing their cities.
+But we should note that Haldane envisioned this pollution-free energy system to
+happen \emph{four hundred years} into the future, which is quite pessimistic, although
+to be fair we have not managed to beat his prediction yet.
+
+A known problem with the energy transition is that all development of renewable
+energy systems is currently, and for the foreseeable future, built on logistics
+fed with \emph{non}-renewable power \cite{Roos2021}.
+Thus, producing the materials needed to provide renewable power
+(\gls{PV} panels, wind turbines, electrolysers, \etc)
+necessarily equates to emission of \gls{GHG}.
+If we expect to operate all other industry as usual, then the energy transition
+itself will necessarily produce even more emissions.
+The only reasonable way out of this conundrum is to realize that the energy
+transition, if managed responsibly, must lead to a sort of self-imposed energy scarcity
+(perhaps that is a \enquote{good thing}, considering how wasteful the modern
+mass-consumption economy has been).
+
+Equally important is the question of how we will source the chemicals
+necessary to build the required renewable power generation infrastructure.
+\Cref{fig:0100-elements-of-photocatalysis} considers the availability of the chemical
+elements commonly used in \glsdisp{PC}{photocatalytic} compounds.
+
+
+Water is a critical resource for the energy transition.
+Worldwide, we use more than \qty{4e12}{\cubic\metre} of freshwater each year.%
+\footnote{Agriculture accounts for \qty{70}{\percent}, industry \qty{19}{\percent} and households \qty{10}{\percent}.}
+Yet, three billion people are affected by water scarcity, and two billion of them
+lack access to safe drinking water \cite{WWAP2020}.
+By 2050, the demand for freshwater is projected to increase by more than \qty{40}{\percent}.\\
+A perhaps overlooked aspect of our fossil-based
+energy conversion system is that electrical power generation consumes a lot of freshwater.
+In fact, of the various electrical power generation methods at our
+disposal (coal/gas, nuclear, hydro, solar, wind, \etc) the renewable
+generators (except for hydropower) consume hundreds or even thousands of times
+\emph{less} freshwater to generate the same amount of electricity \cite{Wilson2012}.%
+\footnote{%
+   With that in mind, we can see that operating a desalination plant on
+   non-renewable generated electricity would actually waste water, or in the best case
+   simply represent a transfer of freshwater resources from the desalination plant
+   to the power plant powering it.
+   Desalination plants should be solar powered. Recent research have shown
+   that it is even possible to simultaneously desalinate and produce electricity
+   using a composite \glstext{PV}-membrane device \cite{Wang2019}.
+}
+In many countries, the electrical generation sector consumes \emph{more} freshwater
+than their agricultural sector.\\
+The electrolysis of water into \hydrogen\ and \oxygen\ (\cref{rxn:water-splitting}),
+also called \emph{water splitting}, requires around \qty{9}{\kg}
+of \water\ to produce \qty{1}{\kg} of \hydrogen
+and is an \enquote{uphill} reaction with a large positive Gibbs free energy,
+$\state{G}=\qty{238}{\kJ\per\mol}$ or $\state{G}=\qty{1.23}{\eV}$,
+comprising two half reactions, \namely, the \glsfirst{HER} and the \glsfirst{OER}
+(here shown under acidic conditions at \gls{STP}):
+% otherwise pagebreak inside the reactions block (too bad we couldn't make subreactions immune to pagebreaks)
+\clearpage
+% Be warned - vertical and horizontal spaces are held together by duct-tape here
+\begin{subreactions}\begin{reactions}%
+4 \proton{} + 4 \electron{} &-> 2 \hydrogen{} && $\qquad\qquad\qquad\qquad$ \AddRxnDesc{Hydrogen~evolution} "\label{rxn:hydrogen-evolution}" \\%
+2 \water{} + 4 \hole{} &-> \oxygen{} + 4 \proton{} && $\qquad\qquad\qquad\qquad$ \AddRxnDesc{Oxygen~evolution} "\label{rxn:oxygen-evolution}"%
+\end{reactions}\end{subreactions}%
+\addtocounter{reaction}{-1}%
+\vspace{-\baselineskip}%
+% note that the following lengths must be adjusted if the horizontal
+% extent of any reactions are changed!
+\hspace{13mm}%
+\begin{minipage}{59mm}%
+   \vspace{-\baselineskip}%
+   %\rule disappears inside minipage, but \hrulefill is visible, weird
+   \hrulefill%
+\end{minipage}%
+\begin{reaction}%
+\qquad{}\qquad{}\quad{} 2 \water\lqd{} -> 2 \hydrogen\gas{} + \oxygen\gas{} $\quad\enspace\enspace E^0=\qty{1.23}{\voltNHE}$ \AddRxnDesc{Overall~water~splitting} "\label{rxn:water-splitting}"%
+\end{reaction}%
+But in practice, an electrolyser splitting water may require up to ten times more water
+than stoichiometry demands.%
+\footnote{%
+   Taking into account water treatment to meet the electrolyser's purity requirements,
+   water for cooling the electrolyser, and water for cooling the produced \hydrogen.}
+Even when accounting for this, the water resources required for a renewably based
+energy system are significantly lower than for a fossil-based system.
+
+
+Even if we accept the notion that \emph{total} primary energy production must
+decrease to achieve the energy transition, the inherent distributed nature
+of renewable power generation \cite{Bollen2011} might actually mean that a larger
+number of people get access to more electrical power than today.
+There is no inherent benefit nor any technical reason to centralize solar power generation;
+its inherently distributed nature makes it a more resilient power generation system.
+
+
+Photoelectrochemistry lies at the cross-roads between energy and water, two
+resources that will always be vital to society, but perhaps now more than ever.
+It is our responsibility as a field to advice on how to produce sustainably sourced
+photocatalysts for solar fuels production or for the photodegradation of pollutants.
+I believe our aim must be to convert this carbon society into a photon society.
+
+
+
+
+%%%% SECTION
+\section{Photocatalysis with inorganic semiconductors}
+\label{intro:photocatalysis}
+
+Over \qty{90}{\percent} of all chemicals and fuels are estimated to be produced
+with the aid of some catalyst \cite{NilssonPingel2018}, and catalysts contribute directly
+to around a third of the world's economy \cite{Ma2005}.
+Most commercial catalytic processes are heterogeneous, and commonly employ disperse
+particles on high-surface area supports.
+
+\glsdisp{PC}{Photocatalysis (PC)} is the acceleration of a photoreaction
+by the presence of a catalyst \cite{Mills1997,Suppan1994}.%
+\footnote{%
+   Note that the light is \emph{not} the catalyst, but rather a reactant.
+   The source of the light can be anything, really, but most commonly
+   natural sunlight. There is, as we have seen, a lot of it, and the
+   price cannot be beat.
+   It could also be simulated sunlight, or a lamp, as long as it emits
+   photons with an energy above the \glsdisp{band_gap}{band gap} of
+   the \glsdisp{PC}{photocatalyst}.}
+A benefit of \gls{PC} is that it may (and indeed often does) rely
+on atmospheric oxygen gas as the oxidant and that it can be carried out at
+\gls{STP} \cite{Akyol2004}.
+Photocatalysis can be employed in quite varied settings, in this thesis
+we will primarily concern ourselves with the production of
+energy-rich chemicals (\eg, solar fuels such as \hydrogen) and the degradation of
+harmful organic compounds in water (water purification).
+
+Photocatalysts are an important complement to \gls{PV} cells in the renewable
+energy transition. Whereas \gls{PV} generates electrons in an external circuit,
+\gls{PC} utilizes locally photogenerated charge carriers that can induce a chemical
+redox reaction.
+Many cheap, non-toxic and commonly available semiconductor materials are also
+quite effective photocatalysts (\cf\ \cref{fig:0100-elements-of-photocatalysis}).
+
+Heterogeneous catalysis is when the catalyst and catalysed species
+are in different phases. In this context, heterogeneous photocatalysis is the process
+of inducing chemical reactions using an irradiated photocatalyst's surface, \eg,
+inorganic semiconductor surfaces \cite{Rajeshwar2015}, usually while immersed in
+aqueous solution.
+At the fundamental level an irradiated semiconductor nanoparticle can be considered
+an electrochemical cell performing work, whose anodic and cathodic photoreactions
+are in steady-state conditions. The photocurrent and the internal photovoltage
+give the electric power of the cell, and the particle/cell achieves an
+electrochemical potential that depends on the relative rate of its two half-cell
+reactions \cite{Rajeshwar2015}.
+
+%\input{assets/aux/fig/fig_0100-elements-of-photocatalysis.Rnw}
+<<child=here::here('assets/aux/fig/fig_0100-elements-of-photocatalysis.Rnw')>>=
+# \label{fig:0100-elements-of-photocatalysis}
+@
+
+But despite \ch{TiO2} having the honour of practically defining the field of
+heterogeneous inorganic photocatalysis, the study of \ZnO\ as a \gls{PC} actually
+predates \ch{TiO2}.
+The earliest description of photocatalysis using \zincox\ dates back to 1911
+in experiments by Alexander Eibner bleaching Prussian blue using
+illuminated \ZnO\ \cite{vonEibner1911}, and its earliest use for
+the photolysis of water is from 1953 \cite{Markham1953,Markham1955}.
+In contrast to anatase \ch{TiO2} with its indirect band gap,
+wurtzite \zincox\ has a direct band gap and thus higher absorption coefficient,
+and similar positions of the conduction and valence band edges
+(\qty{-0.5}{\voltNHE} and \qty{+2.8}{\voltNHE} at \pH{\,\num{5}}),
+and have the advantage of a significantly higher charge carrier mobility
+\cite{Boschloo2006,Jacobsson2012a}.
+
+%\input{assets/aux/fig/fig_0100-bandgaps-all.Rnw}
+<<child=here::here('assets/aux/fig/fig_0100-bandgaps-all.Rnw')>>=
+# \label{fig:0100-bandgaps-all}
+@
+
+
+
+In metal oxides, the \gls{VBE} is determined primarily by the orbitals on the
+\oxide{} anion, and the \gls{CBE} by metal cations and their bonding geometry.
+
+The band gap of a semiconductor can be tuned using different methods:
+\via\ the quantum size effect, or phase transformations, or solid solutions
+with other elements.
+In this thesis we have explored the quantum size effect on the band gap of \ZnO\
+(\cf\ \cref{ch:quantum-confinement}).
+
+Perhaps it would not be a mischaracterization to say that
+the ultimate goal of photocatalysis is to design a \gls{PC} made out of
+cheap and non-toxic materials with excellent stability in water under irradiation;
+with a band gap $\geq\qty{1.6}{\eV}$ whose band edges straddle the \water\ redox
+potentials;
+and that performs the photocatalysed reaction at a high rate and for a long time.
+Although the search for that holy graal will surely continue,
+in the present the pressing need for quickly implementable solar-based
+energy generation suggests that we should make do with what we have.
+And what we have is very cheap \gls{PV} panels and an increasing
+number of electrolysers.
+
+
+
+
+
+
+%%%% SECTION
+\section{The race to the bottom: benefits and risks}
+\label{intro:nanoparticles-history-risks}
+
+Many physical and chemical properties of a material change when
+the constituent particles become sufficiently small.
+A particle with a diameter between \qtyrange{10}{100}{\nm} is said to be
+\enquote{nano}-sized, while larger particles than that are commonly referred
+to as sub-micron or micron-sized.
+But how small is a nanoparticle?
+Getting a grip on that is mind-bendingly hard.
+In \cref{fig:0100-nanoparticles-are-small} we try to put it into some perspective.
+
+Of course, there is a limit to how small stuff we can build, and that is set by the size
+of the atoms themselves. An \oxide{} ion has a diameter of \qty{0.28}{\nm},
+and a \ch{Zn^{2+}} ion has a diameter of \qty{0.15}{\nm} (based on ionic crystal radii).
+
+%\input{assets/aux/fig/fig_0100-nanoparticles-are-small.Rnw}
+<<child=here::here('assets/aux/fig/fig_0100-nanoparticles-are-small.Rnw')>>=
+# \label{fig:0100-nanoparticles-are-small}
+@
+
+If particles are made into nanometre dimensions, the most noticeable change is
+the large increase in specific surface area (area per weight of the material),
+and thus the potential to substantially increase chemical activity at the exposed surfaces.
+The size of the material also changes how light interacts with it.
+If a nanoparticle is made small enough (depending on its composition)
+something rather special happens: its electronic states are literally
+\emph{squeezed} by the constricted dimensions of the nanoparticle, which
+results in drastic changes in the material's electronic and optical
+properties.
+This phenomenon is termed \emph{quantum confinement} and is elaborated
+in \cref{ch:quantum-confinement}.
+
+Although humans have benefitted from the use of nanoparticles or nanostructured materials
+for millennia \cite{Montanarella2022} (often unwittingly), we are by no means
+alone in doing so.
+Many birds have iridescent plumage and many insect exoskeletons have intricate
+nanostructured surfaces that create pigment-less (structural) colouration by reflecting
+incident light in very specific ways \cite{Wolpert2009,Dunning2023}.
+In terms of sophistication, engineered nanostructures cannot yet compete
+with their counterparts in nature.
+The study of such nanostructures is a major interest for applications towards
+improving the efficiency of \gls{PV} panels or in technological applications such
+as waveguides towards light-based computing.
+
+
+Modern scientific investigations into nanoparticles were first undertaken
+in the late \century{19} century by Scottish scientist John Aitken when he
+took an interest in something as mundane as dust.
+At the time, it was obvious that the transparency
+of the air correlated to the amount of dust (and to the relative humidity).
+Aitken was the first that set out to measure these effects, and created a method
+for measuring these suspended dust particles in air \cite{Aitken1888},
+then miniaturized the device and promptly set about travelling
+across Europe to collect measurements (\enquote{the portable apparatus is reduced
+to such dimensions that it adds but little to one's personal luggage}) \cite{Aitken1891}.
+Aitken's device was the first example of a condensation particle counter,
+which works by introducing airborne particles into a supersaturated vapour,
+where the particles act as nucleation points for the vapour to form droplets
+that are then counted using optical techniques.
+Using this technique one can detect the presence of particles down to
+a few nanometres in size.
+This was the first demonstration of a characterization technique
+to quantify nanoparticles (particles below \qty{50}{\nm} are generally
+undetectable with light-scattering optical particle counters), but less than
+\qty{50}{\years} later it was supplanted by the electron microscope.
+
+Nanotechnology is the latest in a long line of technologies that promises
+better living through chemistry \cite{Schummer2008}.
+But it would behoove us to root our expectations in history, which can
+be an unforgiving teacher if forgotten. Only during the \century{20}, chemical
+industry managed to spread DDT over every continent, freon into the stratosphere,
+and lead in every city by the combustion of leaded petrol.
+To be fair, the chemical industry has also been the source of some
+of our modern world's greatest successes, such as the catalytic Haber--Bosch
+process that has fed the world, vaccines that have wiped out polio and many other
+debilitating diseases, and the production of an amazing range of materials that
+have made our lives healthier and safer.
+Perhaps it is no wonder that we believe the nano-fication of chemistry
+will lead to similar rapid advances.
+
+I guess what I am trying to convey is that we must make ourselves aware of the
+risks, and to do that some creativity and humility is called for.
+The risks of nanosized materials may not always be the same as those experienced
+by earlier generations of chemists, and widely spreading a technology that
+\enquote{works in the lab} comes with its own set of new risks.
+Chemists as well as chemical industry regulators (especially in the
+EU and USA) have a good grasp of the risks with most industrially manufactured
+chemicals.
+The main risks we need to consider are those towards human health and towards the environment.
+This is something that is still being actively researched
+\cite{Mitchell2019,Kim2016a,Reed2012,Maynard2011}, and for that reason those working
+in the field would do well to be cautious and avoid hyperbole when expressing the
+benefits of nanotechnology.
+When it comes to risk management, the hardest challenge might be to figure out
+what exactly we should be measuring in the first place; what material
+and particle attributes are most closely associated with health risks, and at what
+exposure levels? \cite{Maynard2015}
+
+
+
+
+
+%%%% SECTION
+\section{Will chemistry come to the rescue?}
+\label{intro:chemistry-rescue}
+
+There is no denying that many of the technological and environmental challenges
+ahead of us are well-suited for chemical solutions.
+Chemistry has developed technologies and materials that can reduce pollution,
+improve waste management, and clean up contaminated environments.
+For example, catalytic converters in cars use chemical reactions to convert harmful
+exhaust gases into less harmful compounds before they are released into the air.
+Chemistry has also helped us develop materials such as activated carbon and zeolites that
+can absorb and remove pollutants from air and water.
+Additionally, chemistry has played a crucial role in developing principles of
+\enquote{green chemistry}, that aims to design chemical products and processes
+that are safe, sustainable, and minimize waste.
+
+A not yet realized application for photocatalytic degradation lies
+in the complete destruction of synthetic chemicals from various waste streams.
+Synthetic chemicals of all kinds are produced in increasing quantities all over
+the world, and pollution by their release into the environment is growing \cite{Bernhardt2017}.%
+In particular, pharmaceuticals are dispersed in the environment \via\
+water treatment plants that are presently ill-equipped to remove such compounds
+from the effluent, but worse than that, the pharmaceutical production plants
+themselves are a major source of local pollution and are
+frequently located in countries with lax environmental regulations.
+The Swedish government agency Naturvårdsverket published a report in 2017 \cite{Naturvardsverket2017}
+on advanced cleaning methods of effluent from pharmaceutical residues.
+The report mentions \gls{AOP} as a technology not yet in production, but showing
+promise for certain use cases, such as effluent with higher concentrations of pollutants.
+Ozonation has been in use in one treatment plant in Linköping since 2015.
+
+Semiconductors are an excellent choice for photoactive materials, because their
+band gaps are well-suited to produce charge separation under solar irradiation.
+For a \emph{single} semiconductor material to split water (\cf\ \cref{rxn:water-splitting}),
+its band gap must straddle the hydrogen and oxygen evolution reduction potentials
+of \water\ (\cf\ \cref{fig:0100-bandgaps-all}) and it must allow efficient transport
+of both electrons and holes.
+
+Unfortunately, such a semiconductor does not exist (or has not been found yet, despite
+well-organized research into photoelectrochemistry since at least the 1970s \cite{Maeda2011}).
+Wide gap semiconductors such as \ch{TiO2} or \ZnO\ have band edges suitable
+for total water splitting, but on the other hand their band gaps are so large
+that they will only absorb \gls{UV} photons which make up a very small part
+of the solar spectrum (\cf\ \cref{tab:solarspectrum-amounts}).
+
+
+
+%%%% SECTION
+\section{Scope of this thesis}
+\label{intro:scope-thesis}
+
+Throughout this thesis we have studied the
+application of sunlight towards the synthesis of solar fuels or
+the degradation of chemicals
+with photocatalysts synthesized using cheap and easily scaled methods.
+
+The work involved laboratory-scale wet-chemical synthesis
+of composite nanostructured films and colloidal low-dimensional nanoparticles;
+their experimental characterization using a variety of spectroscopic, microscopic,
+and diffractive methods;
+and proof-of-concept tests of their photocatalytic performance.
+Concurrently I got the opportunity to set up a laboratory from scratch (that was really fun!)
+and to create a personalized data analysis pipeline with an eye towards
+reproducibility and the sharing of code and data.
+
+In the first paper
+\seepaper{P1}
+we set out to synthesize a large surface area nanodigitated \glsdisp{PC}{photocatalyst}
+\enquote{sandwich} of a wide gap semiconductor (\ZnO) coated with \ch{CdS}
+for visible-light sensitization, which allowed us to optimize electrodeposition
+parameters and study the effect of \ch{CdS} coating thickness \vs\ \gls{PC} performance.
+Here the goal was to create a highly photoactive \gls{PC} material with visible-light sensitivity
+\via\ an experimentally simple and economically scalable method, which we
+achieved by using electrodeposition and chemical-bath deposition (both very
+established methods, and relatively simple in operation), although the visible-light
+sensitivity came at the cost of introducing the well-known toxicity of cadmium.
+
+In our second paper we
+\seepaper{P2}
+looked for ways to avoid cadmium as well as making the outer coating
+more \pH\ and photoresistant (\ch{CdS} degrades under irradiation unless sacrificial
+agents are introduced in the electrolyte solution), and what could be more
+durable than literal rust?
+But for that to work the well-known extremely poor hole conductivity of \hematite\
+required the application of an extremely thin film on the \ZnO\ \glsplural{NR},
+which essentially demanded the use of \gls{ALD}.
+This allowed us to study how varying the \hematite\ layer thickness affected
+the properties of the photoelectrodes.
+
+In the third paper
+\seepaper{P3}
+we took a step back to study the question of how \ZnO\ nanoparticle
+diameter in the quantum size regime influenced the redox potential
+of the photogenerated excitons.
+We did this by synthesizing colloidal \zincox\ suspensions at varying
+average \gls{QD} diameter and measure their \gls{PC} activity under
+simulated sunlight and simulators tracking the photodegradation of \gls{MB} dye.
+This kind of colloidally suspended \gls{PC} could be used to
+combat distributed pollutants using nothing more than natural sunlight and
+then naturally precipitate into relatively harmless \ZnO\ sediment, a process
+aided by the ultrasmall size and large band gap of the \gls{PC} particles.
+
+In our fourth paper
+\seepaper{P4}
+we take a deep dive into the vibronic properties of low-dimensional \ZnO\ nanocrystals,
+\via\ a series of Raman spectroscopy measurements where we quantify
+their phonon--phonon and electron--phonon coupling as a function of particle diameter.
+
+
+This thesis also includes a chapter discussing the relative ease with which
+analytical reproducibility can be achieved with the use of freely available software,
+and also briefly presents some scientific software tools
+this author has publicly shared during this work.
+% data analysis chapter with an eye towards improved reproducibility in science via code and data sharing
+
+
+\Cref{fig:0100-wordcloud-thesis-corpus} shows a word cloud of keywords;
+not compiled ourselves, but rather \emph{generated}
+from the corpus of all \emph{titles} of all bibliographic records
+\emph{cited in this thesis}.
+In a way, it is a \emph{meta}-visualization: the thesis querying itself.
+
+%\input{assets/aux/fig/fig_0100-wordcloud-thesis-corpus.Rnw}
+<<child=here::here('assets/aux/fig/fig_0100-wordcloud-thesis-corpus.Rnw'), label='0100-wordcloud-thesis-corpus'>>=
+# \label{fig:0100-wordcloud-thesis-corpus}
+@
+
+
+
+
+
+
+%%% CHAPTER:
+%%% SYNTHESIS AND PREPARATION
+\chapter{Synthesis and preparation}
+\label{ch:synthesis}
+
+
+In my synthetical work I strove for the simple, as far as possible.
+That mindset was based on the idea that if chemistry is to contribute to the
+conversion of our energy system at any scale, its proposed solutions must
+first and foremost be scaleable.
+That same idea was also behind our choice of elements---zinc and iron being
+plentiful and very cheap and practically non-toxic.
+Granted, we also used cadmium which is far from non-toxic, but on account of
+its sulfide being a commonly employed visible-light absorber in solar cells and because
+its synthesis method is very simple, it was too tempting a target to overlook.
+
+At an early stage of this work we attempted to synthesize anatase \ch{TiO2}
+\glsplural{NR} on \gls{TCO}, but after attempting several approaches
+including
+electrochemical deposition with templated membranes
+\cite{Limmer2001,Limmer2002,Chu2003,Chu2003b,Limmer2003a,
+Limmer2004,Chu2004,Limmer2005,Yan2006},
+cathodic electrodeposition in acidic baths
+\cite{Natarajan1996,Karuppuchamy2001,Chenthamarakshan2002,Karuppuchamy2002,
+deTacconi2003,deTacconi2004,deTacconi2005,Karuppuchamy2005,Karuppuchamy2006,
+Karuppuchamy2006a,Somasundaram2006,Karuppuchamy2007,Chettah2008,Chigane2009,
+Zhou2009,Chen2010h,Elhajj2010},
+cathodic electrodeposition in alkaline baths
+\cite{Ohya2002,Sawatani2005,Wessels2008,Wessels2008a}, and
+anodic electrodeposition
+\cite{Flood1995,Lokhande2005,Wessels2006,Tsai2009,Wu2009b,Wessels2010,Wu2011}
+without achieving the desired synthetical outcome apart from
+impressive clouds of hydrochloric acid (inside the fume hood, mind you) we looked
+for an alternative photocatalytic metal oxide that could be electrodeposited
+at mild processing conditions.
+
+Zinc oxide is a semiconductor with known experimental methods of cathodic electrodeposition
+of thin films or nanostructures in aqueous electrolytes \cite{Peulon1998,Pauporte2009},
+which we could easily adapt.
+\ZnO\ wurtzite has attractive optical, electrical, and thermal properties, such as
+a wide and direct band gap (\qty{3.3}{\eV} in the bulk at \gls{RT}),
+a high absorption coefficient (due to its direct band gap),
+a large exciton binding energy%
+\footnote{%
+   The exciton binding energy is the energy needed to separate the electron and hole
+   of an exciton into free charge carriers, \ie, the energy difference between the
+   fundamental gap and the optical gap.
+   It is significantly larger than $kT$ (\qty{26}{\milli\eV} at \gls{RT}), giving
+   \ZnO\ exciton emission even above \gls{RT}.
+   For comparison, \ch{GaN} has an exciton binding energy of \qtyrange{18}{28}{\meV} \cite{Karpina2004}.
+   }
+\qty{60}{\milli\eV},
+a high carrier mobility $>\qty{100}{\cm\squared\per\volt\per\second}$ \cite{Janotti2009},
+and a high thermal conductivity,
+which makes \ZnO%
+\footnote{%
+   On a personal note, zinc was the first element that made a mark
+   during my undergraduate education: at one of my cohort's very
+   first lectures at the Arrhenius laboratory, our lecturer
+   Lars-Johan Norrby proclaimed zinc to be his favourite element on the periodic table!}
+considered for applications in \glsdisp{PC}{photocatalysis},
+\glsdisp{PV}{solar cells}, \glsplural{LED}, transparent conducting films, and more
+and a viable alternative to \ch{TiO2} anatase.
+
+\ZnO\ is amphoteric, reacting with both acids and bases, but it is nearly insoluble
+around neutral \pH.%
+\footnote{%
+   \ZnO\ solubility at \qty{298}{\kelvin} (\qty{25}{\celsius}) is
+   \qty{1.23e-5}{\mol} per \qty{100}{\gram} \water\ \cite{Ellis1984},
+   or ${\approx}\qty{1.0}{\mg}$ per \qty{100}{\gram}.}
+In acids it easily forms salts,
+and with increasingly alkaline conditions (starting from around \pH{\,\num{9}})
+it is known to form monomeric hydroxide complexes from \ch{ZnOH+} to \ch{[Zn(OH)4]^{2-}}
+\cite{Greenwood1997,Ekberg2016}.
+
+
+
+
+\section[Electrodeposition of ZnO NR arrays]{\texorpdfstring{Electrochemical deposition of \ZnO\ NR arrays}{Electrochemical deposition of ZnO NR arrays}}
+\label{synthesis:electrodeposition}
+
+Electrochemical deposition is cheap, scalable, and affords
+relatively good control of the conditions during synthesis \cite{Schwarzacher2006}.
+In addition, semiconductor thin-film electrodeposition is a mature technology,
+widely used in many industrial settings, and its basis in solution chemistry
+allows a wide range of synthetical parameters.
+Perhaps ironically then, the main disadvantages of electrodeposition
+are also related to solution chemistry: (relatively) complicated sample handling and residual
+electrolyte in the product.
+
+Despite being cheap, electrodeposition allows
+shape-controlled synthesis of \ZnO\ \glsplural{NR} \emph{without}
+any capping agents or surfactant molecules that preferentially inhibit the
+growth of particular crystallographic facets, which was attractive to my
+experimental sensibilities.
+
+We created \ZnO\ \glsplural{NR} by cathodic deposition at \qty{-0.7}{\voltAgCl}
+for \qty{90}{\minute} with an initial pulse at \qty{-1.3}{\voltAgCl} with a duration
+of \qtylist[list-final-separator={ or }]{0.1;0.5;1.0}{\second}.
+The aqueous electrolyte solution was
+\reactant[concentration=0.1,concentration-unit=\milli\Molar]{zincchloride}
+with \reactant[concentration=0.1,solvent=\water]{potassiumchloride}.
+The electrodeposition was done at a temperature of \qty{80}{\celsius} maintained
+using a thermostat-controlled water bath.
+
+Our primary electrodeposition setup (see \cref{{fig:0201-electrodeposition-schematic}})
+used a CH~Instruments 760C%
+\footnote{%
+   CH~Instruments 760C was a compact bench-top bipotentiostat/galvanostat
+   with a current range from \qty{100}{\micro\ampere} to \qty{1}{\pico\ampere} and a
+   voltage range $\pm\qty{10}{\volt}$.
+}
+bipotentiostat connected to a three-electrode cell with
+a CHI111 \ch{Ag}/\ch{AgCl} reference electrode
+and a CHI115 \ch{Pt} wire counter electrode.
+Our secondary electrodeposition setup (see \cref{fig:0301-ED-cell-autolab})
+used either a {\textmu}AUTOLABIII%
+\footnote{%
+   The {\textmu}AUTOLABIII was a compact bench-top potentiostat with
+   a current range from \qty{10}{\milli\ampere} to \qty{10}{\nano\ampere} and a
+   voltage range $\pm\qty{5}{\volt}$ with a resolution of \qty{3}{\micro\volt}.
+   Controlled via a laptop computer running GPES~v4.9 software.
+}
+potentiostat or an AUTOLAB PGSTAT302N%
+\footnote{%
+   The PGSTAT302N was a high-current potentiostat/galvanostat with
+   a current range from \qty{1}{\ampere} to \qty{10}{\nA} and a
+   voltage range $\pm\qty{10}{\volt}$ with a resolution of \qty{3}{\micro\volt}.
+}
+connected to a three-electrode cell with an AUTOLAB \gls{RE}
+and a coiled \ch{Pt}-wire \gls{CE}.
+
+The \gls{WE} was \gls{FTO} glass, \ie, sodalime%
+\footnote{%
+   Sodalime glass is a very common type of glass commonly used in containers, plate glass,
+   microscope slides, pasteur pipettes and more.
+   It does complicate analysis slightly due to containing several different oxides (in order of abundance):
+   \ch{SiO2}, \ch{Na2O}, \ch{CaO}, \ch{MgO}, and \ch{Al2O3}.
+   Before deposition each cut glass substrate were prepared by ultrasonication
+   in deionized \water, followed by an \EtOH\ and then an acetone rinse,
+   and finally dried with \ch{N2}.
+}
+glass coated with a compact
+layer of fluorine-doped \tinox (TEC-7).
+The TEC-7 substrate has a sheet resistance of \qty{7}{\ohm\per\sq},
+is insoluble in dilute acids or alkalis,
+and microcrystalline with a highly oriented structure.
+Its impedance is low enough to allow direct-current cathodic deposition.
+The \gls{WE} was kept at a potential negative to the reduction potential
+of \ch{O2\gas}, which causes oxygen gas near the electrode to be reduced to
+hydroxide ions (\cref{rxn:oxygen-reduction}). The hydroxide ions react with the
+zinc ions and form \ch{Zn(OH)2}, \ch{ZnOOH} or \ZnO\ (\cref{rxn:Zn-OH-O})
+depending on the temperature.
+% https://tex.stackexchange.com/questions/681457/half-cell-reactions-and-sum-reaction-below-horizontal-rule-with-chemmacros
+% \begin{minipage}{\textwidth}%
+% surrounding the whole shebang with another minipage caused horizontal width issues
+\begin{subreactions}\begin{reactions}
+1/2 O2 + \water{} + 2 \electron{} &<=> 2 \hydroxide{} \AddRxnDesc{Oxygen~reduction~in~water} "\label{rxn:oxygen-reduction}" \\
+Zn^{2+} + 2 \hydroxide{} &-> \ZnO{} + \water{} \AddRxnDesc{Zinc~hydroxide~to~oxide} "\label{rxn:Zn-OH-O}"
+\end{reactions}\end{subreactions}
+% reverting the counter so the sum reaction gets the same major number as the half-cell reactions
+\addtocounter{reaction}{-1}
+\vspace{-\baselineskip}%
+% https://tex.stackexchange.com/a/269888/10824
+% this must be messiest LaTeX code in the entire thesis, just to achieve this
+% ridiculously simple thing (rule extending the width of the reactions)
+% I have given up on customising the thickness of the hrule
+% https://tex.stackexchange.com/questions/371286/draw-a-horizontal-line-in-latex
+% note that these values are hard-coded and must be adjusted if the horizontal
+% extent of any reactions are changed
+\hspace{14mm}%
+\begin{minipage}{75mm}
+   \vspace{-\baselineskip}
+   %\rule disappears inside minipage, but \hrulefill is visible, weird
+   \hrulefill
+\end{minipage}
+\begin{reaction}
+Zn^{2+}\aq{} + 2 \electron{} + 1/2 O2\aq{} -> \ZnO\sld{} \phantom{ZnOZnOZnO}
+\AddRxnDesc{Zinc~oxide~electrodeposition} "\label{rxn:ZnO-dep}"
+\end{reaction}
+%\end{minipage}
+% https://stackoverflow.com/questions/2170819/margin-figures-in-latex
+\marginpar{\scriptsize\itshape%
+   \includegraphics[width=\marginparwidth]{synthesis/electrodeposition/model.pdf}
+}
+The oxygen was actively supplied to the electrolyte solution by either saturating
+the headspace with \ch{O2\gas} flow or by bubbling it into the electrolyte solution.%
+\footnote{%
+   I found that bubbling \ch{O2\gas} directly into the electrolyte solution
+   was better to reach and maintain saturation \ch{[O2\aq]}, but only if
+   it could be done without the bubbles disturbing the electrolyte solution
+   near either the \gls{WE} or \gls{RE}.
+   The alternative was to maintain \oxygen\ overpressure in the headspace,
+   which required the gas flow to be higher than the leak-rate out
+   of the headspace, and that the electrolyte solution was given enough time
+   prior to deposition to become saturated with \oxygen.
+}
+In any case, the solution was saturated in oxygen \emph{before} the deposition
+started, such that the oxygen concentration was kept as-close to constant as possible
+during the electrodeposition.
+The role of the supplied oxygen gas was to supply a source for the hydroxide ions needed at
+the working electrode. But note that this role could have been fulfilled by other means,
+for example using hydrogen peroxide, nitrate or other ions such as phosphate,
+carbonate, or sulfate.
+
+\seemore{\cref{refelectrodes}}
+\seemore{\hlink{https://solarchemist.se/2016/11/24/reference-electrodes}{Blog}}
+
+
+
+
+%\input{assets/aux/fig/fig_0201-electrodeposition-cell-schematic.Rnw}
+<<child=here::here('assets/aux/fig/fig_0201-electrodeposition-cell-schematic.Rnw')>>=
+# \label{fig:0201-electrodeposition-cell-schematic}  (a)
+# \label{fig:0201-electrodeposition-cap-schematic}   (b)
+# \label{fig:0201-electrodeposition-WE}              (c)
+# \label{fig:0201-ED-CHI}                            (d)
+# \label{fig:0201-electrodeposition-schematic}
+@
+
+Maintaining a steady temperature of \qty{80}{\celsius} was just as important
+as maintaining a steady \ch{O2\aq} concentration.
+The target temperature was low enough to allow the use of a water bath,
+and for practical reasons we used a hot plate with a built-in magnetic stirrer
+which meant that evaporation of the water bath itself needed to
+be counter-acted since depositions were \qty{1.5}{\hour} long.
+For that purpose I developed a custom-made cover made with small peripheral holes to allow
+the temperature probe access to the bath and a large centre-hole for placing the
+deposition cell securely (to avoid it bobbing in the water).
+The cover was successful in limiting evaporation and kept the
+water bath's level constant for over \qty{1.5}{\hour} at \qty{80}{\celsius}.
+We also improved on the gas inlet by adapting a long glass pipette for the
+purpose (instead of a typical gas needle which is metallic and interfered with
+the current inside the cell).
+
+To improve reliability and repeatability of the electrochemical depositions
+I created a simple paper-based form to jot down the deposition parameters for each run
+(since the potentiostats' software unfortunately offered no way to save such metadata).
+These \hlink{https://github.com/solarchemist/electrodeposition-templates}{simple templates}
+also allowed us to record non-potentiostat parameters
+such as gas flow rate, stirring or not, temperature, \etc.
+
+
+%\input{assets/aux/fig/fig_0201-ED-cell-autolab.Rnw}
+<<child=here::here('assets/aux/fig/fig_0201-ED-cell-autolab.Rnw')>>=
+# \label{fig:0301-ED-Autolab02-a}          (a)
+# \label{fig:0301-ED-electrodes-distance}  (b)
+# \label{fig:0301-ED-electrode-insulated}  (c)
+# \label{fig:0301-ED-cell-autolab}
+@
+
+The secondary electrodeposition setup (see \cref{fig:0301-ED-cell-autolab}) used
+a larger-volume cell, and was used for some projects after the completion of \cref{P1}.
+Due to the shallower angle of the \gls{WE} in this cell (compared to the perfectly
+vertical configuration in the primary setup) it was necessary to immerse the
+entire \gls{WE} in the electrolyte solution and thus to fully insulated its electrical
+contacting.
+The longer distances from the cell ports to the electrolyte solution also
+necessitated the use of a larger \gls{RE} and \gls{CE} (coiled \ch{Pt} wire).
+The larger cell also meant a longer \glsname{WE}--\glsname{CE} distance
+$\approx\qty{25}{\mm}$ (about twice as long as in the primary setup).
+
+The fully insulated contact was sturdy and created in the following way:
+the electrical wire was passed through
+a disposable plastic pipette (with its bulbous part cut off) and contacted to
+the \gls{TCO} surface with electrically conductive silver lacquer,
+then covered with a strip of aluminium tape.
+The tape and the end of the plastic pipette were then fixed into place by
+colourless epoxy glue to add sturdiness and chemical stability to the contact,
+and the whole contact was then covered with a thin coat of nail varnish (\cref{fig:0301-ED-electrode-insulated}).
+The nail varnish was applied primarily to define the active surface area, and
+for purposes of easier identification since we had several
+available colours.
+
+
+
+
+
+%%%% SECTION
+\section[Chemical bath deposition of CdS films]{\texorpdfstring{Chemical bath deposition of \ch{CdS} films}{Chemical bath deposition of CdS films}}
+\label{synthesis:chemical-bath-deposition}
+
+\ch{CdS} nanoparticles were chemical bath-deposited onto
+\qty{1.5}{\hour} electrodeposited \zincox\ \glsplural{NR} arrays.
+An aqueous bath solution of \reactant[concentration=2,concentration-unit=\milli\Molar]{cadmiumsulfate},
+\reactant[concentration=10,concentration-unit=\milli\Molar]{thiourea}, and
+\reactant[concentration=1]{ammonia} was
+thermostatically maintained at \qty{60}{\celsius} before immersing the
+substrate for a set amount of time (up to \qty{2}{\hour}).
+The substrate was always suspended vertically, and the solution was continuously
+stirred during the deposition.
+To prepare the deposition bath (per above), I started by dissolving
+\reactant[mass=1.2365]{cadmiumsulfatehydrate} in \reactant[concentration=12.8]{ammonia}
+to $[\ch{Cd^{2+}}]=\qty{24}{\milli\Molar}$
+then volumetrically diluted it by a factor of eight to
+\reactant[%
+   concentration=3,%
+   concentration-unit=\milli\Molar,%
+   solvent={\qty{12.8}{\Molar} \ch{NH3\aq}}]{cadmiumsulfate}.
+The cadmium sulfate salt was sourced from Merck (\ch{3 CdSO4 * 8 H2O}, \emph{pro analysi}).
+Next I dissolved \reactant[mass=0.2284]{thiourea} in \qty{100}{\milli\L}~\water\
+for a concentration of \qty{30}{\milli\Molar}.
+The thiourea powder was sourced from Merck, \emph{for synthesis}.
+% print only the number: \reactant*[switch=true]{CdSO4}
+
+%\input{assets/aux/fig/fig_0203-CBD-synthesis.Rnw}
+<<child=here::here('assets/aux/fig/fig_0203-CBD-synthesis.Rnw')>>=
+# \label{fig:0203-CBD-station}
+@
+
+
+For a \gls{CBD}, first \qty{5}{\milli\L} of \reactant*[switch=true]{thiourea}
+was added to each deposition bath (\cf\ \cref{fig:0203-CBD-station})
+and allowed to reach thermal equilibrium at the set temperature
+(at least \qty{15}{\minute} \qty{60}{\celsius}).
+Simultaneously, a container with \reactant*[switch=true]{cadmiumsulfate} was also heated.
+The substrates were lowered into each of the four deposition baths, and
+\qty{10}{\mL} of \reactant*[switch=true]{cadmiumsulfate} was then added to each to start
+the \gls{CBD} reaction.
+The point of adding the \ch{Cd}-precursor at the last moment was to avoid unnecessarily
+subjecting the \ch{ZnO}/\ch{Fe2O3} substrate to the strongly alkaline solution.
+After the deposition was completed, the back of the glass substrate was
+cleaned with a cotton swab soaked in $\approx\qty{0.75}{\milli\Molar}$ \ch{HCl},
+then both sides were rinsed with deionized water and blow-dried with \ch{N2}.
+
+The earliest report \cite{Nagao1968} of chemical bath deposition of \ch{CdS} from an alkaline
+solution with an ammonium salt at room temperature produced thick films in the cubic structure.
+Later work \cite{Nair1988,Mondal1983} found that the thickness of the deposit
+\emph{decreased} with bath temperature.
+
+
+The \ch{CdS} deposition proceeds along the following steps
+(most mechanistic studies of \gls{CBD} of \ch{CdS} have proposed the so called
+\emph{ion-by-ion} mechanism, which is what we present here) \cite{Hodes2003,Tak2009}:
+\begin{subreactions}\begin{reactions}
+NH3 + H2O             <=>& NH4\pch[] + OH\mch[]   \AddRxnDesc{Ammonium~formation} "\label{rxn:CBD-ammonia}" \\
+Cd\pch[2] + 4 NH3     <=>& [Cd(NH3)4]\pch[2]      \AddRxnDesc{Formation~of~cadmium~complex} "\label{rxn:CBD-Cd-complex}" \\
+(NH2)2CS + OH\mch[]    ->& CH2N2 + H2O + HS\mch[] \AddRxnDesc{Formation~of~hydrogen~sulfide} "\label{rxn:CBD-thiourea}" \\
+HS\mch[] + OH\mch[]    ->& S\mch[2] + H2O         \AddRxnDesc{Release~of~sulfide~ion} "\label{rxn:CBD-sulfide}" \\
+Cd\pch[2] + S\mch[2]  <=>& CdS\sld{}              \AddRxnDesc{Cadmium~sulfide~ion~by~ion} "\label{rxn:CBD-CdS-ionbyion}" \\
+Cd\pch[2] + 2 OH\mch[] ->& Cd(OH)2\sld{}          \AddRxnDesc{Cadmium~hydroxide~precipitation} "\label{rxn:CBD-OH-cluster}" \\
+Cd(OH)2 + S\mch[2]     ->& CdS\sld{} + 2 OH\mch[] \AddRxnDesc{Cadmium~hydroxide~dissolution} "\label{rxn:CBD-CdS-OH-cluster}"
+\end{reactions}\end{subreactions}
+usually described with the following overall reaction
+\addtocounter{reaction}{-1}
+\begin{reaction}
+[Cd(NH3)4]\pch[2] + (NH2)2CS + 2 OH\mch[] ->
+   CdS + CH2N2 + 4 NH3 + 2 H2O \AddRxnDesc{Deposition~of~cadmium~sulfide} "\label{rxn:CBD-dep}"
+\end{reaction}
+
+Ammonia dissolved in water produces a hydroxide ion (\cref{rxn:CBD-ammonia}) and
+forms a cadmium tetramine complex (\cref{rxn:CBD-Cd-complex}) which is responsible
+for slowing the release of solvated \ch{Cd\pch[2]} ions.
+Sulfide ions are released (\cref{rxn:CBD-sulfide}) by the hydrolysis of thiourea
+in alkaline solution (\cref{rxn:CBD-thiourea}) \cite{Ortega-Borges1993,Hodes2003}.
+When the product of \ch{[Cd\pch[2]]} and \ch{[S\mch[2]]} exceed the solubility
+product%
+\footnote{%
+   The \glsname{solubility_product} of \ch{CdS} has variously been reported in literature as
+   \num[retain-unity-mantissa=false]{1e-25} \cite{Ortega-Borges1993},
+   \num[retain-unity-mantissa=false]{1e-28} \cite{Hodes2003},
+   \num{7.1e-28} \cite{Oladeji1997}, and
+   \num{1.4e-29} \cite{Nair1988}.
+}
+of \ch{CdS} it precipitates (\cref{rxn:CBD-CdS-ionbyion}) either homogeneously
+in the solution (forming colloids) \cite{Hodes1987} or
+heterogeneously at the substrate surface \cite{Kaur1980}, leading to a film.
+Note that formation of the hydroxide is not desired, but may still occur (which
+is why it is included in the schema), but if it does occur the likelihood of sulfide
+substituting for the hydroxide and forming the desired sulfide is very high due
+to the much higher \glsname{solubility_product} (\num{2e-14}) of \ch{Cd(OH)2}.
+
+
+
+
+%%%% SECTION
+\section{Atomic layer deposition of iron oxide}
+\label{synthesis:atomic-layer-deposition}
+
+After having successfully coated electrodeposited \zincox\ \glsplural{NR} with
+\ch{CdS} and achieved the intended effect of sensitizing \ZnO\ to visible
+light, we considered other conformal coatings
+that could alleviate two of the main drawbacks with \ch{CdS}, \namely,
+the alkaline conditions during its deposition, and the toxicity of the \ch{Cd\pch[2]} ion.
+
+Hewing to the principle of simplicity we established earlier, and considering
+our alternatives, we landed on the abundant
+\hematite\ (\glstext{hematite}), \ie, the principal component of rust.
+The iron oxides and iron oxide hydroxides (see \cref{tab:0300-pxrd-pdfs}) have
+a particularly well-studied
+chemistry, which is no wonder considering their immense economic importance.
+As the most thermodynamically stable iron oxide phase at \gls{STP}, \glstext{hematite} is
+the end product of all steel corrosion, and has as such been studied in detail.
+\hematite\ has a band gap of \Eg{2.2} (\qty{564}{\nm}), \ie, well into the visible
+range, and is also non-toxic, resistant to chemical corrosion in both dark and
+illuminated conditions, and its \gls{VBE} is suitable for oxygen evolution
+from \water\ (\cf\ \cref{fig:0100-bandgaps-all}).
+The main drawbacks with \glstext{hematite} is its indirect band gap and its short
+intrinsic hole diffusion length (typically \qtyrange{2}{4}{\nm} \cite{Kennedy1978},
+but up to \qty{20}{\nm} when considering the effect of the electrolyte and band bending
+\cite{Edvinsson2018}), which was one of our main motivations behind minimizing the thickness
+of the \gls{hematite} layer and the reason for using \gls{ALD}.
+
+%\input{assets/aux/fig/fig_0202-ALD-ferrocene-process.Rnw}
+<<child=here::here('assets/aux/fig/fig_0202-ALD-ferrocene-process.Rnw')>>=
+# \label{fig:ALD-ferrocene-process}
+@
+
+By utilizing self-limiting surface reactions, \gls{ALD} can evenly deposit
+thin films on a substrate of arbitrary shape and form.
+The primary restriction is that the substrate needs to be thermostable, which was
+not a problem for our samples, being essentially oxide on glass.
+\Gls{ALD} is a slow deposition method, but no other technique at
+our disposal could deposit a perfectly even layer
+of material on a relatively rough substrate (such as our \ch{ZnO} nanorod samples),
+in particular not without etching the amphoteric \zincox\ layer during
+its deposition.
+
+Binary compounds (such as \hematite) are usually deposited in
+four steps for each atomic layer (called a \emph{cycle}, \cf\ \cref{fig:ALD-ferrocene-process}).
+The first step contains the metal precursor, in this case ferrocene, which is
+transported in the gas phase by a carrier gas to the deposition chamber
+which was kept at \qty{450}{\celsius}.
+The precursor is chemisorbed to the surface of the substrate forming one monolayer.
+In the second step the carrier gas is flushed to rinse off any excess precursor
+from the first step.
+The third step introduces the second precursor, which react with the already chemisorbed
+molecules on the surface, ideally forming one atomic layer of the desired phase.
+The fourth step is another flushing operation.
+Our \gls{ALD} process was based on previous work by Fondell \textit{et al.} \cite{Fondell2014a,Fondell2014}
+and varied the number of cycles in a series: \numlist{35;50;62;75;87;100},
+ideally corresponding to a hematite layer thickness of \qtyrange{2}{20}{\nm}.
+Reaction conditions were optimized for hematite formation.
+
+The \gls{ALD} instrument was a Picosun 8482 R series reactor from the Finnish Sun Oy company.
+
+
+
+
+%%%% SECTION
+\section{\texorpdfstring{\ch{ZnO} quantum dot synthesis}{ZnO quantum dot synthesis}}
+\label{synthesis:quantum-dot}
+
+Low-dimensional \zincox\ (wurtzite) \glsplural{NP} were synthesized as a colloidal%
+\footnote{%
+   A solution that scatters light is a \emph{suspension}.
+   A \emph{colloidal} solution does not.
+   Our prepared \zincox\ solutions were colloidal, but gradually turned into suspensions
+   after weeks or months of storage.
+}
+solution in \solvent{ethanol}, by adapting a
+synthetical route first described by \textcite{Spanhel1991} and also
+by \cite{Hoyer1993,Hoyer1994}, and later improved by \textcite{Meulenkamp1998}.
+The synthesis was a batch method involving two precursor solutions
+prepared at room temperature
+(for amounts, masses and concentrations see \cref{tab:0204-precursors-QD}).
+
+In the first precursor solution zinc acetate dihydrate, \reactant[purity=99.5]{zincacetatedihydrate},
+Fluka, was dissolved in \solvent[purity=99.5]{ethanol}.
+In the second precursor solution lithium hydroxide monohydrate,
+\reactant[purity=99]{lithiumhydroxidehydrate}, Sigma-Aldrich,
+was dissolved in \solvent[purity=99.5]{ethanol}.
+Note that \reactant*[switch=true]{lithiumhydroxidehydrate} may
+have contained up to \qty{1}{\percent} of \ch{Li2CO3} (as specified on the bottle).
+This can cause some challenges during \gls{QD} synthesis, which we will expand on later.
+
+%\input{assets/aux/tab/tab_0204-QD-precursors.Rnw}
+<<child=here::here('assets/aux/tab/tab_0204-QD-precursors.Rnw')>>=
+# \label{tab:0204-precursors-QD}
+@
+
+%\input{assets/aux/fig/fig_0204-QD-synthesis-setup.Rnw}
+<<child=here::here('assets/aux/fig/fig_0204-QD-synthesis-setup.Rnw')>>=
+# \label{fig:0204-synthesis-QD}
+@
+
+Preparation of precursor solutions was as follows:
+\begin{itemize}[after=\vspace{\baselineskip}]
+\item add approximately \solvent[volume=45]{ethanol} to the Zn-reactor (\qty{100}{\mL} Erlenmeyer flask)
+      and a magnetic stirrer bar; set temperature of water bath to boiling point of \solvent{ethanol},
+\item turn on \ch{N2\gas} flow into the empty Li-reactor (round bottom flask) for a few minutes
+      to purge \ch{CO2\gas} from it; add a magnetic stirrer bar;
+      set temperature of water bath to \qty{45}{\celsius},
+\item quantitatively transfer the weighed mass of \reactant{zincacetatedihydrate} to the boiling \solvent{ethanol},
+\item add approximately \solvent[volume=50]{ethanol} and quantitatively transfer the weighed mass
+      of \reactant{lithiumhydroxidehydrate} to the round-bottom flask,
+\item once the mixtures have dissolved and the solutions
+      are transparent and colourless move both reactors to an ice bath,
+\item quantitatively mix the two precursor solutions to \qty{100}{\mL}
+      (fill to the mark with \solvent{ethanol} as needed). Stir.
+      Note the time ($t=\qty{0}{\minute}$ for \gls{QD} growth).
+\end{itemize}
+
+Both salts were easy to handle, weigh up and transfer.
+The zinc acetate \reactant*[switch=true]{zincacetatedihydrate} dissolved easily after
+a few minutes stirring in boiling \reactant{ethanol}.
+But this solution was not stable for long: after a few hours it formed a milk-white suspension.
+
+The lithium hydroxide \reactant*[switch=true]{lithiumhydroxidehydrate} has a more
+challenging chemistry, primarily due to its carbonate salt.
+Whereas both the dry and the slaked hydroxide have moderate solubility in \water\ and \EtOH,
+with increasing solubility with increasing temperature, the
+lithium carbonate, on the other hand, has poor solubility in \water\ and \EtOH,
+and its solubility \emph{decreases} with increasing temperature.%
+\footnote{%
+   The solubility of \ch{Li2CO3} in water is \qty{1.54}{\gram} at \qty{0}{\celsius},
+   and \qty{1.33}{\gram} at \qty{25}{\celsius} \cite{CRC104}.
+   This points to an entropy effect, \ie, the solvation of \ch{Li+} and \ch{CO3^{2-}}
+   in water decreases the overall entropy of the solution.}
+In practice, this meant that during dissolution of
+\reactant[solvent=\EtOH,concentration=0.14]{lithiumhydroxidehydrate} we needed
+to take care to limit the competing dissolution reaction of \ch{Li2CO3}, which was
+driven by the presence of dissolved \ch{CO2}.
+Since the hydroxide is only moderately soluble to start with, we needed to use
+as large a volume of solvent as possible. To avoid encouraging the formation
+of the carbonate, \ch{CO2\gas} should be kept out of the headspace, and in addition
+one should avoid heating the solution (definitely not boil it) so as not decrease
+the solubility of any lithium carbonate that may form.
+In short, the higher the temperature and the higher the flow rate of \ch{N2\gas},
+the more lithium ions were lost as insoluble carbonate, and
+the more solvent was lost to evaporation, which were both detrimental to our process.
+
+For the same reason, the lithium hydroxide solution \reactant*[switch=true]{lithiumhydroxidehydrate} must be stirred only gently.
+Even moderate stirring will draw in more air (which even under \ch{N2\gas} flow may contain
+\ch{CO2\gas}) into the solution, making it easier to form \ch{Li2CO3}.
+This reaction also neutralizes at least one hydroxide ion, thus decreasing the
+precursor solution's apparent \pH.
+Of course, strictly speaking \pH\ is not defined in a non-aqueous solvent,
+but we may still use it as a proxy to discuss the changing chemistry of \EtOH\ as
+air (containing \carbondiox) equilibrates with it.
+To investigate this, I measured the proton activity (apparent \pH) of \EtOH\ of
+two different purities using a regular \pH-meter,
+and found \pH{\,\num{8.35}} (\qty{99.5}{\percent}) and \pH{\,\num{8.19}} (\qty{99.96}{\percent})
+immediately after opening the factory-sealed bottle;
+and \pH{\,\num{7.83}} and \pH{\,\num{7.40}} after aerating the samples overnight.
+These observations suggest that equilibration with air, just like for \water, significantly
+alter the carbonate chemistry of the solvent, which may influence the \gls{QD} synthesis,
+and that varying trace amounts of \water\ in \EtOH\ were likely not decisive.
+All \ZnO\ \gls{QD} in this work were synthesized using \solvent[purity=99.5]{ethanol}
+for reasons of cost, and used more or less immediately after opening the bottle.%
+\footnote{%
+   With the benefit of hindsight, I should perhaps have let the \solvent{ethanol}
+   solvent aerate fully (until the \pH{} settled) before preparing the precursors.
+   This did not effect the quality of individual batches, but may have improved
+   repeatability between batches.}
+
+To prepare precursor solutions at precisely the intended concentration it is important to
+maintain the desired solvent volume, which was challenging since \solvent{ethanol} evaporated
+so readily, especially when boiling.
+Instead of sealing the glassware (which changes the boiling point of the solvent)
+we fitted the \ch{Li}-reactor with a water-cooled reflux tube which successfully captured
+and returned effectively all the evaporated solvent.
+
+
+
+
+
+%%% CHAPTER:
+%%% CHARACTERISATION METHODS
+\chapter{Characterization methods}%
+\label{ch:characterization-methods}
+
+
+%%% SECTION
+\section{UV-Vis spectroscopy}
+\label{methods:uvvis-spectroscopy}
+
+An object under irradiation can interact with the light in various ways.
+From an optical perspective, the incident light has to penetrate the surface of
+the object to interact with the material in the bulk of the object. And then the
+light has to penetrate another surface to exit the object \cite[p.\,71]{Stenzel2005}.
+
+For light incident on an object, the light may
+\begin{enumerate*}[label=(\alph*)]
+\item be transmitted through the object (in a well-defined direction),
+\item be diffusely scattered at the object interfaces or in its interior,
+\item be specularly reflected, or
+\item be absorbed at the object interfaces or in its interior.
+\end{enumerate*}
+If we posit that these processes are the only interactions that can occur
+between the incident light and the object, then conservation of energy requires:
+\begin{equation}\label{eq:TRSA=1}
+\glsname{transmittance} + \glsname{reflectance} + \glsname{scattering} + \glsname{absorbance} = 1
+\end{equation}
+where \glsname{transmittance} is the \glstext{transmittance},
+\glsname{reflectance} is the \glsdisp{reflectance}{specular reflectance},
+\glsname{scattering} is the \glsdisp{scattering}{diffuse scattering}, and
+\glsname{absorbance} is the \glstext{absorbance}.
+
+The \glstext{transmittance} is also related to the \glstext{absorption_coefficient}
+and the path length, $L$ in the familiar Beer-Lambert law
+(also illustrated in the margin):
+\begin{equation}\label{eq:transmittance}
+\glsname{transmittance} \equiv \frac{I}{I_0} = \exp(-\glsname{absorption_coefficient}L)
+\end{equation}
+
+In most of my work, we were mainly interested in the optical absorption.
+\marginpar{%
+%\input{assets/aux/fig/fig_0301-beer_lambert_law.Rnw}
+<<child=here::here('assets/aux/fig/fig_0301-beer_lambert_law.Rnw')>>=
+@
+}
+If scattering can be neglected, \cref{eq:TRSA=1} simplifies to
+\begin{equation}
+\glsname{absorbance} = 1  - \glsname{transmittance} - \glsname{reflectance}
+\end{equation}
+or in terms of incident and transmitted light
+\begin{equation}
+\glsname{absorbance} =
+\log\left(\frac{I_0}{I}\right) =
+-\log(\glsname{transmittance})
+\end{equation}
+In practice, \gls{absorbance} is the base-10 logarithm of the spectral radiant power
+transmitted through a reference sample divided by that
+transmitted through the investigated sample, both observed in identical cells.
+
+Note that \emph{absorptance}, defined as $-\log(1-\frac{I_\text{abs}}{I_0})$ \cite{Cohen2008}
+is sometimes used in lieu of \glsname{absorbance} for samples where scattering
+is not negligible, is algebraically equivalent to \glsname{absorbance}, since
+$I_\mathrm{abs} = I_0 - I$, and thus the expression above can be rearranged
+to $\log\left(\frac{I_0}{I}\right)$.
+
+The \glstext{absorbance} can thus be determined by measuring both the \glstext{transmittance}
+and the \glstext{reflectance} of a sample. Or, if reflectance can be neglected, then simply
+by measuring its transmittance.
+
+For a thin film, the amplitude and intensity of reflected or transmitted beams
+of light can in principle be determined by setting up Maxwell's equations
+and applying the appropriate boundary conditions \cite{Heavens1955}.
+In practice that is very cumbersome and not something often done.
+More to the point, for a thin film the \glstext{absorbance} equals the
+\glstext{absorption_coefficient} times the film thickness, $d$: $A=\alpha d$.
+The \glstext{absorption_coefficient} of a thin film can be expressed in terms
+of the reflectance and transmittance \cite{Green2012}:
+\begin{equation}\label{eq:alpha-thickness}
+\glsname{absorption_coefficient} = \frac{1}{d}\ln\left(\frac{1-R}{T}\right).
+\end{equation}
+And if the thickness, $d$, is not known, simply rearrange the equation so the
+left-hand side gives you $\glsname{absorption_coefficient}d = \glsname{absorbance}$.
+
+
+We have employed \gls{UV-Vis-NIR} spectroscopy extensively, and with a few
+different instruments.
+For \insitu\ experiments on films or colloidal suspensions I used an
+OceanOptics HR2000+ high-resolution fibre-optic spectrometer,
+with a Mikropack DH-2000-BAL \gls{UV-Vis-NIR} light source using
+both a deuterium lamp and a halogen lamp.
+This setup was controlled \via\ a computer running SpectraSuite on Microsoft Windows~XP.
+\Exsitu\ experiments on films were measured on the venerable PerkinElmer Lambda~900
+\gls{UV-Vis-NIR} spectrophotometer equipped with an integrating sphere
+(\eg, \cref{P1}, \cref{fig:P01-uvvisir-absorbance}).
+
+\Gls{UV-Vis-NIR} spectroscopy gave us optical transmittance, reflectance, and/or absorbance
+for both thin film and colloidal samples, which allowed me to track semiconductor band edges
+and dye absorption peaks, among other features.
+
+
+
+%%%% SECTION
+\section{Photoluminescence spectroscopy}
+\label{methods:photolum}
+
+In \glsfirst{PL} spectroscopy the sample is excited with photons with higher
+energy than its band gap and the sample's emission spectrum is recorded \cite{Pazoki2020},
+\ie, photons in and photons out.
+I have used \gls{PL} to study surface or interface phenomena involving
+the absorption of photons that generate electron-hole pairs, which is of central
+importance in \glstext{PC} \cite{Kundu2011a}.
+
+In \gls{UV-Vis} fluorospectrometry (also known as \glsfirst{PL} spectrometry)
+the sample under study is placed in front of a light source with a suitable bandpass filter
+between them so that only a particular wavelength in the \gls{UV-Vis} region illuminates the sample.
+Since the sample's emission can be assumed to be isotropic, the direction of excitation was set at
+an angle to the detector to avoid detecting the incident light.
+Special care was taken to keep stray light out of the spectrometer
+(the room was darkened and the instrument was covered).
+
+I recorded fluorescence spectra of electrodeposited \ch{ZnO} \glsplural{NR} on
+\gls{TCO}-glass with and without \gls{CBD} \ch{CdS}.
+Room-temperature steady-state emission spectra were recorded on a Fluorolog~3%
+\footnote{%
+   The Fluorolog 3's control software was based on the Origin~Pro software suite,
+   with all recorded data saved as Origin plots by default. Not very convenient
+   if you are not an Origin user.
+   Using Origin's built-in command prompt, the data could be exported to ASCII
+   in a two-liner: \texttt{fdlog.openpath(); }%
+   % verb in footnote required fancyvrb package
+   % https://tex.stackexchange.com/questions/203/how-to-obtain-verbatim-text-in-a-footnote
+   \verb+{doc -e W {save -w %H %B%H.txt}}+%
+   .%
+}
+(Horiba Jobin Yvon)
+equipped with double-grating excitation and emission monochromators and a
+\qty{450}{\watt} \ch{Xe}-lamp.
+The main sample series (\ch{CdS}-coated \ch{ZnO} \glsplural{NR} on \gls{TCO}-glass)
+was measured using right-angle (RA) detection with the sample substrate at \ang{30}
+and always with the EE (electrode--electrolyte) surface facing the incident beam,
+in order to minimize inner-filter effects.
+The excitation and emission slits were set to obtain \qtylist{2;3;6}{\nm} and
+\qtylist{4;6;8}{\nm} band passes, respectively (depending on excitation wavelength).
+Integration time was set to \qty{0.1}{\second} per point.
+A \qty{400}{\nm} long-pass filter was placed \emph{after} the sample to reduce
+second-order diffraction by the excitation monochromator
+(for $\glsname{wavelength}_\text{\glsname{excitation}}=\qty{350}{\nm}$ and \qty{375}{\nm}).
+The emission spectra were corrected for the spectral sensitivity of the
+detection system by using a calibration file of the detector response.
+
+
+
+
+
+%%%% SECTION
+\section{Raman spectroscopy}
+\label{methods:raman-spectroscopy}
+
+As we previously discussed (\cref{methods:uvvis-spectroscopy}), light interacts
+with matter in a variety of ways.
+When incident light is scattered by an object, it is overwhelmingly likely to
+be \emph{elastically} scattered, meaning the light is propagated without changing
+its wavelength (or equivalently, its energy or frequency).
+With Raman spectroscopy we measure the \emph{inelastic} spectrum scattered from the
+sample under illumination by laser light (high-power density, coherent, monochromatic, collimated light).
+In this process the vast majority of the incident laser light is scattered
+\emph{elastically} (Rayleigh scattering), and only about one inelastic scattering event
+occurs for every \num[retain-unity-mantissa=false]{1e7} elastic scattering events (\qty{0.1}{\ppm}).
+The inelastically scattered light has a very slightly different wavelength than the incident light,
+because it has exchanged vibrational (or rotational) quanta with the specimen, which
+can only occur if the polarizability of the specimen's electron cloud is changing
+during the vibration \cite{Rahman2020a}, and thus carries with it information on the vibrational state
+of the specimen which is correlated to its chemical bonding, chemical composition,
+and phases in crystalline materials.
+
+For some crystal structures, Raman and \gls{IR} are complementary, in the sense
+that the crystal's vibrational modes are either Raman \emph{or} \gls{IR} active.
+A lattice vibration can be simultaneously Raman and \gls{IR}-active only in
+non-centrosymmetric crystal structures (\eg, polar crystals such as \ZnO,
+\cf\ \cref{tab:0300-pxrd-pdfs}).
+All molecules and solids have vibrational spectra, and nearly all vibrations
+are either Raman or \gls{IR} active \cite{Dyer2005}.
+
+Inelastic scattering of light by matter was first theorized by \textcite{Smekal1923} and
+shortly after by \textcite{Kramers1924,Kramers1924a,Kramers1925}. This was around
+the same time as Venkata Raman was pondering the molecular diffraction of deep bodies
+of seawater during a voyage across the Indian Ocean \cite{Raman1922},
+which led him and Krishnan to experimentally describe the Raman effect a few years later
+\cite{Raman1928,Raman1928a}. The Raman effect was also independently described
+experimentally in the USSR by Landsberg \& Mandelstam \cite{Landsberg1928,Landsberg1928a}.
+The earliest investigations of the Raman effect in semiconductors occurred after
+the advent of the laser in the 1960s \cite{Cardona1974}.
+
+The terminology we use to assign vibrational spectral modes was determined
+by an ICSU Joint Commission for Spectroscopy in 1953 \cite{Cohen2008} but is
+commonly referred to as \textcite{Mulliken1930,Mulliken1955,Mulliken1956} notation.
+
+In this thesis we concern ourselves with the Raman effect in crystalline semiconductors.
+Semiconductors always have more than one atom in their unit cell, which leads
+the dispersion relations (the relationship between frequency and wave vector) to
+always exhibit two kinds of phonons with which photons can interact, \namely,
+the \emph{optical} and \emph{acoustic} modes of lattice vibration.
+The interaction with optical phonons%
+\footnote{
+   They are called \emph{optical} phonons because they can be
+   excited by electromagnetic radiation in the optical wavelength region.
+}
+is what typically generates Raman scattering, and
+the interaction with acoustic phonons results in so called Brillouin scattering
+(first predicted by \textcite{Brillouin1922} in 1922) \cite{Pankove1975}.
+Both optical and acoustic phonons have longitudinal and transverse modes,
+depending on whether the vibration is along the direction of propagation
+or orthogonal to it.
+
+An incident photon of a certain wavelength can give or gain some of its energy
+to the lattice in the form of a phonon.
+The precise amount of energy gained or lost by the lattice is compensated by
+an increase (Stokes) or decrease (anti-Stokes) in the wavelength (energy) of
+the scattered light \cite{Loudon1964,Pankove1975}.
+A phonon is a many-body-type quasiparticle;%
+\footnote{%
+   Some other commonly encountered quasiparticles are
+   \textbf{polaritons} (coupled photon--optical phonon modes),
+   \textbf{excitons} (an electron--hole pair),
+   \textbf{polarons} (coupled electron--phonon modes),
+   \textbf{plasmons} (a collective excitation of all the electrons in the crystal, \ie, a quantum of plasma oscillation),
+   \textbf{magnons} (a collective spin excitation of the lattice),
+   and
+   \textbf{trions} (a localized excitation of two holes and one electron or two electrons
+   and one hole that may occur in optically excited semiconductor nanostructures).}
+a quantized lattice vibration and describes a collective motion of atoms in the lattice.
+Phonons play an important role in determining a material's thermal, optoelectronic,
+and electrical transport characteristics \cite{Senga2019}.
+At $\glsname{absolute_temperature}=\qty{0}{\kelvin}$, a crystal lattice would contain no phonons.
+At any temperature above absolute zero all matter vibrates to some extent,
+due to lattice vibrations being quantized.
+A material's phonon structure is fundamentally related to its thermodynamic
+properties.
+
+%\input{assets/aux/fig/fig_3300-vibrational-energy-levels.Rnw}
+<<child=here::here('assets/aux/fig/fig_3300-vibrational-energy-levels.Rnw')>>=
+# \label{fig:0300-vibrational-energy-levels}
+@
+
+Another way to look at this interaction is that the incident photon excites a phonon,
+causing the semiconductor to re-emit the remaining (or gained) energy as a photon.
+This scattering process is generally isotropic, which is why Raman scattering is
+commonly measured in the antiparallel direction to the incident beam. Also, both
+the incident and emitted light typically have limited penetration depth in the sample,
+which also restricts detection to the reflection direction
+(just like for \gls{SEM} and many other techniques with opaque samples).
+
+The created phonon can in turn interact with the lattice to produce a second phonon
+(of lower energy than the first), and this cascade process can be repeated,
+generating what is called second-, third-, fourth-order (and so on) Raman scattering,
+or more generally termed \emph{multiphonon} scattering.
+Note that if the energy of the phonon coincides with the energy of an exciton (\emph{resonance}),
+the intensity of the higher-order phonon can be strongly enhanced \cite{Pankove1975}.
+
+In polar semiconductors, \ie, materials with a permanent electric polarization
+due to the relative displacement of positive and negative ions in the crystal
+structure (in other words, ionic crystals), with few defects
+interaction between this polar electric field and
+the optical phonons is expected to be the dominant scattering mechanism at \gls{RT}.
+This so called polar--optical-phonon scattering interacts with the charge carriers
+in what is known as the Fröhlich interaction \cite[p.\,40]{Stroscio2005}.
+
+This interaction of optical phonons and charge carriers in polar semiconductors
+in many cases determines its carrier mobility \cite{Stroscio2005}
+\enquote{The carrier mobility in the presence of an external electric field is determined
+predominantly by the rate at which the electrons emit optical phonons} \cite{Stroscio2005}.
+
+Raman spectroscopy is non-destructive, simple, and often (but not always) a quick method
+to determine which crystal phases are present in a solid or solute sample.
+It yields information about bonds and crystallinity, and we can use it to tell apart
+different polymorphs of the same composition (\eg, \glsxtrlong{hematite} from maghemite)
+which is not always straight-forward with \gls{XRD}.
+One of the major weaknesses of Raman spectroscopy is fluorescence from a sample,
+which can completely swamp the inelastically scattered signal and be very hard
+to overcome.
+
+
+
+\subsection{Resonant Raman scattering}
+\label{methods:resonant-Raman}
+
+As we have seen, regular phonon scattering (\ie, non-resonant) occurs through
+excitation to virtual intermediate electronic transitions.
+In this section we will briefly describe \emph{resonant} Raman scattering by optical phonons
+as utilized in \cref{P4}.
+
+When the wavelength (\ie, energy or frequency) of the incident light approaches one
+of the electronic transitions of the crystal (such as the band gap in a semiconductor),
+the Raman scattering can be enhanced by many orders of magnitude (this effect
+was first reported in crystals by \textcite{Ovander1962}).
+Achieving resonance used to be hard because the wavelength of the incident
+laser light must be close to the band gap under study, and it is only with the
+development of high-power \gls{UV} laser sources
+that wide gap semiconductors such as \ZnO\ came within reach of resonance studies.
+But even with the intensity gained from resonance, resonant Raman experiments
+may be saddled with an even stronger phonon-aided luminescence that can drown out
+all or some of the Raman modes, which is a drawback particularly affecting samples
+with any organic residues (even very small amounts).
+
+Under electronically exciting conditions (\ie, resonance) Raman can provide
+information on vibrations in the excited state and can also give clues towards
+the charge separation/transfer mechanisms in the material \cite{Rahman2020a}.
+Polar crystals often complicate resonance by
+leading to the introduction of multiphonon processes caused by
+intraband Fröhlich interaction \cite{Cardona1983}.
+
+%\input{assets/aux/fig/fig_0303-raman-setup.Rnw}
+<<child=here::here('assets/aux/fig/fig_0303-raman-setup.Rnw')>>=
+# \label{fig:0403-raman-setup}
+@
+
+A challenge when using resonant Raman for wide gap materials
+is the need to utilize \gls{UV} light, which puts added constraints on the
+optical components in the Raman spectrometer, which is why
+we used a near-UV objective and \gls{UV} lenses in the spectrometer's
+optical path. All measurements were recorded at ambient conditions.
+Resonant Raman was measured with the \qty{325}{\nm} excitation line of a \ch{He}-\ch{Cd} laser,
+using a 15x/0.30 NUV objective lens (Thorlabs).
+The detector was calibrated against the \qty{1332}{\per\cm} line of diamond.
+All measurements in the resonant experiment series used the exact same acquisition
+parameters.
+Cosmic rays were removed either by the detection and removal algorithm
+built-in to the Renishaw software suite, or manually at a later stage by
+linear interpolation over the affected data points.
+Peak and baseline fitting was performed with the algorithm by \textcite{Davies2008}
+(also see \cref{method-development:spectral-peak-fitting}).
+
+
+
+
+%%%% SECTION
+\section{Photocatalysis}
+\label{methods:photocatalysis}
+
+In order to evaluate the \glsdisp{PC}{photocatalytic} or
+\glsdisp{PEC}{photoelectrochemical} properties of the
+catalysts we synthesized, we employed both solar simulators
+(emulating the standard \gls{AM15G} spectrum to varying degrees of fidelity)
+and custom or off-the-shelf lamps.
+I designed and built many of the experimental setups from scratch.
+
+
+\subsection{The solar spectrum}
+\label{pc:solar-spectrum}
+
+To get a firm grasp of the solar spectrum it helps to first
+understand the black body spectrum and the concept of \gls{AM}.
+
+The \glstext{spectral_radiance} of an ideal black body%
+\footnote{%
+   Every object at above \qty{0}{\kelvin} emits and absorbs electromagnetic
+   radiation to some degree. An object that absorbs all radiation is a black body
+   and by definition has an emissivity of unity. For a black body the
+   spectral distribution of this radiation depends \emph{only} on the object's
+   \glstext{absolute_temperature}.}
+is given by Planck's law%
+\footnote{%
+   By the year 1900, physicists had been trying to understand the dependence of the black body spectrum
+   as a function of temperature and wavelength for almost half a century.
+   Several proposed equations existed, but as they were within the confines of
+   classical physics they all failed to match observations at higher frequencies.
+   As the story is commonly told, in an act of desperation (Planck feared being scooped)
+   he submitted an equation that seemingly worked but made use of Boltzmann's entropy law which
+   rested on the assumption of atoms (quanta) and was statistical,
+   both phenomena disliked by Planck who was a conservative physicist.
+}
+\cite[sec.\,2.3]{Suppan1994}
+\begin{equation}\label{eq:planck}
+\glsname{spectral_radiance} =
+   \frac{2{\pi}\glsname{Planck_constant}\glsname{speed_of_light}^2}{\glsname{wavelength}^5}%
+   \frac{1}{\exp\left(\displaystyle\frac{%
+      \glsname{Planck_constant}\glsname{speed_of_light}}{%
+      \glsname{wavelength}\glsname{Boltzmann_constant}\glsname{absolute_temperature}}%
+   \right) - 1}
+\end{equation}
+This represents the emitted power per unit area of
+emitting surface and per unit wavelength. \glsname{spectral_radiance} is called
+the \glstext{spectral_radiance}, and when referring to a black body it is considered
+independent of viewing angle (isotropic), independent of time, and independent of
+position on the emitting surface (spatially homogeneous).
+
+%\input{assets/aux/fig/fig_0101-blackbody-spectralradiance.Rnw}
+<<child=here::here('assets/aux/fig/fig_0101-blackbody-spectralradiance.Rnw')>>=
+# \label{fig:blackbody-spectralradiance}
+@
+
+%\input{assets/aux/tab/tab_0100-solarconstants.Rnw}
+<<child=here::here('assets/aux/tab/tab_0100-solarconstants.Rnw')>>=
+# \label{tab:0100-solarconstants}
+@
+
+By plugging the surface temperature of the Sun (see \cref{tab:0100-solarconstants})
+into \cref{eq:planck} we can accurately model its radiance and the irradiance on Earth%
+\footnote{%
+   For an \emph{emitting} surface, the term is \textbf{radiance},
+   and for an \emph{absorbing} surface it is \textbf{irradiance}.}
+(stars are to a very good approximation black bodies).
+Once the sunlight enters our atmosphere, though, things become much more messy,
+and we are better off leaving analytical equations behind and embracing
+international standards.
+To understand the \glsdisp{AM15G}{standard solar spectrum}
+we need to briefly familiarize ourselves with the \gls{AM} concept.
+
+%\input{assets/aux/fig/fig_airmass.Rnw}
+<<child=here::here('assets/aux/fig/fig_airmass.Rnw')>>=
+# \label{fig:airmass}
+@
+
+The \glsxtrlong{AM} concept (see \cref{fig:airmass}) offers a compact way to express
+the influence of atmospheric absorption and scattering (both of which depend on
+path length in the atmosphere, \ie, \glsxtrlong{AM}) on the terrestrial irradiance
+for all latitudes except for the highest.
+Just outside the atmosphere, the \glsxtrlong{AM} is zero at all latitudes.
+On the equator with the sun at zenith, \glsxtrlong{AM} is unity.
+Assuming zero altitude (sea level) and a homogeneous plane-parallel atmosphere
+(\ie, one in which density is constant and Earth's curvature is ignored),
+\seemore{\cref{photoec}}
+\gls{AM} is the secant of the zenith angle in degrees, $z$:
+\begin{equation}\label{eq:airmass}
+\mathrm{\glsname{AM}} = \sec(z) = 1/\cos(z)
+\end{equation}
+This equation breaks down above \ang{75} latitude, which is a problem
+for astronomers but perfectly fine for our purposes.%
+\footnote{%
+   Better models of the atmosphere \cite{Woolard1966} demonstrate that
+   \glsxtrlong{AM} reaches at most around \num{38} for astronomical objects
+   towards the horizon ($z=\ang{90}$).
+}
+
+
+
+
+\subsection{Photocatalysis rigs}
+\label{pc:rigs}
+
+I designed several rigs for photocatalytic testing over the course of my work.
+Some were tailored towards thin film evaluation and others towards the
+evaluation of colloidal photocatalysts, all at room temperature
+(no active cooling of the \gls{PC} reactor).
+Our light sources are described in \cref{box:light-sources}.
+
+%\input{assets/aux/box/box_light-sources.Rnw}
+<<child=here::here('assets/aux/box/box_light-sources.Rnw'), cache=TRUE>>=
+# \label{box:light-sources}
+@
+
+After a few not-so-successful lighting setups
+involving white-light \glsplural{LED} and \enquote{black light}
+\glsplural{CFL} (both turned out to be too low-intensity for any experiments),
+we achieved our first working \gls{PC} reactor (\cref{fig:0400-pc-blue-beaker})
+using a high-intensity blue-light \gls{LED} array.
+%
+The reactor for this lamp was simply a beaker wherein the sample was placed
+face-up on a custom-machined acrylic platform so that a magnetic bar could
+freely spin underneath it and stir the solution.
+Progress monitoring was done by periodically transferring a sample
+of the solution to a cuvette for \exsitu{} \gls{UV-Vis} spectrophotometry.
+This setup was used in \cref{P1}.
+
+We quickly evolved the setup to use a quartz cuvette to allow \insitu{} \gls{UV-Vis} tracking,
+but with the down-side of no longer being able to stir the solution
+(see \cref{fig:0400-pc-blue-vertical-with-condensers}).
+We managed to improve the intensity and uniformity of the light from
+the \gls{LED} array with the addition of an optical tube (containing a convex lens
+with adjustable position along its length) and two aspheric condenser lenses
+(Thorlabs ACL-5040, $d=\qty{50}{\mm}$, $f=\qty{40}{\mm}$) to the optical path,
+producing a dense and even patch of light approximately \qty{2}{\cm} in diameter.
+We chose to continue mounting the light source vertically because the quartz cuvette
+only had two transparent sides.
+This setup was in \cref{P2}, where we also experimented with a mercury arc lamp.
+
+I also performed a number of \gls{PC} experiments with a mercury arc lamp
+(as a \enquote{poor-man's} solar simulator), which resulted in quite
+poor photocatalytic degradation, but some interesting morphological
+changes of our core--shell nanorods reported in \cref{P2}.
+
+With our third and fourth generation of the \gls{PC} reactor
+(\cref{fig:0400-pc-solarsimulator-thinfilm,fig:0400-pc-solarsimulator-suspension})
+we graduated to using a solar simulator with a xenon arc lamp.
+The proximate cause for this setup was to have the light impinge directly onto a
+thin-film photocatalyst that was lying on the bottom of the cuvette (facing up).
+The ultimate cause was that the quartz cuvette had only two transparent sides,
+which meant \insitu\ spectrophotometry would not have been possible with horizontal illumination.
+The light from the solar lamp hit a mirror placed at a \ang{45} angle above the cuvette.
+The dye degradation was tracked \insitu\ using our fibre-optic spectrophotometer.
+
+%\input{assets/aux/fig/fig_0300-pc-rigs.Rnw}
+<<child=here::here('assets/aux/fig/fig_0300-pc-rigs.Rnw')>>=
+# \label{fig:0400-pc-blue-beaker}                    (a)
+# \label{fig:0400-pc-blue-vertical-with-condensers}  (b)
+# \label{fig:0400-pc-solarsimulator-thinfilm}        (c)
+# \label{fig:0400-pc-solarsimulator-suspension}      (d)
+# \label{fig:0400-pc-rigs}
+@
+
+Constructing these \gls{PC} rigs gave me ample reason to learn more
+about basic optics like how to collimate visible light with lenses
+or redirecting beams with mirrors, and the use of optical tables.
+For the earliest setups an optical tube fitted with a convex lens
+movable along the tube's length
+(labelled as \enquote{\ch{Al} tube \& lens} in \cref{fig:0400-pc-rigs})
+was the only beam-forming component. As such, I devoted some thought to
+whether the inside of the tube would reflect the (small) UV emission of the
+blue \gls{LED} (which is what we desired).
+A metallic aluminium surface would be highly UV-reflective, but the question
+in my mind was how reflective a naturally oxidized aluminium surface would be.
+Aluminium oxide itself is a quite good \gls{UV} absorber. But the natural oxide layer
+should be quite thin.
+I proceeded under the assumption that UV reflectivity in the tube was sufficient,
+with consideration given to the fact that the blue \gls{LED} was expected to
+produce relatively little sub-\qty{400}{\nm} light.
+In hindsight, a \gls{UV} reflectance experiment would have settled the matter,
+but at the time I was young and reckless.
+
+
+
+\subsection{Dyes}
+\label{pc:dyes}
+
+When evaluating a photocatalyst with regard to its effectiveness to photodegrade
+a pollutant, we most often want to substitute the actual pollutant for a model
+compound that
+\begin{enumerate*}[label=(\alph*)]
+\item is reasonable safe to work with,
+\item has chemical properties that as far as possible match the pollutant,
+\item and has a distinct absorption band in the \gls{UV-Vis-NIR} region for easy tracking.
+\end{enumerate*}
+As many pollutants of interest are polycyclic aromatic compounds,
+and aromaticity often produces colour, \emph{dyes}%
+\footnote{%
+   Soluble colourants are called \emph{dyes},
+   and insoluble colourants are called \emph{pigments}.
+}
+were perhaps an obvious model for \glsdisp{PC}{photocatalytic} degradation.
+
+%\input{assets/aux/sch/sch_0302-tested-dyes.Rnw}
+<<child=here::here('assets/aux/sch/sch_0302-tested-dyes.Rnw')>>=
+# \label{sch:0302-tested-dyes}
+@
+
+The source of the colour of all dyes is the electronic transitions of their conjugated ring system.
+And since they are more-or-less water-soluble, they are also salts (the aromatic part may
+be cationic or anionic, and the formal charge may be localized or not).
+
+Dyes containing the \ch{\bond{sb}N\bond{db}N\bond{sb}} functional group are called
+\emph{azo} dyes, which \cref{sch:RB5-structure,sch:EBT-structure,sch:MO-structure} are
+examples of.
+Out of the dyes presented in this thesis (see \cref{sch:0302-tested-dyes}),
+\gls{MB} exhibited the least changes to its absorption spectrum on the
+addition of \EtOH\ (discussed further in \cref{results:P12-methylene-blue}).
+Both \Gls{EBT} and \gls{MO} exhibited pronounced changes in their spectrum
+as well as poor linearity with concentration on addition of \EtOH, and
+\gls{RB5} decolourized completely in less than an hour under illumination
+in the same conditions.
+
+\gls{MB} is a cationic dye in the thiazin family of structures, and one of many
+derivates of phenothiazine. It has brilliantly strong colour (high \glstext{absorption_coefficient})
+making it very useful in the dyeing industry \cite{Tayade2009}, and was historically
+used as an anti-malarial drug (the first such drug actually).
+Around \qty{40}{\years} ago \gls{MB} was a popular dye sensitizer in thiazine
+photogalvanic cells \cite{Mills1999}
+(this was before the discovery of \ch{Ru}-based \glsplural{DSSC}).
+
+Both dye \emph{degradation} and \emph{decolourization} will lead to a decrease in the optical
+absorption spectrum, but whereas decolourization (also called \emph{bleaching}) is reversible
+and leaves the dye molecule conformationally intact, degradation is irreversible and
+eventually leads to the mineralization of the organic phase
+(producing water, carbonates, nitrates, sulfates, \etc).
+
+Photocatalytic degradation is the complete breakdown of the bonds in the target molecule
+by the action of reactive species in solution formed by the photoexcited charges
+on the photocatalyst's surface.
+This degradation is commonly thought to proceed first \via\ a two-step attack of photogenerated
+\ch{OH^.} radicals in solution on the sulfur of the thiazine ring to form
+sulfoxide then sulfone:
+% it is possible to put \chemfig{} inside reaction env
+% https://tex.stackexchange.com/questions/511592/triple-bond-inside-escaped-chemfig-formula-within-chemformulas-reaction
+% also, for these chemfigs I want roman font in order to match \ch{} output, so resetting \printatom before and after subreactions env
+\renewcommand*\printatom[1]{\ensuremath{\mathrm{#1}}}
+\begin{subreactions}\begin{reactions}%
+% note, \fplus, \fscrp, and \fsscrp are defined by the chemmacros package
+% anchor=180+\chargeangle moves the charge symbol a little further away by using TikZ anchor point,
+% see chemfig manual for details
+"\chemfig{R=\charge{90[anchor=180+\chargeangle]=\fsscrp}{S}-R\chemprime}" + OH^. &-> "\chemfig{R-\charge{90[anchor=180+\chargeangle]=\fsscrp}{S}(=[::-30]O)(-[::30]R\chemprime)}" + \proton{} \AddRxnDesc{Photodegradation~MB~forming~sulfoxide} "\label{rxn:PC-MB-sulfoxide}" \\%
+"\chemfig{R-\charge{90[anchor=180+\chargeangle]=\fsscrp}{S}(=[::-30]O)(-[::30]R\chemprime)}" + OH^. ->&  "\chemfig{\charge{90[anchor=180+\chargeangle]=\fsscrp}{S}(-[::-150]R)(=[::-30]O)(=[::30]O)(-[::150]R\chemprime)}" + \proton{} \AddRxnDesc{Photodegradation~MB~forming~sulfone} "\label{rxn:PC-MB-sulfone}"%
+\end{reactions}\end{subreactions}%
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+The formed sulfone group on the central ring makes the thiazine ring unstable causing it to
+cleave leaving two benzenic rings and leading to the total loss of colour.
+Hydroxyl radicals are expected to be the most potent of the photogenerated \gls{ROS},
+but in principle the step-by-step photodegradation of the dye may proceed \via\ \gls{ROS}
+in solution, or \via\ oxidation or reduction of adsorbed dye molecules or fragments.
+It is perhaps useful to remember that at this point in the reaction, decolourization is total
+despite the reaction not yet reaching complete mineralization. This is a result of our
+choice of tracking variable: decolourization will occur as soon as the first bond is broken
+(roughly requiring 2 holes), but complete mineralization of \gls{MB} requires
+\num{102} holes \cite{Mills1999}.
+Note that once decolourization has occurred, the degradation process can no longer
+be spectrometrically tracked, and without using other analytical methods (such as
+mass spectrometry) we cannot know how much time elapses until complete mineralization,
+only that once the first irreversible degradation step has occurred,
+mineralization will occur eventually.
+
+The so called \emph{leuco}%
+\footnote{% λευκός
+   Greek $\uplambda\upepsilon\upupsilon\upkappa\upomicron\upzeta$ (leukos) \enquote{white},
+   \cf\ \emph{leucocyte} (white blood cell).}
+form of the dye is formed in the reversible reaction
+\begin{reaction}
+MB+ + \proton{} + 2 \electron{} <=> LMB
+\AddRxnDesc{Formation~of~leuco~methylene~blue} "\label{rxn:leuco-methylene-blue}"
+\end{reaction}
+($E^0=\qty{0.011}{\voltNHE}$ at \pH{\,\num{7}})
+that breaks the conjugated bonding and shifts the absorption maximum far into
+\gls{NIR}, causing \emph{decolourization} without degradation.
+\Gls{MB} may also form the semi-reduced form \ch{MB^.-} with an absorption maximum
+at \qty{420}{\nm}, which readily disproportionates into MB and LMB. In addition,
+\gls{MB} has a colourless oxidized form, \ch{MB^.+} which is unstable in alkaline
+conditions \cite{Mills1999}.
+
+
+
+
+
+%%%% SECTION
+\section{Electron microscopy}%
+\label{methods:electron-microscopy}
+
+Electron microscopy allows us to resolve features
+impossible to resolve with \gls{VLM}.
+Furthermore, due to the rich interactions between high-energy electrons
+and matter (see \cref{fig:0305-electronbeam-interactions}), a host of related
+techniques can be used to study elemental composition and more.
+
+%\input{assets/aux/fig/fig_0305-sem_scattering.Rnw}
+<<child=here::here('assets/aux/fig/fig_0305-sem_scattering.Rnw')>>=
+# \label{fig:0305-electronbeam-interactions}
+@
+
+
+
+\subsection{Scanning electron microscopy}%
+\label{methods:scanning-electron-microscopy}
+
+I made extensive use of \gls{SEM} to inspect the electrodeposited \zincox\ nanoarrays
+and their different coatings.
+
+Like many other scientific advances, the electron microscope was the result
+of scientific and technical advances progressing in lockstep.
+Diffraction with X-rays having been established some two decades earlier,
+diffraction with electrons soon followed.
+Louis de Broglie theorized (in 1925) that electrons (and all other matter,
+for that matter) have wavelike properties, which would give them a very short
+wavelength, which would mean much higher resolving power than \glsplural{VLM}.
+Funnily enough, electron optics and the electron microscope were invented
+in 1932 by \textcite{Knoll1932,Knoll1932a,Knoll1932b}%
+\footnote{%
+   Max Knoll, with a doctorate from the Institute for High Voltage Technology
+   at the University of Berlin, soon after took a job at Telefunken to work in
+   the budding field of television design.}
+who had not heard about de Broglie's
+ideas \cite{Williams1996} and embarked on the project because they thought the
+wavelength limit did not apply to electrons (it does).
+Within a year, the resolution limit of \gls{VLM} was surpassed.
+Commercial production of \glsplural{TEM} began in Germany in 1939,
+and in many other places after 1945.
+Despite being commercially available for so long, the electron microscope is still a very expensive
+piece of equipment, but it has also seen impressive improvements in resolution
+due to higher beam brightness and ingenious corrections of
+the spherical and chromatic aberrations that are inherent to electron optics.
+The first \glsname{SEM} was patented by \textcite{vonArdenne1939} who managed
+to \emph{scan} a very small raster with a finely focused electron beam.
+Compared to \glsplural{TEM}, commercial interest was slower to develop for
+\glsplural{SEM} and did not take off until the 1960s.
+
+The interactions between the direct beam
+(also called the incident beam, or \emph{primary electrons})
+and the sample (\cf\ \cref{fig:0305-electronbeam-interactions})
+can be divided into elastic and inelastic scattering.
+
+Elastic scattering may entail a change in direction of the primary electrons,
+but no detectable change in energy. They are referred to as backscattered electrons,
+because it is easier to detect the elastically scattered electrons that happened
+to deflect \emph{away} from the direct beam than the ones more or less in its path.
+Back-scattering increases with increasing atomic number $Z$, making heavier atoms
+appear brighter in back-scatter mode. Back-scattered electrons have a large information
+depth in the sample  (they come from deep inside the sample).
+
+Almost all the kinetic energy carried by the direct beam will eventually be
+dissipated by inelastic scattering events, ending up as heat in the sample.
+The small proportion of the direct beam ending up as back-scatter, secondary
+electrons, or X-rays form the whole basis for imaging or analysis.
+%
+Inelastic scattering can be further subdivided into phonons, plasmons,
+and inner shell excitations, and so called secondary electrons.
+Secondary electrons is a somewhat loosely defined term, used to describe any electrons with
+less than around \qty{50}{\eV} in kinetic energy escaping from
+the surface of the sample \cite{Goodhew2001}.
+They are most likely the result of inelastic scattering
+very close to the sample surface, and
+their yield (\ie, the number of secondary electrons per primary electron)
+is often above unity which makes them very useful for \gls{SEM} imaging.
+Because of their low kinetic energy, the secondary electron detector is
+positively charged to attract them.
+To form the two-dimensional micrograph from the secondary electron signal, it is simply
+synchronized in time with the scanning of the direct beam over the sample.
+
+I used \gls{SEM} to record the micro-morphology of our thin film samples
+deposited \via\ \gls{ECD}, \gls{CBD}, or \gls{ALD} on various types of
+\glsxtrlong{TCO} substrates.
+As \gls{TCO} on glass makes for a fairly poor conductor (certainly in terms of
+dissipating the electron beam without charging up the sample), I always
+contacted an exposed part of the \gls{TCO} film with the metallic \gls{SEM}
+sample holder.
+For the same reason I generally avoided electron beam voltages higher than \qty{3}{\kV}.
+
+
+
+\subsection{Transmission electron microscopy}
+\label{methods:transmission-electron-microscopy}
+
+In a \glsdisp{TEM}{transmission electron microscope} a highly focused beam of electrons is generated either
+thermionically or by field emission (the latter can produce beams only \qty{1}{\nm}
+in diameter at the sample).
+The emitted beam is passed through a series of electromagnetic condenser lenses
+and objective lenses before hitting the sample, and then a series of projector lenses
+to form the resulting image.
+
+A \gls{TEM} specimen is typically no thicker than the mean free path of
+electrons at the accelerating voltage of the beam, or more precisely
+we could say that the likelihood of a single scattering event to occur while
+passing through the specimen is \qty{50}{\percent}.
+
+The core--shell nanorods studied in \cref{P1} were sliced with the
+focused ion beam (FIB) to prepare thin specimens of individual nanorods for imaging in the \gls{TEM}.
+To improve conductivity, the specimens were coated with \ch{Pd}/\ch{Au}, and \ch{Pt}.
+
+
+
+
+%%%% SECTION
+\section{X-ray methods}%
+\label{methods:xray}
+
+\subsection{Thin-film X-ray diffraction}%
+\label{methods:XRD}
+
+A special case of scattering is when the material is periodic and the
+incident light is monochromatic and parallel, resulting in \emph{diffraction},
+which is
+the constructive interference of elastically scattered electromagnetic waves
+by electrons in a crystalline material.
+As interatomic distances in crystals typically are a few ångströms,
+X-rays are the most suitable light source.
+
+X-rays scattered by different lattice planes will interfere constructively only
+when their difference in path length is equal to an integer $n$ times their
+wavelength $lambda$, and thus give rise to a reflection in the diffractogram.
+This is Bragg's law:
+\begin{equation}\label{eq:xrd-bragg}
+2d\sin\theta = n\glsname{wavelength}
+\end{equation}
+where $d$ is the adjacent crystal plane spacing and $\theta$ is the angle
+between the incident X-ray beam and the normal of the reflecting lattice plane,
+and $n$ is the diffraction order.
+The distance $d$ between two parallel and adjacent atomic planes in
+a cubic crystal system is $d = a/\sqrt{h^2+k^2+l^2}$, and in the
+hexagonal crystal system:
+\begin{equation}\label{eq:hexagonal-dhkl}
+\frac{1}{d^2} = \frac{4}{3}\frac{h^2 + hk + k^2}{a^2} + \frac{l^2}{c^2}
+\end{equation}
+
+\Gls{XRD} was not very useful for our thin film samples, which were thin
+and non-monolithic and thus realized very little interaction volume.
+Instead, we used \gls{GI-XRD} at very incident low angles and even then had some
+trouble quantifying the sample's reflections.
+We mainly used diffraction as a phase identification technique, but \gls{XRD}
+is of course capable of yielding many sorts of structural information,
+such as crystal structure, average grain size, preferred crystal orientation,
+epitaxy, periodic defects,
+and the presence and magnitude of strain in the material.
+
+The relation between the grazing incidence angle, $\alpha$, and the depth
+traversed by the X-rays into the material, $\tau$
+\begin{equation}\label{eq:xrd-gi}
+\tau_{1/e} = \frac{\sin\alpha}{\mu}
+\end{equation}
+which is the depth at which the intensity of the X-ray beam has decreased
+to $1/e$. $\mu$ denotes the linear attenuation coefficient, which is a
+material-specific value.
+
+\Gls{XRD} measurements were also employed to determine the average crystallite sizes
+in solid materials.
+Smaller particle sizes cause a broadening of the reflections, which can be
+calculated by the Scherrer equation \cite{Holzwarth2011}
+\begin{equation}\label{eq:xrd-scherrer}
+g = \frac{K\glsname{wavelength}}{\Beta\cos\theta}
+\end{equation}
+where $g$ is the crystallite size, $K$ is  the particle shape factor which is
+typically \num{0.9} for spherical particles, $B$ is the \gls{FWHM} of the reflection
+(minus the instrumental broadening), and $\theta$ is the diffraction angle.
+
+%\input{assets/aux/tab/tab_0300-pxrd-pdfs.Rnw}
+<<child=here::here('assets/aux/tab/tab_0300-pxrd-pdfs.Rnw')>>=
+# \label{tab:0300-pxrd-pdfs}
+@
+
+To identify material phases we compared the measured $d$-spacings and their
+fitted intensities with reference values from the JCPDS \glsplural{PDF}
+\cite{McMurdie1986} (see \cref{tab:0300-pxrd-pdfs}).
+
+
+
+
+\subsection{X-ray spectroscopy}
+\label{methods:XRF}
+\label{methods:XPS}
+\label{methods:xray-spectroscopy}
+
+In addition to \gls{XRD}, some projects in this work also
+involved \glsxtrlong{XRF} or \glsxtrlong{XPS}.
+In both of these techniques X-rays are absorbed by the sample, and they only differ
+(on a conceptual level) by what happens next:
+with \gls{XRF} we detect the emitted characteristic X-rays, and
+with \gls{XPS} we detect the emitted photoelectrons.
+A major practical difference is that \gls{XPS} requires a vacuum between the
+sample and the detector, but with the upside of a much higher energy resolution
+and a very surface-sensitive signal.
+
+Whereas observed peaks in \gls{XPS} are due to \emph{elastically}
+scattered photoelectrons (\emph{inelastically} scattered photoelectrons in fact
+make up the background), observed peaks in \gls{XRF} are due entirely to
+\emph{inelastically} scattered X-ray radiation (\ie, fluorescence).
+
+For a maximum fluorescence yield, the incident X-ray energy should
+lie just above the \glstext{binding_energy} of the electronic transition
+of interest (for incident X-ray energy much higher the yield decreases, analogous
+to how photons much higher than the \gls{band_gap} are a waste of energy).
+Therefore, we always selected a secondary target with atomic number just larger
+than the heaviest element in our sample, usually \ch{Ge} ($Z=\num{32}$).
+
+Our \gls{XRF} experiments were performed on a
+PANalytical Epsilon~5 with a \ch{W} (tungsten) anode
+operated at \qty{75}{\kV} and \qty{8}{\mA}.
+Each recorded spectrum was usually set to a live time of \qty{240}{\second}
+with dead time varying between \qty{10}{\percent} and \qty{15}{\percent}.
+
+\Gls{XPS} is based on the \emph{photoelectric effect} (of Einstein and Nobel Prize fame),
+stating that a surface exposed to electromagnetic radiation of energy large enough
+to overcome its first ionization energy emits electrons \cite{Einstein1905}.
+The kinetic energy of the emitted photoelectron is related to its \glstext{binding_energy},
+$\glsname{binding_energy} = \glsname{Planck_constant}\glsname{frequency} - \glsname{kinetic_energy}$
+\cite{Einstein1905}.
+The \glsfirst{binding_energy}, is the difference between the total energy of the system
+in its initial state (before X-ray excitation) and final state (after emission of a core-level electron).
+From a conservation of energy standpoint, then, the following holds:
+% https://tex.stackexchange.com/questions/17528/show-equation-number-only-once-in-align-environment
+\begin{align}\begin{split}\label{eq:xps}
+\glsname{Planck_constant}\glsname{frequency} + E_\mathrm{initial}(\mathrm{N}) &= E_\mathrm{final}(\mathrm{N}{-}1) + \glsname{kinetic_energy}\\
+\glsname{binding_energy} &= E_\mathrm{final}(\mathrm{N}{-}1) - E_\mathrm{initial}(\mathrm{N})\\
+\glsname{Planck_constant}\glsname{frequency} &= \glsname{binding_energy} + \glsname{kinetic_energy}
+\end{split}\end{align}
+where $E_\mathrm{initial}(\mathrm{N})$ is the total energy of the neutral system with
+$N$ electrons, and $E_\mathrm{final}(\mathrm{N}{-}1)$ is the total energy of the
+now cationic system \emph{after} an electron with \glsfirst{kinetic_energy} has been ejected
+due to its absorption of the X-ray photon \glsname{Planck_constant}\glsname{frequency}.
+
+Assuming the Fermi levels of the sample and the \gls{XPS} spectrometer
+are aligned (true if the sample is conductive and in good electrical contact with the spectrometer)
+the \glstext{binding_energy} can be determined from the experimentally measured
+\gls{kinetic_energy} \cite{Greczynski2023}:
+\begin{equation}
+\glsname{binding_energy} =
+\glsname{Planck_constant}\glsname{frequency} - \glsname{work_function} - \glsname{kinetic_energy}
+\end{equation}
+
+Since the emitted core electron has to pass through the electron density
+at the atom's surface, the \glsname{binding_energy} measured by \gls{XPS}
+experiences a \emph{chemical shift} that depends on the valence electron charge density
+due to chemical bond formation \cite{Greczynski2023}.
+The realization that the chemical shift observed in core-level \gls{XPS}
+provides information about the chemical environment in the sample
+was made by \textcite{Siegbahn1968} at Uppsala University.
+The simplest way I have found to conceptualize the chemical shift is probably in terms of
+electronegativity: if the valence electrons of the atom in question are being
+pulled away by a more electronegative neighbour, the core electrons experience
+less \emph{screening} of the nuclear charge, and should thus be bound harder
+than otherwise, causing a chemical shift towards higher \glstext{binding_energy}.
+
+Samples need to maintain electrical neutrality during the measurement.
+Insulating or semiconducting samples will otherwise experience charge-up, leading to
+mismatch in \glstext{Fermi_level} between the sample and the spectrometer.
+This can be corrected by use of a flood gun (low energy electron gun)
+inside the sample chamber to neutralize the sample.
+But even so, it is difficult to perfectly compensate for this charge-up, which
+will lead to an observed shift in the \glstext{binding_energy} making it
+necessary to calibrate the energy scale using a known elementary peak.
+We calibrated against the hydrocarbon surface contamination peak
+\eltr{C}{1s} which has a known value of \qty{285.0}{\eV}.
+
+If the atom is in an excited state (such as at a higher oxidation state)
+the chemical shift is perturbed further, causing a so called \enquote{shake up}
+transition at the higher energy side of the core level transition.
+The $\Delta E$ between the core level and the shake up transition is highly
+characteristic of the chemical oxidation state of the atom.
+
+The \gls{XPS} at the department of chemistry (in the \glsname{ESCA}-lab) has a
+tungsten anode which we operated with an aluminium cathode that emits radiation
+at \qty{1487}{\eV}.
+The measurements were performed using a PHI~5500 spectrometer, using
+monochromatic \ch{Al} $K\alpha$ radiation (\qty{1487}{\eV}), with an electron
+emission angle of \ang{45} (tungsten anode, aluminium cathode).
+The dimensions of the probed region were approximately \qty{2}{\mm} by \qty{4}{\mm}.
+We used a flood gun since our samples (thin semiconducting films on glass) were
+not sufficiently electrically conductive.
+
+Peak fitting was done with Fityk~v1.3.1 \cite{Wojdyr2010}.
+I stripped the baseline of each \eltr{C}{1s} spectrum using a spline function
+and the transitions were fitted using three pseudo-Voigt kernels, and
+the offset of the fitted \eltr{C}{1s} transition from the reference value
+\qty{285.0}{\eV} was calculated.
+Finally, the energy scale of each survey spectrum and all its transitions
+were offset accordingly.
+
+Apart from using X-ray spectroscopy one can also probe the characteristic X-ray energies
+from core levels using \gls{EDS}, which was used to record the equivalent of \gls{XRF} spectra
+but on the micro-scale
+as well as to create 2D maps of elemental composition over areas of interest.
+The elemental \emph{fluorescence yield} (\cf\ \cref{fig:xray-fluorescence-yield})
+applies also for \gls{EDS}, which had the practical effect of making lighter elements
+effectively invisible.
+
+
+
+
+
+%%% CHAPTER:
+%%% ALGORITHMS & DATASETS
+\chapter[Algorithms \& datasets]{Algorithms \& datasets}
+\label{ch:algorithms-datasets}
+
+
+It seems that we live in a time of transitions.
+The energy transition is underway, even if at times the speed appears glacial.
+Simultaneously, the scholarly publishing system is indeed morphing into
+one built on open science.
+But whereas the energy transition is driven by an urgent need to halt
+\gls{GHG} emissions, the transition to open science has been inevitable \cite{Dyson2000}
+since the Web was gifted to the world by Berners-Lee and CERN \cite{Hoffmann2023}
+and dropped the marginal cost of distribution of text (and later images and videos)
+to effectively zero.
+
+\emph{Open science} or \emph{open scientific knowledge} commonly refers to the
+\enquote{open  access  to  scientific  publications, research  data,  metadata,
+[\ldots], software, and source code} under a \emph{libre} licence and
+free of charge \cite{KungligaBiblioteket2023,UNESCO2021}.
+This chapter mainly concerns itself with open access to \emph{research data},
+as defined by OECD \cite{OECD2007} almost \qty{20}{\years} ago:
+
+\blockquote{%
+   [\ldots] factual records [\ldots] used as primary sources for scientific research,
+   and that are commonly accepted in the scientific community as necessary to validate
+   research findings. A research data set constitutes a systematic, partial representation
+   of the subject being investigated.}
+
+The Swedish Research Council stated in 2020 that
+the transition to open access to research data shall be fully implemented no later
+than 2026.%
+\footnote{\hlink*{https://www.vr.se/english/mandates/open-science/open-access-to-research-data/the-way-towards-open-access-to-research-data.html}{https://www.vr.se/english/mandates/open-science/open-access-to-research-data/the-way-towards-open-access-to-research-data.html}}
+% https://links.solarchemist.se/shaare/s5JKTQ
+Which may sound ambitious, but a lot has actually been happening both across Europe
+and the world in recent years, for example:
+guidelines have been published for the scientific management of FAIR data
+(also specifically for chemistry data)
+\cite{McEwen2023,Scheffler2022,Lamprecht2020,KungligaBiblioteket2019,Wilkinson2016},
+as well as practical guides on how to manage data to ensure reusability \cite{Borgman2022}
+and a radical idea on how to finance it \cite{Mons2020}.
+FAIR principles have also been introduced for \emph{research software} \cite{Barker2022},
+and a light shone on the perceived barriers to sharing \cite{Gomes2022}.
+
+There is clearly a lot of inertia in science, but I would like to believe that
+once it picks up speed the transition will be unstoppable.
+That also means that the best time to influence this transition is right now.
+% So, experiment! Share your data, or code, or both!
+There are different levels of software reproducibility, and you should strive for
+the highest one you can manage:%
+\footnote{These criteria were formulated by Steve Crawford \orcid{0000-0002-8969-5229} in a NASA talk.}
+\begin{enumerate*}[label=(\roman*),itemjoin={{; }},itemjoin*={{; and }}]
+   \item software is not mentioned
+   \item software is mentioned, but not described
+   \item software is described, but not made available (or by request only)
+   \item software is made openly available
+   \item \ldots with a permissible licence
+   \item \ldots with documentation and testing
+   \item software is shared as a generalized package.
+\end{enumerate*}
+
+The benefits of sharing data are, I would like to think, self-evident.
+By also sharing the code that was used to turn that data into the reported results,
+the combined artefact gains more value than the sum of its parts.
+It is natural to worry that one's code is not \enquote{good enough} to be publicly shared,
+but in the words of the \emph{Code is science Manifesto} \cite{Yehudi2019}:
+% https://codeisscience.github.io/manifesto/manifesto.html
+\blockquote{%
+   You do not have to be a computer scientist or professional software developer
+   to write code, and your code does not have to be perfect in order to be published.
+   If code produces paper-ready results, the code too is paper-ready.}
+By sharing your data \emph{and} your code, you give others the ability
+to stand on your shoulders, instead of just admiringly looking at you flexing them.
+Shared data and code is a prerequisite to \emph{validate} and \emph{reproduce}
+research findings.
+
+An important part of a reproducible scientific workflow is to
+express visualizations and tables as code rather than producing them by copy-pasting
+data into a point-and-click tool.
+% inspired by Wickhams's remark in his interview by Will Chase 2020-04-06
+% https://links.solarchemist.se/shaare/AxpsQA
+Likewise, and this might not be a popular opinion, the command line is powerful
+and can save a serious amount of time doing otherwise mundane computation tasks \cite{Perkel2021}.
+
+The scientific quality of your shared data can be significantly improved by
+including units and/or uncertainties in the data itself \cite{Hanisch2022}.
+This can be achieved with both \R\ and Python, but is still somewhat of a challenge.
+In \cref{P3} we managed to include uncertainties (but not units) in the data
+itself, such that the error propagation then became automatic.
+In fact, in 2022 the Physical Chemistry division of IUPAC launched the project
+\enquote{Digital representation of units of measurement} in collaboration
+with CODATA and CIPM \cite{Frey2020,CODATA2020}.
+
+To make a paper completely reproducible you can use the following approach:%
+\footnote{These criteria were inspired by Jeff Leek \hlink*{https://simplystatistics.org/posts/2015-12-11-instead-of-research-on-reproducibility-just-do-reproducible-research}{https://simplystatistics.org/posts/2015-12-11-instead-of-research-on-reproducibility-just-do-reproducible-research}.}
+\begin{enumerate*}[label=(\roman*),itemjoin={{, }},itemjoin*={{, and }}]
+   \item use Git for version control
+   \item use Quarto for your analysis code and \emph{generate} the desired output format using \texttt{pandoc}
+   \item when your paper is done post it to a preprint server
+   \item post your data to an appropriate repository like \hlink{https://snd.gu.se}{SND}
+      or a general-purpose repository like Zenodo
+   \item publish any software you develop to a controlled repository like CRAN
+   \item participate in the post-publication discussion on the Fediverse and with a blog
+\end{enumerate*}
+The point is to inextricably tie the data to the manuscript by expressing
+visualizations as code, in addition to putting all of it under version control.
+Such a manuscript can be called a \emph{reproducible manuscript}.
+
+
+The rest of this chapter briefly presents some of the algorithms and datasets that
+I have shared publicly%
+\footnote{
+   Almost all \via\ \hlink{https://github.com/solarchemist}{GitHub},
+   but also \via\ Git hosting services
+   \hlink{https://codeberg.org/solarchemist}{Codeberg} and
+   \hlink{https://git.solarchemist.se}{Gitea}.
+}
+and that this thesis has reused in some form.
+I have always used Git to have version control (this allows a specific version
+of the code/data to be referenced, which is invaluable in case the implementation
+changes or in case of bugs).
+And to make it easier for others to get started quickly, I have almost always
+managed to share these tools as \R\ packages.%
+\footnote{%
+   An \R\ package is a way of collecting code, data, and documentation into
+   a structured and standardized collection of files that can also explicitly
+   state its dependencies.
+}
+
+
+
+\section{Notes on spectral peak fitting}
+\label{method-development:spectral-peak-fitting}
+
+Peak fitting is a very complex problem, but luckily it is one that has already
+been solved many times over. Unless you have very
+specific needs, there is no need to implement your own peak fitting algorithm.
+In the \R\ ecosystem, there is of course the well-regarded \Rpackage{hyperSpec} package,
+but I never felt comfortable with its attempt to do \emph{everything}.
+My preference is software that hews closer to the Unix philosophy of
+\enquote{doing one thing and doing it well}. I believe this software philosophy
+also happens to agree well with the scientific principle
+of parsimony \cite{Gauch2003}.
+
+I was lucky to have decided from the get-go to only consider peak fitting
+software that enabled a reproducible analysis, meaning not only the output
+but also the input parameters must be possible to put under version control.
+So I was delighted when the \texttt{diffractometry} CRAN package crossed my path.
+Here was an extremely well-documented, fully automatic, \R-based peak fitting
+algorithm \cite{Davies2008}
+specifically geared for X-ray diffractometry but whose documentation \cite{Davies2010}
+noted it could be useful for the analysis of Raman, FTIR, NMR or mass spectrometry data.
+
+I tested its baseline identification and peak decomposition functions successfully
+on my own Raman, \gls{XRF}, Mössbauer and \gls{XRD} data, and created simple
+wrapper scripts to work around some of the idiosyncracies of the \texttt{diffractometry}
+package (primarily by reining in its tendency to happily repeat an already accomplished fitting).
+The algorithm provided all the expected peak parameters such as centroid position,
+area, height, \gls{FWHM}, goodness of fit values, \etc.
+The resonant Raman analysis in \cref{P4} was completed using my \texttt{diffractometry} wrapper.
+I found that this algorithm struggled when presented with spectra that required
+fitting multiple kernels to each physical peak, as it lack the ability to \enquote{lock}
+certain parameters and re-run the fitting.
+
+Sticking to my guns, I started looking for alternatives.
+Enter Fityk by \textcite{Wojdyr2010}, a GUI peak fitting program which thanks to
+an ingenious built-in command-line terminal coupled with a built-in logging
+mechanism affords the same degree of reproducibility by
+automatically writing the corresponding text command (including arguments) for
+every user interaction in the GUI to a text file that is then \emph{executable}
+by the Fityk built-in terminal.
+
+In light of this parity with regards to reproducibility and marked improvements in many
+other respects, Fityk has become this author's tool of choice for spectral peak fitting.
+
+
+
+\section{Converting between reference electrode scales}
+\label{algorithm:electrochemical-scales}
+
+The algorithm at the heart of \cref{refelectrodes} was not complicated,
+\seemore{\hlink{https://solarchemist.se/2016/11/24/reference-electrodes}{\cref*{refelectrodes}}}
+as the electrochemical reference scales are essentially related by
+constant offsets, but to make the algorithm more useful it also takes
+into consideration each reference scale's temperature and concentration dependence.
+This involved creating a matrix for each reference scale, and then
+finding the desired point in $(\glsname{absolute_temperature},C)$-space (so to speak) by linear
+interpolation.
+
+This package supports conversion to/from any of the following reference electrodes:
+standard hydrogen, silver--silver chloride, mercury calomel, lithium, sodium,
+magnesium, and the absolute vacuum scale. I designed the internals of the package
+to make it relatively easy to extend it with more reference electrode scales or
+with additional temperature/concentration values.
+
+
+
+\section{Tauc fit algorithm}
+\label{algorithm:tauc}
+
+In order to facilitate the calculation of optical band gap values from hundreds of
+\gls{UV-Vis} spectra, I designed a semi-automatic algorithm based in part on work
+shared with me by a former colleague.
+Many papers in the literature that rely on band gap values determined \via\ Tauc fitting
+unfortunately lack the necessary information for someone else to reproduce the
+analysis.
+In this algorithm such reproducibility is near guaranteed since all the input
+parameters (that control the Tauc fit) must be provided explicitly as function
+arguments. If the user additionally uses version control (as they should),
+\emph{and} create their Tauc plots with code, reproducibility should be ensured.
+In fact, that is precisely how the Tauc fits in \cref{P1} were managed.
+
+Tauc fitting builds on the known fact \cite{Tauc1966,Viezbicke2015} that
+the product of a semiconductor's \gls{absorption_coefficient} and
+the incident photon energy \ch{\photon} is proportional to the square root of
+the energy difference between its \gls{band_gap} and the incident photon energy $E$:
+\begin{equation}\label{eq:ahv-Eg}
+\glsname{absorption_coefficient}\glsname{Planck_constant}\glsname{frequency}
+\propto
+\left(E-\glsname{band_gap}\right)^{1/r}
+\end{equation}
+where the exponent $r$ indicates the nature of the electronic transition:
+\begin{enumerate*}[label={},itemjoin*={{ and }}]
+   \item $r=1/2$ for direct allowed transitions,
+   \item $r=3/2$ for direct forbidden transitions,
+   \item $r=2$ for indirect allowed transitions,
+   \item $r=3$ for indirect forbidden transitions.
+\end{enumerate*}
+
+A detailed description of the implementation of my Tauc algorithm can be found
+% the starred variant of \cref*{} prevents hyperlinking that cross-ref
+\seemore{\hlink{https://github.com/solarchemist/uvvistauc}{\cref*{uvvistauc}}}
+in the vignette to the \texttt{uvvistauc} package (link in the margin).
+
+The \texttt{uvvistauc} package is a \emph{dependency} of \cref{P1}.
+Of course, the paper has many other dependencies,%
+\footnote{For the sake of brevity, let us limit ourselves to \emph{software} dependencies.}
+such as the SpectraSuite software and driver on the computer,
+its operating system, and any software running on the hardware of the spectrometer itself.
+Ideally, the source code for all these dependencies would be freely available
+to everyone, so that the behaviour of the system could be validated and data
+reproducibility ensured.
+
+
+
+
+\section{Dataset of band edges and gaps}
+\label{dataset:bandgaps}
+
+This dataset lists the energy position (potential) of the valence and conduction
+band edges for some semiconductors in contact with an aqueous electrolyte.
+It is certainly not comprehensive, but manages to include most binary and tertiary
+semiconductors found in the literature.
+\Cref{tab:0400-bandgaps} shows a subset of the dataset, in this case with
+the band edge potentials at the \pH\ of \gls{PZZP} for each material (all in the dark).
+You may note that \cref{fig:0100-bandgaps-all} is also built on this dataset.
+
+This sort of \enquote{band edge level} plot showing relative or absolute position
+of the \gls{VBE} and \gls{CBE} at the surface of various semiconductor electrodes
+abounds in the photoelectrochemical literature.%
+\footnote{%
+   For some examples in the primary literature, see
+   \textcite{Hernandez-Alonso2009,Burnside1999,Matsumoto1996,Serpone1995,Kung1977,Kohl1977,Bolts1976,Laflere1974};
+   in review articles see
+   \textcite{Kudo2009,NavarroYerga2009,Gratzel2001,Mills1997,Linsebigler1995a,Nozik1978},
+   \textcite[p.\ 173]{Gleria1975};
+   and in the secondary literature see
+   \textcite[p.\ 89]{Miller2008}, \textcite[p.\ 289]{Morrison1980}, and \textcite[p.\ 313]{Sato1998}.
+}
+
+The package was designed with functions to add new data (new materials),
+to create \LaTeX-formatted tables of the data, or to plot the dataset.
+\seemore{\hlink{https://github.com/solarchemist/bandgaps}{\cref*{bandgaps}}}
+By recording the \pH\ at \gls{PZZP}, and explicitly noting whether the
+material follows Nernstian \pH\ dependence,
+the dataset can provide relative band edge levels at any given \pH\ between
+multiple semiconductors provided they are all Nernstian.
+For oxide semiconductors in aqueous solutions, \ch{\proton} and \ch{\hydroxide} are the dominant
+adsorbed species, and therefore the potential drop across the Helmholtz layer, $V_\mathrm{H}$,
+and the \gls{flatband_potential} changes systematically with \pH.
+The \pH\ at which the potential drop across the Helmoltz layer is zero is called
+the \glsxtrlong{PZZP} \cite{Nozik1978}.
+The change of $V_\mathrm{H}$ with \pH\ then follows a straight-forward Nernstian relationship:
+\begin{equation}\label{eq:nernstian-pH}
+V_\mathrm{H} = 0.059\left(\pH_\mathrm{\glsname{PZZP}} - \pH\right).
+\end{equation}
+
+%\input{assets/aux/tab/tab_0403-bandgaps.Rnw}
+<<child=here::here('assets/aux/tab/tab_0403-bandgaps.Rnw')>>=
+# \label{tab:0400-bandgaps}
+@
+
+
+
+\section{Dataset of X-ray transition lines}
+\label{dataset:xraylines}
+
+For analysing \gls{XRF} spectra (as well as \gls{EDS}), it is most useful
+to have at hand a list of all X-ray transitions of the elements.
+\seemore{\hlink{https://github.com/solarchemist/xraylines}{\cref*{xraylines}}}
+Freely available data could be found on the web in the form of HTML-formatted
+\enquote{Tables of Physical \& Chemical Constants} from Kaye \& Laby
+hosted by the National Physical Laboratory,%
+\footnote{%
+   \hlink*{https://web.archive.org/web/20190511222636/http://www.kayelaby.npl.co.uk/atomic\_and\_nuclear\_physics/4\_2/4\_2\_1.html}{https://web.archive.org/web/20190511222636/http://www.kayelaby.npl.co.uk/atomic\_and\_nuclear\_physics/4\_2/4\_2\_1.html}.%
+}
+or in our PANalytical Epsilon~5 \gls{XRF} instrument's software,%
+\footnote{%
+   Version 2.0J/ICSW 2.8 of Dec 7, 2010 with kernel PW5050.
+   Contained data on every transition's energy and relative intensity,
+   as well as edge energies for each element. Which were stored in a user-accessible
+   format but had to be manually transcribed.}
+or in the primary literature  as poorly formatted tables in PDF files.
+None of these tables were very convenient to work with, to say the least.
+
+I combined the Epsilon~5 dataset with that of Kaye \& Laby, and where the they diverged
+(usually at the third decimal) I gave priority to the former on account of it being more
+recent, and extended this combined dataset by adding natural line widths and
+fluorescence yields for each transition from \textcite{Krause1979,Krause1979a}.
+\seemore{\hlink{https://solarchemist.se/2014/09/13/xray-line-energies}{Blog}}
+To avoid ambiguity I relabelled all transitions that used Siegbahn notation into
+the systematic IUPAC notation; I was helped by table~10.11 of \textcite{Lengyel1998}.
+
+%\input{assets/aux/fig/fig_xray-overview.Rnw}
+<<child=here::here('assets/aux/fig/fig_xray-overview.Rnw')>>=
+# \label{fig:xray-fluorescence-yield}  (a)
+# \label{fig:xray-moseley}             (b)
+# \label{fig:xray-overview}
+@
+
+As a quality check, the dataset can be used to recreate the classic Moseley plot%
+\footnote{
+   First constructed by \textcite{Moseley1913}, and at the time a major breakthrough
+   (this was before the discovery of the proton). It identified the existence of
+   up-to-then unknown elements corresponding to
+   $Z$=\numlist{43;61;75} (\ch{Tc}, \ch{Pr}, and \ch{Re}) \cite{Egdell2020}.
+   Perhaps more importantly, it demonstrated that the elements in a solid sample could
+   be identified by measuring the spectrum of the X-rays it emits.
+   % http://www.physics.ox.ac.uk/history.asp?page=moseley
+}
+(see \cref{fig:xray-moseley}).
+
+
+
+
+\section{Dataset of some properties of the elements}
+\label{dataset:periodicdata}
+
+Frustrated by the lack of freely available tools to plot one's own periodic table,
+and realizing that \texttt{ggplot2} \cite{Wickham2016} could be quite easily
+adapted for the task, I put together a small dataset and designed a proof-of-concept
+table of elements plot that worked for my own purposes.
+The IUPAC campaign for the year of chemistry in 2019 gave me the impetus to
+clean up the generated periodic table and share the code publicly.
+\seemore{\hlink{https://github.com/solarchemist/periodicdata}{\cref*{periodicdata}}}
+The eagle-eyed reader might notice that \cref{fig:0100-elements-of-photocatalysis}
+was in fact created using this dataset.
+
+
+
+
+
+%%% CHAPTER:
+%%% Quantum confinement in low-dimensional ZnO
+%\input{assets/components/optical-quantum-confinement.Rnw}
+<<child=here::here('assets/components/optical-quantum-confinement.Rnw'), label='ch-quantum-confinement', warning=FALSE>>=
+# \chapter{Optical quantum confinement in low-dimensional ZnO}
+@
+
+
+
+
+
+%%% CHAPTER:
+%%% RESULTS
+\chapter[Results]{Results}
+\label{ch:results}
+
+In this chapter I summarize results from our published papers (\cref{P1,P3})
+and results from our not-yet published manuscripts (\cref{P2,P4}), as well
+as some work on the growth of \ZnO\ \glsplural{QD} that are not presently part
+of any manuscript (\cref{results:P21-tracking-growth-ZnO-QDs}).
+
+
+
+%%% PAPER I % \cref{P1} %%% (P01)
+%\input{assets/code/P01/300-text.Rnw}
+<<child=here::here('assets/components/0501P-ZnO-CdS-nanoarrays.Rnw'), label='0500-ZnO-CdS-nanoarrays', warning=FALSE>>=
+# \section{PC properties of ZnO/CdS nanoarrays}
+# %\input{assets/code/P01/300-text.Rnw}
+@
+
+
+
+
+\clearpage
+%%% PAPER II % \cref{P2} %%% (P03)
+%\input{assets/components/0503P-Ultrathin-ironox-ZnO-NRs.Rnw}
+<<child=here::here('assets/components/0503P-Ultrathin-ironox-ZnO-NRs.Rnw'), label='0500-Ultrathin-ironox-ZnO-NRs', warning=FALSE>>=
+# \section{Zinc oxide/iron oxide core--shell nanorods}
+# %\input{assets/code/P03/300-text.Rnw}
+@
+
+
+
+\clearpage
+%%% PAPER III % \cref{P3} %%% (P12)
+%\input{assets/components/0512P-ZnO-QDs-sizes-photocatalysis.Rnw}
+<<child=here::here('assets/components/0512P-ZnO-QDs-sizes-photocatalysis.Rnw'), label='0500-ZnO-QDs-sizes-PC', warning=FALSE>>=
+# \section{Non-degradative processes in methylene blue dye}
+# %\input{assets/code/P12/301-methylene-blue.Rnw}
+# \section{Photocatalysis with quantum-confined ZnO}
+# %\input{assets/code/P12/302-PC-quantum-confined-ZnO.Rnw}
+@
+
+
+% \clearpage
+%%% Characteristics of growth of ZnO QDs (unpublished)
+%\input{assets/components/0521P-ZnO-QDs-growth-suspension.Rnw}
+<<child=here::here('assets/components/0521P-ZnO-QDs-growth-suspension.Rnw'), label='0500-ZnO-QDs-growth-suspension', warning=FALSE>>=
+# \section{Long-term tracking of growth of ZnO QDs}
+# %\input{assets/code/P21/300-text.Rnw}
+@
+
+
+\clearpage
+%%% PAPER IV % \cref{P4} %%% (P25)
+%\input{assets/components/0525P-Phonon-confinement-ZnO.Rnw}
+<<child=here::here('assets/components/0525P-Phonon-confinement-ZnO.Rnw'), label='0500-Phonon-confinement-ZnO', warning=FALSE>>=
+# \section{Non-resonant Raman in low-dimensional ZnO}
+# %\input{assets/code/P25/301-nonresonant.Rnw}
+# \section{Resonant Raman in low-dimensional ZnO}
+# %\input{assets/code/P25/302-resonant.Rnw}
+@
+
+
+
+
+%%% CHAPTER:
+%%% SUMMARY AND OUTLOOK
+%\input{assets/components/summary-and-outlook.Rnw}
+<<child=here::here('assets/components/summary-and-outlook.Rnw'), label='ch-summary', warning=FALSE>>=
+# \chapter{Summary and outlook}
+@
+
+
+
+
+
+
+%%% CHAPTER:
+%%% SAMMANFATTNING
+\begin{otherlanguage}{swedish}
+\chapter{Populärvetenskaplig sammanfattning}
+\label{ch:sammanfattning}
+
+%\input{assets/components/0900-sammanfattning.Rnw}
+<<child=here::here('assets/components/0900-sammanfattning.Rnw'), label='sammanfattning'>>=
+@
+\end{otherlanguage}
+
+
+
+
+%%% BACKMATTER
+% Acknowledgements, References, Colophon, Lists of ..., gitmeta page
+%\input{assets/components/backmatter.Rnw}
+<<child=here::here('assets/components/backmatter.Rnw'), label='latex-backmatter'>>=
+@
+
+\end{document}

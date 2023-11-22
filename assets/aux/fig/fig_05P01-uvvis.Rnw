@@ -1,0 +1,174 @@
+<<'0501P-uvvis-import'>>=
+rda.path.P01 <- c(
+   here::here("assets/data/P01/uvvis/1Q0005.rda"),
+   here::here("assets/data/P01/uvvis/1Q0007.rda"),
+   here::here("assets/data/P01/uvvis/1Q0008.rda"),
+   here::here("assets/data/P01/uvvis/1Q0009.rda"))
+# Collect all the rdata files in a list as well as a dataframe
+list.uvvisir <- list()
+data.uvvisir <- data.frame()
+for (i in 1:length(rda.path.P01)) {
+   # Create a list
+   list.uvvisir[[i]] <- common::LoadRData2Variable(rda.path.P01[i])
+   # Create a dataframe
+   if (i == 1) {
+      data.uvvisir <- list.uvvisir[[i]]
+   } else {
+      data.uvvisir <- rbind(data.uvvisir, list.uvvisir[[i]])
+   }
+}
+sampleidname <- tibble::tribble(
+   ~sampleid, ~nicelabel,
+    "1Q0005",  "ZnO/CdS 20 min",
+    "1Q0007",  "ZnO 0.5 h",
+    "1Q0008",  "ZnO 1.5 h",
+    "1Q0009",  "CdS 2 h")
+data.uvvisir$label <- ""
+for (i in 1:dim(data.uvvisir)[1]) {
+   data.uvvisir$label[i] <-
+      sampleidname$nicelabel[which(sampleidname$sampleid == data.uvvisir$sampleid[i])]
+}
+@
+
+
+<<'0501P-figref-uvvisir-transmittance', eval=FALSE>>=
+ggplot(data.uvvisir) +
+   geom_path(aes(x = wavelength, y = transmission, colour = label)) +
+   scale_colour_brewer(type = "div", palette = "Dark2") +
+   labs(
+      x = "$\\lambda/\\unit{\\nm}$",
+      y = "$T/\\unit{\\percent}$",
+      colour = "Sample") +
+   theme_halfwidth() +
+   theme(legend.position = "none")
+@
+
+
+<<'0501P-figref-uvvisir-reflectance', eval=FALSE>>=
+ggplot(data.uvvisir) +
+   geom_path(aes(x = wavelength, y = reflection, colour = label)) +
+   scale_colour_brewer(type = "div", palette = "Dark2") +
+   labs(
+      x = "$\\lambda/\\unit{\\nm}$",
+      y = "$R/\\unit{\\percent}$") +
+   theme_halfwidth() +
+   theme(legend.position = "none")
+@
+
+
+<<'0501P-figref-uvvisir-absorbance', eval=FALSE>>=
+ggplot(data.uvvisir) +
+   coord_cartesian(ylim = c(0, 2.5)) +
+   geom_path(aes(x = wavelength, y = alpha.thickness, colour = label)) +
+   scale_colour_brewer(type = "div", palette = "Dark2") +
+   scale_x_continuous(
+      breaks = c(400, 600, 800),
+      expand = expansion(0, 0)) +
+   labs(
+      x = "$\\lambda/\\unit{\\nm}$",
+      y = "$A$") +
+   theme_halfwidth() +
+   theme(legend.position = "none")
+@
+
+
+<<'0501P-figref-uvvisir-tauc', eval=FALSE>>=
+# ZnO range
+hv.fits.max <- c(3.5, 3.7, 3.5, NA)
+hv.fits.min <- c(3.3, 3.4, 3.2, NA)
+hv.fit.max <- rep(hv.fits.max[1], 121)
+hv.fit.min <- rep(hv.fits.min[1], 121)
+for (i in 2:length(sampleidname$sampleid)) {
+   hv.fit.max <- c(hv.fit.max, rep(hv.fits.max[i], 121))
+   hv.fit.min <- c(hv.fit.min, rep(hv.fits.min[i], 121))
+}
+data.uvvisir$hv.fit.max <- hv.fit.max
+data.uvvisir$hv.fit.min <- hv.fit.min
+hv.max <- 3.65
+hv.min <- 2.8
+y.min <- 0
+y.max <- 60
+p.large <-
+   ggplot(data.uvvisir, aes(hv, m050.athv, shape = label, colour = label)) +
+   geom_hline(yintercept = 0, colour = "grey50", size = 0.5) +
+   geom_point() +
+   labs(
+      x = "h$\\nu$/\\unit{\\eV}",
+      y = "$(\\alpha h\\nu)^{2}$/\\unit{\\eV\\squared\\per\\metre\\squared}") +
+   scale_x_continuous(
+      limits = c(hv.min, hv.max),
+      breaks = seq(2.8, 3.6, by = 0.1),
+      labels = c("2.8", "", "3.0", "", "3.2", "", "3.4", "", "3.6")) +
+   scale_y_continuous(limits = c(y.min, y.max)) +
+   scale_colour_brewer(type = "div", palette = "Dark2") +
+   stat_smooth(
+      data = subset(subset(data.uvvisir, hv >= hv.fit.min), hv <= hv.fit.max),
+      method = "lm", se = FALSE, size = 0.50, linetype = 1, fullrange = TRUE) +
+   theme(legend.position = "none")
+# CdS range
+hv.fits.max <- c(3.0, NA, NA, 2.55)
+hv.fits.min <- c(2.5, NA, NA, 2.35)
+hv.fit.max <- rep(hv.fits.max[1], 121)
+hv.fit.min <- rep(hv.fits.min[1], 121)
+for (i in 2:length(sampleidname$sampleid)) {
+   hv.fit.max <- c(hv.fit.max, rep(hv.fits.max[i], 121))
+   hv.fit.min <- c(hv.fit.min, rep(hv.fits.min[i], 121))
+}
+data.uvvisir$hv.fit.max <- hv.fit.max
+data.uvvisir$hv.fit.min <- hv.fit.min
+hv.max <- 2.8
+hv.min <- 2.2
+p.small <-
+   ggplot(data.uvvisir, aes(hv, m050.athv, shape = label, colour = label)) +
+   geom_hline(yintercept = 0, colour = "grey50", size = 0.5) +
+   geom_point() +
+   labs(x = NULL,
+        y = NULL) +
+   scale_x_continuous(limits = c(hv.min, hv.max)) +
+   scale_y_continuous(limits = c(0, 20)) +
+   scale_colour_brewer(type = "div", palette = "Dark2") +
+   stat_smooth(
+      data = subset(subset(data.uvvisir, hv >= hv.fit.min), hv <= hv.fit.max),
+      method = "lm", se = FALSE, size = 0.50, linetype = 1, fullrange = TRUE) +
+   theme(
+      legend.position = "none",
+      legend.title = element_blank(),
+      plot.background = element_blank(),
+      panel.background = element_blank())
+vp.inset <- viewport(width = 0.48, height = 0.43, x = 0.12, y = 0.98, just = c("left", "top"))
+print(p.large)
+print(p.small, vp = vp.inset)
+@
+
+
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-uvvisir-transmittance', ref.label='0501P-figref-uvvisir-transmittance', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{Transmittance}
+\label{fig:P01-uvvisir-transmittance}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-uvvisir-reflectance', ref.label='0501P-figref-uvvisir-reflectance', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{Reflectance}
+\label{fig:P01-uvvisir-reflectance}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-uvvisir-absorbance', ref.label='0501P-figref-uvvisir-absorbance', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{Absorbance}
+\label{fig:P01-uvvisir-absorbance}
+\end{subfigure}%
+\caption[Optical spectra of ZnO/CdS nanorod arrays]{%
+   Transmittance, reflectance, and absorbance (\cf\ \cref{eq:alpha-thickness}) spectra
+   of a representative selection of \ZnO/\CdS\ samples, subsequently used
+   to calculate their optical band gaps (\cf\ Tauc plot in \cref{fig:01P-abs-tauc}).}
+\label{fig:P01-uvvisir}
+\end{figure}

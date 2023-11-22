@@ -1,0 +1,1049 @@
+<<'0525P-custom-colour-scheme'>>=
+# Define our own colour scale
+# http://colorbrewer2.org/#type=sequential&scheme=OrRd&n=9
+# https://ggplot2.tidyverse.org/reference/scale_gradient.html
+# https://data-se.netlify.com/2018/12/12/changing-the-default-color-scheme-in-ggplot2/
+# qualitative scale
+colourscheme <-
+   c("200" = "#e41a1c",
+     "300" = "#377eb8",
+     "400" = "#4daf4a",
+     "500" = "#984ea3",
+     "600" = "#ff7f00",
+     "700" = "#BFBF00",
+     "800" = "#a65628",
+     "900" = "#332118",
+     "ref" = "grey70")
+@
+
+
+<<'0525P-samples-info', cache=TRUE>>=
+this.file <- here::here("assets/data/P25/pxrd_topas_refinement.txt")
+samples.info <-
+   read.table(this.file, header = FALSE,
+           col.names = c("filename", "RWP_name", "rwp", "R_Bragg_name", "rbragg", "rbragg_error",
+                         "Size_name", "diameter", "diameter_error",
+                         "a_ZnO_name", "a", "a_error",
+                         "c_ZnO_name", "c", "c_error",
+                         "ZnO_vol_name", "volume", "volume_error",
+                         "wtpercent_name", "wtpercent", "wtpercent_error")) %>%
+   # now that we have proper headers, drop the columns containing only "names"
+   select(-ends_with("_name")) %>%
+   # extract temperature values from filenames
+   mutate(temperature =
+             sub("C\\.raw", "",
+                 sub("^.*_", "", filename))) %>%
+   # drop the 1000 °C sample
+   filter(temperature != 1000) %>%
+   # drop the columns we don't care much about
+   select(-filename, -wtpercent, -wtpercent_error) %>%
+   # diameter_topas for experimental values, diameter for rounded values for labelling
+   rename(diameter_topas = diameter) %>%
+   # we need diameter values more suitable for labels and such (i.e, rounded)
+   # create label-friendly diameter values
+   # https://stackoverflow.com/a/8665247
+   mutate(diameter = plyr::round_any(diameter_topas, 10, f = round)) %>%
+   # create compound diameter-temperature labels
+   mutate(label = paste0(diameter, "nm-", temperature, "°C")) %>%
+   # set errors for rbragg, diameter_topas, a, c, and volume
+   mutate(rbragg = set_errors(rbragg, rbragg_error)) %>% select(-rbragg_error) %>%
+   mutate(diameter_topas = set_errors(diameter_topas, diameter_error)) %>% select(-diameter_error) %>%
+   mutate(a = set_errors(a, a_error)) %>% select(-a_error) %>%
+   mutate(c = set_errors(c, c_error)) %>% select(-c_error) %>%
+   mutate(volume = set_errors(volume, volume_error)) %>% select(-volume_error) %>%
+   # calculate c/a ratio
+   mutate(ca = c/a) %>%
+   select(label, temperature, diameter, diameter_topas, everything())
+# factor the diameter column
+samples.info$diameter <-
+   factor(samples.info$diameter,
+          levels = samples.info$diameter %>% unique())
+# make sure temperature is numeric
+samples.info$temperature <- as.numeric(samples.info$temperature)
+@
+
+
+<<'0525P-figref-pxrd-ca-ratio', eval=FALSE, echo=FALSE>>=
+# linear fit used in ggplot below
+fit.ca_temperature <- lm(ca ~ temperature, data = samples.info)
+# if you want to adjust the main plot viewport y-max, do it here
+this.plt.ymax <- 1.6100
+p <- ggplot(samples.info) +
+   scale_y_continuous(breaks = seq(1.6010, this.plt.ymax, 0.0012)) +
+   scale_x_continuous(breaks = seq(200, 900, 100),
+                      sec.axis =
+                         dup_axis(breaks = seq(200, 900, 100),
+                                  labels = c("10", "10", "10", "20", "30", "60", "100", "150"),
+                                  name = "Particle size/\\unit{\\nm}")) +
+   coord_cartesian(ylim = c(1.6010, this.plt.ymax)) +
+   # linear fit
+   stat_smooth(method = "lm", formula = "y ~ x", fullrange = TRUE, se = FALSE,
+               aes(x = temperature, y = ca, group = 1)) +
+   # display SD as a shaded area
+   geom_ribbon(aes(x = temperature,
+                   ymin = samples.info %>% pull(ca) %>% mean() - samples.info %>% pull(ca) %>% sd(),
+                   ymax = samples.info %>% pull(ca) %>% mean() + samples.info %>% pull(ca) %>% sd()),
+               fill = alpha("orange", 0.15),
+               colour = alpha("orange", 0.15)) +
+   # mean
+   geom_line(aes(x = temperature, y = samples.info %>% pull(ca) %>% mean()),
+             colour = alpha("blue", 0.4)) +
+   # data points and line
+   geom_line(aes(temperature, ca, group = 1)) +
+   geom_point(aes(temperature, ca), size = 0.6) +
+   # experimental errors as red ribbon (instead of errorbars)
+   geom_ribbon(aes(x = temperature,
+                   ymin = errors_min(ca),
+                   ymax = errors_max(ca)),
+               fill = alpha("red", 0.2),
+               colour = alpha("red", 0.2)) +
+   # lm params
+   geom_text(x = 900, y = this.plt.ymax,
+             vjust = "inward", hjust = "inward", size = 2.75, colour = "blue",
+             aes(label =
+                    paste0("$(c/a) = \\num[uncertainty-mode=compact]{",
+                           formatC(coef(summary(fit.ca_temperature))[2,1] %>% as.numeric(),
+                                   format = "fg", digits = 1),
+                           " \\pm ",
+                           formatC(coef(summary(fit.ca_temperature))[2,2] %>% as.numeric(),
+                                   format = "f", digits = 7),
+                           "}T_\\text{a}",
+                           " + \\num[uncertainty-mode=compact]{",
+                           formatC(coef(summary(fit.ca_temperature))[1,1] %>% as.numeric(),
+                                   format = "fg", digits = 4),
+                           " \\pm ",
+                           formatC(coef(summary(fit.ca_temperature))[1,2] %>% as.numeric(),
+                                   format = "f", digits = 4),
+                           "}$"))) +
+   # lm params: R-square
+   geom_text(x = 900, y = this.plt.ymax - 0.00065,
+             vjust = "inward", hjust = "inward", size = 2.75, colour = "blue",
+             aes(label =
+                    paste0("$R^2 = \\num[uncertainty-mode=compact]{",
+                           formatC(summary(fit.ca_temperature)$r.squared %>% as.numeric(),
+                                   format = "f", digits = 1),
+                           " \\pm ",
+                           formatC(summary(fit.ca_temperature)$r.squared %>% errors(),
+                                   format = "f", digits = 1),
+                           "}$"))) +
+   # mean and standard deviation values
+   geom_text(x = 650, y = 1.6038,
+             vjust = "inward", hjust = 0, size = 2.75, colour = "gray30",
+             aes(label =
+                    paste0("$\\mu(c/a) = \\num[uncertainty-mode=compact]{",
+                           samples.info %>% pull(ca) %>% mean() %>% as.numeric() %>% formatC(format="f", digits=4),
+                           " \\pm ",
+                           samples.info %>% pull(ca) %>% mean() %>% errors() %>% formatC(format="f", digits=4),
+                           "}$"))) +
+   geom_text(x = 650, y = 1.6038 - 0.00065,
+             vjust = "inward", hjust = 0, size = 2.75, colour = "gray30",
+             aes(label =
+                    paste0("$\\sigma(c/a) = \\num{",
+                           samples.info %>% pull(ca) %>% sd() %>% formatC(format="f", digits=4),
+                           "}$"))) +
+   labs(y = "$c/a$",
+        x = "Annealing temperature/\\unit{\\celsius}")
+p.a <-
+   ggplot(samples.info) +
+   geom_point(aes(temperature, a), size = 0.6) +
+   geom_line(aes(temperature, a)) +
+   geom_ribbon(aes(x = temperature,
+                   ymin = errors_min(a),
+                   ymax = errors_max(a)),
+               fill = alpha("red", 0.2),
+               colour = alpha("red", 0.2)) +
+   labs(y = "$a$/\\unit{\\angstrom}") +
+   scale_y_continuous() +
+   scale_x_continuous() +
+   theme(plot.background = element_rect(colour = "gray30"),
+         axis.title.x = element_blank(),
+         axis.text.x = element_blank(),
+         axis.ticks.x = element_blank(),
+         axis.text.y = element_text(size = rel(0.75)),
+         axis.title.y = element_text(size = rel(0.75)))
+p.c <-
+   ggplot(samples.info) +
+   geom_point(aes(temperature, c), size = 0.6) +
+   geom_line(aes(temperature, c)) +
+   geom_ribbon(aes(x = temperature,
+                   ymin = errors_min(c),
+                   ymax = errors_max(c)),
+               fill = alpha("red", 0.2),
+               colour = alpha("red", 0.2)) +
+   labs(y = "$c$/\\unit{\\angstrom}") +
+   scale_y_continuous() +
+   scale_x_continuous() +
+   theme(plot.background = element_rect(colour = "gray30"),
+         axis.title.x = element_blank(),
+         axis.text.x = element_blank(),
+         axis.ticks.x = element_blank(),
+         axis.text.y = element_text(size = rel(0.75)),
+         axis.title.y = element_text(size = rel(0.75)))
+# viewports
+vp.p <-
+   viewport(width = 1.000, height = 1.0, x = 0.00, y = 0.00, just = c(0, 0))
+vp.c <-
+   viewport(width = 0.365, height = 0.3, x = 0.20, y = 0.43, just = c(0, 0))
+vp.a <-
+   viewport(width = 0.365, height = 0.3, x = 0.96, y = 0.43, just = c(1, 0))
+print(p, vp = vp.p)
+print(p.a, vp = vp.a)
+print(p.c, vp = vp.c)
+@
+
+
+<<'0525P-pxrd-import', cache=TRUE>>=
+this.file <- here::here("assets/data/P25/pxrd_diffractograms.csv")
+pxrdata <- read.csv(this.file, header = TRUE) %>%
+   pivot_longer(-thth, names_to = "temperature", values_to = "intensity") %>%
+   mutate(temperature = sub("T", "", temperature)) %>%
+   mutate(temperature = as.numeric(temperature)) %>%
+   # reset intensity values so all are non-negative
+   mutate(intensity = intensity + abs(min(intensity)))
+pxrdata <-
+   right_join(
+      pxrdata,
+      samples.info %>% select(label, temperature, diameter),
+      by = "temperature")
+@
+
+
+<<'0525P-figref-pxrd-diffractograms', eval=FALSE, echo=FALSE>>=
+# positions and hkl label of the reflections
+this.file <- here::here("assets/data/P25/pxrd_reflections.csv")
+plot.ylim <- c(-40, 1150)
+plot.xlim <- c(30, 75)
+pxreflex <-
+   read.csv(this.file, header = TRUE) %>%
+   unite("hkl", h,k,l, sep = "", remove = FALSE) %>%
+   # discard reflexes outside our plot's range
+   filter(thth >= min(plot.xlim) & thth <= max(plot.xlim))
+# to place the hkl labels in the plot, I want to get the
+# approx y-values at the top of each reflex for the
+# top-most diffractogram
+pxreflex$ymax <- NA
+for (r in 1:length(pxreflex$thth)) {
+   pxrdata %>%
+      filter(temperature == 900) %>%
+      filter(thth > pxreflex$thth[r]) %>%
+      # try to look only on the next reflection (arbitrary limit 50 rows)
+      slice(1:50) %>%
+      # select the top 5 rows with regard to intensity
+      top_n(5, wt = intensity) %>%
+      filter(intensity == max(intensity)) %>%
+      pull(intensity) -> pxreflex$ymax[r]
+}
+# code to reproduce the tabular inset in the plot below
+# note that the resultant LaTeX string is inserted manually to work
+tabular.inset <-
+   samples.info %>%
+   select(temperature, diameter_topas) %>%
+   mutate(temperature = formatC(temperature, format = "d")) %>%
+   mutate(diameter_error = formatC(diameter_topas %>% errors(), format = "f", digits = 1)) %>%
+   mutate(diameter_topas = formatC(diameter_topas, format = "g", digits = 3)) %>%
+   unite(diameter_topas, diameter_error, col = "diameter", sep=" \\pm ") %>%
+   xtable(display = c("s", "d", "f"),
+          align = c("l", "S[table-format=3.0]", "c")) %>%
+   print(floating = FALSE,
+         include.rownames = FALSE,
+         sanitize.text.function = function(x){x},
+         comment = FALSE)
+p <- ggplot() +
+   geom_linerange(
+      data = pxreflex,
+      ymin = min(plot.ylim), ymax = 30,
+      size = 1.5, colour = alpha("gray20", 0.4),
+      aes(x = thth)) +
+   geom_path(data = pxrdata,
+             aes(thth, intensity,
+                 colour = temperature,
+                 group = temperature)) +
+   # hkl labels
+   geom_text(data = pxreflex,
+             size = 3.25, colour = alpha("gray20", 0.7),
+             vjust = 0.25, hjust = -0.2, angle = 60,
+             aes(x = thth, y = ymax, label = hkl)) +
+   # diameter-temperature labels
+   geom_label(data = pxrdata %>%
+                 filter(thth > 42.5) %>%
+                 arrange(thth) %>%
+                 slice(1:dim(samples.info)[1]),
+              aes(label = label,
+                  colour = temperature,
+                  x = thth,
+                  y = intensity),
+              size = 2.5) +
+   labs(x = "$2\\theta$/\\unit{\\degree}") +
+   scale_colour_gradientn(colours = colourscheme[1:8]) +
+   scale_y_continuous(expand = c(0,0)) +
+   scale_x_continuous(breaks = seq(20, 80, 5)) +
+   coord_cartesian(ylim = plot.ylim,
+                   xlim = plot.xlim) +
+   theme(legend.position = "none",
+         axis.title.y = element_blank(),
+         axis.text.y = element_blank(),
+         axis.ticks.y = element_blank())
+q <-
+   ggplot(data = samples.info) +
+   # experimental errors as red ribbon (instead of errorbars)
+   geom_ribbon(aes(x = temperature,
+                   ymin = errors_min(diameter_topas),
+                   ymax = errors_max(diameter_topas)),
+               fill = alpha("red", 0.2),
+               colour = alpha("red", 0.2)) +
+   geom_point(aes(x = temperature,
+                  y = diameter_topas),
+              size = 0.7) +
+   geom_line(aes(x = temperature,
+                 y = diameter_topas),
+             size = 0.15) +
+   # to be able to place the annotation (our tabular) in the margin, i.e., outside the plot
+   # we need to disable clipping
+   # https://stackoverflow.com/a/51312611/1198249
+   coord_cartesian(xlim = range(samples.info$temperature),
+                   clip = "off") +
+   # I have not been able to use the tabular.inset string directly here, seems to be
+   # some magic going on with the LaTeX escape character handling. But it works like this
+   annotate(
+      "text", x = 950, y = 85, hjust = 0, vjust = 1, # coord define top-left
+      size = 3, parse = FALSE,
+      # note: I could not get siunitx table column S to work nicely with uncertainties
+      # so hacked together centering on plus-minus...
+      label =
+         paste("\\begin{tabular}{S[table-format=3.0]@{\\thinspace\\thinspace}r@{\\thinspace\\pm\\thinspace}l}",
+               "{$T_\\text{a}$/\\unit{\\celsius}} & \\multicolumn{2}{c}{Size/\\unit{\\nm}} \\\\ \\cmidrule(lr){1-3}",
+               "200 & 13.5 & \\phantom{1}1.2 \\\\",
+               "300 & 10.3 & \\phantom{1}0.5 \\\\",
+               "400 & 10.2 & \\phantom{1}0.4 \\\\",
+               "500 & 17.9 & \\phantom{1}0.5 \\\\",
+               "600 & 30.0 & \\phantom{1}0.9 \\\\",
+               "700 & 55.7 & \\phantom{1}1.6 \\\\",
+               "800 & 102\\phantom{.0} & \\phantom{1}7.0 \\\\",
+               "900 & 147\\phantom{.0} & 12.2 \\\\",
+               "\\end{tabular}")) +
+   scale_x_continuous(breaks = seq(200, 900, 100)) +
+   scale_y_continuous(breaks = seq(0, 150, 30)) +
+   labs(x = "Annealing temperature/\\unit{\\celsius}",
+        y = "Particle size/\\unit{\\nm}") +
+   theme_classic() +
+   theme(plot.background = element_rect(colour = "gray30"),
+         axis.title = element_text(size = rel(0.75)),
+         axis.text = element_text(size = rel(0.60)),
+         axis.ticks.length =  unit(2, "pt"),
+         plot.margin = margin(5.5, 80, 5.5, 5.5, "pt"))
+# viewports
+vp.p <-
+   viewport(width = 1.000, height = 1.00, x = 0.00, y = 0.00, just = c(0, 0))
+vp.q <-
+   viewport(width = 0.500, height = 0.31, x = 0.50, y = 0.98, just = c(0.5, 1))
+print(p, vp = vp.p)
+print(q, vp = vp.q)
+@
+
+
+<<'0525P-figref-diameter-vs-temperature-logarithmic', eval=FALSE, echo=FALSE>>=
+p <- ggplot() +
+   geom_line(
+      stat = "smooth", method = lm, formula = "y ~ x",
+      se = FALSE, fullrange = TRUE,
+      data = samples.info %>% filter(temperature >= 400),
+      aes(x = temperature, y = diameter_topas),
+      colour = "blue", size = 2, alpha = 0.35) +
+   # experimental errors as red ribbon (instead of errorbars)
+   geom_ribbon(
+      data = samples.info,
+      aes(x = temperature,
+          ymin = errors_min(diameter_topas),
+          ymax = errors_max(diameter_topas)),
+      fill = alpha("red", 0.25),
+      colour = NA) +
+   # data points excluded in linear fit
+   geom_point(
+      data = samples.info %>% filter(temperature < 400),
+      aes(x = temperature, y = diameter_topas),
+      # by default, shape=19 (filled circle)
+      # https://blog.albertkuo.me/post/point-shape-options-in-ggplot/
+      # I'd like a solid circle, so shape 16 it is
+      size = 1.5, shape = 16, colour = alpha("red", 0.25)) +
+   # data points included in linear fit
+   geom_point(
+      data = samples.info %>% filter(temperature >= 400),
+      aes(x = temperature, y = diameter_topas),
+      size = 1.5, shape = 16, colour = alpha("red", 0.45)) +
+   annotate( # x axis title
+      geom = "text", x = 900, y = 10, hjust = 1, vjust = 1, size = 4,
+      label = "$T_\\mathrm{a}/\\unit{\\celsius}$") +
+   annotate( # y axis title
+      geom = "text", x = 350, y = 135, hjust = 0, vjust = 1, size = 4,
+      label = "$d/\\unit{\\nm}$") +
+   scale_x_continuous(
+      breaks = seq(200, 900, 100),
+      # first element cant be empty string - if so then all labels dont print (weird bug?)
+      labels = c(" ", " ", "400", " ", "600", " ", "800", " ")) +
+   scale_y_log10(
+      breaks = c(10, 50, 90, 130),
+      labels = c("\\num{10}", "\\num{50}", "\\num{90}", "\\num{130}")) +
+   theme_plot_in_margin() +
+   theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text.y = element_blank(),
+      axis.text.x = element_blank())
+print_with_axes_inside(p)
+@
+
+
+<<'0525P-samples5-wells', cache=TRUE>>=
+samples5.wells <-
+   rbind(
+      data.frame(well = "B2",  samples.info %>% filter(temperature == 900) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "A2",  samples.info %>% filter(temperature == 800) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "A3",  samples.info %>% filter(temperature == 700) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "C1",  samples.info %>% filter(temperature == 600) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "D3",  samples.info %>% filter(temperature == 500) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "D1",  samples.info %>% filter(temperature == 400) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "C3",  samples.info %>% filter(temperature == 300) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "C2",  samples.info %>% filter(temperature == 200) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(well = "B1",  label = "ZnO-nano",    diameter_topas = NA,  diameter = "nano", temperature = NA),
+      data.frame(well = "B6",  label = "ZnO-bulk",    diameter_topas = NA,  diameter = "bulk", temperature = NA)
+   )
+@
+
+
+<<'0525P-samples-532nm-wells', cache=TRUE>>=
+samples.green.wells <-
+   rbind(
+      data.frame(
+         well = "D4",
+         samples.info %>% filter(temperature == 900) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(
+         well = "D2",
+         samples.info %>% filter(temperature == 800) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(
+         well = "C3",
+         samples.info %>% filter(temperature == 700) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(
+         well = "A3",
+         samples.info %>% filter(temperature == 600) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(
+         well = "Z0",
+         samples.info %>% filter(temperature == 500) %>% select(label, diameter_topas, diameter, temperature)),
+      data.frame(
+         well = "Z1",
+         samples.info %>% filter(temperature == 400) %>% select(label, diameter_topas, diameter, temperature))
+   )
+@
+
+
+<<'0525P-joule-fractions', cache=TRUE>>=
+# All accumulation values (for all experiments)
+accumulations.levels <-
+   c("3 acc",
+     "5 acc",
+     "10 acc",
+     "30 acc",
+     "60 acc",
+     "120 acc",
+     "360 acc",
+     "480 acc",
+     "720 acc",
+     "960 acc",
+     "2880 acc")
+@
+
+
+
+<<'0525P-init-dfs', cache=TRUE>>=
+# we will use this list to store all dataframes with 325 nm data
+data <- list() 	# data[["325"]] <- list()
+# ditto for metadata dataframes
+meta <- list()		# meta[["325"]] <- list()
+# ditto for the joined dataframes (data + metadata)
+dm <- list()		# dm[["325"]] <- list()
+# this list will hold output from peak and baseline fitting
+pksbsl <- list()	#
+# for peak parameters, one dataframe per laser wavelength
+pksfit <- list()	#
+# these should be in order of increasing Raman shift (we use these to sort the table later)
+nonresraman.assignments <-
+   c("E2(low)",            # ~ 97 cm-1
+     "2E2(low)",           # ~202 cm-1
+     "B1(low)",            # ~273 cm-1
+     "E2(high) - E2(low)", # ~330 cm-1 (surface mode)
+     "A1(TO)",             # ~381 cm-1
+     "E1(TO)",             # ~410 cm-1
+     "E2(high)",           # ~438 cm-1
+     "interface phonon",   # ~540 cm-1
+     "B1(high)",           # ~552 cm-1
+     "E1(LO)",             # ~570 cm-1
+     "A1(LO)",             # ~583 cm-1
+     "E2(low) + A1(LO)",   # ~662 cm-1
+     "E2(high) + E1(LO)",  # ~986 cm-1
+     "2E1(LO)",            # ~1125 cm-1
+     "2A1(LO)")            # ~1170 cm-1
+# The manual mapping of colours to assignments proved necessary to make sure that the same assignment
+# gets the same colour, irrespective of filtering and such. Used in greenraman-assignments and its inset relheight plot.
+# https://www.rapidtables.com/convert/color/hex-to-rgb.html
+# https://www.biostars.org/p/204891/
+# http://paletton.com
+nonresraman.colours <-
+   c("#00B0F6",     # E2(low)            rgb(0, 176, 246)   DeepSkyBlue
+     "#FD61D1",     # 2E2(low)           rgb(253, 97, 209)  HotPink
+     "#A3A500",     # B1(low)            rgb(163, 165, 0)   DarkGoldenRod
+     "#0E890E",     # E2(high) - E2(low) rgb(14, 137, 14)   Green
+     "#B983FF",     # A1(TO)             rgb(185, 131, 255) Violet
+     "#E58700",     # E1(TO)             rgb(229, 135, 0)   Darkorange
+     "#619CFF",     # E2(high)           rgb(97, 156, 255)  CornflowerBlue
+     "#C99800",     # interface phonon   rgb(201, 152, 0)   DarkGoldenRod
+     "#E76BF3",     # B1(high)           rgb(231, 107, 243) Violet
+     "#E58700",     # E1(LO)             rgb(229, 135, 0)   Darkorange
+     "#00BF7D",     # A1(LO)             rgb(0, 191, 125)   DarkCyan
+     "#6BB100",     # E2(low) + A1(LO)   rgb(107, 177, 0)   Olive
+     "#F8766D",     # E2(high) + E1(LO)  rgb(248, 118, 109) Salmon
+     "#00C0AF",     # 2E1(LO)            rgb(0, 192, 175)   DarkTurquoise
+     "#890E54") %>% # 2A1(LO)            rgb(137, 14, 84)   Purple
+   setNames(nonresraman.assignments)
+@
+
+
+<<'0525P-init-nonres-fityk0513', cache=TRUE>>=
+nonres0513.assignments <-
+   # these should be ordered by wavenumber, ascending
+   # note: we could make use of our \nonresmode{} LaTeX macro, but for some reason
+   # using the LaTeX macros messes big-time with spacing in the plot
+   tibble::tribble(
+      ~mode,       ~colour,   ~latex,
+      "E2l",       "#00B0F6", "$E_{2(\\text{low})}$",                              #   98
+      "2E2l",      "#FD61D1", "$2E_{2(\\text{low})}$",                             #  203
+      "E2h-E2l",   "#0E890E", "$E_{2\\text{h}}{-}E_{2\\text{l}}$",                 #  330 # aka surface phonon
+      "A1TO",      "#B983FF", "$A_{1(\\text{TO})}$",                               #  384
+      "E1TO",      "#E58700", "$E_{1(\\text{TO})}$",                               #  411
+      "E2h",       "#619CFF", "$E_{2(\\text{high})}$",                             #  438
+      "E2h+E2l",   "#C99800", "$E_{2\\text{h}}{+}E_{2\\text{l}}$",                 #  541 # aka interface phonon
+      "E1LO",      "#E58700", "$E_{1(\\text{LO})}$",                               #  562
+      "A1LO",      "#00BF7D", "$A_{1(\\text{LO})}$",                               #  582
+      "E2h+2E2l",  "#6BB100", "$E_{2\\text{h}}{+}2E_{2\\text{l}}$",                #  663 # aka ifph + E2l
+      "2E2h+E2l",  "#B983FF", "$2E_{2\\text{h}}{+}E_{2\\text{l}}$",                #  981 # aka ifph + E2h
+      "2E2h+2E2l", "#F8766D", "$2\\left(E_{2\\text{h}}{+}E_{2\\text{l}}\\right)$", # 1104 # aka 2 * ifph
+      "2E1LO",     "#00C0AF", "$2E_{1(\\text{LO})}$",                              # 1135
+      "2A1LO",     "#890E54", "$2A_{1(\\text{LO})}$")                              # 1160
+nonres0513.assignments %<>%
+   add_column(
+      latex.long =
+         c("$E_{2(\\text{low})}$",                                       #   98
+           "$2E_{2(\\text{low})}$",                                      #  203
+           "$E_{2(\\text{high})} - E_{2(\\text{low})}$",                 #  330 # aka surface phonon
+           "$A_{1(\\text{TO})}$",                                        #  384
+           "$E_{1(\\text{TO})}$",                                        #  411
+           "$E_{2(\\text{high})}$",                                      #  438
+           "$E_{2(\\text{high})} + E_{2(\\text{low})}$",                 #  541 # aka interface phonon
+           "$E_{1(\\text{LO})}$",                                        #  562
+           "$A_{1(\\text{LO})}$",                                        #  582
+           "$E_{2(\\text{high})} + 2E_{2(\\text{low})}$",                #  663 # aka ifph + E2l
+           "$2E_{2(\\text{high})} + E_{2(\\text{low})}$",                #  981 # aka ifph + E2h
+           "$2\\left(E_{2(\\text{high})} + E_{2(\\text{low})}\\right)$", # 1104 # aka 2 * ifph
+           "$2E_{1(\\text{LO})}$",                                       # 1135
+           "$2A_{1(\\text{LO})}$")) %>%                                  # 1160
+   mutate(mode.numeric = seq_along(mode))
+@
+
+
+
+%%% Blue Raman Rnw
+%\input{assets/code/P25/201-code-blueraman.Rnw}
+<<'0525P-code-blueraman', child=here::here('assets/code/P25/201-code-blueraman.Rnw'), eval=TRUE, cache=TRUE>>=
+@
+
+
+
+%%% Green Raman Rnw
+%\input{assets/code/P25/202-code-greenraman.Rnw}
+<<'0525P-code-greenraman', child=here::here('assets/code/P25/202-code-greenraman.Rnw'), eval=TRUE, cache=TRUE>>=
+@
+
+
+
+
+%%% Joint non-resonant plots and tables
+
+<<'0525P-figref-bluegreenraman-barplots-fityk0513', eval=FALSE>>=
+# dependson=c('200-blueraman-fityk0513-normalisation', '200-greenraman-fityk0513-normalisation')
+# the following modes modes will *not* be shown in this plot because they are weak for both lasers
+dropped.modes <- c("2E2l", "E1TO", "E2h+E2l", "E2h+2E2l", "2E2h+E2l", "2E2h+2E2l")
+this.blue.params <-
+   left_join(
+      blue.fityk0513.params %>% filter(!mode %in% dropped.modes) %>% select(-mode.numeric),
+      blue0513.normalisation %>% select(label, n_factor),
+      by = "label")
+this.green.params <-
+   left_join(
+      green.fityk0513.params %>% filter(!mode %in% dropped.modes) %>% select(-mode.numeric),
+      green0513.normalisation %>% select(label, n_factor),
+      by = "label")
+# since the x-axis is continous and numeric, we need to recount mode.numeric to avoid gaps
+this.assignments <-
+   nonres0513.assignments %>%
+   filter(!mode %in% dropped.modes) %>%
+   mutate(mode.numeric = seq_along(mode))
+# rbind blue and green
+this.all.params <-
+   rbind(
+      this.green.params %>% add_column(excitation = "green", .before = 1),
+      this.blue.params %>% add_column(excitation = "blue", .before = 1)) %>%
+   # refactorise mode column
+   mutate(mode = factor(mode, levels = (this.assignments$mode))) %>%
+   left_join(
+      this.assignments %>% select(mode, mode.numeric),
+      by = "mode")
+this.params <-
+   this.all.params %>%
+   filter(centroid < 1250) %>%
+   # flip the temperature scale so that alpha scale gives highest temp lightest shade
+   mutate(alpha = 1 / temperature) %>%
+   mutate(height = height * n_factor) %>%
+   # also express height as ratio (0 -- 1)
+   mutate(height.ratio = height / max(height)) %>%
+   # normalise FWHM to something like 0 -> 1 range
+   # note: summary(fwhm)
+   #  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   # 3.968  12.832  24.352  26.203  34.087  95.385
+   # we multiply by a factor to increase width a little, less whitespace in plot
+   mutate(fwhm.ratio = 1.2 * (fwhm / 100))
+# plot settings (colours, range limits, etc.)
+this.plot <-
+   tibble::tribble(
+      # the order of the y and alpha values is very important
+      # low alpha value: lightness, high value: darkness
+      ~axis,   ~colour,   ~y,   ~alpha,
+      "right", "#2ca25f", 1.25,   0.25, # green laser
+      "right", "#2ca25f", 0.00,   0.60, # green laser
+      "left",  "#2b8cbe", 0.00,   0.35, # blue laser
+      "left",  "#2b8cbe", 1.25,   0.70) # blue laser
+# p.green is on top, visually
+p.green <-
+   ggplot(this.params %>% filter(excitation == "green")) +
+   scale_alpha(
+      "alpha",
+      range = this.plot %>% filter(axis == "right") %>% pull(alpha)) +
+   # we want to duplicate x-axis on top, but scale_discrete does not allow it
+   # so we need to use continuous x-axis which means mapping mode to numeric without dropping levels
+   scale_x_continuous(
+      breaks = this.assignments$mode.numeric,
+      labels = this.assignments$latex,
+      sec.axis = dup_axis(),
+      name =
+         "Relative FWHM (by mode, in order of Raman shift)") +
+   scale_y_continuous(
+      # vertically shifted, not using R/ggplot2 methods to avoid misaligning the blue/green plots
+      # (put it inside a framebox{} to get a visual idea of the vertical shift)
+      name = "\\raisebox{10pt}{$\\lambda_\\text{exc}=\\qty{405}{\\nm}$}",
+      expand = expansion(mult = 0, add = 0),
+      sec.axis =
+         dup_axis(
+            name = "\\raisebox{-10pt}{$\\lambda_\\text{exc}=\\qty{532}{\\nm}$}")) +
+   # bars showing height and width
+   geom_col(
+      position = "identity",
+      fill = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique(),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          width = fwhm.ratio,
+          alpha = alpha)) +
+   # FWHM error as errorbar
+   geom_errorbarh(
+      width = 0.05,
+      colour = "gray20",
+      # position = position_dodge2(),
+      aes(y = height.ratio,
+          alpha = alpha,
+          xmin = mode.numeric - errors_min(fwhm.ratio),
+          xmax = mode.numeric + errors_max(fwhm.ratio))) +
+   # height error as errorbar
+   geom_errorbar(
+      width = 0.05,
+      colour = "gray40", # higher values == lighter gray
+      position = position_dodge2(),
+      aes(x = mode.numeric,
+          alpha = alpha,
+          ymin = errors_min(height.ratio),
+          ymax = errors_max(height.ratio))) +
+   # text labels
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "green") %>% filter(mode == "E2h"),
+      size = 2.5, angle = 60,
+      nudge_x = -0.75, # vertical direction, positive upwards
+      nudge_y = 0.05, # horizontal direction, positive leftwards
+      point.padding = 0.25, box.padding = 0.25,
+      segment.curvature = -1e-20,
+      colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          label = paste0("\\qty{", diameter, "}{\\nm}"))) +
+   coord_flip(
+      ylim = this.plot %>% filter(axis == "right") %>% pull(y),
+      xlim = c(1, max(this.assignments$mode.numeric) + 0.25)) +
+   theme(
+      legend.position = "none",
+      # common settings for x-axis
+      axis.title.x = element_text(size = rel(0.8)),
+      axis.text.x = element_text(size = rel(0.8)),
+      # bottom x-axis (p.blue)
+      axis.text.x.bottom = element_text(colour = NA),
+      axis.line.x.bottom = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      axis.ticks.x.bottom = element_line(colour = NA),
+      axis.title.x.bottom =
+         element_text(
+            # hjust shifts x-axis title towards the left x-axis (a vertical shift is accomplished in LaTeX to avoid misaligning the blue/green overlaid plots)
+            hjust = 0,
+            colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      # top x-axis (p.green)
+      axis.text.x.top = element_text(colour = NA),
+      axis.line.x.top = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.ticks.x.top = element_line(colour = NA),
+      axis.title.x.top =
+         element_text(
+            hjust = 1,
+            colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      # left y-axis (make line and ticks blue)
+      axis.line.y.left = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      axis.ticks.y.left = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      # disable the left y-axis title and remove its space
+      axis.title.y.left = element_blank(),
+      # right y-axis (p.green)
+      axis.text.y.right = element_blank(),
+      axis.line.y.right = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.ticks.y.right = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.title.y.right = element_blank(),
+      # remove grid lines
+      panel.grid = element_blank(),
+      # make plot background transparent
+      panel.background = element_rect(fill = NA, colour = NA),
+      # smaller right margin to decrease horizontal space between barplot and shiftplot
+      plot.margin = margin(r=1, unit="mm"),
+      # make area outside panel transparent
+      plot.background = element_rect(fill = NA, colour = NA))
+# p.blue is the bottom layer
+p.blue <-
+   ggplot(this.params %>% filter(excitation == "blue")) +
+   coord_flip(
+      ylim = this.plot %>% filter(axis == "left") %>% pull(y),
+      xlim = c(1, max(this.assignments$mode.numeric) + 0.25)) +
+   # range sets the lightness/darkness limits of the alpha scale
+   # low value: lightness, high value: darkness
+   scale_alpha(
+      "alpha",
+      range = this.plot %>% filter(axis == "left") %>% pull(alpha)) +
+   # we want to duplicate x-axis on top, but scale_discrete does not allow it
+   # so we need to use continuous x-axis which means mapping mode to numeric without dropping levels
+   scale_x_continuous(
+      breaks = this.assignments$mode.numeric,
+      labels = this.assignments$latex,
+      sec.axis = dup_axis()
+   ) +
+   scale_y_continuous(
+      trans = "identity",
+      name = "",
+      expand = expansion(mult = 0, add = 0),
+      # this axis is not drawn (colour = NA in theme)
+      sec.axis = dup_axis()) +
+   # bars showing height and width
+   geom_col(
+      position = "identity",
+      fill = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          width = fwhm.ratio,
+          alpha = alpha)) +
+   # FWHM error as errorbar
+   geom_errorbarh(
+      width = 0.05,
+      colour = "gray40",
+      # position = position_dodge2(),
+      aes(y = height.ratio,
+          alpha = alpha,
+          xmin = mode.numeric - errors_min(fwhm.ratio),
+          xmax = mode.numeric + errors_max(fwhm.ratio))) +
+   # height error as errorbar
+   geom_errorbar(
+      width = 0.05,
+      #colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      colour = "gray20",
+      position = position_dodge2(),
+      aes(x = mode.numeric,
+          alpha = alpha,
+          ymin = errors_min(height.ratio),
+          ymax = errors_max(height.ratio))) +
+   # text labels
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>% filter(mode == "2A1LO" & temperature == 900),
+      nudge_y = 0.35, # horizontal direction, positive is rightwards
+      nudge_x = -0.1, # vertical direction, positive is upwards
+      size = 2.5, segment.curvature = 1e-20,
+      point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>%
+         filter(mode == "2A1LO" & temperature == 800),
+      # xlim forces the label immediately beyond the line demarcated by x<=7.70
+      xlim = c(NA, 7.75), # effectively a vertical limit on label placement
+      nudge_y = 0.38, # horizontal shift rightwards
+      size = 2.5, point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>%
+         filter(mode == "2A1LO" & temperature == 700),
+      # xlim forces the label immediately beyond the line demarcated by x<=7.60
+      xlim = c(NA, 7.65), # effectively a vertical limit on label placement
+      nudge_y = 0.35, # horizontal shift rightwards
+      size = 2.5, point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>%
+         filter(mode == "2A1LO" & temperature == 600),
+      # xlim forces the label immediately beyond the line demarcated by x<=7.50
+      xlim = c(NA, 7.55), # effectively a vertical limit on label placement
+      nudge_y = 0.33, # horizontal shift rightwards
+      size = 2.5, point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>%
+         filter(mode == "2A1LO" & temperature == 500),
+      # xlim forces the label immediately beyond the line demarcated by x<=7.50
+      xlim = c(NA, 7.50), # effectively a vertical limit on label placement
+      nudge_y = 0.25, # horizontal shift rightwards
+      size = 2.5, point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   geom_text_repel(
+      data = this.params %>% filter(excitation == "blue") %>%
+         filter(mode == "2A1LO" & temperature == 400),
+      # xlim forces the label immediately beyond the line demarcated by x<=7.50
+      xlim = c(NA, 7.45), # effectively a vertical limit on label placement
+      nudge_y = 0.20 , # horizontal shift rightwards
+      size = 2.5, point.padding = 0.25, box.padding = 0.25,
+      colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      segment.colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique(),
+      arrow = arrow(length = unit(0.015, "npc")),
+      aes(x = mode.numeric,
+          y = height.ratio,
+          # rotate using LaTeX instead of R, because ggrepel's angle caused weird label misalignment
+          label = paste0("\\rotatebox{-50}{\\qty{", diameter, "}{\\nm}}"))) +
+   theme(
+      legend.position = "none",
+      # hide y-axes text and titles (already taken care of by p.green)
+      axis.title.y = element_text(colour = NA),
+      axis.text.y = element_text(colour = NA),
+      plot.margin = margin(r=1, unit="mm"),
+      # right y-axis (p.green)
+      axis.text.y.right = element_blank(),
+      axis.line.y.right = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.ticks.y.right = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.title.y.right = element_blank(),
+      # left y-axis (make line and ticks blue)
+      axis.line.y.left = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      axis.ticks.y.left = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      # disable the left y-axis title and remove its space
+      axis.title.y.left = element_blank(),
+      # bottom x-axis blue
+      axis.line.x.bottom = element_line(colour = this.plot %>% filter(axis == "left") %>% pull(colour) %>% unique()),
+      axis.ticks.x.bottom = element_line(colour = NA), # make invisible, but retain space to align with sister plot
+      axis.text.x.bottom = element_text(colour = NA), # make invisible, but retain space to align with sister plot
+      # common settings for x-axis
+      axis.title.x = element_text(size = rel(0.8)),
+      axis.text.x = element_text(size = rel(0.8)),
+      # top x-axis green
+      axis.line.x.top = element_line(colour = this.plot %>% filter(axis == "right") %>% pull(colour) %>% unique()),
+      axis.ticks.x.top = element_line(colour = NA),
+      axis.text.x.top = element_text(colour = NA))
+@
+
+
+<<'0525P-figref-bluegreenraman-centroids-fityk0513', eval=FALSE>>=
+# note: dropped modes here must be manually removed from latex.custom column below!
+dropped.modes <- c("2E2h+2E2l", "2E2h+E2l", "E2h+2E2l", "E2h+E2l", "E1TO", "2E2l")
+this.assignments <-
+   nonres0513.assignments %>%
+   filter(!mode %in% dropped.modes) %>%
+   select(-mode.numeric)
+this.params <-
+   rbind(
+      green.fityk0513.params %>%
+         filter(!mode %in% dropped.modes) %>%
+         add_column(excitation = "green", .before = 1),
+      blue.fityk0513.params %>%
+         filter(!mode %in% dropped.modes) %>%
+         add_column(excitation = "blue", .before = 1)) %>%
+   # refactorise and sort modes by wavenumber in desc order
+   mutate(mode = factor(mode, levels = rev(this.assignments$mode)))
+# calculate the y-range and y-mean for each mode
+this.params %<>%
+   left_join(
+     this.params %>%
+        group_by(mode) %>%
+        summarise(
+           shift.range = range(centroid, na.rm = TRUE) %>% diff(),
+           shift.mean = mean(as.numeric(centroid), na.rm = TRUE)),
+      by = "mode") %>%
+   mutate(shift.range.max = max(shift.range))
+# identify locked peaks (those peaks that had any parameter locked during Fityk fitting)
+# note that since there's only one such included in the final plot, I have chosen not to
+# visualise it in any special way (it's just plotted as a regular point)
+this.params$locked <- FALSE
+this.params %<>%
+   # set locked to TRUE for the rows that fulfil the following conditions
+   # mutate( # excluded by dropped.modes above
+   #    locked =
+   #       replace(locked, which(excitation == "green" & mode == "E1TO" & temperature == 800), TRUE)) %>%
+   mutate(
+      locked =
+         replace(locked, which(excitation == "green" & mode == "A1TO" & temperature == 800), TRUE))
+p.right <- ggplot(data = this.params) +
+   facet_wrap(
+      ~mode,
+      ncol = 1,
+      scales = "free_y",
+      strip.position = "right") +
+   # adjust the facet y-axis range by plotting an invisible object
+   # this ensures that each facet has the same y-axis range
+   geom_ribbon(
+      aes(x = temperature,
+          ymin = shift.mean - 0.5 * shift.range.max,
+          ymax = shift.mean + 0.5 * shift.range.max),
+      fill = NA,
+      colour = NA) +
+   # linear model not including locked modes
+   geom_smooth(
+      data = this.params %>% filter(!locked),
+      method = "lm", formula = "y ~ x",
+      se = FALSE, # including the SE obscures too much of the detail in the points themselves
+      size = 0.5,
+      aes(y = centroid,
+          x = temperature,
+          linetype = excitation,
+          colour = excitation)) +
+   ## points and errorbars
+   # note: I want to avoid points/errors at the same temp from overplotting each other,
+   # but we cannot user position jitter because of the errorbars, so we offset each series slightly
+   geom_errorbar(
+      data = this.params,
+      width = 2,
+      aes(x = ifelse(excitation == "green", temperature - 5, temperature + 5),
+          ymin = errors_min(centroid),
+          ymax = errors_max(centroid),
+          colour = excitation)) +
+   geom_point(
+      data = this.params,
+      size = 0.85,
+      aes(x = ifelse(excitation == "green", temperature - 5, temperature + 5),
+          y = centroid,
+          shape = excitation,
+          colour = excitation)) +
+   ## scales
+   scale_color_manual(
+      name = "Laser $\\lambda_\\text{exc}$",
+      breaks = c("green", "blue"),
+      labels = c("\\qty{532}{\\nm}", "\\qty{405}{\\nm}"),
+      values = c("#33a02c", "#1f78b4")) +
+   scale_shape_manual(
+      name = "Laser $\\lambda_\\text{exc}$",
+      breaks = c("green", "blue"),
+      labels = c("\\qty{532}{\\nm}", "\\qty{405}{\\nm}"),
+      # http://www.sthda.com/english/wiki/ggplot2-point-shapes
+      values = c(5, 13)) +
+   scale_linetype_manual(
+      guide = "none", # guide=FALSE is deprecated
+      name = "Laser $\\lambda_\\text{exc}$",
+      breaks = c("green", "blue"),
+      values = c("longdash", "solid")) +
+   scale_y_continuous(
+      breaks = c(90, 110, 320, 340, 380, 400, 430, 450, 550, 570, 590, 1130, 1150, 1170),
+      sec.axis = dup_axis()) +
+   scale_x_continuous(
+      expand = c(0.01, 0),
+      breaks = seq(300, 900, 100),
+      sec.axis =
+         sec_axis(
+            ~.,
+            breaks = seq(300, 900, 100),
+            labels = samples.info %>% filter(temperature %in% seq(300,900,100)) %>% pull(diameter) %>% paste(),
+            name = "Particle size, $d$/\\unit{\\nm}")) +
+   labs(
+      y = "Raman shift, $\\Omega$/\\unit{\\per\\cm}",
+      x = "Annealing temperature, $T_\\mathrm{a}$/\\unit{\\celsius}") +
+   theme(
+      legend.position = "none",
+      plot.margin = margin(l=1, unit="mm"),
+      # legend.position = c(0.05, 0.006),
+      # legend.justification = c(0, 0),
+      # legend.title = element_text(size = rel(0.80)),
+      # legend.key = element_rect(size = rel(0.75)),
+      # legend.text = element_text(size = rel(0.75)),
+      # remove y-axis title and text on the left side
+      axis.text.y.left = element_blank(),
+      axis.title.y.left = element_blank(),
+      axis.ticks.y.left = element_blank(),
+      axis.text.y = element_text(size = rel(0.65)),
+      axis.ticks.length.y =  unit(4.5 / 3, "pt"),
+      # smaller axis title size
+      axis.title = element_text(size = rel(0.8)),
+      # smaller x-axis text size
+      axis.text.x = element_text(size = rel(0.8)),
+      # drop minor grid lines
+      panel.grid.minor = element_blank(),
+      # decrease inter-facet vertical spacing
+      panel.spacing.y = unit(2, "pt"), # default was 5.5 pt
+      # hide facet strip labels
+      strip.text = element_blank())
+@
+
+
+
+
+%%% UV-Raman fitted using Fityk
+%\input{assets/code/P25/204-code-uvraman-fityk.Rnw}
+<<'0525P-code-uvraman-fityk', child=here::here('assets/code/P25/204-code-uvraman-fityk.Rnw'), eval=FALSE, cache=TRUE>>=
+@
+
+
+%%% UV-Raman fitted using <diffractometry>
+%\input{assets/code/P25/205-code-uvraman-auto.Rnw}
+<<'0525P-code-uvraman-auto', child=here::here('assets/code/P25/205-code-uvraman-auto.Rnw'), eval=TRUE, cache=TRUE>>=
+@
+
+
+%%% Plots and tables
+%\input{assets/code/P25/300-text.Rnw}
+<<'0525P-text', child=here::here('assets/code/P25/300-text.Rnw'), eval=TRUE, cache=TRUE>>=
+@

@@ -1,0 +1,112 @@
+% use backref=true only in draft mode
+% https://tex.stackexchange.com/questions/40097/disable-issn-but-keep-isbn-with-biblatex
+% https://tex.stackexchange.com/questions/23117/biblatex-get-rid-of-issn-urls-and-dois-in-references
+% https://tex.stackexchange.com/questions/32930/is-it-possible-to-suppress-a-specific-field-from-bibtex-bbl-in-biblatex
+\ifdraft{%
+   \usepackage[%
+      backend=biber,%
+      isbn=false,%
+      % hide PMID, ISSN, maybe other fields
+      eprint=false,%
+      % only print year (not day, month) of dates
+      % https://tex.stackexchange.com/questions/89842/how-to-print-only-year-no-day-month-with-biblatex
+      date=year,%
+      % note, doi field is replaced by hyperlink in web edition by bibmacro below
+      doi=true,%
+      % suppress output of URL for entry types whose url is optional
+      % @online entries always have their url printed even when url=false
+      url=false,%
+      style=numeric-comp,%
+      sorting=none,%
+      % https://libguides.lib.msu.edu/latex/citations
+      citestyle=chem-acs,%phys,%chem-acs,%science,%nature,%
+      backref=true%
+   ]{biblatex}%
+}{%
+   \usepackage[%
+      backend=biber,%
+      isbn=false,%
+      eprint=false,%
+      % only print year (not day, month) of dates
+      date=year,%
+      % note, doi field is replaced by hyperlink in web edition by bibmacro below
+      doi=true,%
+      % suppress output of URL for entry types whose url is optional
+      % @online entries always have their url printed even when url=false
+      url=false,%
+      style=numeric-comp,%
+      sorting=none,%
+      citestyle=chem-acs%phys%chem-acs%science%nature%
+   ]{biblatex}%
+}
+
+
+% use smaller font size in printedition, where pages count
+% https://tex.stackexchange.com/a/609374/10824
+\ifprintedition{\renewcommand*{\bibfont}{\normalfont\small}}{}
+
+
+% For entries with DOI, show the DOI in print mode (\ifprintedition) but
+% hide it in web mode instead hyperlinking the entry to the DOI.
+% As a first test, let's try this approach https://tex.stackexchange.com/a/588287/10824
+% finentry defines the end (fini) of each entry, usually simply containing \finentry.
+% fontawesome still has no DOI icon https://github.com/FortAwesome/Font-Awesome/issues/15595
+% academicons has a DOI icon, and comes with a LaTeX package!
+% https://www.ctan.org/pkg/academicons
+% don't use \finentrypunct instead of \finentry or the dot is placed *before* the subsequent entry
+% https://tex.stackexchange.com/a/550732/10824 https://tex.stackexchange.com/a/612524/10824
+\ifwebedition{%
+   \renewbibmacro*{finentry}{%
+      \iffieldundef{doi}{%
+         % Entry lacks DOI
+         \iffieldundef{url}{%
+            % Entry lacks URL and DOI
+            \finentry%
+         }{%
+            % Entry has URL but lacks DOI
+            % Show URL hyperlink as icon (concsiously not using same icon as our "external hyperlinks")
+            \finentry\space%
+            \href{\thefield{url}}{\footnotesize\faIcon{link}}%
+         }%
+      }{%
+         % Entry has DOI \aiDoi
+         \finentry\space%
+         % lower the DOI  symbol a little to align better with baseline
+         \href{https://doi.org/\thefield{doi}}{\raisebox{-0.1ex}{\aiDoi}}%
+      }%
+   }%
+   % suppress output of DOI field (hide both DOI label and string)
+   \DeclareFieldFormat{doi}{}%
+}{%
+   % PRINT EDITION
+   % By default, DOIs are shown, with label in all lower-case, and the DOI itself in \texttt font
+   % DOI appears to be hyperlinked by default. Also, the DOI label is small-caps by default.
+   % https://tex.stackexchange.com/questions/266495/underlined-doi-with-rsc-package/269791#269791
+   % https://tex.stackexchange.com/questions/58636/how-to-change-the-font-for-biblatex-acronyms
+   % Now that the whole Bibliography is printed in small, no need to make DOI smaller still
+   % DOIs are linebroken by default on dashes, which still leaves some DOIs causing overfull lines
+   % because they don't contain any dashes or only at unsuitable positions
+   % So we should allow linebreak at other characters
+   % https://tex.stackexchange.com/a/507350/10824
+   % https://github.com/plk/biblatex/issues/850#issuecomment-487370262
+   % Interesting, disabling our custom doiformat and mkbibacro commands (also the
+   % DeclareFieldFormat below) appears to have fixed the linebreaks in DOIs (they
+   % break pretty nice now)
+   \setcounter{biburlnumpenalty}{9000}
+   \setcounter{biburlucpenalty}{9000}
+   \setcounter{biburllcpenalty}{9000}
+   % add some space after numbers in strings formatted with the \url command (affects URLs and DOIs in bibliography)
+   % only takes effect if biburlnumpenalty is non-zero
+   \biburlnumskip=0mu plus 1mu\relax
+   % ditto for uppercase letters
+   \biburlucskip=0mu plus 1mu\relax
+   % ditto for lowercase letters
+   \biburllcskip=0mu plus 1mu\relax
+}
+
+% hyphenation adjustments I found warranted in the References
+% remember, multiple \hyphenation{} commands simply accumulate
+% please don't edit existing terms here unless you double-check that the still work, sensitive stuff!
+\hyphenation{Perkin-Elmer Natur-vårds-verket läke-med-els-rester nano-crys-tal-line}
+% https://tex.stackexchange.com/questions/634827/correct-way-to-generate-hyphenation-patterns-with-biblatex
+% https://github.com/retorquere/zotero-better-bibtex/issues/612

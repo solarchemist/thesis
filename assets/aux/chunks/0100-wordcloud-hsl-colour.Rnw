@@ -1,0 +1,12 @@
+<<'0100-wordcloud-random-colour', cache=TRUE>>=
+random_hsl_color <- function(min, max) {
+   # returns HSL values as a Javascript string
+   # which seems to be how wordcloud2 wants it
+   paste0(
+      "hsl(",
+      as.integer(runif(1) * 360), ",",
+      as.integer(runif(1) * 30 + 70), "%,",
+      as.integer(runif(1) * (max - min) + min), "%)"
+   )
+}
+@

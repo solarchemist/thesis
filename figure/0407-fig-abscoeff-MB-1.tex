@@ -1,0 +1,2569 @@
+% Created by tikzDevice version 0.12.4 on 2023-12-15 02:01:29
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{luatex85}
+\documentclass{LuaUUThesis}
+\nonstopmode
+
+\usepackage{tikz}
+\usepackage{luatex85}
+\usepackage[active,tightpage,psfixbb]{preview}
+\usepackage{fontspec}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\linespread{1.05}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\PreviewEnvironment{pgfpicture}
+\setlength\PreviewBorder{0pt}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage[backend=biber]{biblatex}
+\usepackage{xfrac}
+\usetikzlibrary{ arrows, backgrounds, calc, decorations, decorations.markings, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, fadings, fit, positioning, shapes }
+\usepackage[ minimal=true, modules={ thermodynamics, units, orbital, reactions, redox, reactants, scheme} ]{chemmacros}
+\chemsetup{ formula=chemformula, chemformula/frac-style=nicefrac, reactions/list-entry={}, reactants/printreactants-style=xltabular, reactants/initiate=true }
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+\NewChemParticle{\oxide}{O^{2-}}
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+\NewChemParticle\ZnAc{Zn(OAc)2}
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\definesubmol\nobond{-[,1.2,,,draw=none]}
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+\usepackage{siunitx}
+\sisetup{ uncertainty-mode=compact, reset-text-family=false, text-family-to-math=false, text-series-to-math=false }
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+\DeclareSIUnit{\lines}{lines}
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+\DeclareSIUnit{\rpm}{rpm}
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+\DeclareSIUnit{\foot}{ft}
+\DeclareSIUnit{\sq}{sq}
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+\DeclareSIUnit{\angstrom}{Å}
+\usepackage{xifthen}
+\usepackage{xparse}
+\ExplSyntaxOn \NewExpandableDocumentCommand{\stringcase}{mO{}m}{ \str_case_e:nnF { #1 } { #3 } { #2 } } \ExplSyntaxOff  \NewDocumentCommand{\NonResonantModesShort}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2l}}} {B1l}{\textit{B}\textsubscript{\textup{1l}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2h}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1h}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLong}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2(low)}}} {B1l}{\textit{B}\textsubscript{\textup{1(low)}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2(high)}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1(high)}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{ \IfNoValueTF{#2}{ \NonResonantModesShort{#1} }{ \ifthenelse{\equal{#2}{long}}{ \NonResonantModesLong{#1} }{ \ifthenelse{\equal{#2}{short}}{ \NonResonantModesShort{#1} }{ \NonResonantModesShort{} } } } }  \NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{ \IfNoValueTF{#2}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\isempty{#2}}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\equal{#4}{diff}}{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2} } } }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2} } } } } } }   \NewDocumentCommand{\Eg}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{E_\text{g}}}{ \IfNoValueTF{#2}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\Rsq}{om}{ \IfNoValueTF{#1}{ \ensuremath{R^2{\,=\,}\num{#2}}}{ \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}   \NewDocumentCommand{\density}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{\rho}}{ \IfNoValueTF{#2}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\miller}{m}{ \num{#1} }
+\newcommand{\SweaveOpts}[1]{}  % do not interfere with LaTeX
+\newcommand{\SweaveInput}[1]{} % because they are not real TeX commands
+\newcommand{\Sexpr}[1]{}       % will only be parsed by R
+
+
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+
+\begin{document}
+
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor{fillColor}{RGB}{255,255,255}
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (170.56,105.51);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (170.56,105.51);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  7.75, 48.49) -- (  7.90, 47.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  7.90, 47.29) -- (  8.04, 45.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.04, 45.43) -- (  8.19, 43.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.19, 43.89) -- (  8.33, 42.72);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.33, 42.72) -- (  8.48, 41.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.48, 41.41) -- (  8.62, 39.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.62, 39.69) -- (  8.77, 38.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.77, 38.45) -- (  8.91, 36.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  8.91, 36.87) -- (  9.06, 35.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.06, 35.64) -- (  9.20, 34.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.20, 34.57) -- (  9.35, 33.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.35, 33.30) -- (  9.49, 32.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.49, 32.16) -- (  9.64, 31.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.64, 31.23) -- (  9.78, 29.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.78, 29.89) -- (  9.92, 29.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (  9.92, 29.04) -- ( 10.07, 28.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.07, 28.06) -- ( 10.22, 27.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.22, 27.06) -- ( 10.36, 26.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.36, 26.38) -- ( 10.50, 25.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.50, 25.51) -- ( 10.65, 25.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.65, 25.02) -- ( 10.79, 24.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.79, 24.22) -- ( 10.94, 23.72);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 10.94, 23.72) -- ( 11.08, 23.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.08, 23.17) -- ( 11.23, 22.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.23, 22.78) -- ( 11.37, 22.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.37, 22.20) -- ( 11.52, 21.84);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.52, 21.84) -- ( 11.66, 21.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.66, 21.54) -- ( 11.80, 21.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.80, 21.24) -- ( 11.95, 20.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 11.95, 20.73) -- ( 12.10, 20.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.10, 20.65) -- ( 12.24, 20.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.24, 20.38) -- ( 12.39, 19.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.39, 19.97) -- ( 12.53, 19.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.53, 19.87) -- ( 12.67, 19.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.67, 19.66) -- ( 12.82, 19.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.82, 19.58) -- ( 12.96, 19.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 12.96, 19.32) -- ( 13.11, 19.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.11, 19.19) -- ( 13.25, 18.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.25, 18.90) -- ( 13.40, 18.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.40, 18.71) -- ( 13.54, 18.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.54, 18.66) -- ( 13.69, 18.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.69, 18.45) -- ( 13.83, 18.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.83, 18.48) -- ( 13.98, 18.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 13.98, 18.18) -- ( 14.12, 18.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.12, 18.08) -- ( 14.27, 17.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.27, 17.98) -- ( 14.41, 18.00);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.41, 18.00) -- ( 14.55, 17.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.55, 17.77) -- ( 14.70, 17.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.70, 17.77) -- ( 14.84, 17.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.84, 17.67) -- ( 14.99, 17.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 14.99, 17.56) -- ( 15.13, 17.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.13, 17.45) -- ( 15.28, 17.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.28, 17.40) -- ( 15.42, 17.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.42, 17.21) -- ( 15.57, 17.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.57, 17.24) -- ( 15.71, 17.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.71, 17.15) -- ( 15.85, 17.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 15.85, 17.10) -- ( 16.00, 17.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.00, 17.07) -- ( 16.14, 16.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.14, 16.85) -- ( 16.29, 16.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.29, 16.64) -- ( 16.43, 16.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.43, 16.47) -- ( 16.58, 16.42);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.58, 16.42) -- ( 16.72, 16.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.72, 16.23) -- ( 16.87, 16.03);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 16.87, 16.03) -- ( 17.01, 15.84);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.01, 15.84) -- ( 17.15, 15.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.15, 15.62) -- ( 17.30, 15.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.30, 15.58) -- ( 17.44, 15.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.44, 15.26) -- ( 17.59, 15.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.59, 15.12) -- ( 17.73, 14.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.73, 14.83) -- ( 17.87, 14.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 17.87, 14.53) -- ( 18.02, 14.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.02, 14.23) -- ( 18.16, 13.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.16, 13.96) -- ( 18.31, 13.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.31, 13.67) -- ( 18.45, 13.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.45, 13.27) -- ( 18.60, 13.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.60, 13.08) -- ( 18.74, 12.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.74, 12.85) -- ( 18.89, 12.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 18.89, 12.58) -- ( 19.03, 12.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.03, 12.04) -- ( 19.17, 11.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.17, 11.89) -- ( 19.32, 11.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.32, 11.69) -- ( 19.46, 11.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.46, 11.46) -- ( 19.61, 11.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.61, 11.29) -- ( 19.75, 11.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.75, 11.01) -- ( 19.89, 10.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 19.89, 10.73) -- ( 20.04, 10.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.04, 10.60) -- ( 20.18, 10.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.18, 10.26) -- ( 20.33, 10.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.33, 10.10) -- ( 20.47,  9.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.47,  9.83) -- ( 20.62,  9.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.62,  9.73) -- ( 20.76,  9.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.76,  9.54) -- ( 20.91,  9.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 20.91,  9.34) -- ( 21.05,  9.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.05,  9.22) -- ( 21.19,  8.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.19,  8.95) -- ( 21.34,  8.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.34,  8.93) -- ( 21.48,  8.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.48,  8.74) -- ( 21.63,  8.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.63,  8.78) -- ( 21.77,  8.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.77,  8.62) -- ( 21.91,  8.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 21.91,  8.60) -- ( 22.06,  8.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.06,  8.43) -- ( 22.20,  8.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.20,  8.28) -- ( 22.34,  8.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.34,  8.26) -- ( 22.49,  8.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.49,  8.17) -- ( 22.63,  7.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.63,  7.93) -- ( 22.78,  7.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.78,  7.82) -- ( 22.92,  7.72);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 22.92,  7.72) -- ( 23.07,  7.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.07,  7.73) -- ( 23.21,  7.75);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.21,  7.75) -- ( 23.35,  7.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.35,  7.53) -- ( 23.50,  7.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.50,  7.63) -- ( 23.64,  7.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.64,  7.43) -- ( 23.79,  7.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.79,  7.52) -- ( 23.93,  7.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 23.93,  7.38) -- ( 24.07,  7.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.07,  7.35) -- ( 24.22,  7.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.22,  7.34) -- ( 24.36,  7.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.36,  7.25) -- ( 24.51,  7.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.51,  7.28) -- ( 24.65,  7.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.65,  7.06) -- ( 24.80,  6.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.80,  6.99) -- ( 24.94,  7.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 24.94,  7.02) -- ( 25.08,  7.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.08,  7.12) -- ( 25.23,  6.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.23,  6.88) -- ( 25.37,  7.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.37,  7.05) -- ( 25.51,  6.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.51,  6.80) -- ( 25.66,  6.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.66,  6.74) -- ( 25.80,  6.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.80,  6.76) -- ( 25.95,  6.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 25.95,  6.62) -- ( 26.09,  6.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.09,  6.62) -- ( 26.23,  6.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.23,  6.59) -- ( 26.38,  6.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.38,  6.61) -- ( 26.52,  6.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.52,  6.49) -- ( 26.67,  6.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.67,  6.45) -- ( 26.81,  6.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.81,  6.52) -- ( 26.95,  6.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 26.95,  6.47) -- ( 27.10,  6.44);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.10,  6.44) -- ( 27.24,  6.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.24,  6.32) -- ( 27.38,  6.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.38,  6.31) -- ( 27.53,  6.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.53,  6.37) -- ( 27.67,  6.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.67,  6.28) -- ( 27.82,  6.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.82,  6.30) -- ( 27.96,  6.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 27.96,  6.32) -- ( 28.10,  6.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.10,  6.40) -- ( 28.25,  6.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.25,  6.29) -- ( 28.39,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.39,  6.22) -- ( 28.54,  6.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.54,  6.17) -- ( 28.68,  6.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.68,  6.32) -- ( 28.82,  6.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.82,  6.27) -- ( 28.97,  6.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 28.97,  6.19) -- ( 29.11,  6.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.11,  6.17) -- ( 29.25,  6.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.25,  6.20) -- ( 29.40,  6.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.40,  6.20) -- ( 29.54,  6.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.54,  6.18) -- ( 29.69,  6.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.69,  6.21) -- ( 29.83,  6.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.83,  6.14) -- ( 29.97,  6.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 29.97,  6.18) -- ( 30.12,  6.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.12,  6.14) -- ( 30.26,  6.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.26,  6.18) -- ( 30.40,  6.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.40,  6.17) -- ( 30.55,  6.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.55,  6.16) -- ( 30.69,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.69,  6.22) -- ( 30.83,  6.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.83,  6.18) -- ( 30.98,  6.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 30.98,  6.14) -- ( 31.12,  6.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.12,  6.16) -- ( 31.27,  6.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.27,  6.21) -- ( 31.41,  6.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.41,  6.15) -- ( 31.55,  6.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.55,  6.19) -- ( 31.70,  6.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.70,  6.10) -- ( 31.84,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.84,  6.22) -- ( 31.98,  6.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 31.98,  6.28) -- ( 32.13,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.13,  6.22) -- ( 32.27,  6.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.27,  6.30) -- ( 32.41,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.41,  6.22) -- ( 32.56,  6.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.56,  6.30) -- ( 32.70,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.70,  6.22) -- ( 32.84,  6.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.84,  6.21) -- ( 32.99,  6.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 32.99,  6.23) -- ( 33.13,  6.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.13,  6.28) -- ( 33.28,  6.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.28,  6.29) -- ( 33.42,  6.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.42,  6.25) -- ( 33.56,  6.36);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.56,  6.36) -- ( 33.71,  6.36);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.71,  6.36) -- ( 33.85,  6.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.85,  6.25) -- ( 33.99,  6.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 33.99,  6.35) -- ( 34.14,  6.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.14,  6.38) -- ( 34.28,  6.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.28,  6.33) -- ( 34.42,  6.36);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.42,  6.36) -- ( 34.57,  6.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.57,  6.39) -- ( 34.71,  6.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.71,  6.46) -- ( 34.85,  6.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 34.85,  6.40) -- ( 35.00,  6.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.00,  6.41) -- ( 35.14,  6.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.14,  6.50) -- ( 35.28,  6.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.28,  6.45) -- ( 35.43,  6.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.43,  6.46) -- ( 35.57,  6.56);
+\definecolor{drawColor}{RGB}{1,0,5}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.57,  6.56) -- ( 35.71,  6.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.71,  6.43) -- ( 35.86,  6.44);
+\definecolor{drawColor}{RGB}{1,0,6}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 35.86,  6.44) -- ( 36.00,  6.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.00,  6.48) -- ( 36.14,  6.46);
+\definecolor{drawColor}{RGB}{1,0,7}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.14,  6.46) -- ( 36.29,  6.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.29,  6.50) -- ( 36.43,  6.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.43,  6.56) -- ( 36.57,  6.53);
+\definecolor{drawColor}{RGB}{1,0,9}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.57,  6.53) -- ( 36.72,  6.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.72,  6.45) -- ( 36.86,  6.55);
+\definecolor{drawColor}{RGB}{1,0,10}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 36.86,  6.55) -- ( 37.00,  6.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.00,  6.47) -- ( 37.15,  6.53);
+\definecolor{drawColor}{RGB}{1,0,13}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.15,  6.53) -- ( 37.29,  6.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.29,  6.61) -- ( 37.43,  6.61);
+\definecolor{drawColor}{RGB}{2,0,15}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.43,  6.61) -- ( 37.58,  6.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.58,  6.52) -- ( 37.72,  6.51);
+\definecolor{drawColor}{RGB}{2,0,18}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.72,  6.51) -- ( 37.87,  6.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 37.87,  6.55) -- ( 38.01,  6.50);
+\definecolor{drawColor}{RGB}{2,0,21}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.01,  6.50) -- ( 38.15,  6.44);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.15,  6.44) -- ( 38.29,  6.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.29,  6.53) -- ( 38.44,  6.38);
+\definecolor{drawColor}{RGB}{3,0,25}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.44,  6.38) -- ( 38.58,  6.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.58,  6.40) -- ( 38.72,  6.43);
+\definecolor{drawColor}{RGB}{3,0,30}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.72,  6.43) -- ( 38.87,  6.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 38.87,  6.26) -- ( 39.01,  6.35);
+\definecolor{drawColor}{RGB}{4,0,35}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.01,  6.35) -- ( 39.15,  6.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.15,  6.29) -- ( 39.30,  6.27);
+\definecolor{drawColor}{RGB}{5,0,41}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.30,  6.27) -- ( 39.44,  6.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.44,  6.23) -- ( 39.58,  6.29);
+\definecolor{drawColor}{RGB}{5,0,48}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.58,  6.29) -- ( 39.73,  6.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.73,  6.17) -- ( 39.87,  6.20);
+\definecolor{drawColor}{RGB}{6,0,56}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 39.87,  6.20) -- ( 40.01,  6.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.01,  6.05) -- ( 40.15,  6.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.15,  6.01) -- ( 40.30,  6.01);
+\definecolor{drawColor}{RGB}{7,0,64}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.30,  6.01) -- ( 40.44,  5.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.44,  5.97) -- ( 40.58,  5.85);
+\definecolor{drawColor}{RGB}{8,0,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.58,  5.85) -- ( 40.73,  5.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.73,  5.96) -- ( 40.87,  5.86);
+\definecolor{drawColor}{RGB}{9,0,85}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 40.87,  5.86) -- ( 41.01,  5.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.01,  5.88) -- ( 41.16,  5.87);
+\definecolor{drawColor}{RGB}{10,0,96}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.16,  5.87) -- ( 41.30,  5.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.30,  5.88) -- ( 41.44,  5.67);
+\definecolor{drawColor}{RGB}{12,0,109}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.44,  5.67) -- ( 41.59,  5.79);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.59,  5.79) -- ( 41.73,  5.77);
+\definecolor{drawColor}{RGB}{13,0,122}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.73,  5.77) -- ( 41.87,  5.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 41.87,  5.63) -- ( 42.01,  5.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.01,  5.71) -- ( 42.16,  5.74);
+\definecolor{drawColor}{RGB}{14,0,137}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.16,  5.74) -- ( 42.30,  5.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.30,  5.68) -- ( 42.44,  5.60);
+\definecolor{drawColor}{RGB}{16,0,152}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.44,  5.60) -- ( 42.59,  5.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.59,  5.57) -- ( 42.73,  5.53);
+\definecolor{drawColor}{RGB}{17,0,167}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.73,  5.53) -- ( 42.87,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 42.87,  5.51) -- ( 43.02,  5.55);
+\definecolor{drawColor}{RGB}{19,0,183}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.02,  5.55) -- ( 43.16,  5.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.16,  5.46) -- ( 43.30,  5.56);
+\definecolor{drawColor}{RGB}{20,0,200}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.30,  5.56) -- ( 43.44,  5.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.44,  5.60) -- ( 43.59,  5.54);
+\definecolor{drawColor}{RGB}{22,0,217}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.59,  5.54) -- ( 43.73,  5.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.73,  5.47) -- ( 43.87,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 43.87,  5.51) -- ( 44.02,  5.47);
+\definecolor{drawColor}{RGB}{23,0,235}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.02,  5.47) -- ( 44.16,  5.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.16,  5.53) -- ( 44.30,  5.51);
+\definecolor{drawColor}{RGB}{24,0,252}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.30,  5.51) -- ( 44.45,  5.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.45,  5.45) -- ( 44.59,  5.41);
+\definecolor{drawColor}{RGB}{25,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.59,  5.41) -- ( 44.73,  5.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.73,  5.49) -- ( 44.87,  5.41);
+\definecolor{drawColor}{RGB}{27,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 44.87,  5.41) -- ( 45.02,  5.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.02,  5.49) -- ( 45.16,  5.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.16,  5.40) -- ( 45.30,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.30,  5.51) -- ( 45.45,  5.40);
+\definecolor{drawColor}{RGB}{28,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.45,  5.40) -- ( 45.59,  5.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.59,  5.54) -- ( 45.73,  5.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.73,  5.52) -- ( 45.87,  5.49);
+\definecolor{drawColor}{RGB}{29,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 45.87,  5.49) -- ( 46.02,  5.44);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.02,  5.44) -- ( 46.16,  5.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.16,  5.59) -- ( 46.30,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.30,  5.51) -- ( 46.44,  5.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.44,  5.52) -- ( 46.59,  5.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.59,  5.50) -- ( 46.73,  5.63);
+\definecolor{drawColor}{RGB}{30,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.73,  5.63) -- ( 46.87,  5.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 46.87,  5.52) -- ( 47.02,  5.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.02,  5.53) -- ( 47.16,  5.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.16,  5.63) -- ( 47.30,  5.52);
+\definecolor{drawColor}{RGB}{31,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.30,  5.52) -- ( 47.44,  5.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.44,  5.55) -- ( 47.59,  5.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.59,  5.59) -- ( 47.73,  5.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.73,  5.62) -- ( 47.87,  5.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 47.87,  5.67) -- ( 48.01,  5.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.01,  5.55) -- ( 48.16,  5.72);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.16,  5.72) -- ( 48.30,  5.77);
+\definecolor{drawColor}{RGB}{30,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.30,  5.77) -- ( 48.44,  5.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.44,  5.64) -- ( 48.59,  5.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.59,  5.78) -- ( 48.73,  5.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.73,  5.78) -- ( 48.87,  5.78);
+\definecolor{drawColor}{RGB}{29,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 48.87,  5.78) -- ( 49.01,  5.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.01,  5.70) -- ( 49.16,  5.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.16,  5.80) -- ( 49.30,  5.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.30,  5.74) -- ( 49.44,  5.79);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.44,  5.79) -- ( 49.58,  5.83);
+\definecolor{drawColor}{RGB}{28,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.58,  5.83) -- ( 49.73,  5.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.73,  5.78) -- ( 49.87,  5.90);
+\definecolor{drawColor}{RGB}{27,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 49.87,  5.90) -- ( 50.01,  5.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.01,  5.83) -- ( 50.16,  5.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.16,  5.87) -- ( 50.30,  5.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.30,  5.90) -- ( 50.44,  5.84);
+\definecolor{drawColor}{RGB}{26,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.44,  5.84) -- ( 50.58,  5.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.58,  5.82) -- ( 50.73,  5.92);
+\definecolor{drawColor}{RGB}{25,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.73,  5.92) -- ( 50.87,  5.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 50.87,  5.96) -- ( 51.01,  5.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.01,  5.99) -- ( 51.15,  5.94);
+\definecolor{drawColor}{RGB}{24,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.15,  5.94) -- ( 51.29,  6.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.29,  6.02) -- ( 51.44,  5.98);
+\definecolor{drawColor}{RGB}{23,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.44,  5.98) -- ( 51.58,  5.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.58,  5.95) -- ( 51.72,  6.01);
+\definecolor{drawColor}{RGB}{21,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.72,  6.01) -- ( 51.86,  6.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 51.86,  6.09) -- ( 52.01,  6.00);
+\definecolor{drawColor}{RGB}{20,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.01,  6.00) -- ( 52.15,  6.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.15,  6.04) -- ( 52.29,  6.10);
+\definecolor{drawColor}{RGB}{18,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.29,  6.10) -- ( 52.44,  6.13);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.44,  6.13) -- ( 52.58,  6.15);
+\definecolor{drawColor}{RGB}{16,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.58,  6.15) -- ( 52.72,  6.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.72,  6.19) -- ( 52.86,  6.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 52.86,  6.25) -- ( 53.00,  6.23);
+\definecolor{drawColor}{RGB}{14,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.00,  6.23) -- ( 53.15,  6.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.15,  6.15) -- ( 53.29,  6.26);
+\definecolor{drawColor}{RGB}{12,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.29,  6.26) -- ( 53.43,  6.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.43,  6.28) -- ( 53.57,  6.24);
+\definecolor{drawColor}{RGB}{10,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.57,  6.24) -- ( 53.72,  6.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.72,  6.29) -- ( 53.86,  6.39);
+\definecolor{drawColor}{RGB}{8,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 53.86,  6.39) -- ( 54.00,  6.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.00,  6.38) -- ( 54.14,  6.41);
+\definecolor{drawColor}{RGB}{6,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.14,  6.41) -- ( 54.28,  6.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.28,  6.41) -- ( 54.43,  6.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.43,  6.43) -- ( 54.57,  6.54);
+\definecolor{drawColor}{RGB}{4,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.57,  6.54) -- ( 54.71,  6.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.71,  6.55) -- ( 54.86,  6.61);
+\definecolor{drawColor}{RGB}{1,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 54.86,  6.61) -- ( 55.00,  6.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.00,  6.57) -- ( 55.14,  6.55);
+\definecolor{drawColor}{RGB}{0,0,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.14,  6.55) -- ( 55.28,  6.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.28,  6.52) -- ( 55.42,  6.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.42,  6.65) -- ( 55.57,  6.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.57,  6.65) -- ( 55.71,  6.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.71,  6.74) -- ( 55.85,  6.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.85,  6.74) -- ( 55.99,  6.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 55.99,  6.68) -- ( 56.13,  6.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.13,  6.85) -- ( 56.28,  6.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.28,  6.80) -- ( 56.42,  6.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.42,  6.78) -- ( 56.56,  6.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.56,  6.83) -- ( 56.71,  6.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.71,  6.94) -- ( 56.85,  6.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.85,  6.88) -- ( 56.99,  6.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 56.99,  6.86) -- ( 57.13,  7.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.13,  7.01) -- ( 57.27,  6.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.27,  6.98) -- ( 57.42,  6.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.42,  6.94) -- ( 57.56,  7.03);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.56,  7.03) -- ( 57.70,  7.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.70,  7.05) -- ( 57.84,  7.07);
+\definecolor{drawColor}{RGB}{0,1,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.84,  7.07) -- ( 57.98,  7.03);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 57.98,  7.03) -- ( 58.13,  7.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.13,  7.12) -- ( 58.27,  7.15);
+\definecolor{drawColor}{RGB}{0,4,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.27,  7.15) -- ( 58.41,  7.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.41,  7.06) -- ( 58.55,  7.20);
+\definecolor{drawColor}{RGB}{0,8,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.55,  7.20) -- ( 58.69,  7.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.69,  7.16) -- ( 58.84,  7.25);
+\definecolor{drawColor}{RGB}{0,11,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.84,  7.25) -- ( 58.98,  7.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 58.98,  7.21) -- ( 59.12,  7.28);
+\definecolor{drawColor}{RGB}{0,15,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.12,  7.28) -- ( 59.26,  7.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.26,  7.35) -- ( 59.40,  7.31);
+\definecolor{drawColor}{RGB}{0,18,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.40,  7.31) -- ( 59.55,  7.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.55,  7.38) -- ( 59.69,  7.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.69,  7.37) -- ( 59.83,  7.37);
+\definecolor{drawColor}{RGB}{0,22,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.83,  7.37) -- ( 59.97,  7.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 59.97,  7.45) -- ( 60.12,  7.47);
+\definecolor{drawColor}{RGB}{0,27,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.12,  7.47) -- ( 60.26,  7.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.26,  7.58) -- ( 60.40,  7.48);
+\definecolor{drawColor}{RGB}{0,31,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.40,  7.48) -- ( 60.54,  7.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.54,  7.62) -- ( 60.68,  7.57);
+\definecolor{drawColor}{RGB}{0,35,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.68,  7.57) -- ( 60.83,  7.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.83,  7.62) -- ( 60.97,  7.72);
+\definecolor{drawColor}{RGB}{0,39,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 60.97,  7.72) -- ( 61.11,  7.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.11,  7.74) -- ( 61.25,  7.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.25,  7.76) -- ( 61.39,  7.70);
+\definecolor{drawColor}{RGB}{0,44,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.39,  7.70) -- ( 61.53,  7.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.53,  7.83) -- ( 61.68,  7.84);
+\definecolor{drawColor}{RGB}{0,48,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.68,  7.84) -- ( 61.82,  7.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.82,  7.82) -- ( 61.96,  7.92);
+\definecolor{drawColor}{RGB}{0,52,255}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 61.96,  7.92) -- ( 62.10,  7.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.10,  7.90) -- ( 62.24,  8.03);
+\definecolor{drawColor}{RGB}{0,56,249}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.24,  8.03) -- ( 62.39,  7.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.39,  7.97) -- ( 62.53,  8.00);
+\definecolor{drawColor}{RGB}{0,61,235}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.53,  8.00) -- ( 62.67,  8.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.67,  8.08) -- ( 62.81,  8.06);
+\definecolor{drawColor}{RGB}{0,65,221}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.81,  8.06) -- ( 62.95,  8.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 62.95,  8.17) -- ( 63.09,  8.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.09,  8.18) -- ( 63.24,  8.27);
+\definecolor{drawColor}{RGB}{0,69,208}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.24,  8.27) -- ( 63.38,  8.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.38,  8.27) -- ( 63.52,  8.21);
+\definecolor{drawColor}{RGB}{0,73,195}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.52,  8.21) -- ( 63.66,  8.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.66,  8.23) -- ( 63.80,  8.27);
+\definecolor{drawColor}{RGB}{0,77,184}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.80,  8.27) -- ( 63.95,  8.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 63.95,  8.37) -- ( 64.09,  8.36);
+\definecolor{drawColor}{RGB}{0,81,172}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.09,  8.36) -- ( 64.23,  8.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.23,  8.27) -- ( 64.37,  8.44);
+\definecolor{drawColor}{RGB}{0,86,162}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.37,  8.44) -- ( 64.51,  8.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.51,  8.48) -- ( 64.65,  8.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.65,  8.50) -- ( 64.80,  8.48);
+\definecolor{drawColor}{RGB}{0,89,151}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.80,  8.48) -- ( 64.94,  8.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 64.94,  8.53) -- ( 65.08,  8.57);
+\definecolor{drawColor}{RGB}{0,93,141}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.08,  8.57) -- ( 65.22,  8.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.22,  8.57) -- ( 65.36,  8.55);
+\definecolor{drawColor}{RGB}{0,97,132}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.36,  8.55) -- ( 65.50,  8.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.50,  8.61) -- ( 65.65,  8.65);
+\definecolor{drawColor}{RGB}{0,101,123}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.65,  8.65) -- ( 65.79,  8.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.79,  8.67) -- ( 65.93,  8.65);
+\definecolor{drawColor}{RGB}{0,105,114}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 65.93,  8.65) -- ( 66.07,  8.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.07,  8.76) -- ( 66.21,  8.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.21,  8.78) -- ( 66.35,  8.79);
+\definecolor{drawColor}{RGB}{0,109,106}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.35,  8.79) -- ( 66.50,  8.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.50,  8.86) -- ( 66.64,  8.95);
+\definecolor{drawColor}{RGB}{0,113,98}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.64,  8.95) -- ( 66.78,  8.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.78,  8.96) -- ( 66.92,  8.92);
+\definecolor{drawColor}{RGB}{0,117,92}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 66.92,  8.92) -- ( 67.06,  8.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.06,  8.99) -- ( 67.20,  8.99);
+\definecolor{drawColor}{RGB}{0,122,85}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.20,  8.99) -- ( 67.34,  9.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.34,  9.02) -- ( 67.49,  9.00);
+\definecolor{drawColor}{RGB}{0,127,80}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.49,  9.00) -- ( 67.63,  9.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.63,  9.11) -- ( 67.77,  9.15);
+\definecolor{drawColor}{RGB}{0,132,74}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.77,  9.15) -- ( 67.91,  9.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 67.91,  9.06) -- ( 68.06,  9.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.06,  9.08) -- ( 68.19,  9.13);
+\definecolor{drawColor}{RGB}{0,138,69}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.19,  9.13) -- ( 68.34,  9.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.34,  9.20) -- ( 68.48,  9.19);
+\definecolor{drawColor}{RGB}{0,144,64}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.48,  9.19) -- ( 68.62,  9.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.62,  9.16) -- ( 68.76,  9.18);
+\definecolor{drawColor}{RGB}{0,149,59}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.76,  9.18) -- ( 68.90,  9.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 68.90,  9.28) -- ( 69.04,  9.31);
+\definecolor{drawColor}{RGB}{0,156,55}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.04,  9.31) -- ( 69.18,  9.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.18,  9.21) -- ( 69.33,  9.18);
+\definecolor{drawColor}{RGB}{0,162,50}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.33,  9.18) -- ( 69.47,  9.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.47,  9.27) -- ( 69.61,  9.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.61,  9.31) -- ( 69.75,  9.30);
+\definecolor{drawColor}{RGB}{0,169,46}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.75,  9.30) -- ( 69.89,  9.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 69.89,  9.39) -- ( 70.03,  9.33);
+\definecolor{drawColor}{RGB}{0,175,42}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.03,  9.33) -- ( 70.17,  9.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.17,  9.40) -- ( 70.32,  9.39);
+\definecolor{drawColor}{RGB}{0,183,37}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.32,  9.39) -- ( 70.46,  9.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.46,  9.39) -- ( 70.60,  9.39);
+\definecolor{drawColor}{RGB}{0,190,33}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.60,  9.39) -- ( 70.74,  9.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.74,  9.46) -- ( 70.88,  9.43);
+\definecolor{drawColor}{RGB}{0,198,28}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 70.88,  9.43) -- ( 71.02,  9.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.02,  9.38) -- ( 71.16,  9.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.16,  9.46) -- ( 71.31,  9.48);
+\definecolor{drawColor}{RGB}{0,206,24}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.31,  9.48) -- ( 71.45,  9.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.45,  9.46) -- ( 71.59,  9.44);
+\definecolor{drawColor}{RGB}{0,214,20}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.59,  9.44) -- ( 71.73,  9.44);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.73,  9.44) -- ( 71.87,  9.54);
+\definecolor{drawColor}{RGB}{0,222,16}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 71.87,  9.54) -- ( 72.01,  9.42);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.01,  9.42) -- ( 72.15,  9.51);
+\definecolor{drawColor}{RGB}{0,230,12}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.15,  9.51) -- ( 72.30,  9.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.30,  9.53) -- ( 72.44,  9.61);
+\definecolor{drawColor}{RGB}{0,238,8}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.44,  9.61) -- ( 72.58,  9.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.58,  9.51) -- ( 72.72,  9.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.72,  9.56) -- ( 72.86,  9.49);
+\definecolor{drawColor}{RGB}{0,246,5}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 72.86,  9.49) -- ( 73.00,  9.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.00,  9.63) -- ( 73.14,  9.58);
+\definecolor{drawColor}{RGB}{0,255,2}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.14,  9.58) -- ( 73.28,  9.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.28,  9.60) -- ( 73.43,  9.63);
+\definecolor{drawColor}{RGB}{0,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.43,  9.63) -- ( 73.57,  9.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.57,  9.61) -- ( 73.71,  9.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.71,  9.62) -- ( 73.85,  9.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.85,  9.67) -- ( 73.99,  9.72);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 73.99,  9.72) -- ( 74.13,  9.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.13,  9.63) -- ( 74.27,  9.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.27,  9.65) -- ( 74.42,  9.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.42,  9.71) -- ( 74.56,  9.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.56,  9.74) -- ( 74.70,  9.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.70,  9.78) -- ( 74.84,  9.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.84,  9.76) -- ( 74.98,  9.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 74.98,  9.71) -- ( 75.12,  9.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.12,  9.90) -- ( 75.26,  9.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.26,  9.83) -- ( 75.40,  9.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.40,  9.92) -- ( 75.54,  9.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.54,  9.94) -- ( 75.68,  9.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.68,  9.89) -- ( 75.82,  9.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.82,  9.92) -- ( 75.97,  9.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 75.97,  9.98) -- ( 76.11,  9.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.11,  9.99) -- ( 76.25, 10.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.25, 10.04) -- ( 76.39, 10.00);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.39, 10.00) -- ( 76.53, 10.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.53, 10.09) -- ( 76.67, 10.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.67, 10.19) -- ( 76.81, 10.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.81, 10.17) -- ( 76.95, 10.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 76.95, 10.23) -- ( 77.09, 10.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.09, 10.25) -- ( 77.24, 10.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.24, 10.22) -- ( 77.38, 10.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.38, 10.37) -- ( 77.52, 10.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.52, 10.37) -- ( 77.66, 10.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.66, 10.41) -- ( 77.80, 10.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.80, 10.46) -- ( 77.94, 10.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 77.94, 10.57) -- ( 78.08, 10.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.08, 10.64) -- ( 78.22, 10.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.22, 10.61) -- ( 78.36, 10.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.36, 10.66) -- ( 78.51, 10.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.51, 10.80) -- ( 78.64, 10.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.64, 10.90) -- ( 78.79, 11.00);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.79, 11.00) -- ( 78.93, 11.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 78.93, 11.11) -- ( 79.07, 11.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.07, 11.02) -- ( 79.21, 11.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.21, 11.12) -- ( 79.35, 11.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.35, 11.20) -- ( 79.49, 11.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.49, 11.17) -- ( 79.63, 11.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.63, 11.35) -- ( 79.77, 11.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.77, 11.47) -- ( 79.91, 11.44);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 79.91, 11.44) -- ( 80.05, 11.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.05, 11.67) -- ( 80.19, 11.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.19, 11.76) -- ( 80.34, 11.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.34, 11.73) -- ( 80.48, 11.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.48, 11.88) -- ( 80.62, 11.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.62, 11.98) -- ( 80.76, 12.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.76, 12.06) -- ( 80.90, 12.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 80.90, 12.10) -- ( 81.04, 12.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.04, 12.21) -- ( 81.18, 12.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.18, 12.31) -- ( 81.32, 12.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.32, 12.30) -- ( 81.46, 12.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.46, 12.53) -- ( 81.60, 12.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.60, 12.65) -- ( 81.74, 12.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.74, 12.68) -- ( 81.88, 12.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 81.88, 12.87) -- ( 82.02, 13.03);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.02, 13.03) -- ( 82.17, 12.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.17, 12.97) -- ( 82.31, 13.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.31, 13.18) -- ( 82.45, 13.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.45, 13.24) -- ( 82.59, 13.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.59, 13.40) -- ( 82.73, 13.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.73, 13.53) -- ( 82.87, 13.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 82.87, 13.68) -- ( 83.01, 13.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.01, 13.87) -- ( 83.15, 14.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.15, 14.04) -- ( 83.29, 14.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.29, 14.15) -- ( 83.43, 14.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.43, 14.20) -- ( 83.57, 14.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.57, 14.51) -- ( 83.71, 14.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.71, 14.50) -- ( 83.85, 14.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.85, 14.65) -- ( 83.99, 14.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 83.99, 14.80) -- ( 84.13, 14.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.13, 14.92) -- ( 84.27, 15.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.27, 15.11) -- ( 84.42, 15.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.42, 15.32) -- ( 84.56, 15.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.56, 15.49) -- ( 84.70, 15.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.70, 15.62) -- ( 84.84, 15.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.84, 15.78) -- ( 84.98, 15.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 84.98, 15.92) -- ( 85.12, 16.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.12, 16.06) -- ( 85.26, 16.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.26, 16.24) -- ( 85.40, 16.45);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.40, 16.45) -- ( 85.54, 16.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.54, 16.67) -- ( 85.68, 16.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.68, 16.85) -- ( 85.82, 17.07);
+\definecolor{drawColor}{RGB}{6,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.82, 17.07) -- ( 85.96, 17.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 85.96, 17.16) -- ( 86.10, 17.38);
+\definecolor{drawColor}{RGB}{18,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.10, 17.38) -- ( 86.24, 17.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.24, 17.55) -- ( 86.38, 17.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.38, 17.77) -- ( 86.52, 17.92);
+\definecolor{drawColor}{RGB}{31,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.52, 17.92) -- ( 86.66, 18.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.66, 18.02) -- ( 86.80, 18.28);
+\definecolor{drawColor}{RGB}{44,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.80, 18.28) -- ( 86.94, 18.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 86.94, 18.61) -- ( 87.08, 18.79);
+\definecolor{drawColor}{RGB}{58,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.08, 18.79) -- ( 87.22, 18.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.22, 18.97) -- ( 87.36, 19.23);
+\definecolor{drawColor}{RGB}{72,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.36, 19.23) -- ( 87.51, 19.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.51, 19.25) -- ( 87.65, 19.48);
+\definecolor{drawColor}{RGB}{87,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.65, 19.48) -- ( 87.79, 19.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.79, 19.68) -- ( 87.93, 19.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 87.93, 19.89) -- ( 88.07, 20.09);
+\definecolor{drawColor}{RGB}{101,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.07, 20.09) -- ( 88.21, 20.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.21, 20.35) -- ( 88.35, 20.53);
+\definecolor{drawColor}{RGB}{116,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.35, 20.53) -- ( 88.49, 20.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.49, 20.77) -- ( 88.63, 20.97);
+\definecolor{drawColor}{RGB}{131,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.63, 20.97) -- ( 88.77, 21.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.77, 21.10) -- ( 88.91, 21.37);
+\definecolor{drawColor}{RGB}{145,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 88.91, 21.37) -- ( 89.05, 21.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.05, 21.48) -- ( 89.19, 21.79);
+\definecolor{drawColor}{RGB}{160,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.19, 21.79) -- ( 89.33, 22.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.33, 22.08) -- ( 89.47, 22.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.47, 22.19) -- ( 89.61, 22.43);
+\definecolor{drawColor}{RGB}{176,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.61, 22.43) -- ( 89.75, 22.63);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.75, 22.63) -- ( 89.89, 22.84);
+\definecolor{drawColor}{RGB}{192,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 89.89, 22.84) -- ( 90.03, 23.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.03, 23.04) -- ( 90.17, 23.22);
+\definecolor{drawColor}{RGB}{208,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.17, 23.22) -- ( 90.31, 23.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.31, 23.56) -- ( 90.45, 23.70);
+\definecolor{drawColor}{RGB}{225,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.45, 23.70) -- ( 90.59, 23.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.59, 23.86) -- ( 90.73, 24.17);
+\definecolor{drawColor}{RGB}{242,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.73, 24.17) -- ( 90.87, 24.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 90.87, 24.48) -- ( 91.01, 24.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.01, 24.66) -- ( 91.15, 24.86);
+\definecolor{drawColor}{RGB}{255,255,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.15, 24.86) -- ( 91.29, 25.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.29, 25.18) -- ( 91.43, 25.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.43, 25.49) -- ( 91.57, 25.81);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.57, 25.81) -- ( 91.71, 25.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.71, 25.87) -- ( 91.85, 26.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.85, 26.16) -- ( 91.99, 26.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 91.99, 26.49) -- ( 92.13, 26.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.13, 26.70) -- ( 92.27, 27.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.27, 27.07) -- ( 92.41, 27.32);
+\definecolor{drawColor}{RGB}{255,247,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.41, 27.32) -- ( 92.55, 27.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.55, 27.46) -- ( 92.69, 27.90);
+\definecolor{drawColor}{RGB}{255,240,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.69, 27.90) -- ( 92.83, 28.20);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.83, 28.20) -- ( 92.97, 28.55);
+\definecolor{drawColor}{RGB}{255,232,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 92.97, 28.55) -- ( 93.11, 28.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.11, 28.80) -- ( 93.25, 29.21);
+\definecolor{drawColor}{RGB}{255,224,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.25, 29.21) -- ( 93.39, 29.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.39, 29.53) -- ( 93.53, 29.91);
+\definecolor{drawColor}{RGB}{255,216,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.53, 29.91) -- ( 93.67, 30.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.67, 30.25) -- ( 93.81, 30.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.81, 30.58) -- ( 93.95, 30.96);
+\definecolor{drawColor}{RGB}{255,207,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 93.95, 30.96) -- ( 94.09, 31.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.09, 31.31) -- ( 94.23, 31.54);
+\definecolor{drawColor}{RGB}{255,199,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.23, 31.54) -- ( 94.37, 32.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.37, 32.05) -- ( 94.51, 32.58);
+\definecolor{drawColor}{RGB}{255,191,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.51, 32.58) -- ( 94.65, 33.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.65, 33.07) -- ( 94.79, 33.34);
+\definecolor{drawColor}{RGB}{255,182,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.79, 33.34) -- ( 94.93, 33.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 94.93, 33.85) -- ( 95.07, 34.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.07, 34.24) -- ( 95.21, 34.69);
+\definecolor{drawColor}{RGB}{255,174,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.21, 34.69) -- ( 95.35, 35.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.35, 35.04) -- ( 95.49, 35.67);
+\definecolor{drawColor}{RGB}{255,166,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.49, 35.67) -- ( 95.63, 36.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.63, 36.24) -- ( 95.77, 36.79);
+\definecolor{drawColor}{RGB}{255,159,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.77, 36.79) -- ( 95.91, 37.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 95.91, 37.22) -- ( 96.05, 37.73);
+\definecolor{drawColor}{RGB}{255,151,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.05, 37.73) -- ( 96.19, 38.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.19, 38.38) -- ( 96.33, 38.79);
+\definecolor{drawColor}{RGB}{255,143,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.33, 38.79) -- ( 96.47, 39.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.47, 39.34) -- ( 96.61, 39.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.61, 39.86) -- ( 96.75, 40.56);
+\definecolor{drawColor}{RGB}{255,136,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.75, 40.56) -- ( 96.89, 40.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 96.89, 40.99) -- ( 97.03, 41.71);
+\definecolor{drawColor}{RGB}{255,129,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.03, 41.71) -- ( 97.17, 42.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.17, 42.38) -- ( 97.31, 42.86);
+\definecolor{drawColor}{RGB}{255,121,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.31, 42.86) -- ( 97.45, 43.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.45, 43.28) -- ( 97.59, 44.01);
+\definecolor{drawColor}{RGB}{255,114,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.59, 44.01) -- ( 97.73, 44.91);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.73, 44.91) -- ( 97.87, 45.31);
+\definecolor{drawColor}{RGB}{255,107,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 97.87, 45.31) -- ( 98.01, 46.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.01, 46.06) -- ( 98.15, 46.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.15, 46.95) -- ( 98.29, 47.38);
+\definecolor{drawColor}{RGB}{255,99,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.29, 47.38) -- ( 98.43, 48.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.43, 48.09) -- ( 98.57, 48.83);
+\definecolor{drawColor}{RGB}{255,92,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.57, 48.83) -- ( 98.71, 49.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.71, 49.78) -- ( 98.85, 50.28);
+\definecolor{drawColor}{RGB}{255,85,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.85, 50.28) -- ( 98.99, 51.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 98.99, 51.27) -- ( 99.13, 51.92);
+\definecolor{drawColor}{RGB}{255,78,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.13, 51.92) -- ( 99.27, 52.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.27, 52.47) -- ( 99.41, 53.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.41, 53.28) -- ( 99.55, 54.02);
+\definecolor{drawColor}{RGB}{255,72,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.55, 54.02) -- ( 99.68, 54.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.68, 54.69) -- ( 99.82, 55.59);
+\definecolor{drawColor}{RGB}{255,65,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.82, 55.59) -- ( 99.96, 56.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] ( 99.96, 56.32) -- (100.10, 57.68);
+\definecolor{drawColor}{RGB}{255,59,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.10, 57.68) -- (100.24, 58.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.24, 58.32) -- (100.38, 58.95);
+\definecolor{drawColor}{RGB}{255,52,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.38, 58.95) -- (100.52, 58.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.52, 58.99) -- (100.66, 59.86);
+\definecolor{drawColor}{RGB}{255,46,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.66, 59.86) -- (100.80, 60.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.80, 60.68) -- (100.94, 61.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (100.94, 61.39) -- (101.08, 62.50);
+\definecolor{drawColor}{RGB}{255,41,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.08, 62.50) -- (101.22, 63.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.22, 63.52) -- (101.36, 63.84);
+\definecolor{drawColor}{RGB}{255,35,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.36, 63.84) -- (101.50, 63.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.50, 63.65) -- (101.64, 64.74);
+\definecolor{drawColor}{RGB}{255,30,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.64, 64.74) -- (101.78, 65.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.78, 65.97) -- (101.92, 65.78);
+\definecolor{drawColor}{RGB}{255,24,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (101.92, 65.78) -- (102.06, 66.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.06, 66.94) -- (102.19, 67.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.19, 67.51) -- (102.33, 67.64);
+\definecolor{drawColor}{RGB}{255,19,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.33, 67.64) -- (102.47, 68.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.47, 68.73) -- (102.61, 69.71);
+\definecolor{drawColor}{RGB}{255,15,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.61, 69.71) -- (102.75, 68.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.75, 68.93) -- (102.89, 70.02);
+\definecolor{drawColor}{RGB}{255,11,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (102.89, 70.02) -- (103.03, 69.91);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.03, 69.91) -- (103.17, 71.96);
+\definecolor{drawColor}{RGB}{255,7,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.17, 71.96) -- (103.31, 71.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.31, 71.01) -- (103.45, 71.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.45, 71.76) -- (103.59, 70.85);
+\definecolor{drawColor}{RGB}{255,3,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.59, 70.85) -- (103.73, 72.42);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.73, 72.42) -- (103.87, 72.66);
+\definecolor{drawColor}{RGB}{255,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (103.87, 72.66) -- (104.01, 72.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.01, 72.73) -- (104.15, 72.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.15, 72.24) -- (104.29, 73.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.29, 73.04) -- (104.43, 73.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.43, 73.04) -- (104.57, 72.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.57, 72.43) -- (104.71, 72.91);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.71, 72.91) -- (104.84, 72.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.84, 72.83) -- (104.98, 72.13);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (104.98, 72.13) -- (105.12, 72.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.12, 72.17) -- (105.26, 72.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.26, 72.88) -- (105.40, 73.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.40, 73.22) -- (105.54, 72.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.54, 72.87) -- (105.68, 71.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.68, 71.12) -- (105.82, 71.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.82, 71.93) -- (105.96, 71.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (105.96, 71.77) -- (106.10, 70.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.10, 70.76) -- (106.23, 71.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.23, 71.86) -- (106.37, 71.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.37, 71.11) -- (106.51, 71.42);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.51, 71.42) -- (106.65, 70.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.65, 70.02) -- (106.79, 70.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.79, 70.23) -- (106.93, 70.84);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (106.93, 70.84) -- (107.07, 70.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.07, 70.30) -- (107.21, 70.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.21, 70.12) -- (107.35, 70.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.35, 70.86) -- (107.49, 69.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.49, 69.33) -- (107.63, 68.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.63, 68.70) -- (107.77, 69.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.77, 69.04) -- (107.91, 68.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (107.91, 68.16) -- (108.04, 67.79);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.04, 67.79) -- (108.18, 67.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.18, 67.77) -- (108.32, 68.13);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.32, 68.13) -- (108.46, 67.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.46, 67.22) -- (108.60, 67.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.60, 67.64) -- (108.74, 67.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.74, 67.22) -- (108.88, 67.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (108.88, 67.40) -- (109.02, 67.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.02, 67.07) -- (109.16, 66.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.16, 66.67) -- (109.30, 66.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.30, 66.70) -- (109.43, 66.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.43, 66.86) -- (109.57, 66.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.57, 66.47) -- (109.71, 66.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.71, 66.16) -- (109.85, 66.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.85, 66.56) -- (109.99, 66.26);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (109.99, 66.26) -- (110.13, 66.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.13, 66.25) -- (110.27, 66.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.27, 66.38) -- (110.41, 66.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.41, 66.54) -- (110.55, 67.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.55, 67.27) -- (110.68, 66.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.68, 66.39) -- (110.82, 67.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.82, 67.82) -- (110.96, 67.35);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (110.96, 67.35) -- (111.10, 67.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.10, 67.96) -- (111.24, 67.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.24, 67.24) -- (111.38, 67.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.38, 67.48) -- (111.52, 67.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.52, 67.52) -- (111.66, 68.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.66, 68.18) -- (111.80, 67.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.80, 67.98) -- (111.93, 68.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (111.93, 68.99) -- (112.07, 69.41);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.07, 69.41) -- (112.21, 69.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.21, 69.56) -- (112.35, 70.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.35, 70.38) -- (112.49, 70.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.49, 70.70) -- (112.63, 70.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.63, 70.21) -- (112.77, 69.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.77, 69.70) -- (112.91, 71.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (112.91, 71.62) -- (113.05, 71.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.05, 71.56) -- (113.18, 72.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.18, 72.34) -- (113.32, 72.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.32, 72.56) -- (113.46, 73.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.46, 73.92) -- (113.60, 75.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.60, 75.40) -- (113.74, 74.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.74, 74.39) -- (113.88, 74.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (113.88, 74.98) -- (114.02, 75.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.02, 75.78) -- (114.16, 76.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.16, 76.10) -- (114.29, 75.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.29, 75.94) -- (114.43, 77.19);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.43, 77.19) -- (114.57, 77.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.57, 77.54) -- (114.71, 77.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.71, 77.32) -- (114.85, 78.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.85, 78.67) -- (114.99, 79.01);
+\definecolor{drawColor}{RGB}{246,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (114.99, 79.01) -- (115.13, 80.62);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.13, 80.62) -- (115.26, 79.76);
+\definecolor{drawColor}{RGB}{234,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.26, 79.76) -- (115.40, 80.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.40, 80.89) -- (115.54, 82.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.54, 82.31) -- (115.68, 83.27);
+\definecolor{drawColor}{RGB}{223,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.68, 83.27) -- (115.82, 84.66);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.82, 84.66) -- (115.96, 83.63);
+\definecolor{drawColor}{RGB}{212,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (115.96, 83.63) -- (116.10, 85.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.10, 85.57) -- (116.24, 83.28);
+\definecolor{drawColor}{RGB}{201,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.24, 83.28) -- (116.37, 85.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.37, 85.94) -- (116.51, 88.54);
+\definecolor{drawColor}{RGB}{191,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.51, 88.54) -- (116.65, 89.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.65, 89.40) -- (116.79, 88.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.79, 88.54) -- (116.93, 88.79);
+\definecolor{drawColor}{RGB}{181,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (116.93, 88.79) -- (117.07, 89.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.07, 89.69) -- (117.20, 88.54);
+\definecolor{drawColor}{RGB}{171,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.20, 88.54) -- (117.34, 87.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.34, 87.76) -- (117.48, 87.55);
+\definecolor{drawColor}{RGB}{162,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.48, 87.55) -- (117.62, 89.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.62, 89.52) -- (117.76, 90.60);
+\definecolor{drawColor}{RGB}{153,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.76, 90.60) -- (117.90, 91.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (117.90, 91.18) -- (118.03, 90.86);
+\definecolor{drawColor}{RGB}{145,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.03, 90.86) -- (118.17, 91.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.17, 91.70) -- (118.31, 93.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.31, 93.50) -- (118.45, 93.99);
+\definecolor{drawColor}{RGB}{137,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.45, 93.99) -- (118.59, 92.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.59, 92.99) -- (118.73, 90.42);
+\definecolor{drawColor}{RGB}{129,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.73, 90.42) -- (118.87, 91.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (118.87, 91.92) -- (119.00, 95.42);
+\definecolor{drawColor}{RGB}{122,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.00, 95.42) -- (119.14, 93.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.14, 93.60) -- (119.28, 94.45);
+\definecolor{drawColor}{RGB}{115,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.28, 94.45) -- (119.42, 94.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.42, 94.29) -- (119.56, 96.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.56, 96.32) -- (119.69, 98.59);
+\definecolor{drawColor}{RGB}{108,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.69, 98.59) -- (119.83, 94.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.83, 94.05) -- (119.97, 93.82);
+\definecolor{drawColor}{RGB}{102,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (119.97, 93.82) -- (120.11, 91.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.11, 91.76) -- (120.25,100.72);
+\definecolor{drawColor}{RGB}{96,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.25,100.72) -- (120.39, 93.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.39, 93.25) -- (120.53, 93.21);
+\definecolor{drawColor}{RGB}{91,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.53, 93.21) -- (120.66, 96.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.66, 96.68) -- (120.80, 96.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.80, 96.83) -- (120.94, 95.25);
+\definecolor{drawColor}{RGB}{85,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (120.94, 95.25) -- (121.08, 95.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.08, 95.02) -- (121.21, 94.33);
+\definecolor{drawColor}{RGB}{80,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.21, 94.33) -- (121.35, 97.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.35, 97.32) -- (121.49, 93.64);
+\definecolor{drawColor}{RGB}{75,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.49, 93.64) -- (121.63, 97.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.63, 97.55) -- (121.77, 97.64);
+\definecolor{drawColor}{RGB}{71,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.77, 97.64) -- (121.91, 92.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (121.91, 92.58) -- (122.05, 93.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.05, 93.27) -- (122.18, 93.77);
+\definecolor{drawColor}{RGB}{66,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.18, 93.77) -- (122.32, 94.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.32, 94.95) -- (122.46, 91.04);
+\definecolor{drawColor}{RGB}{62,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.46, 91.04) -- (122.60, 91.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.60, 91.96) -- (122.74, 91.47);
+\definecolor{drawColor}{RGB}{58,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.74, 91.47) -- (122.87, 90.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (122.87, 90.49) -- (123.01, 89.29);
+\definecolor{drawColor}{RGB}{55,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.01, 89.29) -- (123.15, 87.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.15, 87.37) -- (123.29, 88.57);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.29, 88.57) -- (123.43, 87.19);
+\definecolor{drawColor}{RGB}{51,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.43, 87.19) -- (123.56, 87.13);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.56, 87.13) -- (123.70, 86.03);
+\definecolor{drawColor}{RGB}{48,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.70, 86.03) -- (123.84, 83.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.84, 83.04) -- (123.98, 82.22);
+\definecolor{drawColor}{RGB}{45,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (123.98, 82.22) -- (124.12, 80.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.12, 80.47) -- (124.26, 82.06);
+\definecolor{drawColor}{RGB}{42,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.26, 82.06) -- (124.39, 79.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.39, 79.14) -- (124.53, 77.56);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.53, 77.56) -- (124.67, 76.17);
+\definecolor{drawColor}{RGB}{39,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.67, 76.17) -- (124.81, 75.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.81, 75.28) -- (124.94, 72.43);
+\definecolor{drawColor}{RGB}{37,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (124.94, 72.43) -- (125.08, 72.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.08, 72.33) -- (125.22, 69.90);
+\definecolor{drawColor}{RGB}{34,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.22, 69.90) -- (125.36, 68.36);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.36, 68.36) -- (125.50, 65.96);
+\definecolor{drawColor}{RGB}{32,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.50, 65.96) -- (125.63, 64.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.63, 64.48) -- (125.77, 63.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.77, 63.17) -- (125.91, 61.13);
+\definecolor{drawColor}{RGB}{30,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (125.91, 61.13) -- (126.05, 58.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.05, 58.67) -- (126.19, 57.31);
+\definecolor{drawColor}{RGB}{28,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.19, 57.31) -- (126.33, 55.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.33, 55.95) -- (126.46, 53.98);
+\definecolor{drawColor}{RGB}{26,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.46, 53.98) -- (126.60, 52.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.60, 52.11) -- (126.74, 50.28);
+\definecolor{drawColor}{RGB}{24,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.74, 50.28) -- (126.87, 48.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (126.87, 48.82) -- (127.01, 47.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.01, 47.09) -- (127.15, 45.58);
+\definecolor{drawColor}{RGB}{22,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.15, 45.58) -- (127.29, 44.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.29, 44.01) -- (127.43, 42.66);
+\definecolor{drawColor}{RGB}{21,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.43, 42.66) -- (127.56, 41.25);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.56, 41.25) -- (127.70, 39.95);
+\definecolor{drawColor}{RGB}{19,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.70, 39.95) -- (127.84, 38.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.84, 38.30) -- (127.98, 37.06);
+\definecolor{drawColor}{RGB}{18,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (127.98, 37.06) -- (128.12, 35.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.12, 35.80) -- (128.26, 34.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.26, 34.48) -- (128.39, 33.50);
+\definecolor{drawColor}{RGB}{16,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.39, 33.50) -- (128.53, 32.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.53, 32.29) -- (128.67, 31.23);
+\definecolor{drawColor}{RGB}{15,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.67, 31.23) -- (128.80, 30.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.80, 30.10) -- (128.94, 29.13);
+\definecolor{drawColor}{RGB}{14,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (128.94, 29.13) -- (129.08, 28.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.08, 28.14) -- (129.22, 27.19);
+\definecolor{drawColor}{RGB}{13,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.22, 27.19) -- (129.36, 26.38);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.36, 26.38) -- (129.49, 25.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.49, 25.48) -- (129.63, 24.60);
+\definecolor{drawColor}{RGB}{12,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.63, 24.60) -- (129.77, 23.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.77, 23.86) -- (129.91, 23.13);
+\definecolor{drawColor}{RGB}{11,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (129.91, 23.13) -- (130.04, 22.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.04, 22.32) -- (130.18, 21.74);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.18, 21.74) -- (130.32, 21.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.32, 21.02) -- (130.46, 20.42);
+\definecolor{drawColor}{RGB}{10,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.46, 20.42) -- (130.59, 19.70);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.59, 19.70) -- (130.73, 19.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.73, 19.16) -- (130.87, 18.63);
+\definecolor{drawColor}{RGB}{9,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (130.87, 18.63) -- (131.01, 18.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.01, 18.08) -- (131.14, 17.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.14, 17.61) -- (131.28, 17.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.28, 17.09) -- (131.42, 16.67);
+\definecolor{drawColor}{RGB}{8,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.42, 16.67) -- (131.56, 16.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.56, 16.23) -- (131.69, 15.81);
+\definecolor{drawColor}{RGB}{7,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.69, 15.81) -- (131.83, 15.42);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.83, 15.42) -- (131.97, 15.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (131.97, 15.06) -- (132.11, 14.73);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.11, 14.73) -- (132.25, 14.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.25, 14.32) -- (132.38, 14.10);
+\definecolor{drawColor}{RGB}{6,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.38, 14.10) -- (132.52, 13.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.52, 13.67) -- (132.66, 13.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.66, 13.47) -- (132.79, 13.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.79, 13.04) -- (132.93, 12.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (132.93, 12.89) -- (133.07, 12.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.07, 12.51) -- (133.21, 12.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.21, 12.32) -- (133.34, 11.98);
+\definecolor{drawColor}{RGB}{5,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.34, 11.98) -- (133.48, 11.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.48, 11.83) -- (133.62, 11.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.62, 11.60) -- (133.76, 11.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.76, 11.32) -- (133.89, 11.07);
+\definecolor{drawColor}{RGB}{4,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (133.89, 11.07) -- (134.03, 11.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.03, 11.01) -- (134.17, 10.79);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.17, 10.79) -- (134.31, 10.58);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.31, 10.58) -- (134.44, 10.47);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.44, 10.47) -- (134.58, 10.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.58, 10.33) -- (134.72, 10.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.72, 10.14) -- (134.85, 10.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.85, 10.06) -- (134.99,  9.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (134.99,  9.85) -- (135.13,  9.63);
+\definecolor{drawColor}{RGB}{3,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.13,  9.63) -- (135.27,  9.54);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.27,  9.54) -- (135.40,  9.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.40,  9.51) -- (135.54,  9.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.54,  9.33) -- (135.68,  9.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.68,  9.23) -- (135.82,  9.12);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.82,  9.12) -- (135.95,  8.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (135.95,  8.93) -- (136.09,  8.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.09,  8.87) -- (136.23,  8.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.23,  8.82) -- (136.37,  8.68);
+\definecolor{drawColor}{RGB}{2,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.37,  8.68) -- (136.50,  8.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.50,  8.64) -- (136.64,  8.50);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.64,  8.50) -- (136.78,  8.43);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.78,  8.43) -- (136.92,  8.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (136.92,  8.39) -- (137.05,  8.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.05,  8.30) -- (137.19,  8.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.19,  8.21) -- (137.32,  8.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.32,  8.08) -- (137.46,  7.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.46,  7.98) -- (137.60,  7.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.60,  7.99) -- (137.74,  7.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.74,  7.96) -- (137.87,  7.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (137.87,  7.90) -- (138.01,  7.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.01,  7.69) -- (138.15,  7.81);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.15,  7.81) -- (138.28,  7.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.28,  7.59) -- (138.42,  7.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.42,  7.59) -- (138.56,  7.58);
+\definecolor{drawColor}{RGB}{1,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.56,  7.58) -- (138.70,  7.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.70,  7.40) -- (138.83,  7.39);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.83,  7.39) -- (138.97,  7.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (138.97,  7.34) -- (139.11,  7.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.11,  7.23) -- (139.25,  7.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.25,  7.16) -- (139.38,  7.14);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.38,  7.14) -- (139.52,  7.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.52,  7.18) -- (139.65,  7.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.65,  7.07) -- (139.79,  7.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.79,  7.02) -- (139.93,  7.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (139.93,  7.04) -- (140.06,  6.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.06,  6.93) -- (140.20,  6.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.20,  6.95) -- (140.34,  6.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.34,  6.92) -- (140.48,  6.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.48,  6.86) -- (140.61,  6.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.61,  6.76) -- (140.75,  6.67);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.75,  6.67) -- (140.89,  6.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (140.89,  6.76) -- (141.02,  6.60);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.02,  6.60) -- (141.16,  6.61);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.16,  6.61) -- (141.30,  6.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.30,  6.49) -- (141.44,  6.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.44,  6.55) -- (141.57,  6.49);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.57,  6.49) -- (141.71,  6.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.71,  6.46) -- (141.85,  6.36);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.85,  6.36) -- (141.98,  6.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (141.98,  6.29) -- (142.12,  6.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.12,  6.31) -- (142.25,  6.27);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.25,  6.27) -- (142.39,  6.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.39,  6.34) -- (142.53,  6.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.53,  6.30) -- (142.67,  6.17);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.67,  6.17) -- (142.80,  6.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.80,  6.22) -- (142.94,  6.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (142.94,  6.16) -- (143.08,  6.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.08,  6.16) -- (143.21,  6.04);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.21,  6.04) -- (143.35,  6.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.35,  6.08) -- (143.49,  6.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.49,  6.10) -- (143.62,  6.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.62,  6.05) -- (143.76,  6.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.76,  6.04) -- (143.90,  5.99);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (143.90,  5.99) -- (144.03,  5.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.03,  5.97) -- (144.17,  5.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.17,  5.83) -- (144.31,  5.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.31,  5.86) -- (144.44,  5.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.44,  5.76) -- (144.58,  5.86);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.58,  5.86) -- (144.72,  5.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.72,  5.85) -- (144.85,  5.91);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.85,  5.91) -- (144.99,  5.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (144.99,  5.82) -- (145.12,  5.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.12,  5.80) -- (145.26,  5.76);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.26,  5.76) -- (145.40,  5.77);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.40,  5.77) -- (145.54,  5.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.54,  5.78) -- (145.67,  5.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.67,  5.71) -- (145.81,  5.71);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.81,  5.71) -- (145.95,  5.78);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (145.95,  5.78) -- (146.08,  5.69);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.08,  5.69) -- (146.22,  5.68);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.22,  5.68) -- (146.36,  5.65);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.36,  5.65) -- (146.49,  5.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.49,  5.59) -- (146.63,  5.64);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.63,  5.64) -- (146.77,  5.46);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.77,  5.46) -- (146.90,  5.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (146.90,  5.53) -- (147.04,  5.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.04,  5.52) -- (147.18,  5.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.18,  5.59) -- (147.31,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.31,  5.51) -- (147.45,  5.53);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.45,  5.53) -- (147.58,  5.59);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.58,  5.59) -- (147.72,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.72,  5.51) -- (147.86,  5.55);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.86,  5.55) -- (147.99,  5.51);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (147.99,  5.51) -- (148.13,  5.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.13,  5.48) -- (148.26,  5.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.26,  5.40) -- (148.40,  5.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.40,  5.48) -- (148.54,  5.52);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.54,  5.52) -- (148.67,  5.33);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.67,  5.33) -- (148.81,  5.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.81,  5.40) -- (148.95,  5.30);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (148.95,  5.30) -- (149.08,  5.37);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.08,  5.37) -- (149.22,  5.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.22,  5.29) -- (149.36,  5.40);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.36,  5.40) -- (149.49,  5.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.49,  5.23) -- (149.63,  5.48);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.63,  5.48) -- (149.77,  5.32);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.77,  5.32) -- (149.90,  5.31);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (149.90,  5.31) -- (150.04,  5.16);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.04,  5.16) -- (150.17,  5.34);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.17,  5.34) -- (150.31,  5.22);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.31,  5.22) -- (150.45,  5.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.45,  5.29) -- (150.58,  5.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.58,  5.29) -- (150.72,  5.29);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.72,  5.29) -- (150.86,  5.28);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.86,  5.28) -- (150.99,  5.24);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (150.99,  5.24) -- (151.13,  5.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.13,  5.23) -- (151.27,  5.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.27,  5.15) -- (151.40,  5.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.40,  5.21) -- (151.54,  5.21);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.54,  5.21) -- (151.67,  5.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.67,  5.18) -- (151.81,  5.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.81,  5.10) -- (151.94,  5.23);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (151.94,  5.23) -- (152.08,  5.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.08,  5.11) -- (152.22,  5.13);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.22,  5.13) -- (152.35,  5.06);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.35,  5.06) -- (152.49,  5.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.49,  5.15) -- (152.62,  5.09);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.62,  5.09) -- (152.76,  5.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.76,  5.01) -- (152.90,  5.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (152.90,  5.05) -- (153.03,  5.08);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.03,  5.08) -- (153.17,  5.07);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.17,  5.07) -- (153.30,  5.18);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.30,  5.18) -- (153.44,  5.11);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.44,  5.11) -- (153.58,  5.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.58,  5.05) -- (153.71,  5.00);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.71,  5.00) -- (153.85,  5.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.85,  5.02) -- (153.99,  5.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (153.99,  5.04) -- (154.12,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.12,  4.98) -- (154.26,  4.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.26,  4.94) -- (154.39,  5.15);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.39,  5.15) -- (154.53,  5.10);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.53,  5.10) -- (154.67,  4.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.67,  4.95) -- (154.80,  4.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.80,  4.95) -- (154.94,  5.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (154.94,  5.02) -- (155.07,  4.96);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.07,  4.96) -- (155.21,  4.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.21,  4.95) -- (155.35,  4.97);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.35,  4.97) -- (155.48,  5.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.48,  5.02) -- (155.62,  4.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.62,  4.93) -- (155.75,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.75,  4.92) -- (155.89,  5.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (155.89,  5.02) -- (156.03,  5.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.03,  5.04) -- (156.16,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.16,  4.92) -- (156.29,  5.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.29,  5.01) -- (156.43,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.43,  4.98) -- (156.57,  4.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.57,  4.90) -- (156.70,  5.04);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.70,  5.04) -- (156.84,  4.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.84,  4.88) -- (156.97,  4.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (156.97,  4.95) -- (157.11,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.11,  4.98) -- (157.25,  4.87);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.25,  4.87) -- (157.38,  4.91);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.38,  4.91) -- (157.52,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.52,  4.98) -- (157.65,  4.95);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.65,  4.95) -- (157.79,  5.05);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.79,  5.05) -- (157.92,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (157.92,  4.92) -- (158.06,  4.81);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.06,  4.81) -- (158.20,  5.02);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.20,  5.02) -- (158.33,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.33,  4.98) -- (158.47,  4.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.47,  4.89) -- (158.60,  4.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.60,  4.90) -- (158.74,  4.98);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.74,  4.98) -- (158.87,  4.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (158.87,  4.94) -- (159.01,  4.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.01,  4.83) -- (159.15,  4.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.15,  4.89) -- (159.28,  4.89);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.28,  4.89) -- (159.42,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.42,  4.92) -- (159.55,  4.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.55,  4.90) -- (159.69,  4.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.69,  4.90) -- (159.82,  5.01);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.82,  5.01) -- (159.96,  5.03);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (159.96,  5.03) -- (160.10,  4.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.10,  4.88) -- (160.23,  4.82);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.23,  4.82) -- (160.37,  4.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.37,  4.93) -- (160.50,  4.93);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.50,  4.93) -- (160.64,  4.81);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.64,  4.81) -- (160.77,  4.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.77,  4.83) -- (160.91,  4.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (160.91,  4.85) -- (161.04,  4.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.04,  4.83) -- (161.18,  4.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.18,  4.83) -- (161.32,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.32,  4.92) -- (161.45,  4.94);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.45,  4.94) -- (161.59,  4.80);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.59,  4.80) -- (161.72,  4.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.72,  4.85) -- (161.86,  4.83);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.86,  4.83) -- (161.99,  4.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (161.99,  4.85) -- (162.13,  4.90);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (162.13,  4.90) -- (162.26,  4.84);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (162.26,  4.84) -- (162.40,  4.88);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (162.40,  4.88) -- (162.53,  4.85);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (162.53,  4.85) -- (162.67,  4.92);
+
+\path[draw=drawColor,line width= 1.1pt,line join=round] (162.67,  4.92) -- (162.80,  4.87);
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  1.10] at ( 85.30, 44.15) {\scriptsize\scalebox{0.95}{\chemfig[atom sep=2.0em]{[7]H_3C-N(-[6]CH_3)-[:30]*6(=-(*6(=\charge{-90:1pt=\scalebox{1.0}{\fscrp}}{S}(-[,1.0,,,draw=none]\charge{90=\scalebox{1.0}{\fscrm}}{Cl})-(*6(-=(-N(-[1]CH_3)-[6]CH_3)-=-=))--N=-))--=-)}}};
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

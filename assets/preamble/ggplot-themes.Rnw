@@ -1,0 +1,233 @@
+% https://github.com/tidyverse/ggplot2/blob/master/R/theme-defaults.r
+% https://exts.ggplot2.tidyverse.org/gallery/
+% https://github.com/jrnold/ggthemes
+% https://github.com/cttobin/ggthemr
+% https://github.com/ricardo-bion/ggtech
+% https://ggplot2-book.org/polishing.html
+% https://github.com/tidyverse/ggplot2
+
+
+<<'ggplot2-theme-fullwidth', cache=FALSE>>=
+# fullwidth() theme is for textwidth plots, and based on theme_gray()
+# PLEASE DO NOT use theme_fullwidth() directly, we have set it as the default
+# ggplot2 theme (see below)
+# https://github.com/tidyverse/ggplot2/blob/master/R/theme-defaults.r
+theme_fullwidth <- function(
+  base_size = 10,
+  base_family = "",
+  base_line_size = base_size / 20,
+  base_rect_size = base_size / 20) {
+
+  half_line <- base_size / 2
+
+  # start with theme_grey and then modify some parts
+  theme_grey(
+    base_size = base_size,
+    base_family = base_family,
+    base_line_size = base_line_size,
+    base_rect_size = base_rect_size
+  ) %+replace%
+    theme(
+      # For font sizes, use
+      # rel(1) for `base_size` aka normal size,
+      # rel(0.8) for small size, and
+      # rel(1.2) for large size.
+
+      # black axis text
+      axis.text         = element_text(size = rel(0.8), colour = "black"),
+      legend.background =  element_rect(colour = "grey85"),
+      # white background and dark border
+      panel.background  = element_rect(fill = "white", colour = NA),
+      panel.border      = element_rect(fill = NA, colour = "grey20"),
+      # remove gridlines
+      panel.grid.major  = element_blank(),
+      panel.grid.minor  = element_blank(),
+      # contour strips to match panel contour (slightly lighter fill than default)
+      strip.background  = element_rect(fill = "grey92", colour = "grey20"), # fill="grey85"
+      strip.text        = element_text(colour = "black", size = rel(0.8),
+                                       margin = margin(half_line, half_line, half_line, half_line)),
+      # match legend key to background
+      legend.key        = element_rect(fill = "white", colour = NA),
+
+      complete = TRUE)
+}
+@
+
+
+
+<<'ggplot2-theme-halfwidth', cache=FALSE>>=
+# halfwidth() theme is for 0.5*textwidth plots, and based on theme_gray()
+# https://github.com/tidyverse/ggplot2/blob/master/R/theme-defaults.r
+theme_halfwidth <- function(
+  base_size = 9,
+  base_family = "",
+  base_line_size = base_size / 20,
+  base_rect_size = base_size / 20) {
+
+  half_line <- base_size / 2
+
+  # start with theme_grey and then modify some parts
+  theme_grey(
+    base_size = base_size,
+    base_family = base_family,
+    base_line_size = base_line_size,
+    base_rect_size = base_rect_size
+  ) %+replace%
+    theme(
+      # For font sizes, use
+      # rel(1) for `base_size` aka normal size,
+      # rel(0.8) for small size, and
+      # rel(1.2) for large size.
+
+      # black axis text, slightly larger than default (0.8) for legibility
+      axis.text         = element_text(size = rel(0.9), colour = "black"),
+      legend.background =  element_rect(colour = "grey85"),
+      # white background and dark border
+      panel.background  = element_rect(fill = "white", colour = NA),
+      panel.border      = element_rect(fill = NA, colour = "grey20"),
+      # remove gridlines
+      panel.grid.major  = element_blank(),
+      panel.grid.minor  = element_blank(),
+      # contour strips to match panel contour (slightly lighter fill than default)
+      strip.background  = element_rect(fill = "grey92", colour = "grey20"), # fill="grey85"
+      strip.text        = element_text(colour = "black", size = rel(0.8),
+                                       margin = margin(half_line, half_line, half_line, half_line)),
+      # match legend key to background
+      legend.key        = element_rect(fill = "white", colour = NA),
+
+      complete = TRUE)
+}
+@
+
+
+
+<<'ggplot2-theme-defaults', cache=FALSE>>=
+# set your default theme for thesis here
+# theme_default() is effectively just a rename of the chosen theme
+theme_default <- function(
+   base_size = 10,
+   base_family = "",
+   base_line_size = base_size / 20,
+   base_rect_size = base_size / 20) {
+
+   half_line <- base_size / 2
+
+   theme_fullwidth(
+      base_size = base_size,
+      base_family = base_family,
+      base_line_size = base_line_size,
+      base_rect_size = base_rect_size
+   )
+}
+@
+
+
+
+<<'ggplot2-theme-plot-in-margin', cache=FALSE>>=
+theme_plot_in_margin <- function(
+   base_size = 8,
+   base_family = "",
+   base_line_size = base_size / 20,
+   base_rect_size = base_size / 20) {
+
+   half_line <- base_size / 2
+
+   # base it on theme_grey
+   theme_grey(
+      base_size = base_size,
+      base_family = base_family,
+      base_line_size = base_line_size,
+      base_rect_size = base_rect_size
+   ) %+replace%
+      theme(
+         # no grid lines in margin plots, no room for them
+         panel.grid.major = element_blank(),
+         panel.grid.minor = element_blank(),
+
+         # l = -1 was required to completely fill the space with plot panel
+         # b = 0 because we are making room for x-axis title on the outside
+         plot.margin = margin(t = 0, r = 0, b = 0, l = -1, "mm"),
+
+         # x-axis title kept outside the plot panel, adjusted closer to axis
+         axis.title.x     = element_text(size = rel(0.8), vjust = 2.0),
+
+         axis.text        = element_text(size = rel(0.8), colour = "black"),
+
+         # no legends
+         legend.position  = "none",
+
+         complete = TRUE)
+}
+@
+
+
+<<'ggplot2-function-axes-inside', cache=FALSE>>=
+# A function that redraws axes as custom annotations
+# by https://stackoverflow.com/a/65045603/1198249
+# NOTE: you have to disable drawing of the default axis elements yourself!
+# @param
+#   p: a ggplot2 object
+#   fontsize: optional, default value 8
+#   cex: optional, default value 0.8
+# @return a gpplot2 object with axis "inside"
+print_with_axes_inside <- function(p, fontsize = 8, cex = 0.8) {
+   b <- ggplot_build(p)
+   x_breaks <- b$layout$panel_scales_x[[1]]$break_info()
+   y_breaks <- b$layout$panel_scales_y[[1]]$break_info()
+   x_range <- b$layout$panel_params[[1]]$x.range
+   y_range <- b$layout$panel_params[[1]]$y.range
+   y_breaks$major <-
+      diff(y_breaks$range) / diff(y_range) * y_breaks$major +
+      (y_breaks$range[1] - y_range[1]) / diff(y_range)
+   x_breaks$major <-
+      diff(x_breaks$range) / diff(x_range) * x_breaks$major +
+      (x_breaks$range[1] - x_range[1]) / diff(x_range)
+   y <-
+      grid::yaxisGrob(
+         at = y_breaks$major,
+         label = y_breaks$labels,
+         gp =
+            gpar(
+               lwd = 1, # line width of axis and tick marks
+               fontsize = fontsize,
+               cex = cex, # multiplier to font size
+               lineheight = 0.8), # tick mark length
+         main = FALSE)
+   x <-
+      grid::xaxisGrob(
+         at = x_breaks$major,
+         label = x_breaks$labels,
+         # no way to make rotated labels with gpar? (not found a way yet)
+         # gp = gpar(col="green"),
+         gp =
+            gpar(
+               lwd = 2, # draw axis with thicker line width
+               fontsize = fontsize,
+               cex = cex, # multiplier to font size
+               lineheight = 0.8), # tick mark length
+         main = FALSE)
+   p <-
+      p +
+      annotation_custom(
+         # draw y-axis, shifted slightly inwards (so that axis is inside panel.border)
+         grob = y,
+         xmin = x_range[1] + 0.01 * diff(x_range),
+         xmax = x_range[1] + 0.01 * diff(x_range)) +
+      annotation_custom(
+         grob = x,
+         ymin = y_range[1] + 0.01 * diff(y_range),
+         ymax = y_range[1] + 0.01 * diff(y_range))
+   return(p)
+}
+@
+
+
+
+<<'set-ggplot-theme', cache=FALSE>>=
+# make theme_fullwidth the default ggplot2 theme
+theme_set(theme_default())
+# Question: is this function and the ggplot2 theme default visible/applied
+# to separate R envs of the results chapter?
+# Answer: the default ggplot2 theme is in effect, but the function theme_default()
+# in not available, interestingly enough.
+@

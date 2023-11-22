@@ -1,0 +1,3 @@
+%\input{assets/code/P01/300-text.Rnw}
+<<'0503P-text', child=here::here('assets/code/P01/300-text.Rnw'), eval=TRUE, cache=TRUE>>=
+@

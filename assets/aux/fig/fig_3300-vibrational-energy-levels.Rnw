@@ -1,0 +1,11 @@
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.90\textwidth]{Raman-IR-Rayleigh-energy-levels.jpg}
+\caption[Rayleigh, Raman and IR scattering]{%
+   Rayleigh, \protect\gls{IR}, and Raman (Stokes, anti-Stokes, and resonance) scattering.
+   Resonance Raman scattering occurs when the excitation energy coincides with
+   an electronic transition (such as the band gap) in the material.
+   Illustration courtesy of \textcite{Qiu2019}.
+}
+\label{fig:0300-vibrational-energy-levels}
+\end{figure}

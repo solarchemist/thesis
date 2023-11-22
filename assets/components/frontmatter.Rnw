@@ -1,0 +1,99 @@
+%%% FRONTMATTER
+\frontmatter
+
+%\frontmatterCS
+\maketitle
+\cleardoublepage
+
+%\input{assets/aux/chunks/abstract.Rnw}
+<<child=here::here('assets/aux/chunks/abstract.Rnw'), label='0010-abstract'>>=
+@
+
+% Optional dedication - change to eval=FALSE to skip
+%\input{assets/aux/chunks/dedication.Rnw}
+<<child=here::here('assets/aux/chunks/dedication.Rnw'), label='0011-dedication'>>=
+@
+% cleardoublepage needed because of begingroup...endgroup hack below
+\cleardoublepage
+
+
+% by default, list of other contributions starts on a right-hand page, just as list of papers
+% this causes an empty page between them, which breaks the convention on having
+% list of contribs on the left-hand page immediately following list of papers
+% To fix this, we use the same hack used below to force multiple "List of ..." on a single page
+\begingroup
+% redefines cleardoublepage to do nothing inside this group
+\let\cleardoublepage\relax
+%\input{assets/aux/chunks/list-of-papers.Rnw}
+<<child=here::here('assets/aux/chunks/list-of-papers.Rnw'), label='0012-listofpapers'>>=
+@
+\clearpage
+% I am not yet fully decided whether to show "author's contributions" before or after "list of other publications"
+% I guess the right-hand side has more weight, and I'd like "List of other publications" to get more weight, so...
+%\input{assets/aux/chunks/authors-credits.Rnw}
+<<child=here::here('assets/aux/chunks/authors-credits.Rnw'), label='0013-authorscredits'>>=
+@
+\clearpage
+%\input{assets/aux/chunks/list-of-other.Rnw}
+<<child=here::here('assets/aux/chunks/list-of-other.Rnw'), label='0014-listofothercontributions'>>=
+@
+\endgroup
+
+
+\contentsdepth{subsection}
+\tableofcontents
+
+
+% Generate the symbols.bib file from R tibble
+%\input{assets/glossaries/symbols.Rnw}
+<<child=here::here('assets/glossaries/symbols.Rnw'), cache=FALSE>>=
+@
+
+
+% Generate the acronyms.bib file from R tibble
+%\input{assets/glossaries/acronyms.Rnw}
+<<child=here::here('assets/glossaries/acronyms.Rnw'), cache=FALSE>>=
+@
+
+
+% Print the List of symbols and List of abbreviations
+% https://www.dickimaw-books.com/gallery/glossaries-styles/
+% https://www.dickimaw-books.com/gallery/index.php?label=seealso
+% https://www.dickimaw-books.com/gallery/index.php?label=acronym-desc
+
+\printunsrtglossary[%
+   type=symbols,%
+   style=supermod,%
+   title={List of symbols},%
+   % Note, it's possible to have newlines in preamble, but empty lines break it!
+   % Also, appending \bigskip to preamble also breaks compilation. Will need some
+   % other method to increase spacing between preamble and first glossary entry
+   % Note: we are using tabular-based list of symbols, so preambl should always end with "\\"
+   % Careful, when longer than a few lines, causing preamble to be typeset on its own page
+   preamble={},%
+   postamble={}%
+   % Note, initial newline is necessary, otherwise postamble doesn't start on its own line
+   % postamble={%
+   %    \\[\baselineskip]%
+   %    Postamble to the symbols glossary.
+   % }%
+]
+
+\printunsrtglossary[%
+   type=abbreviations,%
+   style=list,%
+   title={List of abbreviations},%
+   preamble={}%
+]
+
+
+
+%%% LIST OF REACTANTS
+\clearpage
+\newcommand{\listofreactantsname}{List of reactants}
+\chapter*{\listofreactantsname}
+\addcontentsline{toc}{chapter}{\listofreactantsname}
+% note that \printreactants prints nothing because by default printreactants-style=none
+% for this to print anything that setting must be reset (see \chemsetup{})
+% only reactants declared at least once in their numbered form are included by \printreactants
+\ifdraft{\printreactants*}{\printreactants}

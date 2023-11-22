@@ -1,0 +1,183 @@
+\section{\texorpdfstring{\ch{ZnO}/\ch{Fe2O3} core--shell nanorods}{ZnO/Fe₂O₃ core–shell nanorods}}
+\label{results:P03-ZnO-Fe2O3-nanorods}
+\seepaper{P2}[-\baselineskip]
+
+Here we summarise the work and results for \ironox-coated \ZnO\ \glsplural{NR}.
+The \glsplural{NR} were synthesised \via\ a template-less electrodeposition route.
+We observed that the formation of dense arrays of electrodeposited \zincox\ \glsplural{NR}
+generally benefitted from an initial voltage pulse, with the best results obtained
+using a \qty{1}{\second} pulse.
+Although this is likely very dependent on the deposition conditions we used,
+including the electrolyte composition and its concentration, the type of
+\gls{TCO} substrate, and so on.
+If we simply apply Faraday's law to the \ch{ZnO} electrodeposition
+(\cref{rxn:ZnO-dep}), we find that the
+transferred charge corresponds to no more than \qty{1.5}{\mg\per\square\cm}.
+The real amount of electrodeposited \ch{ZnO} is most certainly less, since
+a non-negligible amount of charge is lost to possible side-reactions and
+cell inefficiencies.
+
+% two margin figures
+%\input{assets/aux/fig/fig_05P03-nanorod-model.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-nanorod-model.Rnw'), cache=TRUE>>=
+@
+
+To improve our picture of the electrodeposited \ch{ZnO} nanorods we also
+constructed a geometric model based on a typical SEM micrograph
+(see illustration in the margin).
+Based on this geometric model, we found that the amount of \ZnO\ was
+\qty{0.12}{\mg\per\square\cm}, or about \num{10} times less than the amount
+indicated assuming \qty{100}{\percent} Faradaic efficiency of the electrodeposition
+(\cref{rxn:ZnO-dep}).
+
+
+
+%%%% SEM
+
+%\input{assets/aux/fig/fig_05P03-SEM-micrographs.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-SEM-micrographs.Rnw'), cache=TRUE>>=
+# \label{fig:SEM-prePC-ZnO}           (a)
+# \label{fig:SEM-prePC-Fe2O3-35}      (b)
+# \label{fig:SEM-prePC-Fe2O3-87}      (c)
+# \label{fig:SEM-87-prePC-noanneal}   (d)
+# \label{fig:SEM-87-prePC-postanneal} (e)
+# \label{fig:SEM-post-broadbandPC}    (f)
+# \label{fig:SEM-87-all-steps}
+@
+
+Electron microscopy confirmed that the electrodeposited \glsdisp{NR}{nanorods}
+had a hexagonal cross-section and a length just over \qty{1}{\um} and a diameter
+of \qty{300}{\nm}, meaning their aspect ratio was above \num{3}.
+The nanorods faced in practically all possible directions in the hemisphere above
+the substrate, but this was likely caused by the jagged microstructure of the
+\gls{FTO} substrate itself, with each individual nanorod growing orthogonally
+from the surface of its \gls{FTO} crystallite, resulting in the varied nanorod
+directions observed.
+
+The presence of \ironox\ is barely noticeable in \gls{SEM}, except for the highest
+numbers of \gls{ALD} cycles and at higher magnification.
+Annealing the samples did not cause any apparent change to their microstructure.
+High-intensity irradiation (under the mercury arc lamp, corresponding to several suns)
+caused the complete etching off of the \ZnO\ phase in the
+core--shell nanorods leaving the apparent \ironox\ shell intact
+(\gls{EDS} mapping was performed across the mouth of such etched \glsplural{NR}
+and showed iron in the shell and low zinc signal overall),
+even retaining the hexagonal shape of the original \ZnO\ core.
+We would expect iron oxide (rust) to be more chemically and photochemically stable
+than zinc oxide, particularly under intense irradation in solution, although
+such a dramatic effect was unexpected.
+We did not pursue this further, but this sort of photoetching could be a neat
+method to produce nanostructured shells (although far from energy effective
+synthetically speaking).
+
+
+
+%\input{assets/aux/fig/fig_05P03-EDS-map.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-EDS-map.Rnw')>>=
+# \label{fig:P03-eds-map}
+@
+
+\Gls{EDS} mapping, presented in \cref{fig:P03-eds-map}, shows the spatial
+distribution of the expected elements and no unexpected contaminants
+across the nanorod array.
+Zinc is clustered along the nanorods themselves, and iron is more evenly distributed,
+as we would expect.
+A single \ironox-coated \ZnO\ \gls{NR} was prepared with \glsname{FIB}-\glsname{SEM}
+and analysed with \gls{TEM} (\cref{fig:P03-tem-NR-micrograph-lineprofile}), conclusively
+demonstrating the presence of an iron oxide coating.
+Note that the shape of the nanorod and the thickness of the \ironox\ layer
+is not necessarily representative due to the effect of how this individual nanorod
+was cut in the \glsfirst{FIB} and to projection effects in the \gls{TEM} imaging.
+We also performed a line scan along the width the nanorod, whose zinc and iron
+components of its sum spectrum clearly support the \ZnO/\ironox\ core--shell structure.
+
+
+
+%\input{assets/aux/fig/fig_05P03-TEM-lineprofile-diagram.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-TEM-lineprofile-diagram.Rnw')>>=
+# \label{fig:P03-tem-NR-micrograph-lineprofile}
+@
+
+
+
+%\input{assets/aux/fig/fig_05P03-GIXRD-series.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-GIXRD-series.Rnw'), cache=TRUE>>=
+# \label{fig:P03-gixrd-exp}
+@
+
+Even using very low incident angles in \gls{GI-XRD} configuration
+the \ZnO\ reflections emanated just above the noise and were still weak compared to
+the \tinox\ reflections (\cf\ \cref{fig:P03-gixrd-exp}).
+In non-GI configurations the \ZnO\ reflexes were not observable at all.
+Evidently, the contributions of the relatively sparse nanorods
+to the X-ray interaction volume
+was too small compared to the contribution of the compact \gls{FTO} layer.
+
+We varied the incident angle $\theta$ between
+\qtyrange[range-phrase=\ensuremath{\text{ and }}]{0.05}{6}{\degree}.
+At incident angles above \ang{0.3} the \gls{FTO} substrate dominates the pattern.
+At lower angles it was possible to quantify (fit) some \zincox\ reflections.
+For a single diffractogram, we managed to peak fit what was clearly a \gls{hematite}
+reflection (by the principle of exclusion), although it was below the limit of
+quantification.
+An incident angle of approximately \ang{0.3}
+maximised the \ZnO\ reflections compared to the \tinox.
+
+
+
+%\input{assets/aux/fig/fig_05P03-XPS-Fe2p-panels.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-XPS-Fe2p-panels.Rnw'), cache=TRUE>>=
+# \label{fig:P03-XPS-Fe2p-spectra}
+# \label{fig:P03-XPS-Fe2p-satellite-delta}
+# \label{fig:P03-XPS-Fe2p-main-ratio}
+# \label{fig:P03-XPS-Fe2p}
+@
+
+As we were not able to glean structural data on the \ironox\ phase from \gls{XRD},
+we decided to try the most surface-sensitive technique at our disposal, \viz,
+\gls{XPS}. Considering the capabilities of the technique, our aim was fairly modest;
+we merely sought to confirm the presence of \hematite.
+
+\Cref{fig:P03-XPS-Fe2p} shows the \eltr{Fe}{2p} elemental transition spectrum
+with the fitted energy (position) of the main and satellite peak marked with
+vertical-running bars whose widths indicates the uncertainty (standard deviation) in the determined
+peak position (note how the uncertainty is vanishingly small for the main peaks
+and quite substantial for the weaker satellite peaks).
+The determined average peak energy across all \ironox\ thicknesses is also
+shown on the horizontal axis labels.
+
+The observed binding energy of the main peaks, as well as the difference between
+the two main peaks conclusively indicate that the iron oxide phase is \ironox.
+As shown in \cref{fig:P03-XPS-Fe2p-satellite-delta} the main peaks are
+accompanied by satellite peaks about \qty{8}{\eV} away on the high-energy side,
+which narrows down the possible iron oxide phases to either hematite (\hematite)
+or maghemite ($\gamma$-\ch{Fe2O3}).
+
+
+
+
+The quest to conclusively identify the iron oxide polymorph in the core--shell
+nanorods made us try Raman spectroscopy. Observing any non-\ZnO\ or \tinox\ signal
+in the Raman spectra was very challenging, likely due to a combination of the
+substrate being made of glass and the vertical extent of the nanorod array film
+being very small (less than half a micrometre).
+It took a significant amount of operator skill (certainly not mine!) to configure
+the spectrometer and achieve the spectral series in \cref{fig:03P-Raman}.
+
+%\input{assets/aux/fig/fig_05P03-Raman-405nm-stacked.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P03-Raman-405nm-stacked.Rnw'), cache=TRUE>>=
+# \label{fig:P03-Raman-405nm-stacked}
+@
+
+The uncoated nanorods show the expected \ZnO\ Raman spectrum, as well as some
+\tinox\ modes (\cf\ \cref{fig:P03-Raman-405nm-stacked}).
+The hematite Raman spectrum is only apparent for the thickest \ironox\ coats
+(which was only about \qty{20}{\nm} thick),
+suggesting that the thinner \ironox\ coatings are simply too thin to crystallise
+properly. Which would make sense from a lattice mismatch perspective and also
+agrees well with observations by other workers in this laboratory \cite{Fondell2014,Jogi2015}.
+
+%\input{assets/aux/box/box_vibrational-properties-Fe2O3.Rnw}
+<<child=here::here('assets/aux/box/box_vibrational-properties-Fe2O3.Rnw')>>=
+# \label{box:vibrational-properties-Fe2O3}
+@

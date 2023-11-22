@@ -1,0 +1,15 @@
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+   \node (mainphoto) at (0,0) {\includegraphics[width=0.75\linewidth]{methods/raman/powder-samples-measurement}};
+   % inset in lower left corner
+   \node[anchor=south west,xshift=-3mm,yshift=-3mm,draw=white,line width=1.5mm,inner sep=0pt] (wellplate) at (mainphoto.south west) {\includegraphics[width=0.33\linewidth]{methods/raman/liquid-precursor-measurement}};
+\end{tikzpicture}
+\caption%
+[A Raman measurement]{%
+   Photo by the author of a particularly organised series of Raman measurements on \zincox{}
+   powder samples (\cref{P4}), showing the objective lens mount of the Ramanoscope and its sample tray.
+   The inset shows a close-up of the transparent sample wells on the tray.
+}
+\label{fig:0403-raman-setup}
+\end{figure}

@@ -1,0 +1,55 @@
+%%% NOTE! The entire abstract page will be re-created by avhandlingsproduktion/DiVA,
+%%% this is just a placeholder. All the information on this page must be
+%%% submitted via their electronic form anyway.
+
+% remove superfluous title "Abstract" (defined in cls file, for some reason)
+\renewcommand{\abstractsection}{\vspace{-\baselineskip}}
+% the abstract
+\begin{abstract}{%
+   \newpage
+   \thispagestyle{empty}
+   \fontsize{9}{11}\selectfont
+   \noindent
+   \begin{flushleft}{%\nohyphens
+   Dissertation at Uppsala University to be publicly examined in
+   \placeOfDisputation{}, \dateOfDisputation{} at \timeOfDisputation{}
+   for the Degree of Doctor of Philosophy.
+   The examination will be conducted in \disputationLanguage{}.
+   Faculty examiner: Professor Mats Johnsson (Stockholms universitet,
+   Institutionen för material- och miljökemi).
+   }\end{flushleft}
+
+   \noindent\textbf{Abstract}
+   \vspace{-9pt}
+   \begin{flushleft}{%\nohyphens%
+      \noindent\authorSurname{}, \authorFirstInitial{}. \yearOfPublication{}.
+   \dissertationTitle{}. Acta Universitatis Upsaliensis.
+   \emph{\series{}} \serialNumber{}. \numberOfPages{}~pp.
+   \placeOfPublication{}. ISBN~\ISBN{}}\end{flushleft}
+
+   \noindent%
+   \abstractEng
+
+   \vspace{11pt}
+
+   \noindent
+   \emph{Keywords: }\keywords
+
+   \vspace{11pt}
+
+   \noindent%
+   \emph{\authorFirstName{} \authorSurname{}, \department{}, \departmentaddress{}}
+
+   \vspace{11pt}
+
+   \noindent%
+   \CCBY{} \authorFirstName{} \authorSurname{} \yearOfPublication{}
+
+   \vspace{11pt}
+
+   \noindent ISSN \ISSN{}
+
+   \noindent ISBN \ISBN{}
+
+   \noindent \urn{} (http://urn.kb.se/resolve?urn=\urn)}
+\end{abstract}

@@ -1,0 +1,565 @@
+<<'0525P-greenraman-fityk0513-fits'>>=
+green.latex.assignments <- nonres0513.assignments
+## CAREFUL!! the order here MUST match the order in the exported *.peaks file
+green.assignments <- list(
+   T900 = c(
+      "E2h",       # 438  I
+      "E2l",       # 98   D
+      "2A1LO",     # 1160 O
+      "E2h-E2l",   # 330  F
+      "2E2l",      # 203  E
+      "A1TO",      # 384  G
+      "A1LO",      # 582  K
+      "E2h+E2l",   # 541  J
+      "E1TO",      # 411  H
+      "E2h+2E2l",  # 663  L
+      "2E2h+2E2l", # 1104 N
+      "2E2h+E2l"), # 981  M
+   T800 = c(
+      "E2h",       # 438
+      "E2l",       # 98
+      "2E2l",      # 203
+      "E2h-E2l",   # 330
+      "A1TO",      # 384
+      "A1LO",      # 582
+      "E2h+E2l",   # 541
+      "E2h+2E2l",  # 663
+      "2E2h+2E2l", # 1104
+      "2A1LO",     # 1160
+      "E1TO"),     # 411
+   T700 = c(
+      "E2h",       # 438
+      "E2l",       # 98
+      "2A1LO",     # 1160
+      "E2h-E2l",   # 330
+      "A1LO",      # 582
+      "2E2l",      # 203
+      "2E2h+2E2l", # 1104
+      "E2h+2E2l",  # 663
+      "A1TO"),     # 384
+   T600 = c(
+      "E2h",       # 438
+      "E2l",       # 98
+      "A1LO",      # 582
+      "E2h-E2l",   # 330
+      "2A1LO",     # 1160
+      "E2h+2E2l",  # 663
+      "2E2h+2E2l", # 1104
+      "2E2l"))     # 203
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk0513-dat.rda"))) {
+   this.files <-
+      list.files(
+         here::here("assets/data/P25/532nm/200513"),
+         pattern = "\\.dat$",
+         full.names = TRUE)
+   # note that files are listed in desc temperature, so order this.samples the same way
+   this.samples <-
+      samples5.wells %>%
+      filter(temperature %in% seq(600, 900, 100)) %>%
+      arrange(desc(temperature))
+   # the Fityk dat files have different number of columns, depending on number of kernels (F(x))
+   # that's one reason why we specified assignments for each spectrum above
+   # we can now use the number of columns for read_table2(),
+   # and the first and last column name for pivoting to long form
+   # and join all spectra into a single tibble
+   this.df <- NULL
+   for (t in 1:length(green.assignments)) {
+      this.df <-
+         bind_rows(
+            this.df,
+            readr::read_table2(
+               file = this.files[t],
+               col_names =
+                  c("shift", "y", "a", "sum", "residuals", green.assignments[[t]])) %>%
+               pivot_longer(
+                  cols = first(green.assignments[[t]]):last(green.assignments[[t]]),
+                  names_to = "mode",
+                  values_to = "y_fit") %>%
+               add_column(
+                  temperature = this.samples %>% pull(temperature) %>% nth(t))
+         )
+   }
+   save(this.df, file = here::here("assets/data/P25/greenraman-fityk0513-dat.rda"))
+} else {
+   this.df <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk0513-dat.rda"))
+}
+# join with samples.info using the temperature column to get some useful metadata
+this.df <-
+   left_join(
+      this.df,
+      samples.info %>% select(label, temperature, diameter, diameter_topas),
+      by = "temperature")
+green.fityk0513 <-
+   this.df %>%
+   mutate(mode = factor(mode, levels = green.latex.assignments$mode))
+@
+
+
+<<'0525P-greenraman-fityk0513-parameters-errors'>>=
+# Errors are only available for height, center, hwhm (not area)
+# NOTE: any parameters that were LOCKED during the Fityk fitting will be ABSENT from the *.errors file as exported by Fityk
+# Which in turns means that the number of rows in the errors file won't be an integer multiple of 3, which would
+# throw off the simple loop below.
+## Manually adjusted
+## I've added 381 and 410 peaks in 800C errors file
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk0513-errors.rda"))) {
+   this.files <-
+      list.files(
+         here::here("assets/data/P25/532nm/200513"),
+         pattern = "\\.errors$",
+         full.names = TRUE)
+   this.samples <-
+      samples.info %>% filter(temperature %in% seq(600, 900, 100)) %>% arrange(desc(temperature)) %>% pull(label)
+   this.df <- NULL
+   for (i in 1:length(this.files)) {
+      # dynamically get the number of peaks in the current table (always three properties)
+      number.peaks <-
+         dim(read.table(this.files[i], skip = 1, sep = "="))[1] / 3
+      this.df <-
+         rbind(this.df,
+               read.table(this.files[i], skip = 1, sep = "=") %>%
+                  # drop the redundant first column
+                  select(-V1) %>%
+                  # replace the "+-" separator with a single character so we can use separate()
+                  mutate(V2 = sub(" +- ", ",", V2, fixed = TRUE)) %>%
+                  separate(V2, sep = ",", into = c("value", "error")) %>%
+                  # make sure value and error columns are numeric
+                  mutate(value = as.numeric(value)) %>%
+                  mutate(error = as.numeric(error)) %>%
+                  mutate(property = rep(c("height", "center", "hwhm"), number.peaks)) %>%
+                  add_column(peak = rep(seq(1, number.peaks), 1, each = 3)) %>%
+                  # add sample id column
+                  add_column(label = this.samples[i]))
+   }
+   this.df <-
+      this.df %>%
+      mutate(label = factor(label, levels = this.samples))
+   save(this.df, file = here::here("assets/data/P25/greenraman-fityk0513-errors.rda"))
+} else {
+   this.df <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk0513-errors.rda"))
+}
+# I think I will take the following approach here,
+# to shape the errors dataframe into the same form as the parameters dataframe (next chunk) so that
+# I can simply slot in new errors() columns for height, center and fwhm
+this.df.witherrors <-
+   pivot_wider(
+      this.df,
+      id_cols = c(peak, label),
+      names_from = property,
+      values_from = c(value, error)) %>%
+   # we need to correct negative hwhm values to positive (only some are negative)
+   # I am not sure why they are reported with a minus sign in Fityk's errors output, when they are
+   # exactly twice as large and positive (as expected) in Fityk's *.peaks output as well as in the GUI itself.
+   # Anyway, we need to flip any negative value_hwhm.
+   mutate(value_fwhm = 2 * abs(value_hwhm)) %>% select(-value_hwhm) %>%
+   mutate(error_fwhm = 2 * error_hwhm) %>% select(-error_hwhm) %>%
+   # create errors vectors
+   mutate(height = set_errors(value_height, error_height)) %>% select(-value_height, -error_height) %>%
+   mutate(centroid = set_errors(value_center, error_center)) %>% select(-value_center, -error_center) %>%
+   mutate(fwhm = set_errors(value_fwhm, error_fwhm)) %>% select(-value_fwhm, -error_fwhm) %>%
+   arrange(label, centroid)
+# the height, centroid and fwhm columns of this.df.witherrors are now setup to perfectly slot into fityk.params in the next chunk
+@
+
+
+<<'0525P-greenraman-fityk0513-parameters'>>=
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk0513-peaks.rda"))) {
+   this.files <-
+      list.files(
+         here::here("assets/data/P25/532nm/200513"),
+         pattern = "\\.peaks$",
+         full.names = TRUE)
+   # make sure to order samples.info in desc order by temperature to match this.files
+   this.samples <-
+      samples.info %>% filter(temperature %in% seq(600, 900, 100)) %>% select(label, temperature) %>% arrange(desc(temperature))
+   # read the Fityk peak parameters for each spectrum
+   this.df <- NULL
+   for (s in 1:length(this.files)) {
+      this.df <-
+         rbind(
+            this.df,
+            read.table(
+               this.files[s],
+               skip = 1, # don't read the first line
+               colClasses = c(rep(NA, 6), rep("NULL", 3)), # don't read the last three columns (fityk's output is verbose)
+               col.names = c("pid", "type", "centroid", "height", "area", "fwhm", rep("", 3))) %>%
+               add_column(
+                  temperature = this.samples %>% pull(temperature) %>% nth(s),
+                  mode = green.assignments[[s]]) %>%
+               # watch out, don't sort by by Raman shift *before* assigning modes (above)
+               # because the peaks are not ordered by Raman shift in the *.peaks output files
+               arrange(centroid) %>%
+               # and for the same reason, join is necessary to correctly add the latex-modes
+               left_join(
+                  green.latex.assignments,
+                  by = "mode") %>%
+               cbind(
+                  # read the Fityk fit info file
+                  read.table(file = sub("\\.peaks$", ".info", this.files[s])) %>%
+                     separate(col = V1, into = c("key", "fit.WSSR"), sep = "=", convert = TRUE) %>%
+                     separate(col = V2, into = c("key", "fit.DoF"), sep = "=", convert = TRUE) %>%
+                     separate(col = V3, into = c("key", "fit.WSSR_DoF"), sep = "=", convert = TRUE) %>%
+                     separate(col = V4, into = c("key", "fit.SSR"), sep = "=", convert = TRUE) %>%
+                     separate(col = V5, into = c("key", "fit.R2"), sep = "=", convert = TRUE) %>%
+                     # drop the remaining "key" column
+                     select(-key)))
+   }
+   # join with samples.info using the temperature column to get some useful metadata
+   this.df <-
+      left_join(
+         this.df,
+         samples.info %>% select(label, temperature, diameter, diameter_topas),
+         by = "temperature")
+   green.fityk0513.params <-
+      this.df %>%
+      mutate(mode = factor(mode, levels = green.latex.assignments$mode)) %>%
+      mutate(latex = factor(latex, levels = green.latex.assignments$latex))
+   # replace centroid, height and FWHM with "errors" columns
+   green.fityk0513.params$centroid <- this.df.witherrors$centroid
+   green.fityk0513.params$height <- this.df.witherrors$height
+   green.fityk0513.params$fwhm <- this.df.witherrors$fwhm
+   save(green.fityk0513.params, file = here::here("assets/data/P25/greenraman-fityk0513-peaks.rda"))
+} else {
+   green.fityk0513.params <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk0513-peaks.rda"))
+}
+@
+
+
+<<'0525P-greenraman-fityk0513-normalisation'>>=
+green0513.normalisation <-
+   green.fityk0513.params %>%
+   # one important reason we split value and error into two columns is that max(height) does not return
+   # the expected max value but instead the (value + error) and I haven't found another way around that.
+   add_column(height_error = .$height %>% errors(), .after = "height") %>%
+   mutate(height = height %>% as.numeric()) %>%
+   pivot_wider(
+      id_cols = c(temperature, label, diameter),
+      names_from = mode,
+      values_from = c(height, height_error)) %>%
+   # rejoin errors for those columns which we want to calculate relheight
+   mutate(A1LO = set_errors(height_A1LO, height_error_A1LO)) %>%
+   # now divide height(A1LO) with max(height(A1LO)) for all samples
+   select(temperature, label, diameter, A1LO) %>%
+   mutate(n_factor = 1 / (A1LO / max(as.numeric(A1LO))))
+@
+
+
+
+<<'0525P-greenraman-fityk-fits'>>=
+# NOTE that here the modes are given in order of increasing wavenumber
+mkern <- data.frame(
+   safe = c(
+      "E2l",       # 98
+      "TE2l",      # 203
+      "NA231",     # 231
+      "B1l",       # 272
+      "NA318",     # 318
+      "E2h_E2l",   # 328
+      "A1TO",      # 384
+      "E1TO",      # 411
+      "NA432",     # 432
+      "E2h",       # 438
+      "ifph",      # 541
+      "A1LO",      # 576
+      "E2l_A1LO",  # 661
+      "NA725",     # 725
+      "TA1TO",     # 771, 778
+      "NA801",     # 801
+      "NA935",     # 935, 940
+      "ifph_E2h",  # 981
+      "TE1LO",     # 1104
+      "E1LO_A1LO", # 1146
+      "TA1LO"),    # 1166
+   latex = c(
+      "$E_{2(\\text{low})}$",
+      "$2E_{2(\\text{low})}$",
+      "NA(231)",
+      "$B_{1(\\text{low})}$",
+      "NA(318)",
+      "$E_{2(\\text{high})} - E_{2(\\text{low})}$",
+      "$A_{1(\\text{TO})}$",
+      "$E_{1(\\text{TO})}$",
+      "NA(432)",
+      "$E_{2(\\text{high})}$",
+      "$\\text{if.\\,ph.}$",
+      "$A_{1(\\text{LO})}$",
+      "$E_{2(\\text{low})} + A_{1(\\text{LO})}$",
+      "NA(725)",
+      "$2A_{1(\\text{TO})}$",
+      "NA(801)",
+      "NA(935)",
+      "$\\text{if.\\,ph.} + E_{2(\\text{high})}$",
+      "$2E_{1(\\text{LO})}$",
+      "$E_{1(\\text{LO})} + A_{1(\\text{LO})}$",
+      "$2A_{1(\\text{LO})}$"))
+green.modes <- list(
+   T900 = c(
+      "E2l",       # 97
+      "TE2l",      # 203
+      "NA231",     # 231
+      "NA318",     # 317
+      "E2h_E2l",   # 330
+      "A1TO",      # 384
+      "E1TO",      # 411
+      "NA432",     # 432
+      "E2h",       # 437
+      "ifph",      # 538
+      "A1LO",      # 580
+      "E2l_A1LO",  # 661
+      "NA725",     # 721
+      "TA1TO",     # 778
+      "NA801",     # 801
+      "NA935",     # 940
+      "ifph_E2h",  # 981
+      "TE1LO",     # 1099
+      "E1LO_A1LO", # 1139
+      "TA1LO"),    # 1161
+   T800 = c(
+      "E2l",       # 97
+      "TE2l",      # 203
+      "E2h_E2l",   # 330
+      "A1TO",      # 384
+      "E1TO",      # 411
+      "E2h",       # 435
+      "A1LO",      # 576
+      "NA725",     # 725
+      "TE1LO",     # 1104
+      "E1LO_A1LO", # 1146
+      "TA1LO"),    # 1165
+   T700 = c(
+      "E2l",       # 97
+      "TE2l",      # 203
+      "B1l",       # 272
+      "E2h_E2l",   # 328
+      "A1TO",      # 384
+      "E1TO",      # 411
+      "NA432",     # 432
+      "E2h",       # 437
+      "ifph",      # 541
+      "A1LO",      # 579
+      "TA1TO",     # 771
+      "NA935",     # 935
+      "TE1LO",     # 1097
+      "E1LO_A1LO", # 1140
+      "TA1LO"))    # 1159
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk-dat.rda"))) {
+   this.files <- list.files(
+      here::here("assets/data/P25/532nm"),
+      pattern = "\\.dat$",
+      full.names = TRUE)
+   # complication: different number of columns in different .dat files because of varying number of kernels
+   # known columns: first four always x, y, a, F[0](x) and last two always F(x), y-F(x)
+   # we will have to specify column names for each input file
+   # but by pivoting to longer first, then rbind, we can neatly join all dataframes into one
+   this.df <- rbind(
+      read.table(
+         this.files[1],
+         col.names =
+            c("x", "y", "a",
+              green.modes$T700,
+              "sum", "residuals")) %>%
+         pivot_longer(cols = E2l:TA1LO, names_to = "mode", values_to = "y_fit") %>%
+         add_column(temperature = 700),
+      read.table(
+         this.files[2],
+         col.names =
+            c("x", "y", "a",
+              green.modes$T800,
+              "sum", "residuals")) %>%
+         pivot_longer(cols = E2l:TA1LO, names_to = "mode", values_to = "y_fit") %>%
+         add_column(temperature = 800),
+      read.table(
+         this.files[3],
+         col.names =
+            c("x", "y", "a",
+              green.modes$T900,
+              "sum", "residuals")) %>%
+         pivot_longer(cols = E2l:TA1LO, names_to = "mode", values_to = "y_fit") %>%
+         add_column(temperature = 900)
+   )
+   # join with samples.info using the temperature column to get some useful metadata
+   this.df <- left_join(
+      this.df,
+      samples.info %>% select(label, temperature, diameter, diameter_topas),
+      by = "temperature")
+   green.fityk <- this.df
+   save(green.fityk, file = here::here("assets/data/P25/greenraman-fityk-dat.rda"))
+} else {
+   green.fityk <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk-dat.rda"))
+}
+@
+
+
+<<'0525P-greenraman-fityk-parameters-errors'>>=
+# Errors are only available for height, center, hwhm (not area)
+# NOTE: any parameters that were LOCKED during the Fityk fitting will be missing from the *.errors file as exported by Fityk
+# Which in turns means that the number of rows in the errors file won't be an integer multiple of 3, which throws off the simple loop below.
+# FIX: I manually added the missing center parameters (with error +- 0) to the 700C.errors and 800C.errors files
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk-errors.rda"))) {
+   this.files <- list.files(
+      here::here("assets/data/P25/532nm"),
+      pattern = "\\.errors$",
+      full.names = TRUE)
+   this.samples <-
+      samples.info %>% filter(temperature %in% c(700,800,900)) %>% pull(label) %>% unique()
+   this.df <- NULL
+   for (i in 1:length(this.files)) {
+      # dynamically get the number of peaks in the current table (always three properties)
+      number.peaks <-
+         dim(read.table(this.files[i], skip = 1, sep = "="))[1] / 3
+      this.df <- rbind(
+         this.df,
+         read.table(this.files[i], skip = 1, sep = "=") %>%
+            # drop the redundant first column
+            select(-V1) %>%
+            # replace the "+-" separator with a single character so we can use separate()
+            mutate(V2 = sub(" +- ", ",", V2, fixed = TRUE)) %>%
+            separate(V2, sep = ",", into = c("value", "error")) %>%
+            # make sure value and error columns are numeric
+            mutate(value = as.numeric(value)) %>%
+            mutate(error = as.numeric(error)) %>%
+            mutate(property = rep(c("height", "center", "hwhm"), number.peaks)) %>%
+            add_column(peak = rep(seq(1, number.peaks), 1, each = 3)) %>%
+            # add sample id column
+            add_column(label = this.samples[i]))
+   }
+   this.df <-
+      this.df %>%
+      mutate(label = factor(label, levels = this.samples))
+   save(this.df, file = here::here("assets/data/P25/greenraman-fityk-errors.rda"))
+} else {
+   this.df <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk-errors.rda"))
+}
+# I think I will take the following approach here,
+# to shape the errors dataframe into the same form as the parameters dataframe (next chunk) so that
+# I can simply slot in new errors() columns for height, center and fwhm
+this.df.witherrors <-
+   pivot_wider(this.df, id_cols = c(peak, label), names_from = property, values_from = c(value, error)) %>%
+   # we need to correct negative hwhm values to positive (only some are negative)
+   # I am not sure why they are reported with a minus sign in Fityk's errors output, when they are
+   # exactly twice as large and positive (as expected) in Fityk's *.peaks output as well as in the GUI itself.
+   # Anyway, we need to flip any negative value_hwhm.
+   mutate(value_fwhm = 2 * abs(value_hwhm)) %>% select(-value_hwhm) %>%
+   mutate(error_fwhm = 2 * error_hwhm) %>% select(-error_hwhm) %>%
+   # create errors vectors
+   mutate(height = set_errors(value_height, error_height)) %>% select(-value_height, -error_height) %>%
+   mutate(centroid = set_errors(value_center, error_center)) %>% select(-value_center, -error_center) %>%
+   mutate(fwhm = set_errors(value_fwhm, error_fwhm)) %>% select(-value_fwhm, -error_fwhm) %>%
+   arrange(label, centroid)
+# the height, centroid and fwhm columns of this.df.witherrors are now setup perfectly to slot into blue.fityk.params in the next chunk
+@
+
+
+<<'0525P-greenraman-fityk-parameters'>>=
+if (!file.exists(here::here("assets/data/P25/greenraman-fityk-peaks.rda"))) {
+   this.files <-
+      list.files(
+         here::here("assets/data/P25/532nm"),
+         pattern = "\\.peaks$",
+         full.names = TRUE)
+   # read the Fityk peak parameters for each spectrum
+   this.df <-
+      rbind(
+         read.table(
+            this.files[1],
+            # skip the first line
+            skip = 1,
+            # skip the last three columns (fityk's output is verbose)
+            colClasses = c(rep(NA, 6), rep("NULL", 3)),
+            col.names = c("pid", "type", "centroid", "height", "area", "fwhm", rep("", 3))) %>%
+            arrange(centroid) %>%
+            add_column(mode = green.modes$T700,
+                       mode.latex = mkern$latex[which(mkern$safe %in% green.modes$T700)],
+                       .before = "pid") %>%
+            add_column(temperature = 700) %>%
+         cbind(
+            # read the Fityk fit info file
+            read.table(file = sub("\\.peaks$", ".info", this.files[1])) %>%
+            separate(col = V1, c("key", "fit.WSSR"), "=") %>%
+            separate(col = V2, c("key", "fit.DoF"), "=") %>%
+            separate(col = V3, c("key", "fit.WSSR_DoF"), "=") %>%
+            separate(col = V4, c("key", "fit.SSR"), "=") %>%
+            separate(col = V5, c("key", "fit.R2"), "=") %>%
+            # drop the remaining "key" column
+            select(-key)),
+         read.table(
+            this.files[2],
+            skip = 1,
+            colClasses = c(rep(NA, 6), rep("NULL", 3)),
+            col.names = c("pid", "type", "centroid", "height", "area", "fwhm", rep("", 3))) %>%
+            arrange(centroid) %>%
+            add_column(mode = green.modes$T800,
+                       mode.latex = mkern$latex[which(mkern$safe %in% green.modes$T800)],
+                       .before = "pid") %>%
+            add_column(temperature = 800) %>%
+         cbind(
+            # read the Fityk fit info file
+            read.table(file = sub("\\.peaks$", ".info", this.files[2])) %>%
+            separate(col = V1, c("key", "fit.WSSR"), "=") %>%
+            separate(col = V2, c("key", "fit.DoF"), "=") %>%
+            separate(col = V3, c("key", "fit.WSSR_DoF"), "=") %>%
+            separate(col = V4, c("key", "fit.SSR"), "=") %>%
+            separate(col = V5, c("key", "fit.R2"), "=") %>%
+            # drop the remaining "key" column
+            select(-key)),
+         read.table(
+            this.files[3],
+            skip = 1,
+            colClasses = c(rep(NA, 6), rep("NULL", 3)),
+            col.names = c("pid", "type", "centroid", "height", "area", "fwhm", rep("", 3))) %>%
+            arrange(centroid) %>%
+            add_column(mode = green.modes$T900,
+                       mode.latex = mkern$latex[which(mkern$safe %in% green.modes$T900)],
+                       .before = "pid") %>%
+            add_column(temperature = 900) %>%
+         cbind(
+            # read the Fityk fit info file
+            read.table(file = sub("\\.peaks$", ".info", this.files[3])) %>%
+            separate(col = V1, c("key", "fit.WSSR"), "=") %>%
+            separate(col = V2, c("key", "fit.DoF"), "=") %>%
+            separate(col = V3, c("key", "fit.WSSR_DoF"), "=") %>%
+            separate(col = V4, c("key", "fit.SSR"), "=") %>%
+            separate(col = V5, c("key", "fit.R2"), "=") %>%
+            # drop the remaining "key" column
+            select(-key))
+      )
+   # join with samples.info using the temperature column to get some useful metadata
+   this.df <-
+      left_join(this.df,
+                samples.info %>% select(label, temperature, diameter, diameter_topas),
+                by = "temperature")
+   green.fityk.params <- this.df
+   # replace centroid, height and FWHM with "errors" columns
+   green.fityk.params$centroid <- this.df.witherrors$centroid
+   green.fityk.params$height <- this.df.witherrors$height
+   green.fityk.params$fwhm <- this.df.witherrors$fwhm
+   save(green.fityk.params, file =  here::here("assets/data/P25/greenraman-fityk-peaks.rda"))
+} else {
+   green.fityk.params <- common::LoadRData2Variable(
+      path = here::here("assets/data/P25/greenraman-fityk-peaks.rda"))
+}
+@
+
+
+<<'0525P-greenraman-fityk-normalisation'>>=
+# NOTE: what follows is a slightly more compact solution than that for <blue.normalisation>
+green.normalisation <-
+   green.fityk.params %>%
+   # one important reason we split value and error into two columns is that max(height) does not return
+   # the expected max value but instead the (value + error) and I haven't found another way around that.
+   add_column(height_error = .$height %>% errors(), .after = "height") %>%
+   mutate(height = height %>% as.numeric()) %>%
+   pivot_wider(id_cols = c(temperature, label, diameter),
+               names_from = mode,
+               values_from = c(height, height_error)) %>%
+   # rejoin errors for the columns we need to calculate relheight
+   mutate(E2h = set_errors(height_E2h, height_error_E2h)) %>%
+   # now divide height(E2h) with max(height(E2h)) for all samples
+   select(temperature, label, diameter, E2h) %>%
+   mutate(n_factor = 1 / (E2h / max(as.numeric(E2h))))
+@

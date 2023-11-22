@@ -1,0 +1,89 @@
+\section{Photocatalysis with quantum-confined ZnO}
+\label{results:P12-ZnO-QDs-PC}
+\seepaper{P3}[-\baselineskip]
+
+In this paper we proposed that an ensemble of growing \ZnO\ \glsplural{QD} in suspension could be
+used to photodegrade an environmental pollutant using just sunlight, with
+the nanoparticulate photocatalyst and the degradation products naturally aggregating
+into a comparatively harmless sediment.
+
+We observed that the initial nanoparticle diameter (in the quantum confiment regime)
+had a marked effect on the redox behaviour of the photocatalyst. Apart from tracking
+the degradation of our organic model pollutant (\gls{MB}) we also used the \gls{UV-Vis}
+band edge of \ZnO\ to track the band gap and derive the particle diameter
+(\cf\ \cref{fig:P12-MB-N04H-small-nostir-photodegradation}), among other things.
+
+With the changing particle size of the \gls{QD} not only the band gap was affected,
+but other physical parameters such as its volume, surface area, and crucially,
+the \emph{ratio} of surface area to volume.
+More surface area means more crystal edges, which is expected to increase
+catalytic activity.
+
+There is also a trade-off between \gls{NP} size and optical absorption, in that
+as size decreases and band gap increases, the chance of a photon being absorbed
+in any one nanoparticle decreases (simply because of less interaction volume
+between light and matter).
+But there are other effects to keep in mind:
+\seemore{\hlink{https://solarchemist.se/2021/08/02/composite-gif-gganimate}{Animated}}
+different wavelengths are absorbed differently at different material thicknesses
+(\ie, particle size).
+Another consideration occurs when considering the ensemble of nanoparticles,
+namely, multiple scattering and thus increasing chance of absorption.
+The small particle size is expected to decrease the likelihood of
+charge recombination (because electron and hole are stabilized by surface states
+where they might react usefully instead of recombining with each other in
+the bulk).
+
+We should also mention that although the overall efficiency of our \ZnO\ \glsplural{QD}
+is expected to be poor under sunlight (only a very small fraction of solar photons
+have energies above the band gap of our \glsplural{QD}, \cf\ \cref{fig:solarspectrum-photoec}),
+the formed excitons will have large redox potentials thanks to the same large band gap
+and high quantum efficiency for these wavelengths.
+Although the photon flux under non-concentrated solar light is very low, this could easily
+be overcome (with only a minor efficiency penalty) by using a tailored artificial
+light source.
+
+%\input{assets/aux/fig/fig_05P12-MB-photodegradation.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P12-MB-photodegradation.Rnw'), cache=TRUE>>=
+# \label{fig:P12-MB-N04H-small-nostir-photodegradation}
+@
+
+In this paper we presented a relative comparison of the kinetics of decolourization
+between \ZnO\ \gls{QD} ensembles growing from different starting sizes, and found
+that the smallest nanoparticles (starting size $<\qty{6}{\nm}$) quickly
+decolourized \gls{MB}, whereas the larger nanoparticles ($>\qty{6}{\nm}$)
+levelled off without reaching complete decolourization after an initial dip
+in absorption (\cf\ \cref{fig:12P-MB-ratio-fityk-CC0}).
+We rationalized this behaviour as follows.
+The photogenerated \gls{CB} electrons may directly reduce \gls{MB} molecules
+adsorbed on the nanoparticle, or they may successively produce \gls{ROS} in solution
+along the steps we outlined
+in \cref{rxn:P01-oxygen-radical,rxn:P01-hydroperoxyl-radical,rxn:P01-hydroxyl-radical,rxn:P01-hydrogen-peroxide}.
+We proposed that these processes are in fact competing with each other, depending
+on the \ZnO\ nanoparticle size which in the quantum confinement regime has a
+\gls{CBE} energy level that depends sensitively on particle size.
+
+
+On the issue of nanotoxicity, which was briefly discussed in the paper,
+I might add that certainly \ZnO\ (even in the bulk) is not inert, but has
+a small degree of chemical reactivity, which is in fact what makes it so useful
+in its many industrial applications.
+And by controlling the particle size, we are effectively tailoring the material's
+chemical reactivity (well, in one direction, increasing it), which is very
+beneficial for its role as a \glsdisp{PC}{photocatalyst}, but is also the reason
+for its nanotoxicity (or that of any nanoparticulate material for that matter)
+\cite{Zhang2012,Zhang2021a,Mitchell2019,Reed2012}.
+This is true in the nanoparticle  regime, and even more so in the quantum dot regime.
+One should also consider the toxicity of the \ch{Zn^{2+}} ion, which although
+small is considered ecotoxic for aquatic organisms \cite{Moezzi2012}. For comparison,
+the naturally occurring amount of \ch{Zn} ions (\ch{Zn^{2+}} being the only one)
+in seawater is around \qty{5}{\ppb}, and human metabolism requires a daily intake
+of about \qty{10}{\mg} \cite{Moezzi2012}.
+As we have noted earlier, at neutral or slightly alkaline conditions the dissolution
+of \ZnO\ is expected to be minimal, and thanks to the observed aggregation (and
+subsequent sedimentation) on photoreaction with the pollutant the \emph{nano}toxicity
+is thus reduced. Admittedly, this does make it a worse \emph{catalyst}, but
+since zinc is quite plentiful (\cf\ \cref{fig:0100-elements-of-photocatalysis}),
+this sort of application might still be of value where cost-effectiveness in
+terms of material expenditure is outranked by other considerations, such as
+environmental cleanup.

@@ -1,0 +1,14 @@
+%\input{assets/code/P12/200-code.Rnw}
+<<'0512P-code', child=here::here('assets/code/P12/200-code.Rnw'), eval=TRUE, cache=TRUE, warning=FALSE>>=
+@
+
+% the chunk above is expected to give the following warnings:
+% ## Warning: In '<' : boolean operators not defined for 'errors' objects, uncertainty dropped
+% ## Warning: In 'Ops' : non-'errors' operand automatically coerced to an 'errors' object with no uncertainty
+% ## Warning in mask$eval_all_mutate(dots[[i]]): NAs introduced by coercion
+% ## Warning in .covar(idy, id) * dy: longer object length is not a multiple of shorter object length
+
+
+%\input{assets/code/P12/300-text.Rnw}
+<<'0512P-text', child=here::here('assets/code/P12/300-text.Rnw'), eval=TRUE, cache=TRUE>>=
+@

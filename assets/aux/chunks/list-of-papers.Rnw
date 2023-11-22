@@ -1,0 +1,200 @@
+\listofpapersintro{%
+   This thesis is based on the following papers or manuscripts, %
+   which are referred to in the text by their Roman numerals.}
+\listofpapersoutro{%
+   Reprints were made with permission from the publishers.}
+\begin{listofpapers}
+   \item \label{P1} % \cref{P1} corresponds to assets/{code,data}/P01/
+   Li, C.$^\ast$; \textbf{Ahmed, T.}$^\ast$; Ma, M.; Edvinsson, T.; Zhu, J. %
+   A facile approach to \ch{ZnO}/\ch{CdS} nanoarrays and their photocatalytic %
+   % why is TeX not line-breaking at my optional hyphenation points here?
+   and photo\-electro\-chemical properties.\\%
+   \emph{Applied Catalysis B: Environmental} 2013, 138--139, 175--183.\\%
+   \hyperdoi{10.1016/j.apcatb.2013.02.042}\\%
+   $^\ast$ \emph{These authors shared first co-authorship.}
+      % inside the listofpapers env \bgroup ... \egroup seems to work fine
+      \bgroup
+      % type*= (starred) is not supposed to set a hyperlink anchor if hyperref is loaded,
+      % but I cannot honestly tell the differencee
+      \captionsetup{type=figureP1}
+      \phantomcaption\label{fig:01P-pxrd-diffractograms}
+      \phantomcaption\label{fig:01P-raman}
+      \phantomcaption\label{fig:01P-sem-nopulse}
+      \phantomcaption\label{fig:01P-sem-pulse}
+      \phantomcaption\label{fig:01P-tem-eds}
+      \phantomcaption\label{fig:01P-abs-tauc}
+      \phantomcaption\label{fig:01P-photoluminescence}
+      \phantomcaption\label{fig:01P-JV}
+      \phantomcaption\label{fig:01P-pc-abs}
+      \egroup
+   %%%
+   \item \label{P2} % \cref{P2} corresponds to assets/{code,data}/P03/
+   \textbf{Ahmed, T.}; Fondell, M.; Younesi, R.; Donzel-Gargand O.; Boman, M.; Zhu, J. %
+   Preparation and characterisation of \ch{ZnO}/\ch{Fe2O3} core--shell nanorods.\\%
+   \emph{In manuscript}.
+      \bgroup
+      \captionsetup{type=figureP2}
+      \phantomcaption\label{fig:03P-EBT-abscoeff}
+      \phantomcaption\label{fig:03P-Allray-LED}
+      \phantomcaption\label{fig:03P-ideal-nanorod-array}
+      \phantomcaption\label{fig:03P-SEM-before-PC}
+      \phantomcaption\label{fig:03P-SEM-87}
+      \phantomcaption\label{fig:03P-EDS}
+      \phantomcaption\label{fig:03P-TEM}
+      \phantomcaption\label{fig:03P-Raman}
+      \phantomcaption\label{fig:03P-GIXRD}
+      \phantomcaption\label{fig:03P-XPS}
+      \phantomcaption\label{fig:03P-Tauc}
+      \phantomcaption\label{fig:03P-PC}
+      \egroup
+   %%%
+   \item \label{P3} % \cref{P3} corresponds to assets/{code,data}/P12/
+   \textbf{Ahmed, T.}; Edvinsson, T. %
+   Optical quantum confinement in ultrasmall \ch{ZnO} and the effect of size %
+   on their photocatalytic activity.\\%
+   \emph{J. Phys. Chem. C} 2020, 124 (11), 6395--6404. %
+   \hyperdoi{10.1021/acs.jpcc.9b11229}
+      % to be honest, I'm amazed that this caption hack worked :-)
+      % big kudos to the caption and cleveref authors for writing such robust code
+      \bgroup
+      \captionsetup{type=figureP3}
+      \phantomcaption\label{fig:12P-schematic-and-solarlamp}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:12P-schematic}
+         \phantomsubcaption\label{fig:12P-solarlamp}
+         \egroup
+      \phantomcaption\label{fig:12P-MB-abs-coefficients}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:12P-MB-abs-coefficient}
+         \phantomsubcaption\label{fig:12P-MB-water-fitted}
+         \phantomsubcaption\label{fig:12P-MB-ethanol-fitted}
+         \egroup
+      \phantomcaption\label{fig:12P-MB-N04H-small-nostir-photodegradation}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig-a:12P-MB-N04H-small-nostir-photodegradation}
+         \phantomsubcaption\label{fig-b:12P-MB-N04H-small-nostir-photodegradation}
+         \egroup
+      \phantomcaption\label{fig:12P-MB-panels-nostir-photodegradation}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:12P-MB-N02A-small-nostir-mbabs}
+         \phantomsubcaption\label{fig:12P-MB-N04H-medium-nostir-mbabs}
+         \phantomsubcaption\label{fig:12P-MB-N02A-large-nostir-mbabs}
+         \phantomsubcaption\label{fig:12P-MB-N02A-small-nostir-edge}
+         \phantomsubcaption\label{fig:12P-MB-N04H-medium-nostir-edge}
+         \phantomsubcaption\label{fig:12P-MB-N02A-large-nostir-edge}
+         \egroup
+      \phantomcaption\label{fig:12P-MB-N04E-large-nostir-photodegradation}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig-a:12P-MB-N04E-large-nostir-photodegradation}
+         \phantomsubcaption\label{fig-b:12P-MB-N04E-large-nostir-photodegradation}
+         \egroup
+      \phantomcaption\label{fig:12P-MB-ratio-fityk-CC0}
+      \phantomcaption\label{fig:12P-diameter-and-growthrate}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:12P-NPBE-diameter-all}
+         \phantomsubcaption\label{fig:12P-growthrate-vs-initial-diameter}
+         \egroup
+      \egroup
+      \bgroup
+      \captionsetup{type=tableP3}
+      \phantomcaption\label{tab:12P-kinpar-MB}
+      \phantomcaption\label{tab:12P-abscoeff-MB}
+      \phantomcaption\label{tab:12P-growthrate}
+      \phantomcaption\label{tab:12P-bandgaps}
+      \egroup
+   %%%
+   \item \label{P4} % \cref{P4} corresponds to assets/{code,data}/P25/
+   \textbf{Ahmed, T.}; Thyr, J.; Katea, S. N.; Westin, G.; Edvinsson, T. %
+   Phonon--phonon and electron--phonon coupling in nano-dimensional \ZnO.\\%
+   \emph{In manuscript}.
+      \bgroup
+      \captionsetup{type=figureP4}
+      \phantomcaption\label{fig:25P-sem}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:25P-sem-A}
+         \phantomsubcaption\label{fig:25P-sem-B}
+         \phantomsubcaption\label{fig:25P-sem-C}
+         \phantomsubcaption\label{fig:25P-sem-D}
+         \phantomsubcaption\label{fig:25P-sem-E}
+         \phantomsubcaption\label{fig:25P-sem-F}
+         \egroup
+      \phantomcaption\label{fig:25P-tem}
+      \phantomcaption\label{fig:25P-pxrd-diffractograms}
+      \phantomcaption\label{fig:25P-pxrd-ca-ratio}
+      \phantomcaption\label{fig:25P-sas-area-ratio}
+      \phantomcaption\label{fig:25P-bluegreenraman-assignments}
+      \phantomcaption\label{fig:25P-bluegreenraman-barplots}
+      \phantomcaption\label{fig:25P-UVRaman-spectra-raw}
+      \phantomcaption\label{fig:25P-UVRaman-baselines-removed}
+      \phantomcaption\label{fig:25P-UVRaman-LOLO-vs-d}
+      \phantomcaption\label{fig:25P-UVRaman-LOLO-shift}
+      \egroup
+      \bgroup % Figures in SI
+      \captionsetup{type=figureP4-SI}
+      \phantomcaption\label{fig:25P-SI-wellplate}
+         \bgroup
+         \setcounter{subfigure}{0}
+         % WARNING: I never got phantomsubcaption to work properly
+         \phantomsubcaption\label{fig:25P-SI-wellplate-annotated}
+         \phantomsubcaption\label{fig:25P-SI-wellplate-action}
+         \egroup
+      \phantomcaption\label{fig:25P-SI-sas-experimental}
+      \phantomcaption\label{fig:25P-SI-sas-fityk-ratios}
+      \phantomcaption\label{fig:25P-SI-greenblueraman-spectra-raw}
+      \phantomcaption\label{fig:25P-SI-raman-green-fityk0513-fits}
+      \phantomcaption\label{fig:25P-SI-raman-blue-fityk0513-fits}
+      \phantomcaption\label{fig:25P-SI-raman-bluegreen-centroids}
+      % Resonant Raman
+      \phantomcaption\label{fig:25P-SI-UVRaman-pkbsl-fits}
+      \phantomcaption\label{fig:25P-SI-UVRaman-peaks-in-grid}
+      \phantomcaption\label{fig:25P-SI-UVRaman-LOLO-vs-temperature}
+      \phantomcaption\label{fig:25P-SI-UVRaman-FWHM-vs-d}
+      \phantomcaption\label{fig:25P-SI-UVRaman-xLO-fwhm-vs-temperature}
+      \phantomcaption\label{fig:25P-SI-UVRaman-shift-vs-temperature}
+      \phantomcaption\label{fig:25P-SI-UVRaman-shift-linearmodel}
+      \phantomcaption\label{fig:25P-SI-UVRaman-meanLOLO-vs-temperature}
+      % Blanks and precursors
+      \phantomcaption\label{fig:25P-SI-zinc-acetate}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:25P-SI-precursors-acetate}
+         \phantomsubcaption\label{fig:25P-SI-ygb-precursors-acetate}
+         \phantomsubcaption\label{fig:25P-SI-precursors-acetate-lowwavenumber}
+         \phantomsubcaption\label{fig:25P-SI-kernels-by-peak-precursor-zinc-acetate}
+         \egroup
+      \phantomcaption\label{fig:25P-SI-zinc-nitrate}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:25P-SI-precursors-nitrate}
+         \phantomsubcaption\label{fig:25P-SI-ygb-precursors-nitrate}
+         \phantomsubcaption\label{fig:25P-SI-kernels-by-peak-precursor-zinc-nitrate}
+         \egroup
+      \phantomcaption\label{fig:25P-SI-multidentat}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomsubcaption\label{fig:25P-SI-precursors-multidentat}
+         \phantomsubcaption\label{fig:25P-SI-ygb-precursors-multidentat}
+         \phantomsubcaption\label{fig:25P-SI-kernels-by-peak-precursor-multidentat}
+         \egroup
+      \phantomcaption\label{fig:25P-SI-blank}
+         \bgroup
+         \setcounter{subfigure}{0}
+         \phantomcaption\label{fig:25P-SI-blanks-spectrum}
+         \phantomcaption\label{fig:25P-SI-ygb-blanks}
+         \phantomcaption\label{fig:25P-SI-kernels-by-peak-blanks}
+         \egroup
+      \egroup
+      \bgroup
+      \captionsetup{type=tableP4}
+      \phantomcaption\label{tab:nonres-fityk-exp-DFT}
+      \phantomcaption\label{tab:nonres-LOTO-split}
+      \phantomcaption\label{tab:UVRaman-fitpk}
+      \egroup
+\end{listofpapers}

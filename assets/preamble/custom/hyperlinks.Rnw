@@ -1,0 +1,50 @@
+%%% external hyperlinks
+% Includes regular \href{}{} links in the document (highlighted using fontawesome symbol)
+% and creates a list of all URLs (included in the backmatter)
+% Could be useful for readers forced to use a physical paper copy
+
+% define the listofhyperlinks TOC
+\newcommand{\listhlinkname}{List of external hyperlinks}
+% note that \newlistof sets \newcounter{hlinks}\setcounter{0} internally
+\newlistof[chapter]{hlink}{lol}{\listhlinkname}
+
+% this command should not be cross-referenced, so no need to integrate with cleveref
+
+% hyperlink command
+% uses \href{}{} (hyperref) and \faExternalLink* (fontawesome5)
+% starred version does *not* add line in "List of external hyperlinks"
+% list of arguments {smm}: starred/not and 2 mandatory args
+% https://tex.stackexchange.com/a/4399/10824
+\NewDocumentCommand{\hlink}{smm}{%
+   \IfBooleanTF{#1}{%
+      % starred command
+      \hypersetup{urlcolor=.}\href{#2}{#3~\faExternalLink*}%
+   }{%
+      % regular command, non-starred
+      \refstepcounter{hlink}%
+      \addcontentsline{lol}{hlink}{#2}%
+      % reset the link colour using the dot operator (uses the current text colour)
+      % https://tex.stackexchange.com/a/382995/10824
+      \hypersetup{urlcolor=.}\href{#2}{#3~\faExternalLink*}%
+   }%
+}
+
+% add vertical spacing between chapters in list of hlinks
+% https://tex.stackexchange.com/a/43312/10824
+\makeatletter
+\preto\chapter{\addtocontents{lol}{\protect\addvspace{12\p@}}}%
+\makeatother
+
+
+%%% New approach, let's create a separate \hyperdoi{} macro for DOIs
+%%% to be used instead of \hlink{}, in order to allow saner behaviour
+%%% in print/web edition
+% For example, DOIs do not need any link or \faExternalLink icon in printedition
+\NewDocumentCommand{\hyperdoi}{m}{%
+   \ifwebedition{%
+      % dot "color" resets to whatever colour the surrounding text uses
+      \hypersetup{urlcolor=.}\href{https://doi.org/#1}{DOI: #1~\faExternalLink*}%
+   }{% if printedition
+      DOI: #1%
+   }%
+}

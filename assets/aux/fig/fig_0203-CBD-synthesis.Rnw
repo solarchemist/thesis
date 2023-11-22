@@ -1,0 +1,10 @@
+\begin{SCfigure}[][tbp]
+\centering
+% bring this image width more in line with the three in the edep setup
+\includegraphics[width=0.30\textwidth]{synthesis/chemical-bath-deposition/CBD.jpg}
+\caption[CdS CBD setup]{%
+   \ch{CdS} chemical bath setup with four simultaneous deposition cells
+   in a temperature-controlled water bath inside the fume hood.
+}
+\label{fig:0203-CBD-station}
+\end{SCfigure}

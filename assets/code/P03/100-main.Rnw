@@ -1,0 +1,127 @@
+<<'0503P-sem-nanorod-model-dimensions', cache=TRUE>>=
+cyl.radius <- 0.15 # um
+cyl.height <- 1 # um
+# film-dimensions
+film.thickness <- 0.061 # um
+# baseplate-dimensions
+width <- 0.575 # um
+# intersection of baseplate diagonal with circumference of outer cylinder
+bpdcoc <- 0.5 * (sqrt(2) * width - 2 * (cyl.radius + film.thickness)) * sin(as.radians(45))
+@
+
+
+
+<<'0503P-figref-eds-sum-spectrum', eval=FALSE>>=
+df.eds.map.spectrum <-
+   readr::read_csv(
+      file = here::here("assets/data/P03/eds/map-fityk.csv"),
+      col_names = TRUE, show_col_types = FALSE)
+peaks.eds.map.spectrum <-
+   readr::read_table(
+      file = here::here("assets/data/P03/eds/map-fityk.peaks"),
+      col_names = TRUE, show_col_types = FALSE)
+ggplot() +
+   geom_line(
+      # the spectrum extends from 0 to ~1.5, but the range outside contains no peaks
+      data = df.eds.map.spectrum %>% filter(x > 0.19 & x < 1.15),
+      colour = "black",
+      size = 1,
+      aes(x = x, y = y)) +
+   scale_y_continuous(expand = expansion(0,200)) +
+   scale_x_continuous(expand = expansion(0,0)) +
+   # TRANSITION LABELS ABOVE PEAKS
+   geom_text(
+      data = peaks.eds.map.spectrum %>% filter(Height < 6000),
+      angle = -90,
+      hjust = 1,
+      vjust = 0.65,
+      size = 9,
+      color = "black",
+      aes(
+         x = Center,
+         y = Height + 300,
+         label = paste(Element, Transition))) +
+   # TRANSITION LABELS INSIDE PEAKS
+   geom_text(
+      data = peaks.eds.map.spectrum %>% filter(Height > 6000),
+      angle = -90,
+      hjust = 1,
+      vjust = 0.55,
+      size = 9,
+      color = "black",
+      aes(
+         x = Center,
+         y = Height * 0.10,
+         label = paste(Element, Transition))) +
+   theme_void()
+@
+
+
+
+<<'0503P-tem-read-data', cache=TRUE>>=
+lineprofile.zinc <- data.frame(
+   element = "Zn",
+   colour = "#00b0f6",
+   fill = "#00b0f6",
+   read.csv(
+      file = here::here("assets/data/P03/tem/intensity-profile-zinc-L-map.txt"),
+      header = FALSE,
+      sep = "\t",
+      col.names = c("X", "Y")))
+lineprofile.iron <- data.frame(
+   element = "Fe",
+   colour = "#f8766d",
+   fill = "#f8766d",
+   read.csv(
+      file = here::here("assets/data/P03/tem/intensity-profile-iron-L-map.txt"),
+      header = FALSE,
+      sep = "\t",
+      col.names = c("X", "Y")))
+lineprofile <- rbind(lineprofile.iron, lineprofile.zinc)
+transition.labels <- tibble::tribble(
+   ~x ,   ~y, ~transition,
+    65, 1250, "\\sffamily\\ch{Zn} L$_3$M$_4$",
+   182, 1250, "\\sffamily\\ch{Fe} L$_3$M$_5$")
+@
+
+<<'0503P-figref-tem-lineprofile-diagram', eval=FALSE>>=
+ggplot() +
+   coord_cartesian(ylim = c(0, 2400)) +
+   geom_area(
+      data = lineprofile,
+      size = 1,
+      position = position_dodge(width = 0.9 * resolution(lineprofile$X)),
+      alpha = 0.45,
+      aes(x = X, y = Y, group = element, colour = colour, fill = fill)) +
+   scale_colour_identity() +
+   scale_fill_identity() +
+   geom_text(
+      data = transition.labels,
+      aes(
+         x = x, y = y,
+         label = transition),
+      fill = NA, label.color = NA,
+      size = 8.2, colour = "white") +
+   scale_y_continuous(expand = expansion(0, 0)) +
+   scale_x_continuous(
+      expand = expansion(0, 0),
+      breaks = seq(0, 250, 50)) +
+   labs(
+      x = "$d/\\unit{\\nm}$",
+      y = NULL) +
+   theme_bw() +
+   theme(
+      legend.position = "none",
+      plot.background = element_rect(fill = "transparent", colour = NA),
+      panel.border = element_rect(colour = NA),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.title.x = element_text(size = 20),
+      axis.text.x = element_text(size = 18, colour = "black"))
+@
+
+
+
+%\input{assets/code/P03/300-text.Rnw}
+<<'0503P-text', child=here::here('assets/code/P03/300-text.Rnw'), eval=TRUE, cache=TRUE>>=
+@

@@ -1,0 +1,155 @@
+<<'0100-solarspectrum-photoec', cache=TRUE>>=
+this.solar.spectrum <-
+   photoec::sunlight.ASTM(model = "AM1.5G") %>%
+   pivot_longer(
+      cols = !starts_with(c("wavelength", "energy")),
+      names_to = "property",
+      values_to = "value")
+@
+
+
+<<'0100-tabref-solarspectrum', eval=FALSE, cache=TRUE>>=
+wl.regions <- tribble(
+   ~region, ~start, ~stop, ~irradiance, ~flux,
+   "\\glsxtrshort{UV}",    250,   380, 0, 0,
+   "\\glsxtrshort{Vis}",   380,   780, 0, 0,
+   "\\glsxtrshort{NIR}",   780,  2500, 0, 0,
+   "\\glsxtrshort{IR}",   2500,  4000, 0, 0)
+this.solar.table <-
+   photoec::sunlight.ASTM(model = "AM1.5G") %>%
+   select(wavelength, energy, ends_with("fraction")) %>%
+   rename(irradiance = AM1.5G.irradiance.fraction) %>%
+   rename(flux = AM1.5G.photonflux.fraction)
+for (i in 1:dim(wl.regions)[1]) {
+   wl.regions$irradiance[i] <- this.solar.table %>%
+      filter(wavelength >= wl.regions$stop[i]) %>% slice(1) %>% pull(irradiance)
+   wl.regions$flux[i] <- this.solar.table %>%
+      filter(wavelength >= wl.regions$stop[i]) %>% slice(1) %>% pull(flux)
+}
+# > wl.regions
+# # A tibble: 4 × 5
+#   region start  stop irradiance   flux
+#   <chr>  <dbl> <dbl>      <dbl>  <dbl>
+# 1 UV       250   380     0.0322 0.0133
+# 2 Vis      380   780     0.566  0.375
+# 3 NIR      780  2500     0.992  0.968
+# 4 IR      2500  4000     1      1
+# Great, so that's the actual fractions. Now calculate the percentage for each spectral range.
+for (i in dim(wl.regions)[1]:2) {
+   # NOTE! we are looping backwards (from highest value of i to lowest)
+   wl.regions$irradiance[i] <- wl.regions$irradiance[i] - wl.regions$irradiance[i - 1]
+   wl.regions$flux[i] <- wl.regions$flux[i] - wl.regions$flux[i - 1]
+}
+# > wl.regions
+# # A tibble: 4 × 5
+#   region start  stop irradiance   flux
+#   <chr>  <dbl> <dbl>      <dbl>  <dbl>
+# 1 UV       250   380    0.0322  0.0133
+# 2 Vis      380   780    0.534   0.361
+# 3 NIR      780  2500    0.426   0.593
+# 4 IR      2500  4000    0.00779 0.0321
+xtab.solarspectrum <-
+   wl.regions %>%
+   select(region, irradiance, flux) %>%
+   mutate(irradiance = 100 * irradiance) %>%
+   mutate(flux = 100 * flux) %>%
+   xtable()
+# note, caption takes two args, the second (optional) is the LaTeX short caption
+# caption(xtab.solarspectrum) <- c(
+#    "Relative power density and flux",
+# 	"Relative power density and relative flux of AM1.5G spectral regions")
+label(xtab.solarspectrum) <- "tab:solarspectrum-amounts"
+names(xtab.solarspectrum) <- c(
+   "{}",
+   "{\\glsname{irradiance}/\\unit{\\percent}}",
+   "{\\glsname{photon_flux}/\\unit{\\percent}}")
+digits(xtab.solarspectrum) <- c(
+   0,   # row.names
+   0,   # region
+   1,   # irradiance
+   1)   # flux
+display(xtab.solarspectrum) <- c(
+   "s", # row.names
+   "s", # region
+   "f", # irradiance
+   "f") # flux
+align(xtab.solarspectrum) <- c(
+   "l", # row.names
+   "l", # region
+   "S[table-format=2.1]", # irradiance
+   "S[table-format=2.1]") # flux
+print(
+   xtab.solarspectrum,
+   # NOTE, because floating=FALSE, no caption is printed
+   floating = FALSE,
+   caption.placement = "top",
+   hline.after = NULL,
+   add.to.row = list(
+      pos = list(-1, 0, nrow(xtab.solarspectrum)),
+      command = c("\\toprule\n", "\\midrule\n", "\\bottomrule\n")),
+   include.rownames = FALSE,
+   include.colnames = TRUE,
+   type = "latex",
+   tabular.environment = "tabular",
+   # don't think latex.environments is picked up either when floating=FALSE
+   latex.environments = c("center", "small"),
+   sanitize.text.function = function(x){x},
+   math.style.negative = FALSE)
+@
+
+
+<<'0100P-figref-solarspectrum-photoec', eval=FALSE, cache=TRUE>>=
+# p.wl.steps <- c(250, 380, 780, 2500, 4000)
+# 250 overlaps with 380
+# last digit of 4000 gets cut off
+p.wl.steps <- c(380, 780, 2500)
+ggplot() +
+   geom_area(
+      position = "identity",
+      aes(x = wavelength, y = value),
+      data = this.solar.spectrum %>%
+         filter(property == "AM1.5G.spectralirradiance")) +
+   coord_cartesian(
+      x = c(250, 4000),
+      y = c(0, 1.8)) +
+   scale_x_continuous(
+      name = "$\\lambda/\\unit{\\nm}$",
+      expand = expansion(0, 0),
+      breaks = p.wl.steps,
+      sec.axis = sec_axis(
+         ~ 1239.842 / .,
+         name = "$E/\\unit{\\eV}$",
+         breaks = wavelength2energy(p.wl.steps),
+         labels = formatC(wavelength2energy(p.wl.steps), format="f", digits=2))) +
+   scale_y_continuous(
+      name = "$I/\\unit{\\watt\\per\\square\\metre\\per\\nm}$",
+      expand = expansion(0, 0)) +
+   theme_halfwidth() +
+   theme(
+      legend.position = "none")
+@
+
+
+% outer figure float without caption looks better
+\begin{figure}[tbp]
+\centering
+% strut hackery for both minipages to be top-aligned properly
+% https://tex.stackexchange.com/questions/378548/vertical-alignment-of-side-by-side-minipages
+\begin{minipage}[t]{0.68\textwidth}
+\strut\vspace*{-\baselineskip}\newline
+\centering
+<<'0100P-fig-solarspectrum-photoec', ref.label='0100P-figref-solarspectrum-photoec', eval=TRUE, cache=TRUE, fig.height=1.98, fig.width=3.20, out.width="3.20in">>=
+@
+\caption[The solar spectrum]{The \protect\glsxtrshort{AM15G} reference solar spectrum.}
+\label{fig:solarspectrum-photoec}
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{0.28\textwidth}%
+\strut\vspace*{-\baselineskip}\newline
+\centering
+\captionof{table}[Relative power density and relative flux of AM1.5G]{Relative spectral power density and flux}
+\label{tab:solarspectrum-amounts}
+<<'0100-tab-solarspectrum', ref.label='0100-tabref-solarspectrum', eval=TRUE, results="asis">>=
+@
+\end{minipage}%
+\end{figure}

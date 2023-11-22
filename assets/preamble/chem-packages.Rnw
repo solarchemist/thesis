@@ -1,0 +1,77 @@
+% according to the chemmacros manual only minimal and modules (and formula I suppose)
+% are allowed load-time options (v6+). Other options should be set in \chemsetup{...}
+% please *do not* remove the commented out package name, the chunk 'Rnw-LaTeX-declarations' depends on it!
+\usepackage[%chemmacros
+   % *minimal* specifies the following set of always loaded modules:
+   % acid-base, charges, nomenclature, particles, phases, symbols
+   minimal=true,%
+   modules={%
+      thermodynamics,%
+      units,%
+      orbital,%
+      % reactions also provides \listofreactions
+      reactions,%
+      redox,%
+      reactants,%
+      % scheme also provides \listofschemes
+      scheme}%
+]{chemmacros}
+
+% for descriptions on how to use \chemsetup, see chemmacros manual sec 3.2
+\chemsetup{
+   % if you explicitly set formula=chemformula the chemformula package is loaded immediately
+   % and the method is set up. Otherwise the option will be set by chemmacros at
+   % the end of the preamble
+   formula=chemformula,%
+   chemformula/frac-style=nicefrac,%
+   % list-entry empty string to remove "Reaction " prefix in TOC contentsline
+   reactions/list-entry={},%
+   reactants/printreactants-style=xltabular,%
+   % number reactants when first used (false) or by order of \DeclareChemReactant{} commands (true)
+   reactants/initiate=true%
+}
+
+% Scheme with sub-scheme support, with first sublevel shown in List of Schemes:
+% https://tex.stackexchange.com/questions/6478/new-figure-environment
+% https://tex.stackexchange.com/questions/554320/how-to-create-subschemes-using-chemmacros-and-list-subcaptions-in-table-of-schem
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[
+   fileext=los,
+   listname={List of schemes},
+   name=Scheme,
+   placement=tbp,
+   within=none % don't reset numbering (other options are within={section,chapter})
+]{scheme}
+% starred or not? starred gives (1.a) in subcaptions, unstarred gives (a)
+% also see associated cleveref subscheme macro
+\DeclareCaptionSubType{scheme}
+
+% subreactions environment (used in half-cell and sum reaction)
+% answer https://tex.stackexchange.com/a/681515/10824to my question
+% this environment definition also seen https://tex.stackexchange.com/a/603667/10824 (2021-07-04)
+% citing https://tex.stackexchange.com/a/356406/134144 (2017-03-01)
+\makeatletter
+\newenvironment{subreactions}{%
+   \refstepcounter{reaction}%
+   \protected@edef\theparentequation{\thereaction}%
+   \setcounter{parentequation}{\value{reaction}}%
+   \setcounter{reaction}{0}%
+   \def\thereaction{\theparentequation\alph{reaction}}%
+   \ignorespaces
+}{%
+   \setcounter{reaction}{\value{parentequation}}%
+   \ignorespacesafterend
+}
+\makeatother
+
+% custom package, provides \spacegroup{} command
+\usepackage{spacegroup}
+
+% chemfig for structural formulae drawings
+\usepackage{chemfig}
+   % setatomsep has been deprecated, use \setchemfig instead
+   \setchemfig{atom sep=2em}
+   % define invisible bond (for use between the charged species)
+   \definesubmol\nobond{-[,1.2,,,draw=none]}
+   % set chemfig to print atoms in sans-serif instead of serif, just for contrast
+   \renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}

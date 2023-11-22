@@ -1,0 +1,23 @@
+<<'0100-luminosity-constants'>>=
+spectral.min <- 1E-7 # meter
+spectral.max <- 4E-6 # meter
+spectral.stepsize <- 1E-9 # meter
+solar.temperature <- dplyr::filter(photoec::solarconstants, label=="T.Sun")$value
+earth.albedo <- 0.30
+atmospheric.absorption <- 0.19
+earth.area <- dplyr::filter(photoec::solarconstants, label=="A.Earth")$value
+@
+
+
+<<'0100-luminosity-blackbody'>>=
+# solar luminosity on Earth from Planck black body formula
+planck <- photoec::sunlight.Planck(
+   wavelength = seq(spectral.min, spectral.max, spectral.stepsize),
+   temperature = solar.temperature)
+# luminosity outside the atmosphere, day-side
+# note that this correctly evaluates to 1347.879 W/m2 given the area of a half-sphere with radius of Earth
+luminosity.hemispherical <- planck$E.luminosity[1]
+# luminosity, hemispherical, at sealevel
+luminosity.sealevel <- luminosity.hemispherical * (1 - (earth.albedo + atmospheric.absorption))
+# 175314 TW
+@

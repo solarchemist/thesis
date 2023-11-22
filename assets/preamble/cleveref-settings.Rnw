@@ -1,0 +1,261 @@
+% nameinlink makes the whole cleveref ref (including label) a clickable link
+\usepackage[nameinlink]{cleveref}
+
+% The cross-reference name for a given cross-reference type is customised using
+% the \crefname and \Crefname commands
+% (by default, if we do nothing, we got "fig. X")
+% For cross-refs to objects in the thesis itself, let's not use abbreviations
+\crefname{figure}{figure}{figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{table}{table}{tables}
+\Crefname{table}{Table}{Tables}
+
+% https://tex.stackexchange.com/questions/571810/create-a-simple-scheme-environment-and-a-list-of-schemes
+% otherwise \cref{sch:MB-structure} produces "?? 1a"
+\crefname{subscheme}{scheme}{schemes}
+\Crefname{subscheme}{Scheme}{Schemes}
+
+% List of Papers environment, counters, etc. are defined in the LuaUUThesis class:
+% /usr/local/texlive/texmf-local/tex/latex/local/LuaUUThesis.cls
+% https://git.solarchemist.se/config/texmf-latex
+\crefname{listofpapersc}{\textbf{\textsc{paper}}}{\textbf{\textsc{papers}}}
+\Crefname{listofpapersc}{\textbf{\textsc{Paper}}}{\textbf{\textsc{Papers}}}
+\creflabelformat{listofpapersc}{#2\textbf{\textsc{#1}}#3}
+
+
+% List of contributions (other than papers)
+% List of Contributions environment, counters, etc. are defined in the LuaUUThesis class:
+% /usr/local/texlive/texmf-local/tex/latex/local/LuaUUThesis.cls
+% https://git.solarchemist.se/config/texmf-latex
+\crefname{listofcontributionsc}{\textbf{\textsc{contrib.}}}{\textbf{\textsc{contribs.}}}
+\Crefname{listofcontributionsc}{\textbf{\textsc{Contrib.}}}{\textbf{\textsc{Contribs.}}}
+\creflabelformat{listofcontributionsc}{#2\textbf{\textsc{#1}}#3}
+
+
+%%% Cross-refs to PAPER 1 (figures)
+\DeclareFloatingEnvironment[within=none]{figureP1}
+\crefformat{figureP1}{\textsc{#2fig.~#1#3}~of\space\cref{P1}}
+\Crefformat{figureP1}{\textsc{#2Fig.~#1#3}~of\space\cref{P1}}
+\crefrangeformat{figureP1}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P1}}
+\Crefrangeformat{figureP1}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P1}}
+\crefmultiformat{figureP1}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}
+\Crefmultiformat{figureP1}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}
+\crefrangemultiformat{figureP1}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}
+\Crefrangemultiformat{figureP1}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}
+
+
+%%% Cross-refs to PAPER 2 (tables and figures)
+% DeclareFloatingEnvironment is from the newfloat package
+% within=none: don't reset numbering (other values are section or chapter)
+\DeclareFloatingEnvironment[within=none]{tableP2}
+% cleveref considers \crefname a high-level command, but \crefformat is a low-level command
+% as such, we need to specify all the \crefformat* variants ourselves
+\crefformat{tableP2}{\textsc{#2tab.~#1#3}~of\space\cref{P2}}
+\Crefformat{tableP2}{\textsc{#2Tab.~#1#3}~of\space\cref{P2}}
+\crefrangeformat{tableP2}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\Crefrangeformat{tableP2}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+% https://tex.stackexchange.com/questions/383587/plural-cref-with-custom-unnumbered-subsections
+% From the cleveref manual: crefmultiformat takes five args:
+% the cross-reference type,
+\crefmultiformat{tableP2}{%
+   % the format for the first cross-reference in a list,
+   \scshape tabs.~#2#1#3}{%
+   % the format for the second cross-reference in a list of two,
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   % the format for the middle cross-references in a list of more than two,
+   , #2#1#3}{%
+   % and the format for the last cross-reference in a list of more than two.
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\Crefmultiformat{tableP2}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+% crefrangemultiformat is used if cross-ref contains multiple ranges, e.g., 1-3 & 5-8
+% https://gist.github.com/ummels/3428745
+\crefrangemultiformat{tableP2}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+\Crefrangemultiformat{tableP2}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+
+\DeclareFloatingEnvironment[within=none]{figureP2}
+\crefformat{figureP2}{\textsc{#2fig.~#1#3}~of\space\cref{P2}}
+\Crefformat{figureP2}{\textsc{#2Fig.~#1#3}~of\space\cref{P2}}
+\crefrangeformat{figureP2}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\Crefrangeformat{figureP2}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\crefmultiformat{figureP2}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\Crefmultiformat{figureP2}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\crefrangemultiformat{figureP2}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+\Crefrangemultiformat{figureP2}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+
+
+%%% Cross-refs to PAPER 3 (tables and figures)
+\DeclareFloatingEnvironment[within=none]{tableP3}
+\crefformat{tableP3}{\textsc{#2tab.~#1#3}~of\space\cref{P3}}
+\Crefformat{tableP3}{\textsc{#2Tab.~#1#3}~of\space\cref{P3}}
+\crefrangeformat{tableP3}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\Crefrangeformat{tableP3}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\crefmultiformat{tableP3}{%
+   \scshape tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\Crefmultiformat{tableP3}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\crefrangemultiformat{tableP3}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+\Crefrangemultiformat{tableP3}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+
+\DeclareFloatingEnvironment[within=none]{figureP3}
+\crefformat{figureP3}{\textsc{#2fig.~#1#3}~of\space\cref{P3}}
+\Crefformat{figureP3}{\textsc{#2Fig.~#1#3}~of\space\cref{P3}}
+\crefrangeformat{figureP3}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\Crefrangeformat{figureP3}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\crefmultiformat{figureP3}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\Crefmultiformat{figureP3}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\crefrangemultiformat{figureP3}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+\Crefrangemultiformat{figureP3}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+
+
+%%% Cross-refs to PAPER 4 (tables and figures)
+\DeclareFloatingEnvironment[within=none]{tableP4}
+\crefformat{tableP4}{\textsc{#2tab.~#1#3}~of\space\cref{P4}}
+\Crefformat{tableP4}{\textsc{#2Tab.~#1#3}~of\space\cref{P4}}
+\crefrangeformat{tableP4}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{tableP4}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{tableP4}{%
+   \scshape tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{tableP4}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{tableP4}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{tableP4}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+
+\DeclareFloatingEnvironment[within=none]{figureP4}
+\crefformat{figureP4}{\textsc{#2fig.~#1#3}~of\space\cref{P4}}
+\Crefformat{figureP4}{\textsc{#2Fig.~#1#3}~of\space\cref{P4}}
+\crefrangeformat{figureP4}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{figureP4}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{figureP4}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{figureP4}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{figureP4}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{figureP4}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+
+\DeclareFloatingEnvironment[within=none]{figureP4-SI}
+\crefformat{figureP4-SI}{\textsc{#2fig.~S#1#3}~of\space\cref{P4}}
+\Crefformat{figureP4-SI}{\textsc{#2Fig.~S#1#3}~of\space\cref{P4}}
+\crefrangeformat{figureP4-SI}{\textsc{figs.~S#3#1#4--S#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{figureP4-SI}{\textsc{Figs.~S#3#1#4--S#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{figureP4-SI}{%
+   \scshape figs.~S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{figureP4-SI}{%
+   \scshape Figs.~S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{figureP4-SI}{%
+   \scshape figs.~S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{figureP4-SI}{%
+   \scshape Figs.~S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}

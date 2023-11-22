@@ -1,0 +1,26 @@
+\begin{figure}[tbp]
+\centering
+% radius Earth         6371008.7714 m ==> 6.4e6 m ==> 6371 km
+% https://www.theukrules.co.uk/rules/sport/football/fifa-soccer-ball-specifications/
+% radius football      11 cm ==> 1.1e-1 m
+% ratio = 1e7
+% radius nanoparticle  1e-8 m ==> 10 nm
+\begin{tikzpicture}[text=black,outer sep=0pt,inner sep=0pt,font=\footnotesize]
+   \node[anchor=south west] (image) at (0,0) {\includegraphics[width=0.80\textwidth]{nanoparticle-relative-nobelprize-illustration}};
+   \node (label_nanoparticle)  [anchor=south] at (1.0, 2.8) {\num{10}\,nanometer};
+   \node (label_football)  [anchor=south]     at (4.8, 2.8) {\qty{22}{\cm}};
+   \node (label_earth)  [anchor=south]        at (8.6, 2.8) {\qty{12742}{\km}};
+\end{tikzpicture}
+% to exclude a figure from List of Figures, just add an empty []
+% https://tex.stackexchange.com/questions/43995/ignore-figure-for-list-of-figures
+\caption[Nanopartiklars storlek]{%
+   Partiklar mindre än \qty{100}{nanometer} kallas \emph{nanopartiklar}.
+   Nanopartiklarnas värld är mycket, mycket liten.
+   Förhållandet i storlek mellan en fotboll och jorden är nästan precis samma
+   som mellan en nanopartikel och en fotboll.
+   Så om du kunde förminska dig till nano-storlek, skulle en vanlig fotboll
+   vara lika stor för dig som en planet är för oss andra. Måtten avser diameter.
+   {\footnotesize\CCBYND[\tiny]\,Nobelstiftelsen.}
+}
+\label{fig:0900-nanopartikel-storlek}
+\end{figure}

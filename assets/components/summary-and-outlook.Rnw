@@ -1,0 +1,75 @@
+\chapter{Summary and outlook}
+\label{ch:summary}
+
+In this work we have investigated all-inorganic semiconductor photocatalysts
+for solar hydrogen evolution or photocatalytic water purification.
+The projected growth in demand for both energy and freshwater places a responsibility
+on science to come up with solar-powered methods to fill these needs, which
+will be crucial to achieve the renewable energy transition.
+
+
+We have demonstrated a simple and cheap route to synthesize nanoscale arrays of core--shell
+\ZnO/\ch{CdS} on \gls{TCO} glass substrates by combining electrodeposition (in the first step)
+and chemical bath deposition.
+These inorganic-sensitized \ZnO\ nanorods showed a much stronger sensitivity to
+visible light than \ZnO-only nanorods (as measured in both \gls{PC} and \gls{PEC} experiments),
+demonstrating that the \ZnO/\ch{CdS} interface successfully separated
+the photogenerated charge carriers across it.
+Varying durations of \gls{CBD} were tested, and $t_\mathrm{CBD}=\qty{40}{\minute}$
+was found to yield the best balance between deposited \ch{CdS} \vs\ etched \ZnO\
+and \gls{PEC} performance.
+These results indicate that such \ZnO/\ch{CdS} nanoarrays could be used as the basis
+for the photoanode in cheap and easily fabricated solar-energy conversion devices,
+given further optimization of the system.
+
+
+We coated electrodeposited \ZnO\ nanoarrays with an ultrathin, conformal
+layer of \ch{Fe2O3} using \gls{ALD} which protected the \ZnO\ core from
+photocorrosion under all but very intense illumination.
+Although \gls{GI-XRD} did not yield a conclusive phase determination of the ultrathin
+iron oxide film, a Raman investigation demonstrated the deposition of hematite.
+The \gls{PC} activity of the samples were evaluated using \gls{EBT} dye
+under a blue lamp and found to be marginally better than the uncoated sample.
+
+
+The optical and photocatalytic properties of \ZnO\ \gls{QD} suspensions in the
+quantum-confined regime ($d<\qty{9}{\nm}$) were studied \insitu\ in a system
+targeted towards distributed pollutants, here modelled by \gls{MB} dye.
+Particle sizes from \qtyrange{3.2}{6}{\nm} were found to effectively
+photodegrade \gls{MB} under \gls{AM15G} irradiation, almost
+completely photo-oxidising \gls{MB}.
+Larger particles ($d>\qty{6}{\nm}$) caused a lesser degree of photo-oxidation,
+and also promoted a competing photo-reduction process, which was not observed
+for the smaller \glsplural{QD}.
+The fact that the \gls{PC} particles clearly aggregated and sedimented as they
+degraded the pollutant made us envision using such nanoparticulate \glsplural{PC}
+as a low-cost, low-toxicity method to aid in the remediation of
+distributed environmental threats.
+
+
+We have presented a comprehensive investigation of the first and second order Raman processes
+in nanoscale \ZnO\ crystalline powders with particle size ranging from \qtyrange{10}{150}{\nm}
+using two different visible laser excitation sources, allowing us to assign all the observed
+phonon modes including higher-order sum or diff modes, which we also compared
+to density functional theory predictions.
+The phonon--phonon coupling increased with particle size, but the LO--TO split
+remained constant over the same size range.
+We also quantified the electron--phonon coupling of the \ZnO\ nanocrystal sample
+by carefully analysing the resonant Raman spectra (up to the 4th overtone) with
+regard to mode position, width, and height.
+
+
+
+In general, our methods of fabrication have not been overly specialized nor expensive,
+which makes them applicable to a wide range of \gls{PC} materials.
+By characterizing the optical, electronic, and thermal properties of the
+proposed \glsplural{PC} we have contributed data of technical interest for
+the design of novel, sustainable photocatalysts.
+
+
+For the future, we anticipate that similar approaches can be used for adjacent
+material systems utilized alone, or in combination with \ZnO\ for applications
+within catalysis.
+It would for example be interesting to utilize the tuning of
+the \gls{CB} in \ZnO\ to target and optimize potential-dependent reactions
+such as the creation of C1 (one-carbon) and C2 (two-carbon) species from the \ch{CO2} reduction.

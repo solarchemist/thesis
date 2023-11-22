@@ -1,0 +1,32 @@
+\authorscontributionsintro{%
+   Author's contributions to the papers included in the thesis,
+   here given based on the contributor roles taxonomy, CRediT.$^\ast$}
+\authorscontributionsoutro{%
+   $^\ast$The \hlink{https://credit.niso.org}{CRediT taxonomy} describes \num{14} roles
+   that represent the typical range of contributions to scientific outputs.
+   It was originally developed \cite{Allen2014} in 2014, was recently designated
+   an ANSI standard \mbox{Z39.104-2022}, and has already been the subject
+   of meta-studies \cite{Lariviere2021,McNutt2018}.
+   It is in use by more than \num{50} organisations collectively representing thousands
+   of journals.
+}
+\begin{authorscontributions}
+   \item[\cref{P1}]
+   Supporting role in conceptualisation, data curation, formal analysis, and resources.
+   Co-lead role in investigation, project administration, and visualisation.
+   Supporting role in provision of study materials, reagents and instrumentation.
+   Supporting role in writing the initial draft as well as in review and editing.
+   \item[\cref{P2}]
+   Supporting role in conceptualisation and resources.
+   Lead role in investigation, project administration, data curation,
+   formal analysis, and visualisation.
+   Supporting role in review and editing.
+   \item[\cref{P3}]
+   Supporting role in conceptualisation.
+   Lead role in investigation, project administration, data curation,
+   formal analysis, visualisation and writing the initial draft.
+   Supporting role in review and editing.
+   \item[\cref{P4}]
+   Lead role in investigation, project administration, data curation, formal analysis,
+   visualisation, and writing the initial draft.
+\end{authorscontributions}

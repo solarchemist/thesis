@@ -1,0 +1,29 @@
+\begin{figure}[tbp]
+\centering
+% radius Earth         6371008.7714 m ==> 6.4e6 m ==> 6371 km
+% https://www.theukrules.co.uk/rules/sport/football/fifa-soccer-ball-specifications/
+% radius football      11 cm ==> 1.1e-1 m
+% ratio = 1e7
+% radius nanoparticle  1e-8 m ==> 10 nm
+\begin{tikzpicture}[text=black,outer sep=0pt,inner sep=0pt,font=\footnotesize]
+   \node[anchor=south west] (image) at (0,0) {\includegraphics[width=0.80\textwidth]{nanoparticle-relative-nobelprize-illustration}};
+   \node (label_nanoparticle)  [anchor=south] at (1.0, 2.8) {nanoparticle};
+   \node (radius_nanoparticle) [anchor=north] at (1.0, 0.1) {$r\approx\qty{5}{\nm}$}; % d = 10 nm ==> r = 5 nm
+   \node (label_football)  [anchor=south]     at (4.8, 2.8) {football};
+   \node (radius_football) [anchor=north]     at (4.8, 0.1) {$r=\qty{11}{\cm}$};
+   \node (label_earth)  [anchor=south]        at (8.6, 2.8) {Earth};
+   \node (radius_earth) [anchor=north]        at (8.6, 0.1) {$r=\qty{6.4}{\mega\m}$};
+\end{tikzpicture}
+% to exclude a figure from List of Figures, just add an empty []
+% https://tex.stackexchange.com/questions/43995/ignore-figure-for-list-of-figures
+\caption[A nanoparticle is very small]{%
+   The size of a nanoparticle can be hard to grasp because it is such an unfamiliar
+   object. A valid analogy (in terms of relative size) is the following:
+   if we imagine that a nanoparticle is the size of a football, then a football
+   would be the size of planet Earth.
+   Each step in this illustration corresponds to changing
+   the radius by a factor of \num[retain-unity-mantissa=false]{1e7}.
+   {\footnotesize\CCBYND[\scriptsize]\,The Nobel Foundation.}
+}
+\label{fig:0100-nanoparticles-are-small}
+\end{figure}

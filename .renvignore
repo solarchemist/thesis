@@ -1,0 +1,25 @@
+# With renv 0.17.3, renv::status() throws an error for
+# `assets/data/P12/PC/160424-N02A/` along these lines
+# "too many files, consider ignoring this directory"
+# So let's ignore the data tree and some other folders that don't contain
+# any Rnw source files anyway.
+
+# By default, ‘renv’ will read your project's ‘.gitignore’s (if any)
+# to determine whether certain files or folders should be included
+# when traversing directories. If preferred, you can also create a
+# ‘.renvignore’ file (with entries of the same format as a standard
+# ‘.gitignore’ file) to tell ‘renv’ which files to ignore within a
+# directory. If both ‘.renvignore’ and ‘.gitignore’ exist within a
+# folder, the ‘.renvignore’ will be used in lieu of the
+# ‘.gitignore’.
+# Using ignore files is important if your project contains a large
+# number of files; for example, if you have a 'data' directory
+# containing many text files.
+
+/assets/data/
+/pyenv/
+/renv/
+/cache/
+/figure/
+/.vscode/
+/.Rproj.user/

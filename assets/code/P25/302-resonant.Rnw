@@ -1,0 +1,161 @@
+\section[Resonant Raman in nano-dimensional ZnO]{Resonant Raman in nano-dimensional \ZnO}
+\label{results:P25-resonant-Raman}
+\seepaper{P4}[-\baselineskip]
+
+The resonant Raman spectra (\cref{fig:P25-UVRaman-spectra}) are markedly different
+from the non-resonant Raman spectra:
+no modes except for \nonresmode{A1LO} and its harmonic overtones can be observed.
+The presence of multiple higher-order modes are a strong indicator of the high
+crystallinity of the \ZnO\ phase, and at the same time the strong fluorescence
+observed for the smallest particle sizes suggest they are not entirely free of
+organic residues from the synthesis. Nonetheless, we managed to record the full
+series of spectra using identical capture parameters allowing us to do a more
+detailed peak analysis.
+
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{\textwidth}
+\centering
+<<'0525P-fig-UVRaman-baseline', eval=TRUE, fig.height=0.8*2.92>>=
+# plot 1: as-collected Raman spectra
+# \input{assets/code/P25/205-code-uvraman-auto.Rnw}
+<<0525P-figref-UVRaman-spectra-raw>>
+# plot 2: with baselines removed after fitting
+<<0525P-figref-UVRaman-baselines-removed>>
+# shared legend, in between the panels
+# https://wilkelab.org/cowplot/articles/shared_legends.html
+legend.uvraman <- get_legend(
+   q + guides(colour = guide_legend(ncol = 1)) +
+   theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = rel(0.5), margin = margin(0,0,0,0)),
+      legend.title = element_blank(),
+      # remove the frame around the legend, works better where it sits between the panels
+      legend.background = element_rect(colour = NA),
+      # well, this legend contains lots of whitespace despite my best efforts...
+      legend.box.margin = margin(0,0,0,0),
+      legend.margin = margin(0,0,0,0),
+      legend.spacing = unit(0, "cm"),
+      # the spacing between the legend box and the plot
+      legend.box.spacing = unit(0, "cm"),
+      legend.key.width = unit(0.25, "line"), # unit(0.5, "line"),
+      legend.key.height = unit(1.05, "line"))) # unit(0.75, "line")))
+      # legend.key = element_rect(linewidth = 2))
+prow <- cowplot::plot_grid(
+   p + theme(legend.position = "none"),
+   NULL,
+   q + theme(legend.position = "none", axis.title.y = element_blank()),
+   align = "vh", nrow = 1,
+   # make room for the legend
+   rel_widths = c(1, 0.10, 1))
+# note, x and width args in draw_grob() are of course the same as rel_widths() above
+# https://wilkelab.org/cowplot/reference/draw_grob.html
+prow + cowplot::draw_grob(
+   legend.uvraman,
+   x = 1/2.10,
+   y = 1,
+   width = 0.10/2.10,
+   # note, vjust didn't appaear to have any effect if height=1
+   height = 0.5,
+   # hjust and vjust were adjusted manually to get the legend to appear
+   # centered horizontally and roughly aligning with plot lines
+   hjust = -0.45, # -0.2, # -0.1 0.25, # smaller values push to the right
+   vjust = 1.40) # 1.20) # 1.15) # 1.10) # 1.25) # larger values push down
+@
+\caption{}
+\label{fig:P25-UVRaman-baseline}
+\end{subfigure}%
+\\%
+\begin{subfigure}{0.55\textwidth}
+\centering
+% \input{assets/code/P25/205-code-uvraman-auto.Rnw}
+% width and height manually adjusted, feel free to re-adjust if you like
+<<'0525P-fig-UVRaman-peaks-in-grid', ref.label='0525P-figref-UVRaman-peaks-in-grid', eval=TRUE, warning=FALSE, fig.height=3.50, fig.width=3.76, out.width="2.596in">>=
+@
+\caption{}
+\label{fig:P25-UVRaman-peaks-in-grid}
+\end{subfigure}%
+\,%
+\begin{subfigure}{0.43\textwidth}
+\centering
+<<'0525P-fig-UVRaman-meanLOLO-vs-diameter', ref.label='0525P-figref-UVRaman-meanLOLO-vs-diameter', eval=TRUE, warning=FALSE, fig.width=3.54, fig.height=2.19, out.width='2.03in'>>=
+@
+\caption{}
+\label{fig:P25-UVRaman-meanLOLO-vs-diameter}
+\end{subfigure}%
+\caption[Resonant Raman spectra]{%
+   Resonant Raman spectra of \ZnO\ nanosponge powder at varying particle sizes.
+   (\subref{fig:P25-UVRaman-baseline})
+   Left panel shows experimentally recorded spectra,
+   right panel after the baseline was removed.
+   Stronger LO modes as particle size decreases.
+   Note the $\log_{10}$ ordinate of the left panel
+   (fluorescence was intense for the smaller particle sizes).
+   (\subref{fig:P25-UVRaman-peaks-in-grid})
+   Peak fits in grid, with columns as LO modes, and rows as particle sizes
+   (\qty{150}{\nm} at bottom, decreasing sizes upwards, the three top-most rows are \qty{10}{\nm}).
+   Each panel shows the observed LO mode after baseline stripping (black dots),
+   the fitted peak (solid coloured line), and a visual marker whose top and bottom
+   position along the horizontal axis signifies the position of the peak centroid
+   and the expected position of the centroid assuming zero LO--LO shift, respectively.
+   The oddly shaped peaks are caused by the $\log_{10}$-transformed ordinate axis.
+   (\subref{fig:P25-UVRaman-meanLOLO-vs-diameter})
+   The average LO--LO shift increases linearly with particle size.
+   The linear fit (blue line) gives this slope as
+   \qty{\Sexpr{paste0(formatC(1E6 * summary(fit_energy.d)$coefficients[2,1], format="fg", digits=3), "\\pm", formatC(1E6 * summary(fit_energy.d)$coefficients[2,2], format="fg", digits=2))}}{\micro\eV\per\nm}
+   (or in terms of wavenumbers,
+   \qty{\Sexpr{paste0(formatC(summary(fit_shift.d)$coefficients[2,1], format="fg", digits=3), "\\pm", formatC(summary(fit_shift.d)$coefficients[2,2], format="fg", digits=2))}}{\per\cm\per\nm}),
+   with an $R^2=\num{\Sexpr{formatC(summary(fit_energy.d)$adj.r.squared, format="fg", digits=3)}}$.
+}
+\label{fig:P25-UVRaman-spectra}
+\end{figure}
+
+
+
+After stripping the baseline and peak fitting each LO mode, we set out to
+investigate the dependence of the physical peak parameters (height, area, width)
+\vs\ particle size (\cref{fig:P25-UVRaman-heightLOLO-areaLOLO-fwhmLOLO-vs-diameter}).
+In line with previous workers, our plot reports relative LO--LO peak properties
+as \sfrac{$n$}{$n-1$} \cite{Cheng2006,Fan2012,Gandhi2018,Ojha2014,Shinde2010,Wang2004a,Hsieh2005}, but extends the range all the way to $n=4$.
+Relative peak height demonstrated an almost monotonic increase with particle size
+with a diminishing slope for higher-order modes.
+The relative peak area showed the same overall trend as height, but less well-behaved.
+The relative peak width (\gls{FWHM}) increased with a factor we quantified as
+\num{1.45+-0.22} for each higher order step (so the 2LO modes were on average
+\qty{45}{\percent} wider than the 1LO modes, and so on for 3LO/2LO and 4LO/3LO).
+
+These results indicate a stronger electron--phonon coupling as particle size increases
+in the range from \qtyrange{10}{150}{\nm}.
+
+
+\begin{figure}[tbp]
+\centering
+<<'0525P-fig-UVRaman-heightLOLO-areaLOLO-fwhmLOLO-vs-diameter', ref.label='0525P-figref-UVRaman-heightLOLO-areaLOLO-fwhmLOLO-vs-diameter', eval=TRUE, warning=FALSE, fig.height=0.7*2.92>>=
+@
+\caption[Relative peak parameters \vs\ particle size for \ZnO]{%
+   Relative height, area and \protect\gls{FWHM} (expressed as 2LO/1LO, 3LO/2LO, and 4LO/3LO)
+   \vs\ particle size.
+   In the right-most panel (\protect\gls{FWHM}), the horizontal blue line denotes the
+   average \protect\gls{FWHM} ratio across all sizes and LO modes, and the shaded
+   yellow area its standard deviation (vertically), \viz, \num{1.45+-0.22}.}
+\label{fig:P25-UVRaman-heightLOLO-areaLOLO-fwhmLOLO-vs-diameter}
+\end{figure}
+
+Looking at the grid in \cref{fig:P25-UVRaman-peaks-in-grid}, what struck me was
+how this \emph{shift} in LO mode centroid position clearly appeared to depend
+on particle size. For instance, if we \enquote{walk along a column}, it is
+quite apparent how the sloping marker increases in slope as we go down said
+column (except for the first, obviously, where the observed and expected Raman shift
+of the mode is the same by definition).
+There is also an increasing shift in centroid position happening as we go towards
+higher-order modes (\enquote{walk along a row}).
+So I set out to quantify this \emph{shift} (delta) in Raman shift of the higher-order modes,
+which I chose to name the \emph{LO--LO shift}.
+
+
+The precise value of this LO--LO shift will depend on whether we perform the analysis
+\vs\ particle size (\cref{fig:P25-UVRaman-meanLOLO-vs-diameter}, note that in
+the case of LO--LO shift \vs\ $d$ I chose to average the tree \qty{10}{\nm} samples)
+or \vs\ annealing temperature (\cref{fig:25P-SI-UVRaman-meanLOLO-vs-temperature}).
+In either case, the shift is small, on the order of \unit{\micro\eV} per \unit{\nm}
+or \unit{\celsius}.

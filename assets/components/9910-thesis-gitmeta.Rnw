@@ -1,0 +1,38 @@
+\clearpage
+%%%%% TikZ box displaying commit history, R session info, and LaTeX version info
+\begin{tikzpicture}[remember picture, overlay]%
+\node (gitbox) at (current page.north)
+   [anchor=north, yshift=-4.5cm, text width=12cm, fill=blue!40, font=\sffamily\tiny\color{white}]%
+{\raggedright\bfseries%
+Source: \texttt{\jobname.Rnw}\\%
+git refs: \texttt{\gitReferences}\\%
+git hash: \texttt{\gitAbbrevHash}\\%
+git author: \gitAuthorName\\%
+author email: \gitAuthorEmail\\%
+commit date: \gitAuthorIsoDate\\%
+compile date: \Sexpr{Sys.time()}};%
+\node (gitRbox) at (gitbox.south west) [yshift=0.35cm, text width=12cm, below right, font=\sffamily]%
+{%
+<<'gitR-info', echo=FALSE, results='markup', cache=FALSE, size='scriptsize'>>=
+base::summary(repo)
+@
+};%
+\node (Rbox) at (gitRbox.south west) [fill=blue!20, text width=12cm, below right, font=\sffamily\tiny]%
+{%
+<<'R-session-info', echo=FALSE, results='asis', cache=FALSE>>=
+toLatex(sessionInfo(), locale=F)
+@
+};%
+\node (LaTeXbox) at (Rbox.south west) [fill=blue!10, text width=12cm, below right, font=\sffamily\tiny]%
+{%
+<<'lualatex-version', echo=FALSE, results='asis', cache=FALSE>>=
+latex.version.text <- system(command = "lualatex --credits", intern = TRUE)
+# quick fixes: replace "\o" with "o", and remove all empty rows in latex.version.text, which otherwise
+# causes "LaTeX Error: There's no line here to end"
+cat(paste0("\\noindent\n", paste(sub("\\\\o", "o", latex.version.text[which(latex.version.text != "")]), collapse = "\\\\\n")))
+@
+};%
+% put a frame around the metadata box
+\draw[thick] (LaTeXbox.south west) rectangle (gitbox.north east);
+\end{tikzpicture}%
+%%%%%

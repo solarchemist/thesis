@@ -1,0 +1,29 @@
+% showlabels needs to be called *after* hyperref
+% put all labels in the inner margin to avoid clashing with margin notes
+% TO TURN OFF ALL SHOWLABELS, switch document to "final" mode in documentclass options
+\usepackage[nolabel,inner]{showlabels}
+   \ifdraft{% execute showlabels options only in draft mode
+      \renewcommand{\showlabelfont}{\tiny\ttfamily}
+      \showlabels[\color{blue!30!black}]{label}
+      \showlabels[\color{theblue}]{cref}
+      \showlabels[\color{theblue}]{Cref}
+      \showlabels[\color{thegreen}]{cite}
+      \showlabels[\color{thegreen}]{citet}
+      % show labels for glossary commands
+      % note that this crashes inside table environments!!
+      %% either drop the showlabels + glossary integration, or
+      %% abstain from using glossary commands inside tables (floats in general)
+      %% NOTE: DO NOT USE glossaries commands inside floats, or else remove these showlabels commands:
+      \showlabels[\color{red!30!black}]{gls}
+      \showlabels[\color{red!30!black}]{Gls}
+      \showlabels[\color{red!30!black}]{glspl}
+      \showlabels[\color{red!30!black}]{Glspl}
+      \showlabels[\color{red!30!black}]{glsfirst}
+      \showlabels[\color{red!30!black}]{Glsfirst}
+      \showlabels[\color{red!30!black}]{glstext}
+      \showlabels[\color{red!30!black}]{Glstext}
+      \showlabels[\color{red!30!black}]{glsname}
+      \showlabels[\color{red!30!black}]{Glsname}
+      \showlabels[\color{red!30!black}]{glssymbol}
+      \showlabels[\color{red!30!black}]{glsunit}
+   }{}

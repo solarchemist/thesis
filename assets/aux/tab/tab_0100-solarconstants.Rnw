@@ -1,0 +1,62 @@
+<<'0100-solarconstants-table', echo=FALSE, results="asis">>=
+xtab.solarconstants <-
+   photoec::solarconstants %>%
+   # exclude some rows that are superfluous for the thesis intro
+   filter(!label %in% c("sigma", "R.Sun", "A.Sun", "R.Earth", "A.Earth")) %>%
+   # Note, we don't attempt to replace "value" from glossary (although that would be neat) because
+   # we cannot expand the glossary commands from inside R
+   select(name, label.tex, value, unit.tex) %>%
+   xtable()
+# note, caption takes two args, the second (optional) is the LaTeX short caption
+caption(xtab.solarconstants) <- c(
+   paste(
+      "Physical quantities related to Planck's law \\cref{eq:planck} and",
+      "the calculation of the solar spectrum.",
+      "For sources please see \\cref{photoec}."),
+	"Constants related to solar spectral irradiance")
+label(xtab.solarconstants) <- "tab:0100-solarconstants"
+names(xtab.solarconstants) <- c(
+   "{Name}",
+   "{Symbol}",
+   "{Value}",
+   "{Unit}")
+digits(xtab.solarconstants) <- c(
+   0,   # row.names
+   0,   # name
+   0,   # symbol
+   6,   # value
+   0)   # unit
+display(xtab.solarconstants) <- c(
+   "s", # row.names
+   "s", # name
+   "s", # symbol
+   "e", # value
+   "s") # unit
+align(xtab.solarconstants) <- c(
+   "l", # row.names
+   "l", # name
+   "c", # symbol
+   "S[table-format=1.6e+2]", # value
+   "l") # unit
+print(
+   xtab.solarconstants,
+   floating = TRUE,
+   table.placement = "tbp",
+   caption.placement = "top",
+   hline.after = NULL,
+   add.to.row = list(
+      pos = list(-1, 0, nrow(xtab.solarconstants)),
+      command = c("\\toprule\n", "\\midrule\n", "\\bottomrule\n")),
+   include.rownames = FALSE,
+   include.colnames = TRUE,
+   type = "latex",
+   tabular.environment = "tabular",
+   # NOTE! When using glossary entries table looks left-adjusted, despite "center" below
+   # Not using glossary entries renders it centered, so it appears the left-adjustment
+   # is the result of LaTeX calculating the table width *before* evaluating the glossary fields
+   # WHICH IS WEIRD AND SHOULD NOT BE HAPPENING
+   # Well, at least "small" is no longer needed - looks good at normal size
+   latex.environments = "center",
+   sanitize.text.function = function(x){x},
+   math.style.negative = FALSE)
+@

@@ -1,0 +1,99 @@
+<<'data-abscoeff', eval=TRUE, cache=FALSE>>=
+dye.abs.coeff <- common::LoadRData2Variable(here::here("assets/rdata/abscoeff.rda"))
+@
+
+
+\begin{scheme}[tbp]
+\centering
+\begin{subscheme}{0.5\textwidth}
+<<'0407-fig-abscoeff-MB', fig.width=2.36, out.width='2.36in', fig.height=1.46, cache=TRUE>>=
+ggplot(dye.abs.coeff %>%
+          filter(wavelength > 300 & wavelength < 800) %>%
+          filter(solution == "H2O" & dye == "MB"),
+       aes(x = wavelength, y = k)) +
+   # careful, stat_colour (BrE spelling) does not work! (usually ggplot2 allows either spelling)
+   # geom_line() gives a single-colour line, needs stat_color(geom="line",...) for the spectral colouration
+   stat_color(geom = "line", linewidth = 1) +
+   scale_colour_identity() +
+   # \fscrm is a scriptstyle formal negative charge (defined by chemmacros)
+   # \fscrp is a scriptstyle formal positive charge (defined by chemmacros)
+   annotate(geom = "text", x = 550, y = 25E3,
+            label = '\\scriptsize\\scalebox{0.95}{\\chemfig[atom sep=2.0em]{[7]H_3C-N(-[6]CH_3)-[:30]*6(=-(*6(=\\charge{-90:1pt=\\scalebox{1.0}{\\fscrp}}{S}(-[,1.0,,,draw=none]\\charge{90=\\scalebox{1.0}{\\fscrm}}{Cl})-(*6(-=(-N(-[1]CH_3)-[6]CH_3)-=-=))--N=-))--=-)}}') +
+   theme_void()
+@
+\caption[Methylene blue]{\protect\Glsxtrlong{MB}, \reactant*[switch=true]{MB}}
+\label{sch:MB-structure}
+\end{subscheme}%
+\begin{subscheme}{0.5\textwidth}
+<<'0407-fig-abscoeff-RB5', fig.width=2.36, out.width='2.36in', fig.height=1.46, cache=TRUE>>=
+MB.abscoeff.max <-
+   dye.abs.coeff %>% filter(wavelength > 300 & wavelength < 800) %>%
+   filter(solution == "H2O" & dye == "MB") %>% select(k) %>% max()
+ggplot(dye.abs.coeff %>%
+          filter(wavelength > 300 & wavelength < 800) %>%
+          filter(dye == "RB5"),
+       aes(x = wavelength, y = k)) +
+   stat_color(geom = "line", linewidth = 1) +
+   scale_colour_identity() +
+   coord_cartesian(ylim = c(0, MB.abscoeff.max)) +
+   annotate(
+      geom = "text", x = 550, y = 10E3,
+      label =
+         paste0(
+            '\\definesubmol{sulfonateright}{-S(=[::+90]O)(=[::-90]O)-\\charge{20=\\scalebox{1.2}{\\fscrm}}{O}-[:0,1.1,,,draw=none]\\charge{160=\\scalebox{1.2}{\\fscrp}}{Na}}',
+            '\\definesubmol{sulfonateleftlower}{\\charge{20=\\scalebox{1.2}{\\fscrp}}{Na}-[:0,1.1,,,draw=none]\\charge{160=\\scalebox{1.2}{\\fscrm}}{O}-S(=[::+90]O)(=[::-90]O)-O}',
+            '\\definesubmol{sulfonateleftupper}{O-S(=[::+90]O)(=[::-90]O)-\\charge{160=\\scalebox{1.2}{\\fscrm}}{O}-[:180,1.1,,,draw=none]\\charge{20=\\scalebox{1.2}{\\fscrp}}{Na}}',
+            '\\definesubmol{upperbranch}{-N=[:180]N-[::0]*6(-=-(-S(=[::+90]O)(=[::-90]O)--[::-60]-!{sulfonateleftupper})=-=)}',
+            '\\scriptsize\\scalebox{0.68}{\\chemfig[atom sep=2.0em]{',
+               # lower branch, from left-to-right
+               '[:0]!{sulfonateleftlower}-[:0]-[:60]-[:0]S(=[::+90]O)(=[::-90]O)-[:0]',
+               # single six-ring on lower branch starts here (heavy nesting begins)
+               '*6(-=-(-N=N-[:60]*6(-(!{sulfonateright})=-*6(-=(!{sulfonateright})-(!{upperbranch})=(-HO)-)=-(-H_2N)=))=-=)',
+            '}}')) +
+   theme_void()
+@
+\caption[Reactive black 5]{\protect\Glsxtrlong{RB5}, \reactant*[switch=true]{RB5}}
+\label{sch:RB5-structure}
+\end{subscheme}%
+\\%
+\begin{subscheme}{0.5\textwidth}
+<<'0407-fig-abscoeff-EBT', fig.width=2.36, out.width='2.36in', fig.height=1.46, cache=TRUE>>=
+ggplot(dye.abs.coeff %>%
+          filter(wavelength > 300 & wavelength < 800) %>%
+          filter(solution == "H2O" & dye == "EBT"),
+       aes(x = wavelength, y = k)) +
+   coord_cartesian(ylim = c(0, MB.abscoeff.max)) +
+   stat_color(geom = "line", linewidth = 1) +
+   scale_colour_identity() +
+   annotate(geom = "text", x = 550, y = 23E3,
+            label = '\\scriptsize\\scalebox{0.90}{\\chemfig[atom sep=2.0em]{([:-30]*6((-=^[::+60]-[::+60]=^[::+60]-[::+60])=-(-OH)=(-N=[::60]N-*6(=(-OH)-=(-S(=[::+90]O)(=[::-90]O)(-\\charge{20=\\scalebox{1.0}{\\fscrm}}{O}-[,,,,draw=none]\\charge{160=\\scalebox{1.0}{\\fscrp}}{Na}))-*6(-=(-NO_2)-=--)=-))-=-))}}') +
+   theme_void()
+@
+\caption[Eriochrome black T]{\protect\Glsxtrlong{EBT}, \reactant*[switch=true]{EBT}}
+\label{sch:EBT-structure}
+\end{subscheme}%
+\begin{subscheme}{0.5\textwidth}
+<<'0407-fig-abscoeff-MO', fig.width=2.36, out.width='2.36in', fig.height=1.46, cache=TRUE>>=
+ggplot(dye.abs.coeff %>%
+          filter(wavelength > 300 & wavelength < 800) %>%
+          filter(solution == "H2O" & dye == "MO"),
+       aes(x = wavelength, y = k)) +
+   coord_cartesian(ylim = c(0, MB.abscoeff.max)) +
+   stat_color(geom = "line", linewidth = 1) +
+   scale_colour_identity() +
+   annotate(geom = "text", x = 550, y = 23E3,
+            label = '\\scriptsize\\scalebox{0.90}{\\chemfig[atom sep=2.0em]{([7]H_3C-N(-[5]H_3C)-[:0]*6(=-=(-N=[::60]N-*6(=-=(-S(=[::+90]O)(=[::-90]O)(-\\charge{20=\\scalebox{1.0}{\\fscrm}}{O}-[,,,,draw=none]\\charge{160=\\scalebox{1.0}{\\fscrp}}{Na}))-=-))-=-))}}') +
+   theme_void()
+@
+\caption[Methyl orange]{\protect\Glsxtrlong{MO}, \reactant*[switch=true]{MO}}
+\label{sch:MO-structure}
+\end{subscheme}%
+\caption[Tested dyes]{%
+   The chemical structures of the evaluated dyes
+   overlaid with a line plot of their experimentally determined absorption coefficient
+   in aqueous solution.
+   Note that although the scales are not shown (for aesthetic reasons),
+   all are plotted using the \emph{same} scales.
+}
+\label{sch:0302-tested-dyes}
+\end{scheme}

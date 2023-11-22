@@ -1,0 +1,60 @@
+% see ch. 18 in the chemmacros manual for an excellent introduction on reactants
+\DeclareChemReactant{zincchloride}{%
+   name={\ch{ZnCl2}},%
+   bookmark={ZnCl₂}%
+}
+\DeclareChemReactant{potassiumchloride}{%
+   name={\ch{KCl}},%
+   bookmark={KCl}%
+}
+\DeclareChemReactant{cadmiumsulfate}{%
+   name={\ch{CdSO4}},%
+   % bookmark (replacement in PDF bookmarks)
+   bookmark={CdSO₄}%
+}
+\DeclareChemReactant{cadmiumsulfatehydrate}{%
+   name={\ch{CdSO4 * 8/3 H2O}},%
+   bookmark={CdSO₄ ⋅ 2.67H₂O}%
+}
+\DeclareChemReactant{thiourea}{%
+   name={\ch{CH4N2S}},%
+   bookmark={CH₄N₂S}%
+}
+\DeclareChemReactant{ammonia}{%
+   name={\ch{NH3}},%
+   bookmark={NH₃}%
+}
+\DeclareChemReactant{zincacetatedihydrate}{%
+   name={\ch{\ZnAc * 2 \water}},%
+   bookmark={Zn(OAc)₂ ⋅ 2H₂O}%
+}
+% \LiOH is defined as \NewChemParticle in custom.Rnw
+\DeclareChemReactant{lithiumhydroxidehydrate}{%
+   name={\LiOH},%
+   bookmark={LiOH ⋅ H₂O}%
+}
+% \EtOH is defined as \NewChemParticle in custom.Rnw
+\DeclareChemReactant{ethanol}{%
+   name={\EtOH},%
+   bookmark={EtOH}%
+}
+% MB is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{MB}{%
+   name=\iupac{3,7-bis(di|methyl|amino)-pheno|thiazin-5-ium chloride},%
+   bookmark={MB}%
+}
+% RB5 is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{RB5}{%
+   name=\iupac{2,7-naphthalene|di|sulfonic acid, 4-amino-5-hydroxy-3,6-bis[[4-[[2-(sulfo|oxy)ethyl]sulfonyl]phenyl]azo]-, tetra|sodium salt},%
+   bookmark={RB5}%
+}
+% EBT is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{EBT}{%
+   name=\iupac{sodium 4-[2-(1-hydroxy|naphthalen-2-yl)hydrazin-1-ylidene]-7-nitro-3-oxo-3,4-di|hydro|naphthalene-1-sulfonate},%
+   bookmark={EBT}%
+}
+% MO is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{MO}{%
+   name=\iupac{sodium 4-{[4-(di|methyl|amino)phenyl]di|azenyl}benzene-1-sulfonate},%
+   bookmark={MO}%
+}

@@ -1,0 +1,579 @@
+<<'0503P-xps-colourscheme'>>=
+# https://coolors.co/ab9cbe-ecb600-fbbda0-f8766d-a99985
+colourscheme.ALD <-
+   c("0"   = "#00b0f6",  # picton blue
+     "35"  = "#ab9cbe",  # amethyst smoke
+     "50"  = "#ecb600",  # gold
+     "62"  = "#fbbda0",  # scallop seashell
+     "87"  = "#f8766d",  # bittersweet
+     "100" = "#a99985")  # khaki
+colourscheme.pk <-
+   c("1"  = "#A99985",
+     "1a" = "#AB9CBE",
+     "2"  = "#A99985",
+     "2a" = "#FBBDA0")
+@
+
+
+<<'0503P-xps-import-asc'>>=
+# convert each spectra (interval) to a CSV file
+asc.intrvls.raw.uncalibrated <-
+   tibble::tribble(
+      ~sampleid, ~ALD,  ~path,
+      "7B0116", "100",  here::here("assets/data/P03/xps/7B0116_2.asc"),
+      "7B0303",  "50",  here::here("assets/data/P03/xps/7B0303_3.asc"),
+      "7B0302",  "75",  here::here("assets/data/P03/xps/7B0302_2.asc"),
+      "7B0406",  "87",  here::here("assets/data/P03/xps/MH1210_36.asc"),
+      "7B0301",  "35",  here::here("assets/data/P03/xps/7B0301_4.asc"),
+      "7B0306",  "62",  here::here("assets/data/P03/xps/7B0306_3.asc"))
+asc.intrvls.raw.uncalibrated.data <- data.frame()
+for (i in 1:length(asc.intrvls.raw.uncalibrated$path)) {
+   asc.intrvls.raw.uncalibrated.data <-
+      rbind(
+         asc.intrvls.raw.uncalibrated.data,
+         cbind(
+            ALD = asc.intrvls.raw.uncalibrated$ALD[i],
+            sampleid = asc.intrvls.raw.uncalibrated$sampleid[i],
+            xps2df(asc.intrvls.raw.uncalibrated$path[i])))
+}
+@
+
+
+<<'0503P-xps-C1s-offset'>>=
+normal.C1s <- 285.0 # eV
+asc.intrvls.raw.uncalibrated$offset <-
+   c(normal.C1s - 278.4162449, # "7B0116", "100"
+     normal.C1s - 278.6924659, # "7B0303",  "50"
+     normal.C1s - 278.4410619, # "7B0302",  "75"
+     normal.C1s - 284.9824371, # "7B0406",  "87"
+     normal.C1s - 278.7501704, # "7B0301",  "35"
+     normal.C1s - 279.0046382) # "7B0306",  "62"
+xps.data <-
+   left_join(
+      asc.intrvls.raw.uncalibrated.data,
+      asc.intrvls.raw.uncalibrated %>% select(sampleid, offset),
+      by = "sampleid") %>%
+   mutate(x = x + offset) %>%
+   # the original offset column no longer needed, nor is the spectrum counter, really
+   select(-offset, -spectrum)
+@
+
+
+<<'0503P-xps-data-pruning'>>=
+# F1s only for one sample, let's drop it
+xps.data %<>% filter(!interval %in% c("F1s"))
+xps.Fe2p <-
+   xps.data %>%
+   filter(interval == "Fe2p")
+@
+
+
+<<'0503P-xps-fit-params'>>=
+# Peak fit parameters from the Fityk fitting
+xps.fit <- tibble::tribble(
+   ~sampleid, ~ALD, ~pk,  ~center,                        ~height,                      ~area,   ~fwhm,
+   "7B0116",   100, "1",  set_errors(710.513, 0.0285194), set_errors(2653.88, 25.2205), 7565.86, 2.602,
+   "7B0116",   100, "1a", set_errors(716.096, 0.218809), set_errors(402.937, 49.8256), 939.661, 1.20784,
+   "7B0116",   100, "2",  set_errors(724.597, 0.0876439), set_errors(1190.57, 22.3194), 5619.5, 3.47187,
+   "7B0116",   100, "2a", set_errors(733.274, 0.460467), set_errors(219.517, 28.3735), 768.903, 1.73955,
+
+   "7B0301",   35, "1",  set_errors(710.7, 0.0364764), set_errors(1998.6, 19.4325), 8242.73, 3.55167,
+   "7B0301",   35, "1a", set_errors(719.21, 0.516119), set_errors(181.496, 53.0352), 612.504, 2.55892,
+   "7B0301",   35, "2",  set_errors(724.852, 0.143708), set_errors(761.689, 34.7924), 3849.59, 3.76002,
+   "7B0301",   35, "2a", set_errors(733.31, 0.539899), set_errors(161.903, 20.0528), 932.025, 4.1339,
+
+   "7B0302",   75, "1",  set_errors(710.008, 0.0228577), set_errors(2102.37, 14.1883), 8088.08, 3.60167,
+   "7B0302",   75, "1a", set_errors(719.002, 0.388349), set_errors(170.148, 36.1852), 505.016, 2.27847,
+   "7B0302",   75, "2",  set_errors(723.766, 0.101489), set_errors(772.957, 31.059), 3108.56, 3.77804,
+   "7B0302",   75, "2a", set_errors(732.715, 0.542751), set_errors(176.718, 19.3628), 1148.2, 4.55061,
+
+   "7B0303",   50, "1",  set_errors(711.034, 0.0152732), set_errors(5544.42, 25.3805), 20750.9, 3.45676,
+   "7B0303",   50, "1a", set_errors(719.58, 0.191634), set_errors(518.869, 88.2752), 1284.67, 2.32595,
+   "7B0303",   50, "2",  set_errors(724.838, 0.0792356), set_errors(2132.53, 80.012), 8644.75, 3.80775,
+   "7B0303",   50, "2a", set_errors(733.424, 0.227888), set_errors(513.928, 60.6535), 2346.04, 2.71518,
+
+   "7B0306",   62, "1",  set_errors(710.727, 0.0208463), set_errors( 2747.5, 18.6398), 9993.66, 3.41666,
+   "7B0306",   62, "1a", set_errors(719.784, 0.207412), set_errors(246.538, 29.8583), 577.509, 2.20058,
+   "7B0306",   62, "2",  set_errors(724.464, 0.100209), set_errors(1017.67, 23.7651), 4580.18, 2.89765,
+   "7B0306",   62, "2a", set_errors(733.358, 0.42639), set_errors(214.005, 53.9936), 999.162, 3.97304,
+
+   "7B0406",   87, "1",  set_errors(710.687, 0.0198847), set_errors(2994.82, 15.436), 11927.2, 3.62576,
+   "7B0406",   87, "1a", set_errors(718.926, 0.377402), set_errors(181.45, 89.7155), 507.04, 2.62501,
+   "7B0406",   87, "2",  set_errors(724.5, 0.142352), set_errors(1133.5, 136.096), 4828.53, 4.00183,
+   "7B0406",   87, "2a", set_errors(733.625, 0.551348), set_errors(226.506, 50.469), 1307.58, 3.84769)
+# create unique identifier columns
+xps.fit$sid <- paste(xps.fit$sampleid, xps.fit$ALD, sep="-")
+xps.fit$sid.pk <- paste(xps.fit$sampleid, xps.fit$ALD, xps.fit$pk, sep="-")
+@
+
+
+<<'0503P-xps-satellite-diffs-BE'>>=
+# We expect this difference to be sensitive to chemical environment
+# ΔBE1 = BE(1a) - BE(1)
+# add a new column with this difference (satellite vs main peak)
+xps.fit <- left_join(
+   xps.fit,
+   # this chain should produce 12 x 4 tibble grouped by sampleid (6 groups x 2 rows)
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, center) %>%
+      filter(grepl("1", pk)) %>%
+      group_by(sampleid) %>%
+      # https://stackoverflow.com/questions/28045910/diff-operation-within-a-group-after-a-dplyrgroup-by
+      # note, unicode character in variable names should work on all platforms:
+      # https://stackoverflow.com/questions/52020256/unicode-variable-names-in-r
+      mutate(satΔBE1 = center - lag(center)) %>%
+      # to avoid clashes with the xps.fit column names, I want to drop columns
+      # but cannot drop sampleid without ungrouping first
+      ungroup() %>% select(-sampleid, -pk, -center),
+   by = "sid.pk")
+# ΔBE2 = BE(2a) - BE(2)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, center) %>%
+      filter(grepl("2", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satΔBE2 = center - lag(center)) %>%
+      ungroup() %>% select(-sampleid, -pk, -center),
+   by = "sid.pk")
+# coalesce BE1 and BE2 into one column (no need to keep the separate, just easier to calculate that way)
+xps.fit %<>%
+   mutate(satΔBE = coalesce(satΔBE1, satΔBE2)) %>%
+   select(-satΔBE1, -satΔBE2)
+@
+
+
+<<'0503P-xps-satellite-rel-height'>>=
+# We suspect this ratio is sensitive to the chemical environment
+# QH1 = height(1a) / height(1)
+# Q as in quotient, i.e., ratio, see:
+# https://math.stackexchange.com/questions/44771/is-there-an-analogue-to-the-delta-symbol-for-ratios
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, height) %>%
+      filter(grepl("1", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQH1 = height / lag(height)) %>%
+      ungroup() %>% select(-sampleid, -pk, -height),
+   by = "sid.pk")
+# QH2 = height(2a) / height(2)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, height) %>%
+      filter(grepl("2", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQH2 = height / lag(height)) %>%
+      ungroup() %>% select(-sampleid, -pk, -height),
+   by = "sid.pk")
+# coalesce H1 and H2 into one column
+xps.fit %<>%
+   mutate(satQH = coalesce(satQH1, satQH2)) %>%
+   select(-satQH1, -satQH2)
+@
+
+
+<<'0503P-xps-satellite-rel-area'>>=
+# Ratio of areas should behave similar to ratio of heights
+# QA1 = area(1a) / area(1)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, area) %>%
+      filter(grepl("1", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQA1 = area / lag(area)) %>%
+      ungroup() %>% select(-sampleid, -pk, -area),
+   by = "sid.pk")
+# QA2 = area(2a) / area(2)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, area) %>%
+      filter(grepl("2", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQA2 = area / lag(area)) %>%
+      ungroup() %>% select(-sampleid, -pk, -area),
+   by = "sid.pk")
+# coalesce A1 and A2 into one column
+xps.fit %<>%
+   mutate(satQA = coalesce(satQA1, satQA2)) %>%
+   select(-satQA1, -satQA2)
+@
+
+
+<<'0503P-xps-satellite-rel-FWHM'>>=
+# Ratio of widths should behave...?
+# QW1 = fwhm(1a) / fwhm(1)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, fwhm) %>%
+      filter(grepl("1", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQW1 = fwhm / lag(fwhm)) %>%
+      ungroup() %>% select(-sampleid, -pk, -fwhm),
+   by = "sid.pk")
+# QW1 = fwhm(2a) / fwhm(2)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, fwhm) %>%
+      filter(grepl("2", pk)) %>%
+      group_by(sampleid) %>%
+      mutate(satQW2 = fwhm / lag(fwhm)) %>%
+      ungroup() %>% select(-sampleid, -pk, -fwhm),
+   by = "sid.pk")
+# coalesce W1 and W2 into one column
+xps.fit %<>%
+   mutate(satQW = coalesce(satQW1, satQW2)) %>%
+   select(-satQW1, -satQW2)
+@
+
+
+% Now calculate the diffs and ratios for the two *main* peaks vs each other.
+
+<<'0503P-xps-main-diffs-BE'>>=
+# ΔBE = BE(2) - BE(1)
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, center) %>%
+      filter(pk %in% c("1", "2")) %>%
+      group_by(sampleid) %>%
+      mutate(ΔBE = center - lag(center)) %>%
+      ungroup() %>% select(-sampleid, -pk, -center),
+   by = "sid.pk")
+@
+
+
+<<'0503P-xps-main-rel-height'>>=
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, height) %>%
+      filter(pk %in% c("1", "2")) %>%
+      group_by(sampleid) %>%
+      mutate(QH = height / lag(height)) %>%
+      ungroup() %>% select(-sampleid, -pk, -height),
+   by = "sid.pk")
+@
+
+
+<<'0503P-xps-main-rel-area'>>=
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, area) %>%
+      filter(pk %in% c("1", "2")) %>%
+      group_by(sampleid) %>%
+      mutate(QA = area / lag(area)) %>%
+      ungroup() %>% select(-sampleid, -pk, -area),
+   by = "sid.pk")
+@
+
+
+<<'0503P-xps-main-rel-FWHM'>>=
+xps.fit <- left_join(
+   xps.fit,
+   xps.fit %>%
+      select(sid.pk, sampleid, pk, fwhm) %>%
+      filter(pk %in% c("1", "2")) %>%
+      group_by(sampleid) %>%
+      mutate(QW = fwhm / lag(fwhm)) %>%
+      ungroup() %>% select(-sampleid, -pk, -fwhm),
+   by = "sid.pk")
+@
+
+
+<<'0503P-xps-plot-preparation'>>=
+this.data <-
+   xps.Fe2p %>%
+   # order the ALD values for the sake of facetting
+   mutate(ALD = factor(ALD, ordered = TRUE, levels = rev(c("35", "50", "62", "75", "87", "100"))))
+@
+
+
+<<'0503P-figref-xps-Fe2p-spectra', eval=FALSE>>=
+p.Fe2p <- ggplot(this.data) +
+   # to make it possible to perfectly align this plot with p.centroid.shift,
+   # use the same x-axis
+   coord_cartesian(xlim = c(700, 740)) +
+   facet_wrap(~ALD, scales = "free_y", ncol = 1, strip.position = "right") +
+   geom_line(aes(x, y)) +
+   scale_colour_manual(
+      name = "ALD cycles",
+      values = colourscheme.ALD) +
+   scale_y_continuous(
+      # make y-axis numbers take less space by dividing them by 1000
+      # https://rlang.r-lib.org/reference/as_function.html
+      labels = rlang::as_function(~ 0.001 * .),
+      # display fewer tick marks (for the same reason)
+      breaks = scales::pretty_breaks(n = 2)) +
+   scale_x_continuous(
+      breaks = c(
+         700,
+         xps.fit %>% filter(pk == "1") %>% pull(center) %>% mean(),
+         xps.fit %>% filter(pk == "1a") %>% pull(center) %>% mean(),
+         xps.fit %>% filter(pk == "2") %>% pull(center) %>% mean(),
+         xps.fit %>% filter(pk == "2a") %>% pull(center) %>% mean(),
+         740),
+      labels = c(
+         "700",
+         paste0(
+            "\\num{",
+            xps.fit %>% filter(pk == "1") %>% pull(center) %>% mean() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "\\pm",
+            xps.fit %>% filter(pk == "1") %>% pull(center) %>% sd() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "}"),
+         paste0(
+            "\\num{",
+            xps.fit %>% filter(pk == "1a") %>% pull(center) %>% mean() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "\\pm",
+            xps.fit %>% filter(pk == "1a") %>% pull(center) %>% sd() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "}"),
+         paste0(
+            "\\num{",
+            xps.fit %>% filter(pk == "2") %>% pull(center) %>% mean() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "\\pm",
+            xps.fit %>% filter(pk == "2") %>% pull(center) %>% sd() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "}"),
+         paste0(
+            "\\num{",
+            xps.fit %>% filter(pk == "2a") %>% pull(center) %>% mean() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "\\pm",
+            xps.fit %>% filter(pk == "2a") %>% pull(center) %>% sd() %>%
+            as.numeric() %>% formatC(format="f", digits=1),
+            "}"),
+         "740")) +
+   labs(
+      x = "BE/\\unit{\\eV}",
+      y = "Intensity/\\num[retain-unity-mantissa=false]{1E3}") +
+   theme_halfwidth() +
+   theme(
+      strip.text.y.right = element_text(angle = 0),
+      axis.text.x = element_text(size = rel(0.75)),
+      legend.position = "none")
+p.centroid.shift <- ggplot(xps.fit) +
+   # to make it possible to perfectly align this plot with p.centroid.absolute,
+   # use the same x-axis
+   coord_cartesian(xlim = c(700, 740)) +
+   scale_colour_manual(values = colourscheme.pk) +
+   scale_fill_manual(values = colourscheme.pk) +
+   geom_ribbon(
+      aes(y = ALD,
+          xmin = errors_min(center),
+          xmax = errors_max(center),
+          group = pk,
+          fill = pk),
+      colour = NA,
+      alpha = 0.75) +
+   labs(
+      x = "BE/\\unit{\\eV}",
+      # use the same axis title as bottom plot for easier alignment:
+      y = "Intensity/\\num[retain-unity-mantissa=false]{1E3}") +
+   theme(
+      legend.position = "none",
+      # repeat the theme settings of p.Fe2p
+      # but make them colourless (but still occupying space)
+      axis.title = element_text(colour = NA),
+      axis.text.x = element_text(colour = NA, size = rel(0.75)),
+      axis.text.y = element_text(colour = NA),
+      # invisible axes and axis tick marks
+      axis.ticks = element_line(colour = NA),
+      axis.line = element_line(colour = NA),
+      # remove grid lines
+      panel.grid = element_blank(),
+      panel.border = element_rect(colour = NA),
+      # make plot background transparent
+      panel.background = element_rect(fill = NA, colour = NA),
+      # make area outside panel transparent
+      plot.background = element_rect(fill = NA, colour = NA))
+# let's make use of cowplot's ability to draw two plots on top of each other
+p.align.spectra <- align_plots(p.Fe2p, p.centroid.shift, align = "hv", axis = "b")
+# why not ggdraw() twice? I don't know, just following the example of
+# https://wilkelab.org/cowplot/articles/aligning_plots.html
+ggdraw(p.align.spectra[[1]]) +
+   draw_plot(
+      plot = p.align.spectra[[2]],
+      # this alignment is very fragile
+      # even so, it's not perfect: OK in the center, but is slightly out of alignment
+      # towards the edges (horizontally)
+      hjust = 0.01,
+      width =  0.927) # 0.925 # 0.989
+@
+
+
+<<'0503P-figref-xps-Fe2p-satellite-delta', eval=FALSE>>=
+ggplot(xps.fit) +
+   scale_colour_manual(values = colourscheme.pk) +
+   geom_line(
+      aes(x = ALD, y = satΔBE, group = pk, colour = pk)) +
+   # show error in ΔBE as errorbar
+   geom_errorbar(
+      width = 1.2, linewidth = 1,
+      # colour = "gray20",
+      # position = position_dodge2(),
+      position = position_jitter(width = 2, seed = 8),
+      aes(x = ALD,
+          # y included only for position_jitter to work (not supposed to be
+          # included otherwise when using geom_errorbar, throws warning!)
+          y = satΔBE,
+          # alpha = alpha,
+          colour = pk,
+          ymin = errors_min(satΔBE),
+          ymax = errors_max(satΔBE))) +
+   geom_point(
+      aes(x = ALD, y = satΔBE, group = pk, colour = pk, shape = pk),
+      position = position_jitter(width = 2, seed = 8)) +
+      scale_x_continuous(
+      breaks = xps.fit$ALD %>% unique() %>% sort(),
+      labels = xps.fit$ALD %>% unique() %>% sort() %>% as.character()) +
+   labs(
+      y = "$\\Delta/\\unit{\\eV}$",
+      x = "ALD cycles") +
+   coord_flip() +
+   theme_halfwidth() +
+   theme(
+      axis.text = element_text(size = rel(0.75)),
+      axis.title.y = element_blank(),
+      legend.position = "none")
+@
+
+
+<<'0503P-figref-xps-Fe2p-satellite-ratio', eval=FALSE>>=
+ggplot(xps.fit) +
+   scale_colour_manual(values = colourscheme.pk) +
+   geom_line(
+      aes(x = ALD, y = satQH, group = pk, colour = pk),
+      size = 1) +
+   # show error in satQH as errorbar
+   geom_errorbar(
+      width = 1.2, size = 1,
+      # colour = "gray20",
+      position = position_jitter(width = 2, seed = 8),
+      aes(x = ALD,
+          # y included only for position_jitter to work (not supposed to be
+          # included otherwise when using geom_errorbar, throws warning!)
+          y = satQH,
+          colour = pk,
+          ymin = errors_min(satQH),
+          ymax = errors_max(satQH))) +
+   geom_point(
+      aes(x = ALD, y = satQH, group = pk, colour = pk, shape = pk),
+      position = position_jitter(width = 2, seed = 8),
+      size = 2.5) +
+   scale_x_continuous(
+      breaks = xps.fit$ALD %>% unique() %>% sort(),
+      labels = xps.fit$ALD %>% unique() %>% sort() %>% as.character()) +
+   labs(
+      y = "Q$(I)$",
+      x = "ALD cycles") +
+   theme_halfwidth() +
+   theme(
+      legend.position = "none",
+      axis.title.y = element_blank())
+@
+
+
+<<'0503P-figref-xps-Fe2p-main-delta', eval=FALSE>>=
+ggplot(xps.fit %>% filter(!is.na(ΔBE))) +
+   scale_colour_manual(values = colourscheme.pk) +
+   # line not shown if we don't drop NAs (above)
+   geom_line(
+      aes(x = ALD, y = ΔBE, colour = pk),
+      size = 1) +
+   # show error in ΔBE as errorbar
+   geom_errorbar(
+      width = 1.2, size = 1,
+      aes(x = ALD,
+          colour = pk,
+          ymin = errors_min(ΔBE),
+          ymax = errors_max(ΔBE))) +
+   geom_point(
+      aes(x = ALD, y = ΔBE, colour = pk),
+      size = 2.5) +
+   scale_x_continuous(
+      breaks = xps.fit$ALD %>% unique() %>% sort(),
+      labels = xps.fit$ALD %>% unique() %>% sort() %>% as.character()) +
+   labs(
+      y = "$\\Delta/\\unit{\\eV}$",
+      x = "ALD cycles") +
+   theme_halfwidth() +
+   theme(
+      legend.position = "none",
+      axis.title.x = element_blank())
+@
+
+
+<<'0503P-figref-xps-Fe2p-main-ratio', eval=FALSE>>=
+ggplot(xps.fit %>% filter(!is.na(QH))) +
+   scale_colour_manual(values = colourscheme.pk) +
+   geom_line(
+      aes(x = ALD, y = QH, colour = pk)) +
+   # show error in QH as errorbar
+   geom_errorbar(
+      width = 1.2, size = 1,
+      aes(x = ALD,
+          colour = pk,
+          ymin = errors_min(QH),
+          ymax = errors_max(QH))) +
+   geom_point(
+      aes(x = ALD, y = QH, colour = pk)) +
+   scale_x_continuous(
+      breaks = xps.fit$ALD %>% unique() %>% sort(),
+      labels = xps.fit$ALD %>% unique() %>% sort() %>% as.character(),
+      sec.axis = dup_axis()) +
+   scale_y_continuous(
+      # with the flipped orientation this axis doesn't fit more than 2 breaks
+      # scales::pretty_breaks(n=2) still produced three breaks
+      breaks = c(0.36, 0.42)) +
+   coord_flip() +
+   theme_halfwidth() +
+   labs(
+      y = "Q$(I)$",
+      x = "ALD cycles") +
+   theme(
+      axis.title.y = element_blank(),
+      axis.text.y.left = element_blank(),
+      axis.ticks.y.left = element_blank(),
+      axis.text = element_text(size = rel(0.75)),
+      legend.position = "none")
+@
+
+
+\begin{figure}[tbp]
+\centering%
+\begin{subfigure}[b]{0.66\textwidth}%
+<<'0503P-fig-xps-Fe2p-spectra', ref.label='0503P-figref-xps-Fe2p-spectra', eval=TRUE, fig.width=3.11, fig.height=2.11, out.width="3.11in">>=
+@
+\caption{}%
+\label{fig:P03-XPS-Fe2p-spectra}%
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.33\textwidth}%
+\begin{subfigure}[b]{0.50\linewidth}%
+<<'0503P-fig-xps-Fe2p-satellite-delta', ref.label='0503P-figref-xps-Fe2p-satellite-delta', eval=TRUE, fig.width=0.77, fig.height=2.11, out.width="0.77in">>=
+@
+\caption{}%
+\label{fig:P03-XPS-Fe2p-satellite-delta}%
+\end{subfigure}%
+\begin{subfigure}[b]{0.50\linewidth}%
+<<'0503P-fig-xps-Fe2p-main-ratio', ref.label='0503P-figref-xps-Fe2p-main-ratio', eval=TRUE, fig.width=0.77, fig.height=2.11, out.width="0.77in">>=
+@
+\caption{}%
+\label{fig:P03-XPS-Fe2p-main-ratio}%
+\end{subfigure}%
+\end{subfigure}%
+\caption[XPS spectra of \ZnO/\ch{Fe2O3} nanorod arrays]{%
+   XPS spectra of \ch{ZnO}/\ch{Fe2O3} nanorod arrays.}
+\label{fig:P03-XPS-Fe2p}%
+\end{figure}

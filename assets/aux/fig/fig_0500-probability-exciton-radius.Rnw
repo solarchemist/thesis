@@ -1,0 +1,77 @@
+<<'0500-quantum-confinement-calc', echo=FALSE, warning=FALSE>>=
+rB <- syms$bohrrada0
+rBe <- syms_with_errors$bohrrada0
+df <- tibble(
+   # vector of radii (seq() drops errors anyway)
+   r = seq(0, 5 * rB, length.out = 1000))
+# probability density function (with error bars)
+# Warning message:
+# In 'Ops' : non-'errors' operand automatically coerced to an 'errors' object with no uncertainty
+df$Pre <- (4 * df$r^2 / rBe^3) * exp(-2 * df$r / rBe)
+# probability density function (without error bars)
+df$Pr <- (4 * df$r^2 / rB^3) * exp(-2 * df$r / rB)
+@
+
+
+<<'0500-quantum-confinement-area-trapz', eval=FALSE, echo=FALSE>>=
+# 0 < r <= rB =>
+common::trapz(
+   x = df %>% filter(r <= rB) %>% pull(r),
+   y = df %>% filter(r <= rB) %>% pull(Pr)) %>% sum()
+# steps       100        500       1000        1e6
+#       0.3014726  0.3189843  0.3211561  0.3233214
+# 0 < r <= 5 * rB
+common::trapz(
+   x = df %>% filter(r <= 5 * rB) %>% pull(r),
+   y = df %>% filter(r <= 5 * rB) %>% pull(Pr)) %>% sum()
+# steps       100        500       1000        1e6
+#       0.9972286  0.9972305  0.9972306  0.9972306
+@
+
+
+<<'0500-fig-probability-exciton-radius', fig.width=1, out.width='20mm', fig.height=1.14, fig.align='default', eval=TRUE>>=
+# note the sub-subscript (single sub did not give the proper visual "subscript" effect)
+Pr.richtext <- "Pr(0&thinsp;<&thinsp;<i>r</i>&thinsp;<&thinsp;5<i>a</i><sub><sub>B</sub></sub>)"
+p <- ggplot(df) +
+   geom_area(
+      data = df %>% filter(r <= rB),
+      fill = alpha("blue", 0.15),
+      aes(x = r, y = Pr)) +
+   # https://allancameron.github.io/geomtextpath/
+   geom_textline(
+      # weird, seems LaTeX math mode doesn't work in geomtextpath::geom_textline
+      # label = "$\\mathrm{Pr}(0<r<5a_\\mathrm{B})$",
+      # label = "Pr(0<r<5aB)",
+      # label = as.character(Pr.math), parse = TRUE,
+      label = Pr.richtext, rich = TRUE, size = 3.4,
+      vjust = -0.5, hjust = 0.9,
+      aes(x = r, y  = Pr)) +
+   geom_path(aes(x = r, y  = Pr)) +
+   # errorbar works, but error is miniscule, practically indistinguishable from point
+   # geom_errorbar(
+   #    # width just to make the errorbar visible
+   #    # it is the vertical extent of the errorbar that matters, which is minuscule (as expected)
+   #    size = 0.5, width = 0.05 * rB,
+   #    aes(x = r,
+   #        ymin = errors_min(Pre), ymax = errors_max(Pre))) +
+   scale_y_continuous(
+      breaks = c(0, 1e10),
+      labels = c("", "")) +
+   scale_x_continuous(
+      breaks = seq(0, 5 * rB, rB),
+      labels = c(
+         " ", # first label can't be empty, apparently
+         "$1a_\\mathrm{B}$", # "$1\\protect\\glsname{exciton_Bohr_radius}$",
+         "",
+         "", # "$3\\protect\\glsname{exciton_Bohr_radius}$",
+         "",
+         "")) + # "$5\\protect\\glsname{exciton_Bohr_radius}$")) +
+   theme_plot_in_margin() +
+   theme(
+      axis.title = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text.x = element_blank(),
+      axis.text.y = element_blank())
+# size of the x- and y-axis labels on the inside are set here
+print_with_axes_inside(p, fontsize = 11)
+@

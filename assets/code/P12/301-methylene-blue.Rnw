@@ -1,0 +1,74 @@
+\section{Non-degradative processes in methylene blue dye}
+\label{results:P12-methylene-blue}
+\seepaper{P3}[-\baselineskip]
+
+
+%\input{assets/aux/fig/fig_05P12-MB-abs-coeff.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P12-MB-abs-coeff.Rnw'), cache=TRUE>>=
+# \label{fig-a:P12-MB-abs}   (a)
+# \label{fig-b:P12-MB-abs}   (b)
+# \label{fig:P12-MB-abs}
+@
+
+In my view, an ideal \gls{PC} model pollutant would possess
+\begin{enumerate*}[label=(\alph*)]
+\item a strong absorption band in the \gls{UV-Vis-NIR} range that does not overlap
+   the band edge of the photocatalyst,%
+   \footnote{%
+      Assuming the \gls{PC} is a wide gap semiconductor this would require the
+      dye to absorb primarily in the red.}
+\item no photochemistry of its own,
+\item no acid--base reactions,
+\item no aggregation or polymerization reactions, and
+\item no easily reachable \emph{leuco} state.
+\end{enumerate*}
+\Glsxtrlong{MB}, despite being a commonly employed model pollutant for
+photocatalysis with \ZnO\ \cite{Rong2022,Sharma2020,Baruah2009,Saravanan2010,Pauporte2007},
+scores only one out of five criteria as specified above
+(the colour of its main absorption band is well clear of the \ZnO\ band edge).
+Finding a model pollutant lacking any photo- or redox-chemistry would, of course,
+be quite impossible.
+Despite its shortcomings, \gls{MB} is a good approximant of many polycyclic aromatic compounds
+that can (unfortunately) be found in the effluent from many industries,
+and as such it is an important model for photocatalytic degradation.
+
+Our synthesis of \ZnO\ \glsplural{QD} used \EtOH\ solvent, which meant that
+upon adding the \gls{PC} to the aqueous-based \gls{MB} solution some \EtOH\ would be added.
+This made it necessary to carefully consider our choice of dye, and after testing
+a few different dyes (\cf\ \cref{sch:0302-tested-dyes})
+\seemore{\hlink{https://solarchemist.se/2022/08/06/spectrochemical-properties-dyes}{Blog}}
+we chose \gls{MB} as it exhibited the least amount of spectral changes upon mixing with \EtOH.
+And since \EtOH\ and \water\ are completely miscible, I saw no point in attempting to
+exchange the \glsplural{QD} solvent after synthesis, as some \EtOH\ would always remain.
+Also, the continued growth of the \glsplural{QD} (even when diluted ten times in \water)
+added an interesting dimension to the experiment.
+
+The \glstext{absorption_coefficient} of methylene blue in \water\ and in
+\water:\EtOH\ (90:10 by volume) shown in \cref{fig:P12-MB-abs} was calculated
+by measuring its absorbance spectrum at seven different concentrations
+spanning \qtyrange{0.5}{50}{\micro\Molar}.
+At first glance it appeared that the low-wavelength secondary peak present
+in \water\ was simply depressed with the addition of \EtOH.
+
+But a closer look revealed that the secondary peak, visible in only \water, went
+completely missing with the addition of \EtOH, and that the remaining shoulder
+(present in both solvents) was thus due to a third contribution.
+A comparison with literature confirmed this picture, and our own peak fitting
+(see \cref{fig-a:P12-MB-abs,fig-b:P12-MB-abs}) allows us to propose the following
+assignments:
+a monomer $n-\pi^\ast$ (also called $0-0$) band at \qty{666}{\nm} (\textsf{1}) \cite{Bergmann1963,Cenens1988},
+a monomer $0-1$ vibronic transition at \qty{627}{\nm} (\textsf{2}), and
+a dimer band at \qty{608}{\nm} (\textsf{3}, which was only observed
+in the presence of \EtOH) \cite{Ruprecht1984}.
+
+This sort of blue-shift of the main absorption band is called \emph{metachromasy} \cite{Cenens1988},
+and is commonly exhibited by dyes whose permanent ionic charge cannot be assigned
+to a specific atom but is rather part of the
+chromophoric system (the delocalized electrons of the aromatic system) \cite{Schubert1955},
+causing the dye molecules to stack (primarily face-to-face) forming di-, tri-, or
+even higher aggregates, depending on concentration, \pH\ \cite{Singhal1967}, temperature \cite{Heger2005},
+or solvent (\ie, dielectric constant) \cite{Schubert1955,Lewis1943,Braswell1968,Bergmann1963,Ruprecht1984,Fornili1981,Mahmood2013}.
+Dimerization of \Gls{MB} is favoured in pure water at concentrations as
+low as \qty{10}{\micro\Molar} \cite{Cenens1988}, but suppressed on adding alcohol \cite{Blandamer1967}.
+In alcoholic solvents \emph{monomers only} can be assumed to be present \cite{Fornili1981,West1965,Blandamer1967}.
+This is in line with our observations.

@@ -1,0 +1,117 @@
+\begin{figure}[tbp]\centering
+%%% SUBFIGURE LEFT
+\hspace{\stretch{1}}%
+\begin{subfigure}[T]{0.32\textwidth}\centering
+\begin{tikzpicture}[font=\sffamily\tiny]
+   \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[trim={20mm 22mm 0 10mm},clip,width=\textwidth]{methods/photocatalysis/0117}};
+   % inset in bottom edge
+   % note: I have manually adjusted yshift so that bottom of this subfig aligns with bottom of the center subfig
+   \node[anchor=south,xshift=0mm,yshift=-14.45mm,draw=white,line width=1.5mm,inner sep=0pt] (inset) at (image.south) {\includegraphics[trim={240mm 0 200mm 0},clip,width=0.36\linewidth]{methods/photocatalysis/0305}};
+   % create coordinate system relative to image size
+   \begin{scope}[x={(image.south east)}, y={(image.north west)}, inner sep=1pt, thick]
+      % \draw[help lines,xstep=.1,ystep=.1] (0,0) grid (1.2,1);
+      % identify coordinates of components
+      \node (fan)      at (0.50,0.92) [rectangle] {}; % [rectangle,draw=red] {};
+      \node (sink)     at (0.50,0.74) [rectangle] {};
+      \node (led)      at (0.50,0.56) [rectangle] {};
+      \node (tube)     at (0.50,0.48) [rectangle] {}; % Aluminium tube
+      \node (sample)   at (0.45,0.36) [rectangle] {}; % Thin-film sample (catalyst)
+      \node (platform) at (0.55,0.32) [rectangle] {}; % Sample platform
+      % labels
+      \node[fill=white] (fanlabel) at (fan) {Fan};
+      \node[fill=white] (sinklabel) at (sink) {Heatsink};
+      \node[xshift=10mm,fill=white,anchor=north west] (ledlabel) at (led.south east) {LED array};
+      \node[xshift=6.5mm,fill=white,anchor=north west] (tubelabel) at (tube.south east) {\ch{Al} tube \& lens};
+      \node[xshift=-5mm,fill=white,anchor=north east] (samplelabel) at (sample.south west) {Catalyst};
+      \node[xshift=5mm,fill=white,anchor=north west] (platformlabel) at (platform.south east) {Platform};
+      % connecting arrows
+      \draw [->,bend left=20,white] (ledlabel.west) to (led.north east);
+      \draw [->,bend left=20,white] (tubelabel.west) to (tube.north east);
+      \draw [->,bend right=10,white] (samplelabel.east) to (sample.north west);
+      \draw [->,bend left=20,white] (platformlabel.west) to (platform.north east);
+   \end{scope}
+\end{tikzpicture}
+\caption{}
+\label{fig:0400-pc-blue-beaker}
+\end{subfigure}%
+\hspace{\stretch{1}}%
+%%% SUBFIGURE CENTER
+\begin{subfigure}[T]{0.32\textwidth}\centering
+\begin{tikzpicture}[font=\sffamily\tiny]
+   \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\linewidth]{methods/photocatalysis/0908182809-cropped.jpg}};
+   % create coordinate system relative to image size
+   \begin{scope}[x={(image.south east)},y={(image.north west)}, inner sep=1pt, thick]
+      % \draw[help lines,xstep=0.05,ystep=0.05] (0,0) grid (1,0.4);
+      % identify components with nodes
+      \node (fan)  at (0.67,0.93) [rectangle] {}; % [rectangle,draw=red] {};
+      \node (sink) at (0.67,0.84) [rectangle] {};
+      \node (led)  at (0.67,0.77) [rectangle] {};
+      \node (cyl)  at (0.67,0.65) [rectangle] {};
+      \node (C1)   at (0.75,0.58) [rectangle] {};
+      \node (C2)   at (0.75,0.43) [rectangle] {};
+      \node (cuv)  at (0.71,0.16) [rectangle] {};
+      % labels
+      \node[fill=white] (fanlabel) at (fan) {Fan};
+      \node[fill=white] (sinklabel) at (sink.south west) {Heatsink};
+      \node[xshift=-12mm,fill=white,anchor=north east] (ledlabel) at (led.north west) {LED array};
+      \node[xshift=-10mm,fill=white,anchor=north east] (cyllabel) at (cyl.north west) {\ch{Al} tube \& lens};
+      \node[xshift=6mm,fill=white] (C1label) at (C1.south east) {CL1};
+      \node[xshift=6mm,fill=white] (C2label) at (C2.south east) {CL2};
+      \node[xshift=8mm,yshift=-5mm,fill=white] (cuvlabel) at (cuv.south east) {Cuvette};
+      % connecting arrows
+      \draw [->,bend right=20,white] (ledlabel.east) to (led.north east);
+      \draw [->,bend right=20,white] (cyllabel.east) to (cyl.north east);
+      \draw [->,bend left=10,white] (C1label.west) to (C1.south east);
+      \draw [->,bend left=10,white] (C2label.west) to (C2.south east);
+      \draw [->,bend left=20,white] (cuvlabel.west) to (cuv.south east);
+      % label "from lamp" following path of fibre-optic cable
+      % see p. 367 TikZ/PGF manual
+      % https://latexdraw.com/how-to-write-a-text-along-path-using-tikz-speedometer-case/
+      % I could not figure out how to add arrow to text (simply adding \rightarrow fails, syntax error, it seems cannot use LaTeX commands inside decoration text?)
+      % Putting the command inside |\rightarrow| just printed the preceding character again, "lampp"
+      \draw [decorate,decoration={text along path,text={|\sf\tiny|From UV-Vis-NIR lamp},raise=1pt,text align=center,text color=white}] (0.2,0) .. controls (0.25,0.20) and (0.4,0.22) .. (0.55,0.24);
+      % label "to detector" fibre-optic cable to the right
+      \draw [decorate,decoration={text along path,text={|\sf\tiny|To detector},raise=3pt,text align=center,text color=white}] (0.77,0.28) -- (1,0.32);
+   \end{scope}
+\end{tikzpicture}
+\caption{}
+\label{fig:0400-pc-blue-vertical-with-condensers}
+\end{subfigure}%
+\hspace{\stretch{1}}%
+%%% SUBFIGURE BLOCK RIGHT
+\begin{subfigure}[T]{0.32\textwidth}\centering
+   %% SUBFIGURE TOP
+   \begin{subfigure}{\linewidth}
+      \captionsetup{skip=2pt} % default skip is 6pt, but that places caption too close to the bottom fig
+      \begin{tikzpicture}[font=\sffamily\tiny]
+         \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[trim={120mm 120mm 120mm 60mm},clip,width=\linewidth]{methods/photocatalysis/0828112158.jpg}};
+      \end{tikzpicture}
+      \caption{}
+      \label{fig:0400-pc-solarsimulator-thinfilm}
+   \end{subfigure}%
+   % this vertical space is used to align the bottom of the two vertical subfigures with the center panel
+   \\[3.70pt]%
+   %% SUBFIGURE BOTTOM
+   \begin{subfigure}{\linewidth}
+      \includegraphics[trim={160mm 80mm 0 60mm},clip,width=\linewidth]{methods/photocatalysis/0424130001.jpg}
+      \caption{}
+      \label{fig:0400-pc-solarsimulator-suspension}
+   \end{subfigure}%
+\end{subfigure}%
+\caption[Evolution of PC setups]{%
+   Representative depictions of laboratory setups used for \glsdisp{PC}{photocatalytic} evaluation.
+   (\subref{fig:0400-pc-blue-beaker})
+   Illuminating the sample from above using the blue \gls{LED} array.
+   The inset shows a close-up of the beaker with a sample while illuminated.
+   (\subref{fig:0400-pc-blue-vertical-with-condensers})
+   With the same light source, but better optics and cuvette with \insitu{} tracking
+   of optical absorption.
+   (\subref{fig:0400-pc-solarsimulator-thinfilm})
+   This setup represented a sort of evolutionary step (solar simular light source,
+   but keeping the \insitu\  \gls{UV-Vis} tracking and the vertical illumination
+   \via\ mirror above the cuvette), before switching to
+   (\subref{fig:0400-pc-solarsimulator-suspension})
+   broadband illumination with solar simulator and \gls{AM15G} filter.
+}
+\label{fig:0400-pc-rigs}
+\end{figure}

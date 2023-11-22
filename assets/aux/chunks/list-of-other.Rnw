@@ -1,0 +1,63 @@
+\renewcommand{\listofcontributionsname}{List of other scholarly contributions}
+\listofcontributionsintro{%
+   Other peer-reviewed publications or other scholarly contributions,
+   including publicly shared scientific software or datasets.
+   In the event they are referred to in the summary, they are
+   shown as \cref{bandgaps}.}
+\listofcontributionsoutro{}
+\begin{listofcontributions}
+   \item \label{C1}
+   Halvani Anaraki, E.; Kermanpur, A.; Mayer, M. T.; Steier, L.; \textbf{Ahmed, T.}; %
+   Turren-Cruz, S.-H.; Seo, J.; Luo, J.; Zakeeruddin, S. M.; Tress, W. R.; %
+   Edvinsson, T.; Grätzel, M.; Hagfeldt, A.; Correa-Baena, J.-P. %
+   Low-temperature \ch{Nb}-doped \ch{SnO2} electron-selective contact yields %
+   over \qty{20}{\percent} efficiency in planar perovskite solar cells. %
+   \textit{ACS Energy Lett.} 2018, 3 (4), 773--778. %
+   \hyperdoi{10.1021/acsenergylett.8b00055}
+   %
+   \item \label{C2}
+   El-Zohry, A. M.; Diez-Cabanes, V.; Pastore, M.; \textbf{Ahmed, T.}; Zietz, B. %
+   Highly emissive biological bilirubin molecules: shedding new light on %
+   the phototherapy scheme. %
+   \textit{J. Phys. Chem. B} 2021, 125 (32), 9213--9222. %
+   \hyperdoi{10.1021/acs.jpcb.1c05308}
+   %
+   \item \label{jpcc2020}
+   \textbf{Ahmed, T.}; Edvinsson, T. Data and code to reproduce \cref{P3},
+   \textit{Uppsala~University} 2023. %
+   \hyperdoi{10.57804/d33y-r007}
+   %
+   \item \label{bandgaps}
+   \textbf{Ahmed, T.} Band edge positions and band gaps for some semiconductors. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/bandgaps}{DOI:~10.5281/zenodo.4099767}
+   %
+   \item \label{uvvistauc}
+   \textbf{Ahmed, T.} Tauc fitting of band edges from UV-Vis spectra. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/uvvistauc}{DOI:~10.5281/zenodo.5814054}
+   %
+   \item \label{refelectrodes}
+   \textbf{Ahmed, T.} Converting between common reference electrode scales. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/refelectrodes}{github.com/solarchemist/refelectrodes}
+   %
+   \item \label{xraylines}
+   \textbf{Ahmed, T.} Combined dataset of elemental X-ray line properties. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/xraylines}{DOI:~10.5281/zenodo.7742628}
+   %
+   \item \label{photoec}
+   \textbf{Ahmed, T.} Solar spectra and constants for photoelectrochemistry. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/photoec}{DOI:~10.5281/zenodo.8034780}
+   %
+   \item \label{O2solubilitywater}
+   \textbf{Ahmed, T.} Oxygen solubility in water. \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/O2solubilitywater}{DOI:~10.5281/zenodo.3636202}
+   %
+   \item \label{periodicdata}
+   \textbf{Ahmed, T.} Properties of the chemical elements. %
+   \R~package, GitHub. %
+   \hlink{https://github.com/solarchemist/periodicdata}{DOI:~10.5281/zenodo.5898567}
+\end{listofcontributions}

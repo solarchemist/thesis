@@ -1,0 +1,228 @@
+\section[PC properties of ZnO/CdS nanoarrays]{\texorpdfstring{PC properties of \ZnO/\ch{CdS} nanoarrays}{PC properties of ZnO/CdS nanoarrays}}
+\label{results:P01-ZnO-CdS-nanoarrays}
+\seepaper{P1}[-\baselineskip]
+
+With its wide, direct band gap of \Eg{3.3} and with band edge energies close to
+those of \ch{TiO2} anatase (\cf\ \cref{fig:0100-bandgaps-all}), wurtzite \ZnO\
+generally shares the same photochemical qualities that make \ch{TiO2} such a compelling \gls{PC},
+but has several advantages such as a higher charge carrier mobility, a direct band gap
+(and thus high absorption coefficient),
+longer charge carrier lifetime (reduced recombination), and more flexible methods
+for nano-crystalline synthesis \cite{Quintana2007,Ozgur2005}.
+
+From my own experimental experience, \ZnO\ was significantly easier
+to work with, allowing me to coax it into interesting nanostructures
+using relatively mild synthesis conditions, whereas \ch{TiO2} required
+comparatively harsh conditions.
+
+The crystallinity of the electrodeposited \ZnO\ \gls{NR} films was confirmed
+by \gls{PXRD} (see \cref{fig:01P-pxrd-diffractograms}), which also
+confirmed its crystal structure to be the thermodynamically stable wurtzite.
+The \glsplural{NR} grew preferentially along the polar $c$-axis, increasing
+with deposition time (but not beyond \qty{1.5}{\hour}), as expected
+for a non-centrosymmetric crystal as the surface energy is higher for the
+non-polar surfaces perpendicular to it.
+The nanorod diameter was effectively independent of deposition time, which meant
+that the aspect ratio of the rods also reached its maximum by $t_\mathrm{ECD}=\qty{1.5}{\hour}$.
+
+We therefore selected the samples with $t_\mathrm{ECD}=\qty{1.5}{\hour}$ for
+subsequent coating with \ch{CdS} using \gls{CBD}.
+As you may recall, the bath for depositing \ch{CdS} was strongly alkaline, meaning
+the duration of \ch{CdS} deposition had to be balanced against the expected
+etching rate of \ZnO.
+This was also what the \gls{XRD} results indicated:
+bath deposition times beyond \qty{10}{\minute} markedly decreased the \zincox\
+\miller{002} reflection (indicating that the \ZnO\ nanorods were etched primarily
+from the top rather than from the sides).
+
+
+Despite rather low S/N ratio, Raman spectroscopy (see \cref{fig:01P-raman}) of the
+electrodeposited \ZnO\ films confirmed the wurtzite structure. And more interestingly,
+clearly indicated that the deposited \ch{CdS} film was in the hexagonal rather than
+the cubic crystal system (cubic \ch{CdS} being the thermodynamically stable phase at \gls{RT})
+suggesting an epitaxial effect from the \ZnO\ substrate.
+Even so, the relatively low total mass of deposited material (whether \ZnO\ or \ch{CdS})
+in each sample and the thinness of the film combined with the glass/\glsxtrshort{TCO} substrate
+made it quite challenging to attain high-quality Raman spectra of the deposited film,
+because of two factors, \namely,
+\begin{enumerate*}[label=(\alph*)]
+\item the well-known roughness of the \gls{TCO} substrate layer led to a large
+   degree of unevenness in the deposited film, since it was not thick enough
+   to even those out,
+\item the laser interaction volume often included not only the deposited film
+   but also the \glsxtrshort{TCO} substrate.
+\end{enumerate*}
+
+
+The \gls{SEM} micrographs (\cref{fig:01P-sem-nopulse,fig:01P-sem-pulse})
+indicated that the electrodeposition produced high-density
+arrays of hexagonal-shaped nanorods with mostly smooth sides and rough-looking end-caps,
+clearly angled orthogonally to the \glsxtrshort{TCO} substrate but due to its
+unevenness (under \gls{SEM} observation the clean \gls{TCO} substrate surface
+can be seen to consist of many small grains, creating a surface that on the
+micro-scale looks undulating, almost like sand dunes in a desert but with harsher edges)
+the nanorods appear to grow in almost all possible directions upwards from the substrate.
+The specific electrodeposition parameters had a large influence on the density
+of nanorods and their individual shapes.
+
+
+For the shortest \gls{CBD} deposition times the presence of a \ch{CdS} coating
+on the \ZnO\ nanorods was not at all obvious from the \gls{SEM} micrographs,
+so we sacrificed a few samples by scratching off the deposited nanords onto holey carbon
+and managed to image individual nanorods and record \gls{EDS} (\cf\ \cref{fig:01P-tem-eds}).
+The \gls{TEM} micrographs demonstrated that the \ch{CdS} had indeed formed a
+homogeneous film conformal to the nanorods, and \gls{EDS} confirmed
+the formation of a core--shell \ZnO/\ch{CdS} nanorod.
+
+To investigate the \gls{UV-Vis} absorbance with the integrating-sphere-equipped
+spectrophotometer we separately measured transmittance (\cref{{fig:P01-uvvisir-transmittance}})
+and reflectance (\cref{fig:P01-uvvisir-reflectance}) and then calculated
+the absorbance (\cref{fig:P01-uvvisir-absorbance}).
+The absorbance increased just below \qty{500}{\nm}, as expected for \ch{CdS}.
+Furthermore, we used the Tauc method to estimate the optical band gap of the
+\zincox\ and the \ch{CdS} phase, respectively (see \cref{fig:01P-abs-tauc}).
+Looking at the high-energy band edge region, the \zincox\ transition was easy to
+observe and fit for all samples except for the highest \ch{CdS} loading whose
+band gap was severely diminished probably on account of the \zincox\ phase
+being mostly etched off.
+Looking at the low-energy band edge region (inset in \cref{fig:01P-abs-tauc}),
+where the \ch{CdS} band gap is expected, there was no interference from the \zincox\
+which is optically transparent at these wavelengths, and the highest loadings
+of \ch{CdS} featured the strongest band edges.
+
+%\input{assets/aux/fig/fig_05P01-uvvis.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P01-uvvis.Rnw')>>=
+# \label{fig:P01-uvvisir-transmittance} (a)
+# \label{fig:P01-uvvisir-reflectance}   (b)
+# \label{fig:P01-uvvisir-absorbance}    (c)
+# \label{fig:P01-uvvisir}
+@
+
+
+
+We measured \Gls{PL} spectroscopy (see \cref{fig:P01-photolum}) at different
+excitation wavelengths around the expected band gap of \ZnO\ in order to
+probe the transport of the photoexcited charges across the oxide--sulfide
+interface.
+Our hypothesis was that photoexcited electrons on \ch{CdS} could transfer from
+its higher-energy \gls{CB} to the lower-energy \gls{CB} of \ZnO, while the
+photoexcited holes on \ch{CdS} would be hindered from doing the same due to
+the opposite relationship between the \glsplural{VB}
+(\cf\ \cref{fig:0100-bandgaps-all} for an illustration at equilibrium, in darkness).
+
+At this point it is important to note that the oriented growth of the
+\ZnO\ nanorods from the \gls{FTO} surface, although successfully forming
+dense arrays of nanorods, left the parts of the \gls{TCO} surface not occupied
+by nanorods as-is, meaning even after \ZnO\ \gls{NR} deposition the samples
+were still expected to have lots of exposed \gls{FTO} surface area.
+This meant that there were necessarily some \ch{CdS} deposited \emph{directly onto} \gls{FTO},
+forming an \ch{CdS}/\gls{FTO} interface in addition to the desired \ch{CdS}/\ZnO interface.
+And if the \ch{ZnO} \gls{NR} density is low enough, it may well
+be the case that most of the \gls{PL} signal would be due not to \ch{CdS}/\ch{ZnO},
+but instead to \ch{CdS}/\ch{FTO}.
+
+
+%\input{assets/aux/fig/fig_05P01-photolum.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P01-photolum.Rnw')>>=
+# \label{fig:P01-photolum-325}          (a)
+# \label{fig:P01-photolum-350}          (b)
+# \label{fig:P01-photolum-375}          (c)
+# \label{fig:P01-photolum}
+@
+
+All \gls{PL} spectra showed the two expected luminescent bands of \ZnO, \namely,
+the UV and the green emission peaks (except for the longest excitation wavelength,
+which as expected could not excite the UV peak).
+For the excitation wavelength larger than the band gap of even the smallest
+\ZnO\ crystallites (\qty{3.81}{\eV}), only the \gls{UV} excitation band
+was observed in the \gls{PL} spectra, and for the \enquote{intermediate} excitation
+wavelength both the \gls{UV} and the green emission band could be observed, although
+the former was diminished about an order of magnitude in intensity.
+There was no indication of fluorescence attributable to the \ch{CdS} phase.
+
+The \gls{PL} results thus suggested that photoexcitation
+from longer-wavelength light was absorbed by \ch{CdS} and successfully
+transferred to \ZnO\ where it caused \glsxtrlong{PL} in the green band.
+
+
+In experiments to evaluate the \gls{PEC} properties, samples prepared at different
+electrodeposition conditions were tested for solar-driven water splitting.
+The short-circuit current density of some \ZnO/\ch{CdS} samples showed over
+\qty{3.3}{\mA\per\square\cm} under solar-simulated illumination.
+
+
+
+To evaluate the ability of our material to act as a short-circuit \gls{PC}
+in solution we setup a photodegradation experiment under blue \gls{LED} light
+(\cf\ \cref{box:light-sources}), yielding an effective irradiance at the
+sample surface inside the electrolyte solution of \qty{0.4}{\watt\per\square\cm}
+% (as measured with a rather old-school power meter)
+and using \gls{EBT} dye as the model pollutant.%
+\footnote{%
+   As this was my first foray into dye degradation experiments,
+   the spectrofotometric tracking was performed \exsitu\ every
+   \qty{30}{\min} by withdrawing a small aliquot from the continuously mixed
+   \gls{PC} reaction solution.
+}
+
+Importantly, we sought to answer whether the \ch{CdS}-coated nanorod films
+offered any improvement over their non-coated brethren
+(by using a visible-light lamp the bare \ZnO\ should not be able to generate
+photoexcited charge carriers by its lonesome), and additionally, to investigate
+the degradation mechanism.
+
+We found (\cf\ \cref{fig:P01-photocat}) that the bare \ZnO\ \gls{NR} film
+showed practically no photodegradation (the observed \qty{3}{\percent} can comfortably
+be ascribed to self-degradation of the dye under irradiation)
+and that the \gls{PC} degradation for the \ZnO/\ch{CdS} films increased
+slightly with increased \ch{CdS} loading, which I ascribe to an increased
+optical absorption in the thicker films.
+But as the \ch{CdS} film loading went beyond a certain point, the \gls{PC} efficiency
+plummets, which suggests an explanation whereby longer deposition times more
+or less completely etch off the \ZnO\ \glsxtrlongpl{NR}, leaving only
+the much less powerful \ch{CdS} as the \glsxtrlong{PC}.
+
+%\input{assets/aux/fig/fig_05P01-photocat.Rnw}
+<<child=here::here('assets/aux/fig/fig_05P01-photocat.Rnw')>>=
+# \label{fig:P01-photocat}
+@
+
+This is supported by a (schematic) photodegradation mechanism along the following
+lines:
+% NOTE! hyphens inside \AddRxnDesc{} appear to gum up the works completely
+% https://github.com/search?q=repo%3Acgnieder%2Fchemmacros%20addrxndesc&type=code
+\begin{subreactions}\begin{reactions}
+ZnO/CdS + \photon ->& \hole{}_{CdS} + \electron{}_{ZnO} \AddRxnDesc{Photoexcited~eh~pair~across~interface} "\label{rxn:P01-eh-pair}" \\
+\electron{}_{ZnO} + \oxygen{} ->& \oxygen{}^{-.} \AddRxnDesc{Formation~of~oxygen~radical} "\label{rxn:P01-oxygen-radical}" \\
+\oxygen{}^{-.} + \water{} ->& HO2^{.} + \hydroxyl{} \AddRxnDesc{Formation~of~hydroperoxyl~radical} "\label{rxn:P01-hydroperoxyl-radical}" \\
+HO2^{.} + \water{} ->& H2O2 + OH^{.} \AddRxnDesc{Formation~of~hydroxyl~radical} "\label{rxn:P01-hydroxyl-radical}" \\
+H2O2 ->& 2 OH^{.} \AddRxnDesc{Hydrogen~peroxide~decomposition~to~hydroxyl~radicals} "\label{rxn:P01-hydrogen-peroxide}"
+\end{reactions}\end{subreactions}
+where the \ch{CdS} phase acts as a visible-light absorber, the resultant
+electron and hole each quickly moving along their energetically favourable
+directions, effectively separating across the oxide--sulfide interface.
+The \gls{CB} electrons in \ZnO\ then react with dissolved \oxygen\ at its surface,
+forming \ch{\oxygen{}^{-.}} which immediately reacts with \water\ in the solution
+to form another radical, \ch{HO2^{.}}, which in turn reacts with another \water\
+molecule to create the hydroxyl radical, \ch{OH^{.}}.
+The dye is then primarily attacked by the highly reactive
+hydroxyl radical (in solution) or by the hole (at the \ch{CdS} surface)
+ideally completely mineralising it (over several steps, not shown here):
+\begin{subreactions}\begin{reactions}
+EBT + OH^{.} ->& CO2 + \water{} \AddRxnDesc{Photodegradation~EBT~via~hydroxyl~radical} \\
+EBT + \hole{}_{CdS} ->& CO2 + \water{} \AddRxnDesc{Photodegradation~EBT~via~hole}
+\end{reactions}\end{subreactions}
+
+So immediately we can infer that a complete coverage of all \ZnO\ surface by \ch{CdS}
+would actually not be beneficial to the photocatalytic activity, since that would
+preclude any formation of hydroxyl radicals.
+This is in contrast to the \gls{PEC} performance, which benefits from an even coverage.
+
+We performed this \gls{PC} evaluation without adding any sacrificial agents,
+which as expected led to the sulfide layer eventually photocorroding, despite
+forming a heterojunction with \ZnO\ which removed the photogenerated electrons \cite{Jafari2016}.
+This is a well-known limitation of sulfide-based photocatalysts, one that is
+usually circumvented by adding hole scavengers such as alcohols or sulfide/sulfite ions
+to the electrolyte solution. At first glance this sounds completely unsustainable, but
+there are actually many industrial processes that involve sulfates or sulfides
+where this would not be an objection.

@@ -1,0 +1,176 @@
+\begin{figure}[tbp]
+\centering
+
+% green seems suitable for the ground level
+% https://en.wikipedia.org/wiki/Shades_of_green#Sea_green
+\definecolor{amseagreen}{HTML}{2E8B57}
+% https://en.wikipedia.org/wiki/Shades_of_blue#Uranian_blue
+\definecolor{uranianblue}{HTML}{AFDBF5}
+\tikzstyle{horizon} = [%
+   % https://texample.net/tikz/examples/oblique-incidence
+   postaction={draw,decorate,decoration={border,angle=-45,amplitude=0.3cm,segment length=1mm}}]
+
+\begin{subfigure}[b]{0.48\linewidth}
+\centering
+\begin{tikzpicture}[inner sep=0pt, outer sep=0pt]
+
+% atmosphere
+\fill[draw=none, fill=uranianblue, opacity=0.10] (0, 0) rectangle +(5, 2.2);
+
+% to get the exact same distance between two lines, let's define two identical rectangles
+% then use clipping to hide their short ends
+\begin{scope} % AM1
+   % use clipping to hide short ends both at horizon and up top
+   \clip (0, 0) rectangle (1.2, 2.95);
+   \node[rectangle, draw=orange, thick, anchor=south west, minimum width=21pt, minimum height=3cm] (AM1) at (0.2, 0) {};
+   \node[anchor=south,yshift=0.2cm,font=\sffamily\footnotesize] (labelAM1) at (AM1.south) {AM1};
+\end{scope}
+
+\begin{scope} % AM1.5
+   % use clipping to only show the part of this rectangle above the horizon line
+   \clip (0, 0) rectangle (5, 3);
+   % tried to avoid rotating the text label by using "shape border rotate=-48.2" but had no effect, nothing was rotated
+   \node[rectangle, draw=orange, thick, anchor=south west, rotate=-48.2, minimum width=21pt, minimum height=5.5cm] (AM15) at (1.18, 0) {};
+   % by tying this label to the AM1 label they get exactly the same height, but x-position is eye-balled
+   \node[anchor=west,xshift=0.82cm,font=\sffamily\footnotesize] at (labelAM1.east) {AM1.5};
+\end{scope}
+
+% airmass at latitude of Ångström laboratory
+% airmass(59.83919)
+% [1] 1.990332
+\begin{scope} % AM1.99
+   % use clipping to only show the part of this rectangle above the horizon line
+   \clip (0, 0) rectangle (5, 3);
+   % thanks to clipping height can be anything (as long as it's long enough to go past the clip limits), but height
+   % also determines the placement of the $d$ distance label and arrows (to move label downwards use shorter height)
+   \node[rectangle, draw=orange, thick, anchor=south west, rotate=-59.84, minimum width=21pt, minimum height=4.2cm] (AM199) at (2.60, 0) {};
+   \node[anchor=west,xshift=2.48cm,font=\sffamily\footnotesize] at (labelAM1.east) {AM1.99};
+\end{scope}
+
+% to get the ground shadow effect, let's redraw the same rectangles, but filled, and
+% clip out everything except a sliver along the horizon
+\begin{scope}
+   \clip (0, 0) rectangle (5, 2pt);
+   \node[rectangle, fill=orange, opacity=0.33, draw=orange, thick, anchor=south west, minimum width=21pt, minimum height=3cm] (shadow0) at (0.2, 0) {};
+   \node[rectangle, fill=orange, opacity=0.33, draw=orange, thick, anchor=south west, rotate=-48.2, minimum width=21pt, minimum height=5.5cm] (shadow15) at (1.18, 0) {};
+   \node[rectangle, fill=orange, opacity=0.33, draw=orange, thick, anchor=south west, rotate=-59.84, minimum width=21pt, minimum height=5.5cm] (shadow199) at (2.60, 0) {};
+\end{scope}
+
+% horizon
+\draw[amseagreen, line width=.5pt, horizon] (0, 0) -- (5, 0);
+
+% putting a simple label denoting distance turned out to be trickier than I expected
+% the opacity/text opacity approach worked fine, but only in the niche PDF viewer Sioyek
+% I hope this verbose approach will have better compatibility
+% first, print the label
+\node[anchor=center,font=\scriptsize] (distanceAM1) at (AM1.center) {$d$};
+\draw[->] (distanceAM1) -- (AM1.east); \draw[<-] (AM1.west) -- (distanceAM1);
+\node[anchor=center,font=\scriptsize] (distanceAM15) at (AM15.center) {$d$};
+\draw[->] (distanceAM15) -- (AM15.east); \draw[<-] (AM15.west) -- (distanceAM15);
+% \node[anchor=center,font=\scriptsize] (distanceAM199) at ($ (AM199.center) - (AM199.south) $) {$d$};
+% \draw[->] (distanceAM199) -- (AM199.east -| AM199.south east); \draw[<-] (AM199.west -| AM199.south west) -- (distanceAM199);
+\node[anchor=center,font=\scriptsize] (distanceAM199) at (AM199.center) {$d$};
+\draw[->] (distanceAM199) -- (AM199.east); \draw[<-] (AM199.west) -- (distanceAM199);
+
+% % https://tex.stackexchange.com/a/263897/10824
+% \begin{scope}[transparency group] %[on background layer]
+%    % an arrow to denote distance between the two parallel rays
+%    % opacity and text opacity combo works perfectly in Sioyek but not in Evince nor Okular
+%    % https://tex.stackexchange.com/questions/321974/tikz-node-fill-which-is-opaque-to-entities-in-tikzpicture-but-transparent-to-ba
+%    \draw[<->] (AM1.west) -- (AM1.east) node [midway,fill=uranianblue,opacity=0.10,text=black] {$d$};
+%    \draw[<->] (AM15.west) -- (AM15.east) node [midway,fill=uranianblue,opacity=0.10,text=black] {$d$};
+%    % \draw[<->] (AM15.west) -- (AM15.east);
+% \end{scope}
+
+% \node [draw=black, fill=uranianblue, opacity=0.10] at (AM1.center) {$d$};
+\end{tikzpicture}
+\caption{}
+\label{fig:airmasses}
+\end{subfigure}%
+\begin{subfigure}[b]{0.48\linewidth}
+\centering
+\begin{tikzpicture}[inner sep=0pt, outer sep=0pt,font=\scriptsize]
+% \draw[help lines,xstep=1,ystep=1] (-4,0) grid (4,2);
+
+% atmosphere
+\fill[draw=none, fill=uranianblue, opacity=0.10] (-2, 0) rectangle +(5, 2.2);
+
+% AM1.5G label
+% position was manually adjusted
+\node[anchor=north west,xshift=3pt,yshift=-2pt,font=\sffamily\footnotesize] at (-2, 2.2) {AM1.5G};
+
+% ground level, horizon
+\draw[amseagreen, line width=.5pt, horizon] (-2,0) -- (3,0);
+
+% zenith line
+% xshift tries to place the zenith through the center of the absorber (depends on its length and angle)
+% https://www.calculator.net/right-triangle-calculator.html?av=&alphav=37&alphaunit=d&bv=&betav=&betaunit=d&cv=1&hv=&areav=&perimeterv=&x=59&y=18
+% sqrt(square(1) - square(c*sin(37)))
+% outer sep puts some separation between the label and the zenith line
+\node [xshift=-0.399cm,fill=white, outer sep=1mm] (zenith) at (0,3) {zenith};
+% https://tikz.dev/tikz-coordinates#sec-13.3.1
+\draw[->,line width=.5pt] (zenith |- 0,0) -- (zenith.south);
+
+\begin{scope}
+   \clip (-2,0) rectangle (3, 3);
+   % sun rays at AM1.5, m = 1/cos z => z = 48.2 from the zenith line
+   % attempted to specify angle from the point of intersection between the ground line
+   % and the zenith line, but that always led to angles being off by ~10°, quite weird
+   % \draw [orange, thick, yshift=0cm, xshift=0cm] (zenith |- 0,0) -- (48.2:2cm);
+   \foreach \x in {7pt, 0pt, -7pt, -14pt, -21pt, -28pt, -35pt}
+      \draw [{Kite[length=4pt,width=2pt,inset=1pt]}-, orange, thick, yshift=0cm, xshift=\x] (0:0cm) -- ({90-48.2}:4.5cm);
+   % solar disk
+   % xshift in order to center the disk on the bunch of rays (manually adjusted)
+   % size is simply the smallest large enough to envelop the rays (manually adjusted)
+   \node[circle, draw=none, fill=orange, xshift=-8pt, minimum size=14mm] (sundisk) at (3,3) {};
+\end{scope}
+
+% flat surface of the same area (length)
+% yshift down so its top surface is flush with ground level (simply to make it overlap less with the tilted surface)
+\fill[draw=black, fill=black!50, fill opacity=0.8] (0,0) rectangle +(-1.00, -0.16);
+% \fill[draw=black, fill=black!33, line width=4pt, yshift=-2pt] (0:0cm) -- (180:1cm);
+
+% tilted surface
+% 180 - 37 = 143, 90 + 53 = 143
+% \draw[black,dashed,line width=0.4pt] (0:0cm) -- (143:2cm);
+% \fill[draw=black, fill=black!66, line width=4pt] (0:0cm) -- (143:1cm);
+\fill[draw=black, fill=black!50, fill opacity=0.8, rotate around={53:(0,0)}] (0,0) rectangle +(0.16, 1.00);
+% angle arc for tilted surface
+% \draw (-0.799, 0) arc (180:143:0.602cm);
+% (x coord, y coord) arc from 180° to 143° (37°) drawn using 2 cm long line
+% \draw (-1.5, 0) arc (180:143:2.0cm);
+% https://tex.stackexchange.com/questions/38763/how-to-place-a-node-in-the-middle-of-an-arc
+\draw (-0.9cm,0cm) arc [start angle=180, end angle=143, radius=9mm] node (labeltiltangle) [midway, anchor=east, xshift=-1pt, yshift=4pt] {\ang{37}}; % {$\theta{=}\ang{37}$};
+% \path (-0.799,0) ++ (45:0.20cm) node{\ang{37}};
+% \node [anchor=east] at (-0.9, 0.35) {\ang{37}};
+
+% surface normal
+\draw [dashed, thick, opacity=0.35, yshift=0.5cm, xshift=-0.25cm] (0:0cm) -- ({90-37}:2cm);
+
+% arc for zenith angle (zenith line to AM1.5 rays)
+% 90 - 48.2 = 41.8
+% https://tex.stackexchange.com/questions/432166/tikz-label-of-node-midway-perpendicular-to-the-node
+\draw (-0.399cm, 2.0cm) arc [start angle=90, end angle=41.8, radius=17mm] node [midway, above, yshift=1pt, sloped] {\ang{48.2}}; % {$z{=}\ang{48.2}$};
+
+% arc for solar altitude (ground level to AM1.5 rays)
+% midway puts the label on top of the rays, makes it look crowded, manually adjusted pos to shift label along the curve
+\draw (1.0cm, 0cm) arc [start angle=0, end angle=41.8, radius=12.8mm] node [pos=0.29, above, yshift=1pt, sloped] {\ang{41.8}};
+\end{tikzpicture}
+\caption{}
+\label{fig:AM15G-tilt}
+\end{subfigure}%
+\caption[Illustration of the air mass concept]{%
+   Illustration of the \protect\glsxtrlong{AM} concept.
+   (\subref{fig:airmasses})
+   Demonstrating the geometric projection effect of different air mass values.
+   As the air mass increases, the projected area on the ground of an identical
+   beam of light increases (diameter $d$ is the same for all cases).
+   AM1.99 corresponds to Uppsala's latitude.
+   (\subref{fig:AM15G-tilt})
+   Geometry of the AM1.5G standard, here shown with a light beam incident also
+   on a horizontal surface, illustrating how
+   the surface tilted \ang{37} collects more light.
+   The \emph{zenith angle} is \ang{48.2} for AM1.5G, which is
+   complementary to the \emph{solar altitude} (angle from the horizon, \ang{41.8}).}
+\label{fig:airmass}
+\end{figure}

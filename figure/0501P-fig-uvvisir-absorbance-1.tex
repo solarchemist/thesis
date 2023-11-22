@@ -1,0 +1,712 @@
+% Created by tikzDevice version 0.12.4 on 2023-12-15 02:02:44
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{luatex85}
+\documentclass{LuaUUThesis}
+\nonstopmode
+
+\usepackage{tikz}
+\usepackage{luatex85}
+\usepackage[active,tightpage,psfixbb]{preview}
+\usepackage{fontspec}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\linespread{1.05}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\PreviewEnvironment{pgfpicture}
+\setlength\PreviewBorder{0pt}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage[backend=biber]{biblatex}
+\usepackage{xfrac}
+\usetikzlibrary{ arrows, backgrounds, calc, decorations, decorations.markings, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, fadings, fit, positioning, shapes }
+\usepackage[ minimal=true, modules={ thermodynamics, units, orbital, reactions, redox, reactants, scheme} ]{chemmacros}
+\chemsetup{ formula=chemformula, chemformula/frac-style=nicefrac, reactions/list-entry={}, reactants/printreactants-style=xltabular, reactants/initiate=true }
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+\NewChemParticle{\oxide}{O^{2-}}
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+\NewChemParticle\ZnAc{Zn(OAc)2}
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\definesubmol\nobond{-[,1.2,,,draw=none]}
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+\usepackage{siunitx}
+\sisetup{ uncertainty-mode=compact, reset-text-family=false, text-family-to-math=false, text-series-to-math=false }
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+\DeclareSIUnit{\lines}{lines}
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+\DeclareSIUnit{\rpm}{rpm}
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+\DeclareSIUnit{\foot}{ft}
+\DeclareSIUnit{\sq}{sq}
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+\DeclareSIUnit{\angstrom}{Å}
+\usepackage{xifthen}
+\usepackage{xparse}
+\ExplSyntaxOn \NewExpandableDocumentCommand{\stringcase}{mO{}m}{ \str_case_e:nnF { #1 } { #3 } { #2 } } \ExplSyntaxOff  \NewDocumentCommand{\NonResonantModesShort}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2l}}} {B1l}{\textit{B}\textsubscript{\textup{1l}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2h}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1h}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLong}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2(low)}}} {B1l}{\textit{B}\textsubscript{\textup{1(low)}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2(high)}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1(high)}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{ \IfNoValueTF{#2}{ \NonResonantModesShort{#1} }{ \ifthenelse{\equal{#2}{long}}{ \NonResonantModesLong{#1} }{ \ifthenelse{\equal{#2}{short}}{ \NonResonantModesShort{#1} }{ \NonResonantModesShort{} } } } }  \NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{ \IfNoValueTF{#2}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\isempty{#2}}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\equal{#4}{diff}}{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2} } } }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2} } } } } } }   \NewDocumentCommand{\Eg}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{E_\text{g}}}{ \IfNoValueTF{#2}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\Rsq}{om}{ \IfNoValueTF{#1}{ \ensuremath{R^2{\,=\,}\num{#2}}}{ \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}   \NewDocumentCommand{\density}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{\rho}}{ \IfNoValueTF{#2}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\miller}{m}{ \num{#1} }
+\newcommand{\SweaveOpts}[1]{}  % do not interfere with LaTeX
+\newcommand{\SweaveInput}[1]{} % because they are not real TeX commands
+\newcommand{\Sexpr}[1]{}       % will only be parsed by R
+
+
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+
+\begin{document}
+
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor{fillColor}{RGB}{255,255,255}
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (166.22, 98.29);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{255,255,255}
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round,line cap=round,fill=fillColor] (  0.00,  0.00) rectangle (166.22, 98.29);
+\end{scope}
+\begin{scope}
+\path[clip] ( 29.10, 25.90) rectangle (161.72, 93.79);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] ( 29.10, 25.90) rectangle (161.72, 93.79);
+\definecolor{drawColor}{RGB}{27,158,119}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (161.72, 28.87) --
+	(160.62, 28.74) --
+	(159.51, 28.63) --
+	(158.41, 28.58) --
+	(157.30, 28.72) --
+	(156.19, 28.41) --
+	(155.09, 28.11) --
+	(153.98, 28.18) --
+	(152.88, 27.93) --
+	(151.77, 28.46) --
+	(150.67, 28.09) --
+	(149.56, 28.36) --
+	(148.46, 28.11) --
+	(147.35, 27.86) --
+	(146.25, 27.78) --
+	(145.14, 27.55) --
+	(144.04, 27.58) --
+	(142.93, 27.17) --
+	(141.83, 27.70) --
+	(140.72, 27.48) --
+	(139.62, 27.45) --
+	(138.51, 27.28) --
+	(137.41, 26.74) --
+	(136.30, 27.00) --
+	(135.20, 27.09) --
+	(134.09, 26.67) --
+	(132.99, 26.57) --
+	(131.88, 26.29) --
+	(130.78, 26.53) --
+	(129.67, 26.25) --
+	(128.56, 26.39) --
+	(127.46, 26.12) --
+	(126.35, 26.07) --
+	(125.25, 26.00) --
+	(124.14, 25.62) --
+	(123.04, 25.47) --
+	(121.93, 25.34) --
+	(120.83, 25.24) --
+	(119.72, 24.96) --
+	(118.62, 24.85) --
+	(117.51, 24.80) --
+	(116.41, 24.45) --
+	(115.30, 24.41) --
+	(114.20, 24.37) --
+	(113.09, 24.16) --
+	(111.99, 23.96) --
+	(110.88, 23.91) --
+	(109.78, 23.75) --
+	(108.67, 23.62) --
+	(107.57, 23.52) --
+	(106.46, 23.49) --
+	(105.36, 23.56) --
+	(104.25, 23.41) --
+	(103.14, 23.34) --
+	(102.04, 23.31) --
+	(100.93, 23.30) --
+	( 99.83, 23.22) --
+	( 98.72, 23.35) --
+	( 97.62, 23.37) --
+	( 96.51, 23.30) --
+	( 95.41, 23.47) --
+	( 94.30, 23.54) --
+	( 93.20, 23.76) --
+	( 92.09, 23.98) --
+	( 90.99, 23.98) --
+	( 89.88, 24.20) --
+	( 88.78, 24.62) --
+	( 87.67, 25.04) --
+	( 86.57, 25.57) --
+	( 85.46, 26.04) --
+	( 84.36, 27.00) --
+	( 83.25, 28.06) --
+	( 82.15, 29.63) --
+	( 81.04, 31.63) --
+	( 79.94, 33.94) --
+	( 78.83, 36.83) --
+	( 77.72, 40.00) --
+	( 76.62, 43.18) --
+	( 75.51, 46.16) --
+	( 74.41, 48.87) --
+	( 73.30, 51.37) --
+	( 72.20, 53.37) --
+	( 71.09, 55.07) --
+	( 69.99, 56.37) --
+	( 68.88, 57.49) --
+	( 67.78, 58.27) --
+	( 66.67, 59.01) --
+	( 65.57, 59.53) --
+	( 64.46, 60.14) --
+	( 63.36, 60.66) --
+	( 62.25, 61.04) --
+	( 61.15, 61.67) --
+	( 60.04, 62.20) --
+	( 58.94, 62.61) --
+	( 57.83, 62.95) --
+	( 56.73, 63.47) --
+	( 55.62, 64.01) --
+	( 54.52, 64.51) --
+	( 53.41, 64.83) --
+	( 52.30, 65.26) --
+	( 51.20, 65.62) --
+	( 50.09, 66.09) --
+	( 48.99, 66.70) --
+	( 47.88, 67.35) --
+	( 46.78, 68.02) --
+	( 45.67, 68.65) --
+	( 44.57, 69.15) --
+	( 43.46, 69.89) --
+	( 42.36, 71.31) --
+	( 41.25, 72.68) --
+	( 40.15, 74.60) --
+	( 39.04, 76.50) --
+	( 37.94, 79.69) --
+	( 36.83, 84.46) --
+	( 35.73, 89.97) --
+	( 34.62, 99.40) --
+	( 33.52,111.73) --
+	( 32.41,130.82) --
+	( 31.31,157.49) --
+	( 30.20,204.04) --
+	( 29.10,251.74);
+\definecolor{drawColor}{RGB}{217,95,2}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (161.72, 31.42) --
+	(160.62, 31.23) --
+	(159.51, 31.14) --
+	(158.41, 31.36) --
+	(157.30, 31.18) --
+	(156.19, 31.09) --
+	(155.09, 30.71) --
+	(153.98, 30.98) --
+	(152.88, 30.62) --
+	(151.77, 30.86) --
+	(150.67, 30.70) --
+	(149.56, 30.82) --
+	(148.46, 30.60) --
+	(147.35, 30.76) --
+	(146.25, 30.65) --
+	(145.14, 30.46) --
+	(144.04, 30.61) --
+	(142.93, 30.31) --
+	(141.83, 30.39) --
+	(140.72, 30.14) --
+	(139.62, 30.22) --
+	(138.51, 30.13) --
+	(137.41, 29.95) --
+	(136.30, 30.17) --
+	(135.20, 30.06) --
+	(134.09, 29.95) --
+	(132.99, 30.02) --
+	(131.88, 29.90) --
+	(130.78, 30.02) --
+	(129.67, 29.91) --
+	(128.56, 29.95) --
+	(127.46, 29.83) --
+	(126.35, 29.92) --
+	(125.25, 29.87) --
+	(124.14, 29.74) --
+	(123.04, 29.89) --
+	(121.93, 29.67) --
+	(120.83, 29.71) --
+	(119.72, 29.72) --
+	(118.62, 29.71) --
+	(117.51, 29.76) --
+	(116.41, 29.53) --
+	(115.30, 29.65) --
+	(114.20, 29.60) --
+	(113.09, 29.51) --
+	(111.99, 29.43) --
+	(110.88, 29.46) --
+	(109.78, 29.46) --
+	(108.67, 29.42) --
+	(107.57, 29.43) --
+	(106.46, 29.43) --
+	(105.36, 29.33) --
+	(104.25, 29.27) --
+	(103.14, 29.24) --
+	(102.04, 29.17) --
+	(100.93, 29.18) --
+	( 99.83, 29.10) --
+	( 98.72, 29.05) --
+	( 97.62, 29.09) --
+	( 96.51, 28.93) --
+	( 95.41, 28.90) --
+	( 94.30, 28.77) --
+	( 93.20, 28.77) --
+	( 92.09, 28.74) --
+	( 90.99, 28.63) --
+	( 89.88, 28.50) --
+	( 88.78, 28.55) --
+	( 87.67, 28.53) --
+	( 86.57, 28.58) --
+	( 85.46, 28.58) --
+	( 84.36, 28.72) --
+	( 83.25, 28.67) --
+	( 82.15, 28.70) --
+	( 81.04, 28.75) --
+	( 79.94, 28.82) --
+	( 78.83, 28.83) --
+	( 77.72, 28.92) --
+	( 76.62, 28.94) --
+	( 75.51, 29.07) --
+	( 74.41, 29.13) --
+	( 73.30, 29.33) --
+	( 72.20, 29.34) --
+	( 71.09, 29.42) --
+	( 69.99, 29.49) --
+	( 68.88, 29.46) --
+	( 67.78, 29.52) --
+	( 66.67, 29.60) --
+	( 65.57, 29.58) --
+	( 64.46, 29.72) --
+	( 63.36, 29.72) --
+	( 62.25, 29.77) --
+	( 61.15, 29.90) --
+	( 60.04, 30.02) --
+	( 58.94, 29.96) --
+	( 57.83, 30.05) --
+	( 56.73, 30.14) --
+	( 55.62, 30.39) --
+	( 54.52, 30.67) --
+	( 53.41, 30.79) --
+	( 52.30, 31.09) --
+	( 51.20, 31.39) --
+	( 50.09, 31.82) --
+	( 48.99, 32.34) --
+	( 47.88, 33.04) --
+	( 46.78, 33.80) --
+	( 45.67, 34.54) --
+	( 44.57, 35.57) --
+	( 43.46, 37.42) --
+	( 42.36, 38.71) --
+	( 41.25, 39.97) --
+	( 40.15, 41.40) --
+	( 39.04, 43.20) --
+	( 37.94, 46.23) --
+	( 36.83, 50.61) --
+	( 35.73, 56.47) --
+	( 34.62, 65.36) --
+	( 33.52, 78.75) --
+	( 32.41, 97.18) --
+	( 31.31,123.19) --
+	( 30.20,162.94) --
+	( 29.10,250.53);
+\definecolor{drawColor}{RGB}{117,112,179}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (161.72, 34.47) --
+	(160.62, 34.43) --
+	(159.51, 34.35) --
+	(158.41, 34.30) --
+	(157.30, 34.04) --
+	(156.19, 34.15) --
+	(155.09, 33.98) --
+	(153.98, 33.99) --
+	(152.88, 34.05) --
+	(151.77, 33.92) --
+	(150.67, 33.98) --
+	(149.56, 33.82) --
+	(148.46, 33.75) --
+	(147.35, 33.83) --
+	(146.25, 33.85) --
+	(145.14, 33.76) --
+	(144.04, 33.78) --
+	(142.93, 33.53) --
+	(141.83, 33.56) --
+	(140.72, 33.43) --
+	(139.62, 33.68) --
+	(138.51, 33.40) --
+	(137.41, 33.35) --
+	(136.30, 33.36) --
+	(135.20, 33.35) --
+	(134.09, 33.13) --
+	(132.99, 33.21) --
+	(131.88, 32.99) --
+	(130.78, 33.23) --
+	(129.67, 33.25) --
+	(128.56, 33.28) --
+	(127.46, 33.12) --
+	(126.35, 33.08) --
+	(125.25, 32.95) --
+	(124.14, 32.91) --
+	(123.04, 32.85) --
+	(121.93, 32.77) --
+	(120.83, 32.77) --
+	(119.72, 32.76) --
+	(118.62, 32.72) --
+	(117.51, 32.70) --
+	(116.41, 32.59) --
+	(115.30, 32.54) --
+	(114.20, 32.69) --
+	(113.09, 32.49) --
+	(111.99, 32.51) --
+	(110.88, 32.43) --
+	(109.78, 32.40) --
+	(108.67, 32.40) --
+	(107.57, 32.35) --
+	(106.46, 32.34) --
+	(105.36, 32.41) --
+	(104.25, 32.32) --
+	(103.14, 32.34) --
+	(102.04, 32.21) --
+	(100.93, 32.29) --
+	( 99.83, 32.24) --
+	( 98.72, 32.22) --
+	( 97.62, 32.19) --
+	( 96.51, 32.11) --
+	( 95.41, 32.13) --
+	( 94.30, 32.04) --
+	( 93.20, 32.02) --
+	( 92.09, 32.04) --
+	( 90.99, 32.03) --
+	( 89.88, 31.88) --
+	( 88.78, 31.92) --
+	( 87.67, 31.94) --
+	( 86.57, 32.07) --
+	( 85.46, 32.06) --
+	( 84.36, 32.04) --
+	( 83.25, 32.01) --
+	( 82.15, 32.05) --
+	( 81.04, 32.12) --
+	( 79.94, 32.07) --
+	( 78.83, 32.11) --
+	( 77.72, 32.21) --
+	( 76.62, 32.20) --
+	( 75.51, 32.36) --
+	( 74.41, 32.38) --
+	( 73.30, 32.53) --
+	( 72.20, 32.57) --
+	( 71.09, 32.54) --
+	( 69.99, 32.68) --
+	( 68.88, 32.78) --
+	( 67.78, 32.74) --
+	( 66.67, 32.87) --
+	( 65.57, 32.94) --
+	( 64.46, 33.14) --
+	( 63.36, 33.26) --
+	( 62.25, 33.43) --
+	( 61.15, 33.56) --
+	( 60.04, 33.66) --
+	( 58.94, 33.68) --
+	( 57.83, 33.81) --
+	( 56.73, 33.86) --
+	( 55.62, 34.15) --
+	( 54.52, 34.33) --
+	( 53.41, 34.47) --
+	( 52.30, 34.75) --
+	( 51.20, 35.25) --
+	( 50.09, 35.98) --
+	( 48.99, 37.37) --
+	( 47.88, 39.88) --
+	( 46.78, 43.58) --
+	( 45.67, 48.66) --
+	( 44.57, 54.19) --
+	( 43.46, 58.36) --
+	( 42.36, 61.29) --
+	( 41.25, 63.02) --
+	( 40.15, 64.23) --
+	( 39.04, 65.91) --
+	( 37.94, 68.40) --
+	( 36.83, 72.19) --
+	( 35.73, 77.01) --
+	( 34.62, 85.66) --
+	( 33.52, 98.71) --
+	( 32.41,117.37) --
+	( 31.31,145.87) --
+	( 30.20,179.12) --
+	( 29.10,214.39);
+\definecolor{drawColor}{RGB}{231,41,138}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] (161.72, 34.99) --
+	(160.62, 35.02) --
+	(159.51, 35.04) --
+	(158.41, 35.13) --
+	(157.30, 34.84) --
+	(156.19, 34.89) --
+	(155.09, 34.71) --
+	(153.98, 34.71) --
+	(152.88, 34.87) --
+	(151.77, 34.75) --
+	(150.67, 34.36) --
+	(149.56, 34.77) --
+	(148.46, 34.58) --
+	(147.35, 34.94) --
+	(146.25, 34.48) --
+	(145.14, 34.49) --
+	(144.04, 34.54) --
+	(142.93, 34.56) --
+	(141.83, 34.36) --
+	(140.72, 34.36) --
+	(139.62, 34.44) --
+	(138.51, 34.17) --
+	(137.41, 34.03) --
+	(136.30, 34.28) --
+	(135.20, 34.38) --
+	(134.09, 33.92) --
+	(132.99, 33.87) --
+	(131.88, 33.89) --
+	(130.78, 34.00) --
+	(129.67, 33.85) --
+	(128.56, 33.82) --
+	(127.46, 33.80) --
+	(126.35, 33.79) --
+	(125.25, 33.80) --
+	(124.14, 33.62) --
+	(123.04, 33.54) --
+	(121.93, 33.45) --
+	(120.83, 33.48) --
+	(119.72, 33.36) --
+	(118.62, 33.48) --
+	(117.51, 33.34) --
+	(116.41, 33.20) --
+	(115.30, 33.18) --
+	(114.20, 33.21) --
+	(113.09, 32.97) --
+	(111.99, 33.03) --
+	(110.88, 32.93) --
+	(109.78, 32.84) --
+	(108.67, 32.83) --
+	(107.57, 32.76) --
+	(106.46, 32.70) --
+	(105.36, 32.66) --
+	(104.25, 32.52) --
+	(103.14, 32.54) --
+	(102.04, 32.48) --
+	(100.93, 32.37) --
+	( 99.83, 32.29) --
+	( 98.72, 32.26) --
+	( 97.62, 32.23) --
+	( 96.51, 32.18) --
+	( 95.41, 32.12) --
+	( 94.30, 32.09) --
+	( 93.20, 32.07) --
+	( 92.09, 32.08) --
+	( 90.99, 31.99) --
+	( 89.88, 31.90) --
+	( 88.78, 31.95) --
+	( 87.67, 31.92) --
+	( 86.57, 32.05) --
+	( 85.46, 32.00) --
+	( 84.36, 32.00) --
+	( 83.25, 32.08) --
+	( 82.15, 32.16) --
+	( 81.04, 32.22) --
+	( 79.94, 32.37) --
+	( 78.83, 32.53) --
+	( 77.72, 32.83) --
+	( 76.62, 33.17) --
+	( 75.51, 33.78) --
+	( 74.41, 34.59) --
+	( 73.30, 35.81) --
+	( 72.20, 37.11) --
+	( 71.09, 38.47) --
+	( 69.99, 39.81) --
+	( 68.88, 41.00) --
+	( 67.78, 41.92) --
+	( 66.67, 42.76) --
+	( 65.57, 43.45) --
+	( 64.46, 44.05) --
+	( 63.36, 44.56) --
+	( 62.25, 45.03) --
+	( 61.15, 45.53) --
+	( 60.04, 45.99) --
+	( 58.94, 46.32) --
+	( 57.83, 46.55) --
+	( 56.73, 47.03) --
+	( 55.62, 47.58) --
+	( 54.52, 47.91) --
+	( 53.41, 48.22) --
+	( 52.30, 48.58) --
+	( 51.20, 49.01) --
+	( 50.09, 49.57) --
+	( 48.99, 50.25) --
+	( 47.88, 51.14) --
+	( 46.78, 52.25) --
+	( 45.67, 53.54) --
+	( 44.57, 55.91) --
+	( 43.46, 59.27) --
+	( 42.36, 62.31) --
+	( 41.25, 64.43) --
+	( 40.15, 66.24) --
+	( 39.04, 68.38) --
+	( 37.94, 70.96) --
+	( 36.83, 75.99) --
+	( 35.73, 81.23) --
+	( 34.62, 90.14) --
+	( 33.52,102.80) --
+	( 32.41,121.88) --
+	( 31.31,148.21) --
+	( 30.20,177.30) --
+	( 29.10,188.86);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round,line cap=round] ( 29.10, 25.90) rectangle (161.72, 93.79);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 26.20) {0.0};
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 38.54) {0.5};
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 50.88) {1.0};
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 63.23) {1.5};
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 75.57) {2.0};
+
+\node[text=drawColor,anchor=base east,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 25.05, 87.91) {2.5};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 28.99) --
+	( 29.10, 28.99);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 41.33) --
+	( 29.10, 41.33);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 53.67) --
+	( 29.10, 53.67);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 66.02) --
+	( 29.10, 66.02);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 78.36) --
+	( 29.10, 78.36);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 26.85, 90.70) --
+	( 29.10, 90.70);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 51.20, 23.65) --
+	( 51.20, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 95.41, 23.65) --
+	( 95.41, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] (139.62, 23.65) --
+	(139.62, 25.90);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 51.20, 16.27) {400};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 95.41, 16.27) {600};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at (139.62, 16.27) {800};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.90] at ( 95.41,  6.25) {$\lambda/\unit{\nm}$};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.90] at ( 10.70, 59.84) {$A$};
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

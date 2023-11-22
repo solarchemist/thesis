@@ -1,0 +1,1064 @@
+% Created by tikzDevice version 0.12.4 on 2023-12-15 02:02:51
+% !TEX encoding = UTF-8 Unicode
+\RequirePackage{luatex85}
+\documentclass{LuaUUThesis}
+\nonstopmode
+
+\usepackage{tikz}
+\usepackage{luatex85}
+\usepackage[active,tightpage,psfixbb]{preview}
+\usepackage{fontspec}
+\setsansfont{Linux Biolinum O}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\linespread{1.05}
+\usepackage{mathtools}
+\usepackage{unicode-math}
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono}
+\PreviewEnvironment{pgfpicture}
+\setlength\PreviewBorder{0pt}
+\usepackage{booktabs}
+\usepackage{ctable}
+\usepackage[backend=biber]{biblatex}
+\usepackage{xfrac}
+\usetikzlibrary{ arrows, backgrounds, calc, decorations, decorations.markings, decorations.pathmorphing, decorations.pathreplacing, decorations.shapes, decorations.text, fadings, fit, positioning, shapes }
+\usepackage[ minimal=true, modules={ thermodynamics, units, orbital, reactions, redox, reactants, scheme} ]{chemmacros}
+\chemsetup{ formula=chemformula, chemformula/frac-style=nicefrac, reactions/list-entry={}, reactants/printreactants-style=xltabular, reactants/initiate=true }
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+\NewChemParticle{\oxide}{O^{2-}}
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+\NewChemParticle\ZnAc{Zn(OAc)2}
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+\usepackage{chemfig}
+\setchemfig{atom sep=2em}
+\definesubmol\nobond{-[,1.2,,,draw=none]}
+\renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+\usepackage{siunitx}
+\sisetup{ uncertainty-mode=compact, reset-text-family=false, text-family-to-math=false, text-series-to-math=false }
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+\DeclareSIUnit{\lines}{lines}
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+\DeclareSIUnit{\rpm}{rpm}
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+\DeclareSIUnit{\foot}{ft}
+\DeclareSIUnit{\sq}{sq}
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+\DeclareSIUnit{\angstrom}{Å}
+\usepackage{xifthen}
+\usepackage{xparse}
+\ExplSyntaxOn \NewExpandableDocumentCommand{\stringcase}{mO{}m}{ \str_case_e:nnF { #1 } { #3 } { #2 } } \ExplSyntaxOff  \NewDocumentCommand{\NonResonantModesShort}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2l}}} {B1l}{\textit{B}\textsubscript{\textup{1l}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2h}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1h}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLong}{m}{ \stringcase{#1}[\textbf{??}]{ {E2l}{\textit{E}\textsubscript{\textup{2(low)}}} {B1l}{\textit{B}\textsubscript{\textup{1(low)}}} {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}} {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}} {E2h}{\textit{E}\textsubscript{\textup{2(high)}}} {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}} {B1h}{\textit{B}\textsubscript{\textup{1(high)}}} {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}} {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}} {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}} {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}} {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}} } }  \NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{ \IfNoValueTF{#2}{ \NonResonantModesShort{#1} }{ \ifthenelse{\equal{#2}{long}}{ \NonResonantModesLong{#1} }{ \ifthenelse{\equal{#2}{short}}{ \NonResonantModesShort{#1} }{ \NonResonantModesShort{} } } } }  \NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{ \IfNoValueTF{#2}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\isempty{#2}}{ \IfNoValueTF{#3}{ \NonResonantModesLogic{#1} }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1} }{ \NonResonantModesLogic{#1}[#3] } } }{ \ifthenelse{\equal{#4}{diff}}{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2} } } }{ \ifthenelse{\isempty{#3}}{ \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2} }{ \ifthenelse{\equal{#3}{long}}{ \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3] }{ \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2} } } } } } }   \NewDocumentCommand{\Eg}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{E_\text{g}}}{ \IfNoValueTF{#2}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{ \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\Rsq}{om}{ \IfNoValueTF{#1}{ \ensuremath{R^2{\,=\,}\num{#2}}}{ \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}   \NewDocumentCommand{\density}{mo}{ \ifthenelse{\isempty{#1}}{ \ensuremath{\rho}}{ \IfNoValueTF{#2}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ifthenelse{\isempty{#2}}{ \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{ \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}   \NewDocumentCommand{\miller}{m}{ \num{#1} }
+\newcommand{\SweaveOpts}[1]{}  % do not interfere with LaTeX
+\newcommand{\SweaveInput}[1]{} % because they are not real TeX commands
+\newcommand{\Sexpr}[1]{}       % will only be parsed by R
+
+
+% printedition: configure thesis for physical printing (webedition by default)
+% openright: force chapters to start on right-hand page (important for print edition)
+% titles: show current chapter and section in top outer corner of each page (like a proper book)
+% note that cleveref language switching does not work when languages are specified
+% as babel package options, they need to be here. The main language should be loaded last.
+% https://tex.stackexchange.com/a/20991/10824
+% https://tex.stackexchange.com/questions/248341/how-to-make-a-custom-crefformat-dependent-on-language-chosen-with-babel/252847
+
+%\input{assets/preamble/preamble.Rnw}
+
+
+% For "LaTeX Workshop" (VSCodium extension) to do its autocomplete magic,
+% our bib-files must be included here, in the main Rnw
+% That also means \usepackage{biblatex} must be included in tikzLualatexPackages
+\addbibresource{assets/references/library.bib}
+
+
+\begin{document}
+
+\begin{tikzpicture}[x=1pt,y=1pt]
+\definecolor{fillColor}{RGB}{255,255,255}
+\path[use as bounding box,fill=fillColor,fill opacity=0.00] (0,0) rectangle (166.22, 98.29);
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{255,255,255}
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round,line cap=round,fill=fillColor] (  0.00,  0.00) rectangle (166.22, 98.29);
+\end{scope}
+\begin{scope}
+\path[clip] ( 25.90, 25.90) rectangle (161.72, 93.79);
+\definecolor{fillColor}{RGB}{255,255,255}
+
+\path[fill=fillColor] ( 25.90, 25.90) rectangle (161.72, 93.79);
+\definecolor{drawColor}{RGB}{117,112,179}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 32.07, 60.14) --
+	( 32.52, 60.58) --
+	( 32.97, 62.70) --
+	( 33.42, 65.05) --
+	( 33.87, 66.96) --
+	( 34.32, 67.10) --
+	( 34.77, 68.86) --
+	( 35.22, 70.36) --
+	( 35.67, 72.09) --
+	( 36.12, 72.90) --
+	( 36.56, 74.84) --
+	( 37.01, 76.15) --
+	( 37.46, 77.38) --
+	( 37.91, 78.98) --
+	( 38.36, 80.17) --
+	( 38.81, 80.46) --
+	( 39.26, 81.82) --
+	( 39.71, 83.88) --
+	( 40.16, 84.07) --
+	( 40.61, 84.92) --
+	( 41.05, 85.69) --
+	( 41.50, 86.68) --
+	( 41.95, 86.69) --
+	( 42.40, 87.73) --
+	( 42.85, 87.78) --
+	( 43.30, 87.79) --
+	( 43.75, 88.82) --
+	( 44.20, 90.07) --
+	( 44.65, 89.68) --
+	( 45.10, 90.20) --
+	( 45.54, 90.10) --
+	( 45.99, 90.04) --
+	( 46.44, 90.59) --
+	( 46.89, 90.25) --
+	( 47.34, 90.70) --
+	( 47.79, 90.53) --
+	( 48.24, 90.35) --
+	( 48.69, 90.56) --
+	( 49.14, 89.42) --
+	( 49.59, 90.00) --
+	( 50.03, 89.62) --
+	( 50.48, 88.49) --
+	( 50.93, 88.81) --
+	( 51.38, 88.68) --
+	( 51.83, 88.46) --
+	( 52.28, 87.11) --
+	( 52.73, 87.27) --
+	( 53.18, 86.84) --
+	( 53.63, 86.23) --
+	( 54.08, 85.50) --
+	( 54.52, 85.18) --
+	( 54.97, 83.72) --
+	( 55.42, 83.99) --
+	( 55.87, 82.68) --
+	( 56.32, 82.76) --
+	( 56.77, 81.73) --
+	( 57.22, 80.52) --
+	( 57.67, 79.67) --
+	( 58.12, 79.76) --
+	( 58.57, 78.24) --
+	( 59.01, 77.58) --
+	( 59.46, 76.56) --
+	( 59.91, 75.61) --
+	( 60.36, 74.95) --
+	( 60.81, 74.12) --
+	( 61.26, 73.19) --
+	( 61.71, 72.91) --
+	( 62.16, 72.02) --
+	( 62.61, 70.92) --
+	( 63.06, 70.01) --
+	( 63.50, 69.24) --
+	( 63.95, 68.57) --
+	( 64.40, 67.93) --
+	( 64.85, 66.93) --
+	( 65.30, 66.60) --
+	( 65.75, 65.51) --
+	( 66.20, 64.53) --
+	( 66.65, 63.98) --
+	( 67.10, 63.34) --
+	( 67.55, 61.98) --
+	( 67.99, 61.57) --
+	( 68.44, 61.03) --
+	( 68.89, 59.88) --
+	( 69.34, 59.57) --
+	( 69.79, 58.94) --
+	( 70.24, 58.14) --
+	( 70.69, 57.63) --
+	( 71.14, 56.81) --
+	( 71.59, 56.25) --
+	( 72.04, 55.42) --
+	( 72.48, 54.77) --
+	( 72.93, 54.10) --
+	( 73.38, 53.63) --
+	( 73.83, 53.10) --
+	( 74.28, 52.70) --
+	( 74.73, 51.82) --
+	( 75.18, 51.54) --
+	( 75.63, 51.03) --
+	( 76.08, 49.99) --
+	( 76.52, 49.98) --
+	( 76.97, 49.49) --
+	( 77.42, 48.87) --
+	( 77.87, 48.29) --
+	( 78.32, 48.02) --
+	( 78.77, 47.66) --
+	( 79.22, 46.77) --
+	( 79.67, 47.00) --
+	( 80.12, 46.27) --
+	( 80.57, 45.99) --
+	( 81.01, 45.44) --
+	( 81.46, 45.25) --
+	( 81.91, 45.18) --
+	( 82.36, 44.51) --
+	( 82.81, 44.33) --
+	( 83.26, 43.99) --
+	( 83.71, 43.98) --
+	( 84.16, 43.54) --
+	( 84.61, 43.17) --
+	( 85.06, 42.97) --
+	( 85.50, 42.50) --
+	( 85.95, 42.18) --
+	( 86.40, 42.24) --
+	( 86.85, 41.67) --
+	( 87.30, 41.54) --
+	( 87.75, 41.09) --
+	( 88.20, 41.14) --
+	( 88.65, 41.14) --
+	( 89.10, 40.40) --
+	( 89.55, 40.37) --
+	( 89.99, 40.33) --
+	( 90.44, 40.21) --
+	( 90.89, 39.85) --
+	( 91.34, 39.46) --
+	( 91.79, 39.55) --
+	( 92.24, 39.43) --
+	( 92.69, 39.19) --
+	( 93.14, 39.16) --
+	( 93.59, 39.03) --
+	( 94.04, 38.79) --
+	( 94.48, 38.86) --
+	( 94.93, 38.44) --
+	( 95.38, 38.41) --
+	( 95.83, 38.31) --
+	( 96.28, 38.48) --
+	( 96.73, 38.32) --
+	( 97.18, 38.07) --
+	( 97.63, 38.06) --
+	( 98.08, 38.18) --
+	( 98.53, 38.22) --
+	( 98.97, 37.77) --
+	( 99.42, 38.08) --
+	( 99.87, 37.98) --
+	(100.32, 38.06) --
+	(100.77, 37.98) --
+	(101.22, 37.96) --
+	(101.67, 38.11) --
+	(102.12, 38.40) --
+	(102.57, 38.43) --
+	(103.02, 38.24) --
+	(103.46, 38.28) --
+	(103.91, 38.05) --
+	(104.36, 38.41) --
+	(104.81, 38.01) --
+	(105.26, 38.35) --
+	(105.71, 38.20) --
+	(106.16, 38.10) --
+	(106.61, 38.30) --
+	(107.06, 38.38) --
+	(107.51, 38.35) --
+	(107.95, 38.25) --
+	(108.40, 38.40) --
+	(108.85, 38.23) --
+	(109.30, 37.81) --
+	(109.75, 38.11) --
+	(110.20, 38.21) --
+	(110.65, 38.08) --
+	(111.10, 38.16) --
+	(111.55, 38.30) --
+	(112.00, 38.31) --
+	(112.44, 38.04) --
+	(112.89, 38.30) --
+	(113.34, 38.32) --
+	(113.79, 38.22) --
+	(114.24, 38.25) --
+	(114.69, 38.16) --
+	(115.14, 37.83) --
+	(115.59, 37.74) --
+	(116.04, 38.17) --
+	(116.49, 37.80) --
+	(116.93, 38.10) --
+	(117.38, 37.70) --
+	(117.83, 37.89) --
+	(118.28, 37.96) --
+	(118.73, 37.80) --
+	(119.18, 37.88) --
+	(119.63, 38.00) --
+	(120.08, 37.85) --
+	(120.53, 37.77) --
+	(120.98, 37.55) --
+	(121.42, 37.67) --
+	(121.87, 37.44) --
+	(122.32, 37.52) --
+	(122.77, 37.20) --
+	(123.22, 37.35) --
+	(123.67, 37.39) --
+	(124.12, 37.43) --
+	(124.57, 37.66) --
+	(125.02, 37.25) --
+	(125.46, 37.55) --
+	(125.91, 37.31) --
+	(126.36, 37.31) --
+	(126.81, 37.10) --
+	(127.26, 37.23) --
+	(127.71, 37.25) --
+	(128.16, 37.14) --
+	(128.61, 37.30) --
+	(129.06, 37.38) --
+	(129.51, 37.47) --
+	(129.95, 36.87) --
+	(130.40, 37.08) --
+	(130.85, 37.35) --
+	(131.30, 36.89) --
+	(131.75, 36.77) --
+	(132.20, 36.82) --
+	(132.65, 37.15) --
+	(133.10, 37.29) --
+	(133.55, 37.08) --
+	(134.00, 37.06) --
+	(134.44, 36.76) --
+	(134.89, 36.76) --
+	(135.34, 37.02) --
+	(135.79, 36.57) --
+	(136.24, 36.82) --
+	(136.69, 36.82) --
+	(137.14, 36.52) --
+	(137.59, 36.63) --
+	(138.04, 36.46) --
+	(138.49, 36.71) --
+	(138.93, 36.74) --
+	(139.38, 36.60) --
+	(139.83, 36.87) --
+	(140.28, 36.80) --
+	(140.73, 36.83) --
+	(141.18, 36.49) --
+	(141.63, 36.37) --
+	(142.08, 36.81) --
+	(142.53, 36.53) --
+	(142.98, 36.58) --
+	(143.42, 36.18) --
+	(143.87, 36.68) --
+	(144.32, 36.52) --
+	(144.77, 36.66) --
+	(145.22, 37.29) --
+	(145.67, 36.69) --
+	(146.12, 36.43) --
+	(146.57, 36.27) --
+	(147.02, 37.01) --
+	(147.47, 36.66) --
+	(147.91, 36.55) --
+	(148.36, 36.73) --
+	(148.81, 36.72) --
+	(149.26, 37.02) --
+	(149.71, 36.74) --
+	(150.16, 37.42) --
+	(150.61, 37.16) --
+	(151.06, 37.37) --
+	(151.51, 37.62) --
+	(151.96, 37.16) --
+	(152.40, 37.83) --
+	(152.85, 37.47) --
+	(153.30, 38.11) --
+	(153.75, 38.11) --
+	(154.20, 37.83) --
+	(154.65, 38.56) --
+	(155.10, 38.61) --
+	(155.55, 38.76);
+\definecolor{drawColor}{RGB}{27,158,119}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 32.07, 52.14) --
+	( 32.52, 52.84) --
+	( 32.97, 54.25) --
+	( 33.42, 55.30) --
+	( 33.87, 56.45) --
+	( 34.32, 57.19) --
+	( 34.77, 57.89) --
+	( 35.22, 58.51) --
+	( 35.67, 59.79) --
+	( 36.12, 60.18) --
+	( 36.56, 61.38) --
+	( 37.01, 62.15) --
+	( 37.46, 63.19) --
+	( 37.91, 63.62) --
+	( 38.36, 64.54) --
+	( 38.81, 64.54) --
+	( 39.26, 65.70) --
+	( 39.71, 66.03) --
+	( 40.16, 66.25) --
+	( 40.61, 67.41) --
+	( 41.05, 66.70) --
+	( 41.50, 67.03) --
+	( 41.95, 67.89) --
+	( 42.40, 68.26) --
+	( 42.85, 67.97) --
+	( 43.30, 68.06) --
+	( 43.75, 68.65) --
+	( 44.20, 68.83) --
+	( 44.65, 68.64) --
+	( 45.10, 68.71) --
+	( 45.54, 69.26) --
+	( 45.99, 69.08) --
+	( 46.44, 68.81) --
+	( 46.89, 68.70) --
+	( 47.34, 68.82) --
+	( 47.79, 68.24) --
+	( 48.24, 68.35) --
+	( 48.69, 67.98) --
+	( 49.14, 67.32) --
+	( 49.59, 67.42) --
+	( 50.03, 66.39) --
+	( 50.48, 65.70) --
+	( 50.93, 65.52) --
+	( 51.38, 65.19) --
+	( 51.83, 64.97) --
+	( 52.28, 63.91) --
+	( 52.73, 64.29) --
+	( 53.18, 63.85) --
+	( 53.63, 62.80) --
+	( 54.08, 62.39) --
+	( 54.52, 62.13) --
+	( 54.97, 61.60) --
+	( 55.42, 61.24) --
+	( 55.87, 60.95) --
+	( 56.32, 60.31) --
+	( 56.77, 59.61) --
+	( 57.22, 59.08) --
+	( 57.67, 58.32) --
+	( 58.12, 57.93) --
+	( 58.57, 57.45) --
+	( 59.01, 56.64) --
+	( 59.46, 56.34) --
+	( 59.91, 55.89) --
+	( 60.36, 55.17) --
+	( 60.81, 54.65) --
+	( 61.26, 54.36) --
+	( 61.71, 53.96) --
+	( 62.16, 53.46) --
+	( 62.61, 52.94) --
+	( 63.06, 52.27) --
+	( 63.50, 51.81) --
+	( 63.95, 51.18) --
+	( 64.40, 50.84) --
+	( 64.85, 50.34) --
+	( 65.30, 49.63) --
+	( 65.75, 49.45) --
+	( 66.20, 48.68) --
+	( 66.65, 48.58) --
+	( 67.10, 48.08) --
+	( 67.55, 47.61) --
+	( 67.99, 47.14) --
+	( 68.44, 47.02) --
+	( 68.89, 46.54) --
+	( 69.34, 45.78) --
+	( 69.79, 45.36) --
+	( 70.24, 44.93) --
+	( 70.69, 44.55) --
+	( 71.14, 44.28) --
+	( 71.59, 43.78) --
+	( 72.04, 43.39) --
+	( 72.48, 42.90) --
+	( 72.93, 42.53) --
+	( 73.38, 42.42) --
+	( 73.83, 42.18) --
+	( 74.28, 41.73) --
+	( 74.73, 41.39) --
+	( 75.18, 41.06) --
+	( 75.63, 40.45) --
+	( 76.08, 40.17) --
+	( 76.52, 39.89) --
+	( 76.97, 39.65) --
+	( 77.42, 39.37) --
+	( 77.87, 39.00) --
+	( 78.32, 38.93) --
+	( 78.77, 38.67) --
+	( 79.22, 38.34) --
+	( 79.67, 38.24) --
+	( 80.12, 37.80) --
+	( 80.57, 37.54) --
+	( 81.01, 37.22) --
+	( 81.46, 37.12) --
+	( 81.91, 36.90) --
+	( 82.36, 36.66) --
+	( 82.81, 36.66) --
+	( 83.26, 36.31) --
+	( 83.71, 36.17) --
+	( 84.16, 36.01) --
+	( 84.61, 35.64) --
+	( 85.06, 35.50) --
+	( 85.50, 35.30) --
+	( 85.95, 35.40) --
+	( 86.40, 35.22) --
+	( 86.85, 34.90) --
+	( 87.30, 34.87) --
+	( 87.75, 34.62) --
+	( 88.20, 34.50) --
+	( 88.65, 34.28) --
+	( 89.10, 34.27) --
+	( 89.55, 34.02) --
+	( 89.99, 33.98) --
+	( 90.44, 33.85) --
+	( 90.89, 33.78) --
+	( 91.34, 33.60) --
+	( 91.79, 33.62) --
+	( 92.24, 33.28) --
+	( 92.69, 33.32) --
+	( 93.14, 33.20) --
+	( 93.59, 33.23) --
+	( 94.04, 32.89) --
+	( 94.48, 33.08) --
+	( 94.93, 33.01) --
+	( 95.38, 32.88) --
+	( 95.83, 32.84) --
+	( 96.28, 32.74) --
+	( 96.73, 32.82) --
+	( 97.18, 32.80) --
+	( 97.63, 32.64) --
+	( 98.08, 32.70) --
+	( 98.53, 32.62) --
+	( 98.97, 32.64) --
+	( 99.42, 32.69) --
+	( 99.87, 32.74) --
+	(100.32, 32.62) --
+	(100.77, 32.66) --
+	(101.22, 32.67) --
+	(101.67, 32.61) --
+	(102.12, 32.63) --
+	(102.57, 32.65) --
+	(103.02, 32.56) --
+	(103.46, 32.63) --
+	(103.91, 32.61) --
+	(104.36, 32.69) --
+	(104.81, 32.45) --
+	(105.26, 32.54) --
+	(105.71, 32.43) --
+	(106.16, 32.49) --
+	(106.61, 32.36) --
+	(107.06, 32.41) --
+	(107.51, 32.26) --
+	(107.95, 32.23) --
+	(108.40, 32.24) --
+	(108.85, 32.24) --
+	(109.30, 32.26) --
+	(109.75, 32.23) --
+	(110.20, 32.21) --
+	(110.65, 32.09) --
+	(111.10, 32.00) --
+	(111.55, 31.99) --
+	(112.00, 32.07) --
+	(112.44, 32.13) --
+	(112.89, 32.00) --
+	(113.34, 32.05) --
+	(113.79, 31.83) --
+	(114.24, 31.88) --
+	(114.69, 31.83) --
+	(115.14, 31.72) --
+	(115.59, 31.80) --
+	(116.04, 31.74) --
+	(116.49, 31.56) --
+	(116.93, 31.45) --
+	(117.38, 31.72) --
+	(117.83, 31.40) --
+	(118.28, 31.30) --
+	(118.73, 31.22) --
+	(119.18, 31.28) --
+	(119.63, 31.19) --
+	(120.08, 31.02) --
+	(120.53, 30.90) --
+	(120.98, 30.97) --
+	(121.42, 30.94) --
+	(121.87, 30.72) --
+	(122.32, 30.74) --
+	(122.77, 30.59) --
+	(123.22, 30.69) --
+	(123.67, 30.68) --
+	(124.12, 30.57) --
+	(124.57, 30.62) --
+	(125.02, 30.54) --
+	(125.46, 30.52) --
+	(125.91, 30.36) --
+	(126.36, 30.39) --
+	(126.81, 30.14) --
+	(127.26, 30.21) --
+	(127.71, 30.16) --
+	(128.16, 30.05) --
+	(128.61, 29.97) --
+	(129.06, 30.09) --
+	(129.51, 29.88) --
+	(129.95, 29.86) --
+	(130.40, 29.84) --
+	(130.85, 29.95) --
+	(131.30, 29.79) --
+	(131.75, 29.88) --
+	(132.20, 29.70) --
+	(132.65, 29.72) --
+	(133.10, 29.54) --
+	(133.55, 29.55) --
+	(134.00, 29.61) --
+	(134.44, 29.55) --
+	(134.89, 29.52) --
+	(135.34, 29.52) --
+	(135.79, 29.47) --
+	(136.24, 29.37) --
+	(136.69, 29.51) --
+	(137.14, 29.42) --
+	(137.59, 29.37) --
+	(138.04, 29.25) --
+	(138.49, 29.33) --
+	(138.93, 29.29) --
+	(139.38, 29.28) --
+	(139.83, 29.18) --
+	(140.28, 29.14) --
+	(140.73, 29.20) --
+	(141.18, 29.17) --
+	(141.63, 29.17) --
+	(142.08, 29.14) --
+	(142.53, 29.10) --
+	(142.98, 28.99) --
+	(143.42, 29.13) --
+	(143.87, 29.12) --
+	(144.32, 29.12) --
+	(144.77, 29.07) --
+	(145.22, 29.16) --
+	(145.67, 29.02) --
+	(146.12, 29.07) --
+	(146.57, 29.33) --
+	(147.02, 29.23) --
+	(147.47, 29.31) --
+	(147.91, 29.34) --
+	(148.36, 29.39) --
+	(148.81, 29.32) --
+	(149.26, 29.42) --
+	(149.71, 29.43) --
+	(150.16, 29.85) --
+	(150.61, 29.64) --
+	(151.06, 29.78) --
+	(151.51, 29.62) --
+	(151.96, 30.09) --
+	(152.40, 29.83) --
+	(152.85, 30.19) --
+	(153.30, 30.21) --
+	(153.75, 30.26) --
+	(154.20, 30.57) --
+	(154.65, 30.64) --
+	(155.10, 30.86) --
+	(155.55, 31.03);
+\definecolor{drawColor}{RGB}{217,95,2}
+
+\path[draw=drawColor,line width= 0.6pt,line join=round] ( 32.07, 56.91) --
+	( 32.52, 57.77) --
+	( 32.97, 59.39) --
+	( 33.42, 60.38) --
+	( 33.87, 62.01) --
+	( 34.32, 62.95) --
+	( 34.77, 63.95) --
+	( 35.22, 64.93) --
+	( 35.67, 65.99) --
+	( 36.12, 66.65) --
+	( 36.56, 67.86) --
+	( 37.01, 69.37) --
+	( 37.46, 69.91) --
+	( 37.91, 71.14) --
+	( 38.36, 71.70) --
+	( 38.81, 72.02) --
+	( 39.26, 73.08) --
+	( 39.71, 74.39) --
+	( 40.16, 74.66) --
+	( 40.61, 75.33) --
+	( 41.05, 75.77) --
+	( 41.50, 75.88) --
+	( 41.95, 76.39) --
+	( 42.40, 76.79) --
+	( 42.85, 76.98) --
+	( 43.30, 76.96) --
+	( 43.75, 77.65) --
+	( 44.20, 77.64) --
+	( 44.65, 78.24) --
+	( 45.10, 77.91) --
+	( 45.54, 77.78) --
+	( 45.99, 77.98) --
+	( 46.44, 78.15) --
+	( 46.89, 78.34) --
+	( 47.34, 78.41) --
+	( 47.79, 77.77) --
+	( 48.24, 78.06) --
+	( 48.69, 77.55) --
+	( 49.14, 77.22) --
+	( 49.59, 76.70) --
+	( 50.03, 76.14) --
+	( 50.48, 75.05) --
+	( 50.93, 74.71) --
+	( 51.38, 74.27) --
+	( 51.83, 74.01) --
+	( 52.28, 73.46) --
+	( 52.73, 73.48) --
+	( 53.18, 72.58) --
+	( 53.63, 71.76) --
+	( 54.08, 71.36) --
+	( 54.52, 70.60) --
+	( 54.97, 70.12) --
+	( 55.42, 69.47) --
+	( 55.87, 69.06) --
+	( 56.32, 68.40) --
+	( 56.77, 67.60) --
+	( 57.22, 67.14) --
+	( 57.67, 66.11) --
+	( 58.12, 65.92) --
+	( 58.57, 64.98) --
+	( 59.01, 64.14) --
+	( 59.46, 63.49) --
+	( 59.91, 62.95) --
+	( 60.36, 62.11) --
+	( 60.81, 61.55) --
+	( 61.26, 61.36) --
+	( 61.71, 60.88) --
+	( 62.16, 59.70) --
+	( 62.61, 59.38) --
+	( 63.06, 58.36) --
+	( 63.50, 58.14) --
+	( 63.95, 57.31) --
+	( 64.40, 56.83) --
+	( 64.85, 56.05) --
+	( 65.30, 55.55) --
+	( 65.75, 54.94) --
+	( 66.20, 54.44) --
+	( 66.65, 53.77) --
+	( 67.10, 53.17) --
+	( 67.55, 52.74) --
+	( 67.99, 51.99) --
+	( 68.44, 52.07) --
+	( 68.89, 51.11) --
+	( 69.34, 50.74) --
+	( 69.79, 50.22) --
+	( 70.24, 49.58) --
+	( 70.69, 48.88) --
+	( 71.14, 48.42) --
+	( 71.59, 48.12) --
+	( 72.04, 47.23) --
+	( 72.48, 47.06) --
+	( 72.93, 46.51) --
+	( 73.38, 46.04) --
+	( 73.83, 45.67) --
+	( 74.28, 45.32) --
+	( 74.73, 44.90) --
+	( 75.18, 44.39) --
+	( 75.63, 44.06) --
+	( 76.08, 43.58) --
+	( 76.52, 43.10) --
+	( 76.97, 42.84) --
+	( 77.42, 42.65) --
+	( 77.87, 42.09) --
+	( 78.32, 41.89) --
+	( 78.77, 41.58) --
+	( 79.22, 41.24) --
+	( 79.67, 40.98) --
+	( 80.12, 40.45) --
+	( 80.57, 40.02) --
+	( 81.01, 40.00) --
+	( 81.46, 39.88) --
+	( 81.91, 39.65) --
+	( 82.36, 39.19) --
+	( 82.81, 39.05) --
+	( 83.26, 38.96) --
+	( 83.71, 38.38) --
+	( 84.16, 38.52) --
+	( 84.61, 38.10) --
+	( 85.06, 37.81) --
+	( 85.50, 37.62) --
+	( 85.95, 37.58) --
+	( 86.40, 37.25) --
+	( 86.85, 36.94) --
+	( 87.30, 36.84) --
+	( 87.75, 36.81) --
+	( 88.20, 36.70) --
+	( 88.65, 36.38) --
+	( 89.10, 36.08) --
+	( 89.55, 36.17) --
+	( 89.99, 36.04) --
+	( 90.44, 35.87) --
+	( 90.89, 35.75) --
+	( 91.34, 35.58) --
+	( 91.79, 35.42) --
+	( 92.24, 35.39) --
+	( 92.69, 35.34) --
+	( 93.14, 35.18) --
+	( 93.59, 35.09) --
+	( 94.04, 34.97) --
+	( 94.48, 34.86) --
+	( 94.93, 34.83) --
+	( 95.38, 34.84) --
+	( 95.83, 34.63) --
+	( 96.28, 34.61) --
+	( 96.73, 34.58) --
+	( 97.18, 34.62) --
+	( 97.63, 34.48) --
+	( 98.08, 34.57) --
+	( 98.53, 34.59) --
+	( 98.97, 34.46) --
+	( 99.42, 34.37) --
+	( 99.87, 34.58) --
+	(100.32, 34.50) --
+	(100.77, 34.43) --
+	(101.22, 34.70) --
+	(101.67, 34.42) --
+	(102.12, 34.39) --
+	(102.57, 34.58) --
+	(103.02, 34.62) --
+	(103.46, 34.43) --
+	(103.91, 34.57) --
+	(104.36, 34.40) --
+	(104.81, 34.45) --
+	(105.26, 34.47) --
+	(105.71, 34.52) --
+	(106.16, 34.45) --
+	(106.61, 34.44) --
+	(107.06, 34.50) --
+	(107.51, 34.36) --
+	(107.95, 34.58) --
+	(108.40, 34.15) --
+	(108.85, 34.55) --
+	(109.30, 34.29) --
+	(109.75, 34.54) --
+	(110.20, 34.45) --
+	(110.65, 34.39) --
+	(111.10, 34.42) --
+	(111.55, 34.48) --
+	(112.00, 34.45) --
+	(112.44, 34.62) --
+	(112.89, 34.44) --
+	(113.34, 34.40) --
+	(113.79, 34.32) --
+	(114.24, 34.49) --
+	(114.69, 34.41) --
+	(115.14, 34.38) --
+	(115.59, 34.46) --
+	(116.04, 34.34) --
+	(116.49, 34.30) --
+	(116.93, 34.41) --
+	(117.38, 34.37) --
+	(117.83, 34.37) --
+	(118.28, 34.28) --
+	(118.73, 34.10) --
+	(119.18, 34.16) --
+	(119.63, 34.46) --
+	(120.08, 34.09) --
+	(120.53, 34.01) --
+	(120.98, 34.08) --
+	(121.42, 33.97) --
+	(121.87, 34.10) --
+	(122.32, 34.01) --
+	(122.77, 34.07) --
+	(123.22, 34.15) --
+	(123.67, 34.03) --
+	(124.12, 33.97) --
+	(124.57, 34.03) --
+	(125.02, 33.89) --
+	(125.46, 33.77) --
+	(125.91, 33.92) --
+	(126.36, 34.05) --
+	(126.81, 34.00) --
+	(127.26, 33.88) --
+	(127.71, 33.67) --
+	(128.16, 33.79) --
+	(128.61, 33.88) --
+	(129.06, 33.77) --
+	(129.51, 33.69) --
+	(129.95, 33.77) --
+	(130.40, 33.63) --
+	(130.85, 33.87) --
+	(131.30, 33.61) --
+	(131.75, 33.64) --
+	(132.20, 33.91) --
+	(132.65, 33.72) --
+	(133.10, 33.63) --
+	(133.55, 33.73) --
+	(134.00, 33.66) --
+	(134.44, 33.78) --
+	(134.89, 33.72) --
+	(135.34, 33.73) --
+	(135.79, 33.84) --
+	(136.24, 33.61) --
+	(136.69, 34.11) --
+	(137.14, 33.76) --
+	(137.59, 33.57) --
+	(138.04, 33.68) --
+	(138.49, 33.63) --
+	(138.93, 33.68) --
+	(139.38, 33.55) --
+	(139.83, 33.73) --
+	(140.28, 33.54) --
+	(140.73, 33.66) --
+	(141.18, 33.59) --
+	(141.63, 33.54) --
+	(142.08, 33.61) --
+	(142.53, 33.63) --
+	(142.98, 33.58) --
+	(143.42, 33.94) --
+	(143.87, 33.80) --
+	(144.32, 33.60) --
+	(144.77, 33.77) --
+	(145.22, 33.79) --
+	(145.67, 33.86) --
+	(146.12, 33.88) --
+	(146.57, 33.75) --
+	(147.02, 33.87) --
+	(147.47, 33.90) --
+	(147.91, 33.96) --
+	(148.36, 34.01) --
+	(148.81, 34.04) --
+	(149.26, 34.33) --
+	(149.71, 34.22) --
+	(150.16, 33.98) --
+	(150.61, 34.12) --
+	(151.06, 34.24) --
+	(151.51, 34.59) --
+	(151.96, 34.47) --
+	(152.40, 34.63) --
+	(152.85, 34.80) --
+	(153.30, 34.62) --
+	(153.75, 34.81) --
+	(154.20, 34.72) --
+	(154.65, 34.94) --
+	(155.10, 34.99) --
+	(155.55, 35.53);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round,line cap=round] ( 25.90, 25.90) rectangle (161.72, 93.79);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 21.06, 26.32) {0};
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 21.06, 39.95) {5};
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 21.06, 53.59) {10};
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 21.06, 67.22) {15};
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 21.06, 80.85) {20};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 23.65, 26.32) --
+	( 25.90, 26.32);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 23.65, 39.95) --
+	( 25.90, 39.95);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 23.65, 53.59) --
+	( 25.90, 53.59);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 23.65, 67.22) --
+	( 25.90, 67.22);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 23.65, 80.85) --
+	( 25.90, 80.85);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{gray}{0.20}
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 32.07, 23.65) --
+	( 32.07, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 54.52, 23.65) --
+	( 54.52, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 76.97, 23.65) --
+	( 76.97, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] ( 99.42, 23.65) --
+	( 99.42, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] (121.87, 23.65) --
+	(121.87, 25.90);
+
+\path[draw=drawColor,line width= 0.5pt,line join=round] (144.32, 23.65) --
+	(144.32, 25.90);
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 32.07, 16.27) {350};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 54.52, 16.27) {400};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 76.97, 16.27) {450};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at ( 99.42, 16.27) {500};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at (121.87, 16.27) {550};
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.81] at (144.32, 16.27) {600};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.90] at ( 93.81,  6.25) {$\lambda/\unit{\nm}$};
+\end{scope}
+\begin{scope}
+\path[clip] (  0.00,  0.00) rectangle (166.22, 98.29);
+\definecolor{drawColor}{RGB}{0,0,0}
+
+\node[text=drawColor,rotate= 90.00,anchor=base,inner sep=0pt, outer sep=0pt, scale=  0.90] at ( 10.70, 59.84) {$I/\num[retain-unity-mantissa=false]{1E6}\unit{\cps\per\micro\ampere}$};
+\end{scope}
+\end{tikzpicture}
+
+\end{document}

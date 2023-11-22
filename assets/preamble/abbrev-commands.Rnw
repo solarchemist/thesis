@@ -1,0 +1,47 @@
+% Our own abbreviations, definitions, etc. using LaTeX newcommands
+% These should not depend on other packages. If you need to define
+% commands that depend on other packages, put them in custom.Rnw instead.
+
+\newcommand{\R}{\texttt{R}}
+\newcommand{\Rpackage}[1]{\texttt{#1}}
+\newcommand{\XeTeX}{\mbox{Xe\TeX}}
+\newcommand{\XeLaTeX}{\mbox{Xe\LaTeX}}
+\newcommand{\LuaLaTeX}{\mbox{Lua\LaTeX}}
+
+% https://proofed.com/writing-tips/ibid-latin-terms-referencing/
+% note that comma or not after i.e. and e.g. is a contested matter:
+% https://tex.stackexchange.com/a/2736/10824
+% in any case, such commas would not be handled here
+% most sources I've consulted say no need to italicise Latin abbreviations
+\newcommand{\ie}{i.e.}
+\newcommand{\eg}{e.g.}
+
+\newcommand{\viz}{viz.}
+\newcommand{\namely}{\viz}
+
+\newcommand{\etc}{etc.}
+\newcommand{\etcetera}{\etc}
+
+% does not make sense to use capitalised versions of eg, viz, and etc.
+\newcommand{\cf}{c.f.}
+\newcommand{\conferatum}{\cf}
+\newcommand{\compare}{\cf}
+\newcommand{\Cf}{C.f.}
+\newcommand{\Conferatum}{\Cf}
+\newcommand{\Compare}{\Cf}
+
+% doubtful if capitalised Via is ever used.
+\newcommand{\via}{via}
+\newcommand{\Via}{Via}
+
+\newcommand{\ibid}{ibid.}
+\newcommand{\ibidem}{\ibid}
+\newcommand{\Ibid}{Ibid.}
+\newcommand{\Ibidem}{\Ibid}
+
+% https://english.stackexchange.com/questions/5392/how-should-i-abbreviate-versus
+% https://english.stackexchange.com/questions/52378/versus-versus-vs-in-writing
+% we mainly use it in units: "V vs SHE"
+% I think I prefer vs. with the dot at the end
+\newcommand{\vs}{vs.}
+\newcommand{\versus}{\vs}

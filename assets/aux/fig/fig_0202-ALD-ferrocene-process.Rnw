@@ -1,0 +1,27 @@
+\definecolor{aldferrocene}{HTML}{4e0c0d}
+\definecolor{aldoxygen}{HTML}{FA1D1D}
+\definecolor{aldhematite}{HTML}{D2132D}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[outer sep=0pt,inner sep=0pt]
+\node [text width=0.80\textwidth] (foursteps) {\includegraphics[width=\linewidth]{ALD}};
+% https://tex.stackexchange.com/questions/58510/inserting-text-inside-an-arrow-in-tikz
+\begin{scope}[text=white, font=\sffamily\footnotesize, inner sep=2pt]
+   \node [single arrow, draw=none, fill=aldferrocene, rotate=-90, above=of foursteps, yshift=-3.4cm] (ferrocene) {1. Ferrocene};
+   % note the use of yshift to shift horizontally (due to rotate=)
+   \node [single arrow, draw=black, fill=white, text=black, rotate=-90, above=of foursteps, yshift=-1.2cm] (flush2) {2. Flush  };
+   \node [single arrow, draw=none, fill=aldoxygen, rotate=-90, above=of foursteps, yshift=0.8cm] (oxygen) {3. Oxygen};
+   \node [single arrow, draw=black, fill=white, text=black, rotate=-90, above=of foursteps, yshift=2.85cm] (flush2) {4. Flush};
+\end{scope}
+\end{tikzpicture}
+\caption[Sketch of the atomic-layer deposition process]{%
+   \protect\Glsxtrshort{ALD} is a gas-phase deposition process, where each cycle produces
+   a single atomic layer of \ironox.
+   In the first step, ferrocene gas is introduced into the reaction chamber, chemisorbing
+   to terminating hydroxyls on the \ZnO\ \protect\glsxtrshort{NR} surfaces. The reaction
+   chamber is then flushed with an inert gas, and then the last reactant, \ch{O2\gas},
+   is introduced, reacting with the chemisorbed iron ions to form an atomic layer of \ironox.
+}
+\label{fig:ALD-ferrocene-process}
+\end{figure}

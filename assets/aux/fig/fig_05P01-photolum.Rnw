@@ -1,0 +1,103 @@
+<<'0501P-photolum-data-components'>>=
+mtx <- common::LoadRData2Variable(path = here::here("assets/data/P01/photolum/mtx-photolum.rda"))
+data.photolum <- data.frame(NULL)
+submtx <- mtx
+for (i in 1:dim(submtx)[1]) {
+   thisdata <- LoadRData2Variable(
+      path = here::here("assets/data/P01/photolum", paste0(submtx$sampleid[i], "-", submtx$PL.date[i], ".rda")))
+   # if the column "slits" does not exist in thisdata, create it!
+   if (!any(regexpr("slits", names(thisdata)) > 0)) {
+      thisdata$slits <- paste(
+         thisdata$exc.slit,
+         thisdata$em.slit,
+         sep = "-")
+   }
+   data.photolum <- rbind(
+      data.photolum,
+      cbind(desclabel = submtx$desclabel[i],
+            CBD.duration = as.numeric(submtx$CBD.duration[i]),
+            thisdata))
+}
+@
+
+
+<<'0501P-figref-photolum-325', eval=FALSE>>=
+ggplot(data.photolum %>%
+          filter(sampleid %in% c("0114-7B0713-001", "1218-7A-001", "1218-7B0713-001"))) +
+   geom_line(aes(wavelen, ScRc, group = sampleid, colour = desclabel)) +
+   scale_color_brewer(type = "div", palette = "Dark2") + #Set1, Dark2
+   scale_y_continuous(labels = rlang::as_function(~ 1E-6 * .)) +
+labs(
+   x = "$\\lambda/\\unit{\\nm}$",
+   y = "$I/\\num[retain-unity-mantissa=false]{1E6}\\unit{\\cps\\per\\micro\\ampere}$") +
+theme_halfwidth() +
+theme(
+   legend.position = "none",
+   axis.text.y = element_text(angle = 90, hjust = 0.5, colour = "black"))
+@
+
+
+<<'0501P-figref-photolum-350', eval=FALSE>>=
+ggplot(data.photolum %>%
+          filter(sampleid %in% c("0114-7B0713-008", "1218-7A-002", "1218-7B0713-002"))) +
+   geom_line(aes(wavelen, ScRc, group = sampleid, colour = desclabel)) +
+   scale_color_brewer(type = "div", palette = "Dark2") + #Set1, Dark2
+   scale_y_continuous(labels = rlang::as_function(~ 1E-6 * .)) +
+labs(
+   x = "$\\lambda/\\unit{\\nm}$",
+   y = "$I/\\num[retain-unity-mantissa=false]{1E6}\\unit{\\cps\\per\\micro\\ampere}$") +
+theme_halfwidth() +
+theme(
+   legend.position = "none",
+   axis.text.y = element_text(angle = 90, hjust = 0.5, colour = "black"))
+@
+
+
+<<'0501P-figref-photolum-375', eval=FALSE>>=
+ggplot(data.photolum %>%
+          filter(sampleid %in% c("0114-7B0713-011", "1218-7A-003", "1218-7B0713-003"))) +
+   geom_line(aes(wavelen, ScRc, group = sampleid, colour = desclabel)) +
+   scale_color_brewer(type = "div", palette = "Dark2") + #Set1, Dark2
+   scale_y_continuous(labels = rlang::as_function(~ 1E-6 * .)) +
+labs(
+   x = "$\\lambda/\\unit{\\nm}$",
+   y = "$I/\\num[retain-unity-mantissa=false]{1E6}\\unit{\\cps\\per\\micro\\ampere}$") +
+theme_halfwidth() +
+theme(
+   legend.position = "none",
+   axis.text.y = element_text(angle = 90, hjust = 0.5, colour = "black"))
+@
+
+
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-photolum-325', ref.label='0501P-figref-photolum-325', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{$\lambda_\text{exc}=\qty{325}{\nm}$.}
+\label{fig:P01-photolum-325}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-photolum-350', ref.label='0501P-figref-photolum-350', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{$\lambda_\text{exc}=\qty{350}{\nm}$.}
+\label{fig:P01-photolum-350}
+\end{subfigure}%
+\,%
+\begin{subfigure}[b]{0.32\textwidth}
+\centering
+<<'0501P-fig-photolum-375', ref.label='0501P-figref-photolum-375', eval=TRUE, fig.width=2.30, fig.height=1.36, out.width="1.57in">>=
+@
+\caption{$\lambda_\text{exc}=\qty{375}{\nm}$.}
+\label{fig:P01-photolum-375}
+\end{subfigure}%
+\caption[Photoluminescence spectra of ZnO/CdS nanorod arrays]{%
+   Photoluminescence spectra of \ch{ZnO}/\ch{CdS} nanorod arrays with varying
+   excitation wavelength ($\lambda_\text{exc}=\qtylist{325;350;375}{\nm}$,
+   corresponding to
+   \qtylist{\Sexpr{paste(formatC(photoec::wavelength2energy(c(325,350,375)), format="f", digits=2), collapse=";")}}{\eV}).}
+\label{fig:P01-photolum}
+\end{figure}

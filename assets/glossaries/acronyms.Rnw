@@ -1,0 +1,1044 @@
+% Defining abbreviations glossary as Rnw instead of native bib file
+% in order to allow comment lines also inside abbreviation entries
+% (which although tolerated by biber, is not supported by the syntax highlighter in VSCodium)
+
+% For abbreviations, use the entry type @abbreviation or @acronym (they appear to be equivalent)
+% Both have two required fields: `short` and `long`.
+
+% The description field should not end with punctuation (this is better left to LaTeX to manage).
+
+<<'glossary-abbreviations', echo=FALSE, cache=FALSE>>=
+gls.abbreviations <- dplyr::bind_rows(
+# tibble(
+#    BIBTEXKEY = "AFM",
+#    NAME = "AFM",
+#    DESCRIPTION = "atomic force microscopy",
+#    SEE = "",
+#    TEXT = "AFM",
+#    SHORT = "AFM",
+#    LONG = "atomic force microscopy",
+#    FIRST = "atomic force microscopy (AFM)"),
+tibble(
+   BIBTEXKEY = "ALD",
+   NAME = "ALD",
+   DESCRIPTION = paste(
+      "atomic layer deposition"
+   ),
+   SEE = "",
+   TEXT = "ALD",
+   SHORT = "ALD",
+   LONG = "atomic layer deposition",
+   FIRST = "atomic layer deposition (ALD)"),
+tibble(
+   BIBTEXKEY = "AM",
+   NAME = "AM",
+   DESCRIPTION = paste(
+      "air mass,",
+      "see \\cref{fig:airmass}"
+   ),
+   SEE = "",
+   TEXT = "AM",
+   SHORT = "AM",
+   LONG = "air mass",
+   FIRST = "air mass (AM)"),
+tibble(
+   BIBTEXKEY = "AM15G",
+   NAME = "AM1.5G",
+   # Recently updated to ASTM G173-23, but very hard to read in full-text
+   # https://www.astm.org/g0173-23.html
+   DESCRIPTION = paste(
+      "air mass 1.5 global tilt,",
+      "see \\cref{fig:airmass}"
+   ),
+   SEE = "",
+   TEXT = "AM1.5G",
+   SHORT = "AM1.5G",
+   LONG = "air mass 1.5 global",
+   FIRST = "air mass 1.5 global (AM1.5G)"),
+# tibble(
+#    BIBTEXKEY = "APCE",
+#    NAME = "APCE",
+#    DESCRIPTION = paste(
+#       "absorbed photon-to-current efficiency,",
+#       "the conversion efficiency of a photoelectrode expressed as",
+#       "$\\frac{\\mathrm{electrons~produced}}{\\mathrm{absorbed~photons}}$.",
+#       "This is usually known as the quantum yield"
+#    ),
+#    SEE = "",
+#    TEXT = "APCE",
+#    SHORT = "APCE",
+#    LONG = "absorbed photon-to-current efficiency",
+#    FIRST = "absorbed photon-to-current efficiency (APCE)"),
+tibble(
+   BIBTEXKEY = "AOP",
+   NAME = "AOP",
+   DESCRIPTION = paste(
+      "advanced oxidation processes"
+   ),
+   SEE = "",
+   TEXT = "AOP",
+   SHORT = "AOP",
+   LONG = "advanced oxidation processes",
+   FIRST = "advanced oxidation processes (AOP)"),
+# tibble(
+#    BIBTEXKEY = "ATR",
+#    NAME = "ATR",
+#    DESCRIPTION = paste(
+#       "attenuated total reflectance, a detection technique commonly used in conjunction with FT-IR"
+#    ),
+#    SEE = "FTIR",
+#    TEXT = "ATR",
+#    SHORT = "ATR",
+#    LONG = "attenuated total reflectance",
+#    FIRST = "attenuated total reflectance (ATR)"),
+tibble(
+   BIBTEXKEY = "AVS",
+   NAME = "AVS",
+   DESCRIPTION = paste(
+      "absolute vacuum scale, the absolute electrochemical reference scale.",
+      "Related to the \\glsxtrshort{SHE} scale as $\\qty{0}{\\voltSHE}=\\qty{-4.44}{\\voltAVS}$",
+      "at \\qty{298.15}{\\kelvin} in aqueous solution \\cite{Trasatti1986}"
+   ),
+   SEE = "RE",
+   TEXT = "AVS",
+   SHORT = "AVS",
+   LONG = "absolute vacuum scale",
+   FIRST = "absolute vacuum scale (AVS)"),
+tibble(
+   BIBTEXKEY = "BE",
+   NAME = "BE",
+   DESCRIPTION = paste(
+      "binding energy"
+   ),
+   SEE = "PES,binding_energy",
+   TEXT = "BE",
+   SHORT = "BE",
+   LONG = "binding energy",
+   FIRST = "binding energy (BE)"),
+tibble(
+   BIBTEXKEY = "CB",
+   NAME = "CB",
+   DESCRIPTION = "conduction band",
+   SEE = "",
+   TEXT = "CB",
+   SHORT = "CB",
+   LONG = "conduction band",
+   FIRST = "conduction band (CB)"),
+tibble(
+   BIBTEXKEY = "CBD",
+   NAME = "CBD",
+   DESCRIPTION = "chemical bath deposition",
+   SEE = "",
+   TEXT = "CBD",
+   SHORT = "CBD",
+   LONG = "chemical bath deposition",
+   FIRST = "chemical bath deposition (CBD)"),
+tibble(
+   BIBTEXKEY = "CBE",
+   NAME = "CBE",
+   DESCRIPTION = "conduction band edge",
+   SEE = "CB",
+   TEXT = "CBE",
+   SHORT = "CBE",
+   LONG = "conduction band edge",
+   FIRST = "conduction band edge (CBE)"),
+# tibble(
+#    BIBTEXKEY = "CCD",
+#    NAME = "CCD",
+#    DESCRIPTION = paste(
+#       "charge-coupled detector"
+#       # "a massively important semiconductor device and a true enabler of modern science"
+#    ),
+#    SEE = "",
+#    TEXT = "CCD",
+#    SHORT = "CCD",
+#    LONG = "charge-coupled detector",
+#    FIRST = "charge-coupled detector (CCD)"),
+# https://hackaday.com/2021/10/07/creating-methane-from-captured-carbon-dioxide-and-the-future-of-carbon-capture/
+# tibble(
+#    BIBTEXKEY = "CCS",
+#    NAME = "CCS",
+#    DESCRIPTION = "carbon capture and sequestration",
+#    SEE = "",
+#    TEXT = "CCS",
+#    SHORT = "CCS",
+#    LONG = "carbon capture and sequestration",
+#    FIRST = "carbon capture and sequestration (CCS)"),
+# tibble(
+#    BIBTEXKEY = "CCU",
+#    NAME = "CCU",
+#    DESCRIPTION = "carbon capture and utilisation",
+#    SEE = "",
+#    TEXT = "CCU",
+#    SHORT = "CCU",
+#    LONG = "carbon capture and utilisation",
+#    FIRST = "carbon capture and utilisation (CCU)"),
+tibble(
+   BIBTEXKEY = "CE",
+   NAME = "CE",
+   DESCRIPTION = "counter electrode",
+   SEE = "RE,WE",
+   TEXT = "CE",
+   SHORT = "CE",
+   LONG = "counter electrode",
+   FIRST = "counter electrode (CE)"),
+tibble(
+   BIBTEXKEY = "CFL",
+   NAME = "CFL",
+   DESCRIPTION = "compact fluorescent light",
+   SEE = "",
+   TEXT = "CFL",
+   SHORT = "CFL",
+   LONG = "compact fluorescent light",
+   FIRST = "compact fluorescent light (CFL)"),
+# tibble(
+#    BIBTEXKEY = "CPD",
+#    NAME = "CPD",
+#    DESCRIPTION = paste(
+#       "contact potential difference\\ldots",
+#       "See \\cref{box:contact-potential-difference}"
+#    ),
+#    SEE = "[also see]{KP}",
+#    TEXT = "CPD",
+#    SHORT = "CPD",
+#    LONG = "contact potential difference",
+#    FIRST = "contact potential difference (CPD)"),
+# tibble(
+#    BIBTEXKEY = "CRI",
+#    NAME = "CRI",
+#    DESCRIPTION = "colour rendering index",
+#    SEE = "",
+#    TEXT = "CRI",
+#    SHORT = "CRI",
+#    LONG = "colour rendering index",
+#    FIRST = "colour rendering index (CRI)"),
+# https://atb.nrel.gov/electricity/2021/concentrating_solar_power
+# https://en.wikipedia.org/wiki/Concentrated_solar_power
+# tibble(
+#    BIBTEXKEY = "CSP",
+#    NAME = "CSP",
+#    DESCRIPTION = "concentrating solar power\\ldots",
+#    SEE = "",
+#    TEXT = "CSP",
+#    SHORT = "CSP",
+#    LONG = "concentrating solar power",
+#    FIRST = "concentrating solar power (CSP)"),
+# tibble(
+#    BIBTEXKEY = "CV",
+#    NAME = "CV",
+#    DESCRIPTION = "cyclic voltammetry",
+#    SEE = "",
+#    TEXT = "CV",
+#    SHORT = "CV",
+#    LONG = "cyclic voltammetry",
+#    FIRST = "cyclic voltammetry (CV)"),
+tibble(
+   BIBTEXKEY = "DSSC",
+   NAME = "DSSC",
+   DESCRIPTION = "dye-sensitised solar cell",
+   SEE = "",
+   TEXT = "DSSC",
+   SHORT = "DSSC",
+   LONG = "dye-sensitised solar cell",
+   FIRST = "dye-sensitised solar cell (DSSC)"),
+tibble(
+   BIBTEXKEY = "DOS",
+   NAME = "DOS",
+   DESCRIPTION = paste(
+      "density of states"
+   ),
+   SEE = "",
+   TEXT = "DOS",
+   SHORT = "DOS",
+   LONG = "density of states",
+   FIRST = "density of states (DOS)"),
+tibble(
+   BIBTEXKEY = "EBT",
+   NAME = "EBT",
+   DESCRIPTION = paste(
+      "eriochrome black T, reactant \\reactant*[switch=true]{EBT},",
+      "an azo dye with $\\glsname{molar_mass}{=}\\qty{461.38}{\\gram\\per\\mol}$",
+      "(\\cf\\ \\cref{sch:EBT-structure})"
+   ),
+   SEE = "",
+   TEXT = "EBT",
+   SHORT = "EBT",
+   LONG = "eriochrome black T",
+   FIRST = "eriochrome black T (EBT)"),
+tibble(
+   BIBTEXKEY = "ECD",
+   NAME = "ECD",
+   DESCRIPTION = "electrochemical deposition",
+   SEE = "",
+   TEXT = "ECD",
+   SHORT = "ECD",
+   LONG = "electrochemical deposition",
+   FIRST = "electrochemical deposition (ECD)"),
+tibble(
+   BIBTEXKEY = "EDS",
+   NAME = "EDS",
+   DESCRIPTION = "energy dispersive spectroscopy",
+   SEE = "",
+   TEXT = "EDS",
+   SHORT = "EDS",
+   LONG = "energy dispersive spectroscopy",
+   FIRST = "energy dispersive spectroscopy (EDS)"),
+# tibble(
+#    BIBTEXKEY = "emf",
+#    NAME = "emf",
+#    DESCRIPTION = "electromotive force",
+#    SEE = "",
+#    TEXT = "emf",
+#    SHORT = "emf",
+#    LONG = "electromotive force",
+#    FIRST = "electromotive force (emf)"),
+# https://www.esf.edu/efb/hall/
+# https://en.wikipedia.org/wiki/Charles_A._S._Hall
+# https://en.wikipedia.org/wiki/Energy_return_on_investment
+# https://energyskeptic.com/2014/charles-hall-on-eroei/
+# https://wallabag.chepec.se/share/616f24831a8776.85091293
+# looked for the patent
+# tibble(
+#    BIBTEXKEY = "EROI",
+#    NAME = "EROI",
+#    DESCRIPTION = paste(
+#       "energy returned on investment"
+#       # "commonly defined as a ratio",
+#       # "$\\frac{\\mathrm{energy~returned}}{\\mathrm{energy~required~to~get~that~energy}}$,",
+#       # "is a method of analysing the energy available in different energy resources.",
+#       # "Invented by Charles Hall in 1973 as a way of evaluating which energy resources could",
+#       # "best replace fossil fuels \\cite{Hall2017}.",
+#       # "Calculating EROI depends heavily on assumptions (energy output is easy to measure,",
+#       # "but energy input is very hard to calculate because it depends on chosen system limits and other assumptions).",
+#       # "The concept of EROI has been used to explain limits to economic growth, evolution in biology, and more.",
+#       # "In short, the higher the rate of economic growth, the more of total invested energy must be dedicated",
+#       # "to that growth, and thus less EROI is available for all other societal needs"
+#    ),
+#    SEE = "",
+#    TEXT = "EROI",
+#    SHORT = "EROI",
+#    LONG = "energy returned on investment",
+#    FIRST = "energy returned on investment (EROI)"),
+tibble(
+   BIBTEXKEY = "ESCA",
+   NAME = "ESCA",
+   DESCRIPTION = "electron spectroscopy for chemical analysis",
+   SEE = "XPS",
+   TEXT = "ESCA",
+   SHORT = "ESCA",
+   LONG = "electron spectroscopy for chemical analysis",
+   FIRST = "electron spectroscopy for chemical analysis (ESCA)"),
+# this one is a little special, note the abuse of the FIRST field
+tibble(
+   BIBTEXKEY = "excitation",
+   NAME = "exc",
+   DESCRIPTION = "excitation, \\eg, as in \\emph{wavelength of excitation}",
+   SEE = "wavelength",
+   TEXT = "exc",
+   SHORT = "exc",
+   LONG = "excitation",
+   FIRST = "exc"),
+# https://en.wikipedia.org/wiki/Focused_ion_beam
+tibble(
+   BIBTEXKEY = "FIB",
+   NAME = "FIB",
+   DESCRIPTION = paste(
+      "focused ion beam"
+   ),
+   SEE = "SEM",
+   TEXT = "FIB",
+   SHORT = "FIB",
+   LONG = "focused ion beam",
+   FIRST = "focused ion beam (FIB)"),
+tibble(
+   BIBTEXKEY = "FTO",
+   NAME = "FTO",
+   DESCRIPTION = paste(
+      "fluoride-doped tin oxide, an optically transparent and",
+      "electrically conducting oxide"
+   ),
+   SEE = "TCO",
+   TEXT = "FTO",
+   SHORT = "FTO",
+   LONG = "fluoride-doped tin oxide",
+   FIRST = "fluoride-doped tin oxide (FTO)"),
+# tibble(
+#    BIBTEXKEY = "FTIR",
+#    NAME = "FT-IR",
+#    DESCRIPTION = "Fourier-transform infrared spectroscopy",
+#    SEE = "",
+#    TEXT = "FT-IR",
+#    SHORT = "FT-IR",
+#    LONG = "Fourier-transform infrared",
+#    FIRST = "Fourier-transform infrared (FT-IR)"),
+# tibble(
+#    BIBTEXKEY = "FTIR-ATR",
+#    NAME = "FTIR-ATR",
+#    DESCRIPTION = "FTIR attenuated total reflectance spectroscopy",
+#    SEE = "",
+#    TEXT = "FTIR-ATR",
+#    SHORT = "FTIR-ATR",
+#    LONG = "Fourier-transform infrared attenuated total reflectance",
+#    FIRST = "Fourier-transform infrared attenuated total reflectance (FTIR-ATR)"),
+tibble(
+   BIBTEXKEY = "FWHM",
+   NAME = "FWHM",
+   DESCRIPTION = "full-width half maximum",
+   SEE = "",
+   TEXT = "FWHM",
+   SHORT = "FWHM",
+   LONG = "full-width half maximum",
+   FIRST = "full-width half maximum (FWHM)"),
+# https://en.wikipedia.org/wiki/Greenhouse_gas
+tibble(
+   BIBTEXKEY = "GHG",
+   NAME = "GHG",
+   DESCRIPTION = paste(
+      "greenhouse gases, gases in the atmosphere that absorb energy within",
+      "the infrared range, causing the greenhouse effect. The gases",
+      "contributing most to infrared absorption are \\ch{CO2} and \\ch{CH4}.",
+      "The former has a lifetime of around \\qty{300}{\\yrs}, whereas the latter",
+      "has a much shorter lifetime of tens of years, making \\ch{CO2} the most",
+      "potent of the greenhouse gases"
+   ),
+   SEE = "",
+   TEXT = "GHG",
+   SHORT = "GHG",
+   SHORTPLURAL = "GHG",
+   LONG = "greenhouse gas",
+   LONGPLURAL = "greenhouse gases",
+   FIRST = "greenhouse gas (GHG)",
+   FIRSTPLURAL = "greenhouse gases (GHG)"),
+# tibble(
+#    BIBTEXKEY = "HOMO",
+#    NAME = "HOMO",
+#    DESCRIPTION = "highest occupied molecular orbital",
+#    SEE = "LUMO",
+#    TEXT = "HOMO",
+#    SHORT = "HOMO",
+#    LONG = "highest occupied molecular orbital",
+#    FIRST = "highest occupied molecular orbital (HOMO)"),
+tibble(
+   BIBTEXKEY = "GI-XRD",
+   NAME = "GI-XRD",
+   DESCRIPTION = paste(
+      "grazing incidence X-ray diffractometry"
+   ),
+   SEE = "",
+   TEXT = "GI-XRD",
+   SHORT = "GI-XRD",
+   LONG = "grazing incidence X-ray diffractometry",
+   FIRST = "grazing incidence X-ray diffractometry (GI-XRD)"),
+# tibble(
+#    BIBTEXKEY = "GUI",
+#    NAME = "GUI",
+#    DESCRIPTION = paste(
+#       "graphical user interface, a point-and-click computer interface,",
+#       "often contrasted with the more reproducible command-line interface"
+#    ),
+#    SEE = "",
+#    TEXT = "GUI",
+#    SHORT = "GUI",
+#    LONG = "graphical user interface",
+#    FIRST = "graphical user interface (GUI)"),
+tibble(
+   BIBTEXKEY = "hematite",
+   NAME = "Hm",
+   DESCRIPTION = paste(
+      "hematite (\\hematite), the thermodynamically stable polymorph of",
+      "iron oxide at ambient conditions"
+   ),
+   SEE = "",
+   TEXT = "hematite",
+   SHORT = "Hm",
+   LONG = "hematite",
+   FIRST = "hematite (Hm)"),
+tibble(
+   BIBTEXKEY = "HER",
+   NAME = "HER",
+   DESCRIPTION = paste(
+      "hydrogen evolution reaction"
+   ),
+   SEE = "",
+   TEXT = "HER",
+   SHORT = "HER",
+   LONG = "hydrogen evolution reaction",
+   FIRST = "hydrogen evolution reaction (HER)"),
+# tibble(
+#    BIBTEXKEY = "ICPMS",
+#    NAME = "ICPMS",
+#    DESCRIPTION = "inductively coupled plasma mass spectrometry",
+#    SEE = "",
+#    TEXT = "ICPMS",
+#    SHORT = "ICPMS",
+#    LONG = "inductively coupled plasma mass spectrometry",
+#    FIRST = "inductively coupled plasma mass spectrometry (ICPMS)"),
+# tibble(
+#    BIBTEXKEY = "IPCE",
+#    NAME = "IPCE",
+#    DESCRIPTION = paste(
+#       "incident photon-to-current efficiency"
+#       # "the conversion efficiency of a",
+#       # "photoelectrode expressed as $\\frac{\\text{electrons~produced}}{\\text{incident~photons}}$",
+#       # "(regardless of whether the incident photons were absorbed or not)"
+#    ),
+#    SEE = "",
+#    TEXT = "IPCE",
+#    SHORT = "IPCE",
+#    LONG = "incident photon-to-current efficiency",
+#    FIRST = "incident photon-to-current efficiency (IPCE)"),
+tibble(
+   BIBTEXKEY = "IR",
+   NAME = "IR",
+   DESCRIPTION = paste(
+      "infrared, a broad band in the electromagnetic spectrum",
+      "comprising radiation above \\qty{2500}{\\nm}"
+   ),
+   SEE = "Vis,UV",
+   TEXT = "IR",
+   SHORT = "IR",
+   LONG = "infrared",
+   FIRST = "infrared (IR)"),
+# tibble(
+#    BIBTEXKEY = "ITO",
+#    NAME = "ITO",
+#    DESCRIPTION = paste(
+#       "indium tin oxide, \\ch{Sn}:\\ch{In2O3}, a transparent conducting oxide"
+#    ),
+#    SEE = "",
+#    TEXT = "ITO",
+#    SHORT = "ITO",
+#    LONG = "indium tin oxide",
+#    FIRST = "indium tin oxide (ITO)"),
+tibble(
+   BIBTEXKEY = "KE",
+   NAME = "KE",
+   DESCRIPTION = "kinetic energy",
+   SEE = "PES,kinetic_energy",
+   TEXT = "KE",
+   SHORT = "KE",
+   LONG = "kinetic energy",
+   FIRST = "kinetic energy (KE)"),
+tibble(
+   BIBTEXKEY = "LED",
+   NAME = "LED",
+   DESCRIPTION = "light-emitting diode",
+   SEE = "",
+   TEXT = "LED",
+   SHORT = "LED",
+   LONG = "light-emitting diode",
+   FIRST = "light-emitting diode (LED)"),
+# tibble(
+#    BIBTEXKEY = "LO",
+#    NAME = "LO",
+#    DESCRIPTION = paste(
+#       "longitudinal optical"
+#    ),
+#    SEE = "TO",
+#    TEXT = "LO",
+#    SHORT = "LO",
+#    LONG = "longitudinal optical",
+#    FIRST = "longitudinal optical (LO)"),
+# tibble(
+#    BIBTEXKEY = "LUMO",
+#    NAME = "LUMO",
+#    DESCRIPTION = "lowest unoccupied molecular orbital",
+#    SEE = "HOMO",
+#    TEXT = "LUMO",
+#    SHORT = "LUMO",
+#    LONG = "lowest unoccupied molecular orbital",
+#    FIRST = "lowest unoccupied molecular orbital (LUMO)"),
+tibble(
+   BIBTEXKEY = "MB",
+   NAME = "MB",
+   DESCRIPTION = paste(
+      "\\emph{methylene blue}, reactant \\reactant*[switch=true]{MB},",
+      "a cationic thiazin dye",
+      "with $\\glsname{molar_mass}{=}\\qty{319.85}{\\gram\\per\\mol}$",
+      "(\\cf\\ \\cref{sch:MB-structure})"
+   ),
+   SEE = "",
+   TEXT = "MB",
+   SHORT = "MB",
+   LONG = "methylene blue",
+   FIRST = "methylene blue (MB)"),
+# tibble(
+#    BIBTEXKEY = "MEG",
+#    NAME = "MEG",
+#    DESCRIPTION = "multiple-exciton generation effect",
+#    SEE = "",
+#    TEXT = "MEG",
+#    SHORT = "MEG",
+#    LONG = "multiple-exciton generation",
+#    FIRST = "multiple-exciton generation (MEG)"),
+tibble(
+   BIBTEXKEY = "MO",
+   NAME = "MO",
+   DESCRIPTION = paste(
+      "\\emph{methyl orange}, reactant \\reactant*[switch=true]{MO},",
+      "an azo dye",
+      "with $\\glsname{molar_mass}{=}\\qty{327.33}{\\gram\\per\\mol}$",
+      "(\\cf\\ \\cref{sch:MO-structure})"
+   ),
+   SEE = "",
+   TEXT = "MO",
+   SHORT = "MO",
+   LONG = "methyl orange",
+   FIRST = "methyl orange (MO)"),
+# tibble(
+#    BIBTEXKEY = "MOF",
+#    NAME = "MOF",
+#    DESCRIPTION = "metal organic framework",
+#    SEE = "",
+#    TEXT = "MOF",
+#    SHORT = "MOF",
+#    LONG = "metal organic framework",
+#    FIRST = "metal organic framework (MOF)"),
+# tibble(
+#    BIBTEXKEY = "MS",
+#    NAME = "MS",
+#    DESCRIPTION = "Mott-Schottky",
+#    SEE = "",
+#    TEXT = "MS",
+#    SHORT = "MS",
+#    LONG = "Mott-Schottky",
+#    FIRST = "Mott-Schottky (MS)"),
+tibble(
+   BIBTEXKEY = "NIR",
+   NAME = "NIR",
+   DESCRIPTION = paste(
+      "near infrared, the high-energy part of the \\glsxtrlong{IR} band,",
+      "immediately above the visible band in terms of wavelength.",
+      "Customarily defined to span \\qtyrange{780}{2500}{\\nm}"
+   ),
+   SEE = "Vis,IR",
+   TEXT = "NIR",
+   SHORT = "NIR",
+   LONG = "near infrared",
+   FIRST = "near infrared (NIR)"),
+tibble(
+   BIBTEXKEY = "NP",
+   NAME = "NP",
+   DESCRIPTION = "nanoparticle",
+   SEE = "",
+   TEXT = "NP",
+   SHORT = "NP",
+   LONG = "nanoparticle",
+   FIRST = "nanoparticle (NP)"),
+tibble(
+   BIBTEXKEY = "NR",
+   NAME = "NR",
+   DESCRIPTION = "nanorod",
+   SEE = "",
+   TEXT = "NR",
+   SHORT = "NR",
+   LONG = "nanorod",
+   FIRST = "nanorod (NR)"),
+# tibble(
+#    BIBTEXKEY = "OCP",
+#    NAME = "OCP",
+#    DESCRIPTION = "open circuit potential",
+#    SEE = "",
+#    TEXT = "OCP",
+#    SHORT = "OCP",
+#    LONG = "open circuit potential",
+#    FIRST = "open circuit potential (OCP)"),
+# tibble(
+#    BIBTEXKEY = "OD",
+#    NAME = "OD",
+#    DESCRIPTION = paste(
+#       "optical density, this term is considered \\emph{\\bfseries obsolete}",
+#       "\\cite{Braslavsky2007,IUPAC2012,Verhoeven1996}"
+#    ),
+#    SEE = "absorbance",
+#    TEXT = "OD",
+#    SHORT = "OD",
+#    LONG = "optical density",
+#    FIRST = "optical density (OD)"),
+tibble(
+   BIBTEXKEY = "OER",
+   NAME = "OER",
+   DESCRIPTION = paste(
+      "oxygen evolution reaction"
+   ),
+   SEE = "",
+   TEXT = "OER",
+   SHORT = "OER",
+   LONG = "oxygen evolution reaction",
+   FIRST = "oxygen evolution reaction (OER)"),
+tibble(
+   BIBTEXKEY = "PC",
+   NAME = "PC",
+   DESCRIPTION = "photocatalysis",
+   SEE = "",
+   TEXT = "PC",
+   SHORT = "PC",
+   LONG = "photocatalysis",
+   FIRST = "photocatalysis (PC)"),
+tibble(
+   BIBTEXKEY = "PDF",
+   NAME = "PDF",
+   DESCRIPTION = "powder diffraction file",
+   SEE = "PXRD,XRD",
+   TEXT = "PDF",
+   SHORT = "PDF",
+   LONG = "powder diffraction file",
+   FIRST = "powder diffraction file (PDF)"),
+tibble(
+   BIBTEXKEY = "PEC",
+   NAME = "PEC",
+   DESCRIPTION = "photoelectrochemistry",
+   SEE = "",
+   TEXT = "PEC",
+   SHORT = "PEC",
+   LONG = "photoelectrochemical",
+   FIRST = "photoelectrochemical (PEC)"),
+# tibble(
+#    BIBTEXKEY = "PEC-WS",
+#    NAME = "PEC-WS",
+#    DESCRIPTION = "photoelectrochemical water splitting",
+#    SEE = "[also see]{PEC,WS}",
+#    TEXT = "PEC-WS",
+#    SHORT = "PEC-WS",
+#    LONG = "photoelectrochemical water splitting",
+#    FIRST = "photoelectrochemical water splitting (PEC-WS)"),
+tibble(
+   BIBTEXKEY = "PES",
+   NAME = "PES",
+   DESCRIPTION = paste(
+      "photoelectron spectroscopy"
+   ),
+   SEE = "",
+   TEXT = "PES",
+   SHORT = "PES",
+   LONG = "photoelectron spectroscopy",
+   FIRST = "photoelectron spectroscopy (PES)"),
+tibble(
+   BIBTEXKEY = "PL",
+   NAME = "PL",
+   DESCRIPTION = "photoluminescence spectroscopy",
+   SEE = "",
+   TEXT = "PL",
+   SHORT = "PL",
+   LONG = "photoluminescence",
+   FIRST = "photoluminescence (PL)"),
+tibble(
+   BIBTEXKEY = "PV",
+   NAME = "PV",
+   DESCRIPTION = "photovoltaic",
+   SEE = "",
+   TEXT = "PV",
+   SHORT = "PV",
+   LONG = "photovoltaic",
+   FIRST = "photovoltaic (PV)"),
+tibble(
+   BIBTEXKEY = "PXRD",
+   NAME = "PXRD",
+   DESCRIPTION = "powder X-ray diffractometry",
+   SEE = "",
+   TEXT = "PXRD",
+   SHORT = "PXRD",
+   LONG = "powder X-ray diffractometry",
+   FIRST = "powder X-ray diffractometry (PXRD)"),
+tibble(
+   BIBTEXKEY = "PZZP",
+   NAME = "PZZP",
+   DESCRIPTION = paste(
+      "point of zero $\\zeta$ potential, the \\pH{} at which the potential drop across",
+      "the Helmholtz layer is zero"
+   ),
+   SEE = "",
+   TEXT = "PZZP",
+   SHORT = "PZZP",
+   LONG = "point of zero $\\zeta$ potential",
+   FIRST = "point of zero $\\zeta$ potential (PZZP)"),
+tibble(
+   BIBTEXKEY = "QD",
+   NAME = "QD",
+   DESCRIPTION = paste(
+      "quantum dot"
+   ),
+   SEE = "",
+   TEXT = "QD",
+   SHORT = "QD",
+   LONG = "quantum dot",
+   FIRST = "quantum dot (QD)"),
+tibble(
+   BIBTEXKEY = "RB5",
+   NAME = "RB5",
+   DESCRIPTION = paste(
+      "\\emph{reactive black 5}, reactant \\reactant*[switch=true]{RB5},",
+      "an azo dye with $\\glsname{molar_mass}{=}\\qty{991.82}{\\gram\\per\\mol}$",
+      "(\\cf\\ \\cref{sch:RB5-structure})"
+   ),
+   SEE = "",
+   TEXT = "RB5",
+   SHORT = "RB5",
+   LONG = "reactive black 5",
+   FIRST = "reactive black 5 (RB5)"),
+tibble(
+   BIBTEXKEY = "RE",
+   NAME = "RE",
+   DESCRIPTION = "reference electrode",
+   SEE = "CE,WE",
+   TEXT = "RE",
+   SHORT = "RE",
+   LONG = "reference electrode",
+   FIRST = "reference electrode (RE)"),
+tibble(
+   BIBTEXKEY = "ROS",
+   NAME = "ROS",
+   DESCRIPTION = paste(
+      "reactive oxygen species"
+   ),
+   SEE = "AOP",
+   TEXT = "ROS",
+   SHORT = "ROS",
+   LONG = "reactive oxygen species",
+   FIRST = "reactive oxygen species (ROS)"),
+tibble(
+   BIBTEXKEY = "RT",
+   NAME = "RT",
+   DESCRIPTION = "room temperature, this term is not exactly defined, but usually means \\qty{20}{\\celsius}",
+   SEE = "STP",
+   TEXT = "RT",
+   SHORT = "RT",
+   LONG = "room temperature",
+   FIRST = "room temperature (RT)"),
+tibble(
+   BIBTEXKEY = "SEM",
+   NAME = "SEM",
+   DESCRIPTION = "scanning electron microscopy",
+   SEE = "",
+   TEXT = "SEM",
+   SHORT = "SEM",
+   LONG = "scanning electron microscopy",
+   FIRST = "scanning electron microscopy (SEM)"),
+tibble(
+   BIBTEXKEY = "SHE",
+   NAME = "SHE",
+   DESCRIPTION = "standard hydrogen electrode",
+   SEE = "RE",
+   TEXT = "SHE",
+   SHORT = "SHE",
+   LONG = "standard hydrogen electrode",
+   FIRST = "standard hydrogen electrode (SHE)"),
+# tibble(
+#    BIBTEXKEY = "STH",
+#    NAME = "STH",
+#    DESCRIPTION = "solar-to-hydrogen",
+#    SEE = "",
+#    TEXT = "STH",
+#    SHORT = "STH",
+#    LONG = "solar-to-hydrogen",
+#    FIRST = "solar-to-hydrogen (STH)"),
+tibble(
+   BIBTEXKEY = "STP",
+   NAME = "STP",
+   DESCRIPTION = "standard temperature and pressure",
+   SEE = "",
+   TEXT = "STP",
+   SHORT = "STP",
+   LONG = "standard temperature and pressure",
+   FIRST = "standard temperature and pressure (STP)"),
+tibble(
+   BIBTEXKEY = "TCO",
+   NAME = "TCO",
+   DESCRIPTION = "transparent conducting oxide",
+   SEE = "",
+   TEXT = "TCO",
+   SHORT = "TCO",
+   LONG = "transparent conducting oxide",
+   FIRST = "transparent conducting oxide (TCO)"),
+tibble(
+   BIBTEXKEY = "TEM",
+   NAME = "TEM",
+   DESCRIPTION = "transmission electron microscopy",
+   SEE = "",
+   TEXT = "TEM",
+   SHORT = "TEM",
+   LONG = "transmission electron microscopy",
+   FIRST = "transmission electron microscopy (TEM)"),
+tibble(
+   BIBTEXKEY = "UV",
+   NAME = "UV",
+   DESCRIPTION = paste(
+      "ultraviolet, band in the electromagnetic spectrum immediately below the visible band",
+      "in terms of wavelength, usually demarcated at \\qty{380}{\\nm}.",
+      # https://en.wikipedia.org/wiki/Ultraviolet#Subtypes
+      # https://www.who.int/news-room/questions-and-answers/item/radiation-ultraviolet-(uv)
+      "Sometimes divided into UV-A (\\qtyrange{315}{400}{\\nm}), UV-B (\\qtyrange{280}{315}{\\nm}), and",
+      "UV-C (\\qtyrange{100}{280}{\\nm}),",
+      "but for \\gls{PEC} applications we limit the UV band to \\qtyrange{250}{380}{\\nm},",
+      "as lower wavelengths are non-existent in the terrestrial solar spectrum due to the",
+      "atmosphere acting as a very effective bandstop filter"
+   ),
+   SEE = "Vis,IR",
+   TEXT = "UV",
+   SHORT = "UV",
+   LONG = "ultraviolet",
+   FIRST = "ultraviolet (UV)"),
+tibble(
+   BIBTEXKEY = "UV-PL",
+   NAME = "UV-PL",
+   DESCRIPTION = "ultraviolet photoluminescence spectroscopy",
+   SEE = "UV,PL",
+   TEXT = "UV-PL",
+   SHORT = "UV-PL",
+   LONG = "ultraviolet photoluminescence",
+   FIRST = "ultraviolet photoluminescence (UV-PL)"),
+tibble(
+   BIBTEXKEY = "UV-Vis",
+   NAME = "UV-Vis",
+   DESCRIPTION = paste(
+      "ultraviolet and visible bands of the electromagnetic spectrum,",
+      "usually defined to span \\qtyrange{280}{780}{\\nm}"
+   ),
+   SEE = "Vis,IR",
+   TEXT = "UV-Vis",
+   SHORT = "UV-Vis",
+   LONG = "ultraviolet--visible",
+   FIRST = "ultraviolet--visible (UV-Vis)"),
+tibble(
+   BIBTEXKEY = "UV-Vis-IR",
+   NAME = "UV-Vis-IR",
+   DESCRIPTION = paste(
+      "ultraviolet, visible, and infrared bands of the electromagnetic spectrum,",
+      "usually defined to span \\qtyrange{280}{2500}{\\nm}"
+   ),
+   SEE = "UV,Vis,IR",
+   TEXT = "UV-Vis-IR",
+   SHORT = "UV-Vis-IR",
+   LONG = "ultraviolet--visible--infrared",
+   FIRST = "ultraviolet--visible--infrared (UV-Vis-IR)"),
+tibble(
+   BIBTEXKEY = "UV-Vis-NIR",
+   NAME = "UV-Vis-NIR",
+   DESCRIPTION = paste(
+      "ultraviolet, visible, and near infrared bands of the electromagnetic spectrum,",
+      "usually defined to span \\qtyrange{280}{2500}{\\nm}"
+   ),
+   SEE = "UV,Vis,NIR",
+   TEXT = "UV-Vis-NIR",
+   SHORT = "UV-Vis-NIR",
+   LONG = "ultraviolet--visible--near-infrared",
+   FIRST = "ultraviolet--visible--near-infrared (UV-Vis-NIR)"),
+tibble(
+   BIBTEXKEY = "VB",
+   NAME = "VB",
+   DESCRIPTION = "valence band",
+   SEE = "",
+   TEXT = "VB",
+   SHORT = "VB",
+   LONG = "valence band",
+   FIRST = "valence band (VB)"),
+tibble(
+   BIBTEXKEY = "VBE",
+   NAME = "VBE",
+   DESCRIPTION = "valence band edge",
+   SEE = "",
+   TEXT = "VBE",
+   SHORT = "VBE",
+   LONG = "valence band edge",
+   FIRST = "valence band edge (VBE)"),
+tibble(
+   BIBTEXKEY = "Vis",
+   NAME = "Vis",
+   DESCRIPTION = paste(
+      "visible spectrum, usually defined to span \\qtyrange{380}{780}{\\nm}"
+   ),
+   SEE = "UV,IR",
+   TEXT = "Vis",
+   SHORT = "Vis",
+   LONG = "visible",
+   FIRST = "visible (Vis)"),
+tibble(
+   BIBTEXKEY = "VLM",
+   NAME = "VLM",
+   DESCRIPTION = paste(
+      "visible-light microscopy"
+   ),
+   SEE = "SEM,TEM",
+   TEXT = "VLM",
+   SHORT = "VLM",
+   LONG = "visible-light microscopy",
+   FIRST = "visible-light microscopy (VLM)"),
+tibble(
+   BIBTEXKEY = "WE",
+   NAME = "WE",
+   DESCRIPTION = "working electrode",
+   SEE = "CE,RE",
+   TEXT = "WE",
+   SHORT = "WE",
+   LONG = "working electrode",
+   FIRST = "working electrode (WE)"),
+# tibble(
+#    BIBTEXKEY = "WS",
+#    NAME = "WS",
+#    DESCRIPTION = "water splitting",
+#    SEE = "",
+#    TEXT = "WS",
+#    SHORT = "WS",
+#    LONG = "water splitting",
+#    FIRST = "water splitting (WS)"),
+tibble(
+   BIBTEXKEY = "XPS",
+   NAME = "XPS",
+   DESCRIPTION = paste(
+      "X-ray photoelectron spectroscopy, also known as \\glsxtrshort{ESCA}"
+   ),
+   SEE = "PES",
+   TEXT = "XPS",
+   SHORT = "XPS",
+   LONG = "X-ray photoelectron spectroscopy",
+   FIRST = "X-ray photoelectron spectroscopy (XPS)"),
+tibble(
+   BIBTEXKEY = "XRD",
+   NAME = "XRD",
+   DESCRIPTION = "X-ray diffractometry",
+   SEE = "",
+   TEXT = "XRD",
+   SHORT = "XRD",
+   LONG = "X-ray diffractometry",
+   FIRST = "X-ray diffractometry (XRD)"),
+tibble(
+   BIBTEXKEY = "XRF",
+   NAME = "XRF",
+   DESCRIPTION = "X-ray fluorescence",
+   SEE = "",
+   TEXT = "XRF",
+   SHORT = "XRF",
+   LONG = "X-ray fluorescence",
+   FIRST = "X-ray fluorescence (XRF)")
+)
+@
+
+
+<<'refresh-abbreviations-bib', eval=TRUE, cache=FALSE, warning=FALSE>>=
+abbreviations.bibfile <- here::here("assets/glossaries/acronyms.bib")
+
+# NOTE: The BiBTeX format specifies that field names are case-insensitive.
+# But please note that bib2gls/glossaries-extra is not always insensitive to case!
+
+# Add 1st column named CATEGORY with type ABBREVIATION
+# this silences df2bib() warning about "unknown or uninitialised column: CATEGORY"
+gls.abbreviations <- dplyr::bind_cols(CATEGORY="ABBREVIATION", gls.abbreviations)
+# add column AUTHOR, where each AUTHOR is a *list* of at least one element (can be NA)
+# this silences df2bib() warning about "Unknown or uninitialised column: `AUTHOR`"
+gls.abbreviations$AUTHOR <- list(as.numeric(NA))
+
+# generate the bib file
+# each entry now says @Abbreviation{...}
+bib2df::df2bib(x = gls.abbreviations, file = abbreviations.bibfile, append = FALSE)
+
+# Remove lines with empty See=... keys ("See={}") from the written bib-file.
+# Such empty See={} key otherwise stop bib2gls dead in its tracks.
+# We can use "grep -v" or "sed -i '/.../d'", the latter can edit in-place without fuss
+# Since we want to edit the file on disk, easier to use "system(...)" than base::grep(),
+# which is not really meant to work on files.
+# grep -v "[Ss]ee\s*=\s*{}" assets/glossaries/symbols.bib > assets/glossaries/symbols.bib
+# sed -i  "/[Ss]ee\s*=\s*{}/d" assets/glossaries/symbols.bib
+system(
+   command = paste("sed -i '/[Ss]ee\\s*=\\s*{}/d'", abbreviations.bibfile),
+   intern = FALSE)
+@

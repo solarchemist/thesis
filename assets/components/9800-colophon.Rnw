@@ -1,0 +1,58 @@
+\chapter[Colophon]{%
+   Colophon%
+   \footnote{%
+      A \emph{colophon} is traditionally a brief statement at the end of a book
+      containing information about the kind of paper, type, binding, and other
+      technical details. I think of it as \enquote{production notes}.
+   }%
+}
+\label{ch:colophon}
+
+\bgroup
+% let's not use paragraph indentation here either
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+This thesis was typeset using the \LuaLaTeX\ document processing system,
+together with substantial help from many \LaTeX\ extension packages, and
+some extra ad hoc \LaTeX\ programming effort.\\
+It was written in the form of an \texttt{Rnoweb} document, which
+means it consists of regular text files that combine within them body text
+using \LaTeX\ syntax with program code in the \R\ language.\\
+In particular, I would like to highlight the following extension packages
+that were used to great benefit in the preparation of this thesis:
+\begin{itemize}
+\item \texttt{siunitx}, a \LaTeX\ package that typesets SI units consistently \cite{Wright2023},
+\item \texttt{knitr} an \R\ package that weaves together the \LaTeX\ and \R\ code \cite{Xie2015},
+\item \texttt{ggplot2} an \R\ package for plotting using a \emph{grammar of graphics} \cite{Wickham2016},
+\item \texttt{biblatex} powered by \texttt{biber} to manage the bibliography \cite{Kime2023,Kime2022}.
+\end{itemize}
+
+
+The thesis source files are organised and tracked using \texttt{git},
+a version control program, which was very helpful while drafting, rewriting, and editing,
+and later made it easy to share the source code.
+
+To the extent possible, all ingestion, manipulation, and tabulating
+or plotting of data was done using code.
+In some cases the \emph{result} of prior data analysis from papers or manuscripts
+was instead imported as \R\ data objects.
+
+This thesis was produced by the thesis production unit at the Uppsala University library,
+based on their official \XeTeX\ template, which this author adapted to work
+with \LuaLaTeX\ (along with some other fixes).
+
+Unless otherwise stated, all plots, illustrations, and photos are my
+own original work.
+Plots or illustrations that were created from code and where that code
+was not my own original work have attributions to the original authors
+in the source code of this thesis.
+
+The full \texttt{Rnw} source code for this thesis will be made available
+as a git repository \via\ \hlink*{https://solarchemist.se/thesis}{\texttt{https://solarchemist.se/thesis}},
+and the \texttt{Rnw} and \LuaLaTeX\ thesis templates will also be shared
+for those readers that may not want to inspect the full source code
+but just want to see how certain components were created or to base their own
+thesis off of it.
+
+\egroup

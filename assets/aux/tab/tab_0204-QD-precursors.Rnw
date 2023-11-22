@@ -1,0 +1,13 @@
+\begin{table}[tbp]
+\centering
+\caption{Molar masses, amounts and concentrations of the precursors.}
+\label{tab:0204-precursors-QD}
+\small
+\begin{tabular}{l@{\;}lS[table-format=3.2]S[table-format=1.1]S[table-format=2.0]S[table-format=1.4]S[table-format=1.2]}\toprule
+& & {$M/\unit{\g\per\mol}$} & {$n/\unit{\milli\mol}$} & {$V/\unit{\milli\litre}$} & {$m/\unit{\g}$} & {$C/\unit{\mol\per\litre}$} \\%
+\midrule
+\reactant*[switch=true]{zincacetatedihydrate} & \reactant*{zincacetatedihydrate} & 219.50 & 5.0 & 50 & 1.0975 & 0.10 \\
+\reactant*[switch=true]{lithiumhydroxidehydrate} & \reactant*{lithiumhydroxidehydrate} & 41.96  & 7.0 & 50 & 0.2937 & 0.14 \\
+\bottomrule
+\end{tabular}
+\end{table}

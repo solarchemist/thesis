@@ -1,0 +1,33 @@
+\begin{SCfigure}[][tbp]
+\centering
+\begin{tikzpicture}[font=\footnotesize]
+\node[anchor=south west, inner sep=0] (image) at (0,0)
+   {\includegraphics[width=0.40\textwidth]{synthesis/ZnO-QDs/ZnO-QD-synthesis-setup-bw-background-cropped}};
+   % for this photo I have used both selective colourisation (I created an overlaying BW layer and selectively
+   % decolourised it, giving the effect where the colourised objects appear to pop against the grayscale
+   % background.
+   % Because the fume hood lighting is very yellow, I have also adjusted hue-saturation
+   % (decreasing yellow saturation and increasing lightness).
+% create coordinate system relative to image size
+\begin{scope}[x={(image.south east)},y={(image.north west)}, inner sep=1pt, thick]
+   % \draw[help lines, xstep=0.1, ystep=0.1] (0,0) grid (1, 1);
+   % identify coordinates of components
+   \node (zincacetate) at (0.42,0.07) [rectangle] {};
+   \node (lithiumhydrox) at (0.79,0.08) [rectangle] {};
+   % labels
+   % https://tex.stackexchange.com/questions/42401/transparent-node-with-opaque-text
+   \node[fill=white,opacity=0.5,text opacity=1,outer sep=5pt,scale=1.8] at (zincacetate) {\reactant*[switch=true]{zincacetatedihydrate}};
+   \node[fill=white,opacity=0.5,text opacity=1,outer sep=5pt,scale=1.8] at (lithiumhydrox) {\reactant*[switch=true]{lithiumhydroxidehydrate}};
+\end{scope}
+\end{tikzpicture}
+\caption[ZnO QD synthesis setup]{%
+   Our setup for the synthesis of \ch{ZnO} \protect\glsplural{QD}, allowing
+   the simultaneous synthesis of the two precursor solutions.
+   On the left, boiling \reactant[solvent=\EtOH,concentration=0.10]{zincacetatedihydrate}
+   under open atmosphere with water-cooled refluxer, and on the right
+   \reactant[solvent=\EtOH,concentration=0.14]{lithiumhydroxidehydrate} dissolved at
+   \qty{45}{\celsius} in a sealed reactor under \ch{N2\gas} over-pressure.
+   The glassware and gas flow components have been artificially highlighted in the photo.
+}
+\label{fig:0204-synthesis-QD}
+\end{SCfigure}

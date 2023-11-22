@@ -1,0 +1,159 @@
+<<'0530F-bandgaps-semiconductors', echo=FALSE, cache=FALSE>>=
+this.semiconductors <-
+   semiconductors %>%
+   filter(id %in% c("ZnS", "SnO2", "NiO", "TiO2-anatase", "ZnO", "In2O3", "CdS", "Fe2O3-hematite"))
+@
+
+
+<<'0530F-bandgaps-footnotes', echo=FALSE, results="asis">>=
+comments <- unique(this.semiconductors$comment)
+if (length(comments) > 1) {
+   # Count existing comments and remove empty comments
+   k <- 0
+   tmp.comments <- character()
+   for (j in 1:length(comments)) {
+      if (comments[j] != "") {
+         k <- k + 1
+         tmp.comments[k] <- comments[j]
+      }
+   }
+   # Reset comments
+   comments <- tmp.comments
+   # Find their original positions in the semiconductors dataframe
+   unique.comment.positions <- list()
+   for (j in 1:length(comments)) {
+      unique.comment.positions[[j]] <- which(this.semiconductors$comment == comments[j])
+   }
+   ## create footnotemarks
+   footnotemark <- rep.int(NA, dim(this.semiconductors)[1])
+   for (j in 1:length(unique.comment.positions)) {
+      footnotemark[unique.comment.positions[[j]]] <- j
+      # replace footnotemark numbers with symbols
+      footnotesymbol <- c("\\ast", "\\dag", "\\ddag", "\\S", "\\P")
+      for (m in 1:max(footnotemark, na.rm = T)) {
+         footnotemark[which(footnotemark == m)] <- footnotesymbol[m]
+      }
+   }
+}
+@
+
+
+<<'0530F-tabref-bandgaps', results="asis", eval=TRUE, cache=FALSE>>=
+xtab.semiconductors <-
+   this.semiconductors %>%
+   mutate(formula = ifelse(
+      this.semiconductors$polymorph == "",
+      paste0(
+         ifelse(this.semiconductors$sctype == "", "", paste0("$", this.semiconductors$sctype, "$-")),
+         "\\ch{", this.semiconductors$formula, "}"),
+      paste0(
+         ifelse(this.semiconductors$sctype == "", "", paste0("$", this.semiconductors$sctype, "$-")),
+         "\\ch{", this.semiconductors$formula, "} ", "(", this.semiconductors$polymorph, ")"))) %>%
+   mutate(pH = ifelse(
+      is.na(this.semiconductors$pH),
+      "\\multicolumn{1}{c}{\\texttt{NA}}",
+      this.semiconductors$pH)) %>%
+   mutate(pH.ZPC = ifelse(
+      is.na(this.semiconductors$pH.ZPC),
+      "\\multicolumn{1}{c}{\\texttt{NA}}",
+      this.semiconductors$pH.ZPC)) %>%
+   mutate(ref = ifelse(
+      this.semiconductors$ref == "",
+      "",
+      paste0("\\cite{", this.semiconductors$ref, "}"))) %>%
+   mutate(footnotemark = ifelse(
+      !exists("footnotemark") || is.na(footnotemark),
+      "",
+      paste0("$^{", footnotemark, "}$"))) %>%
+   select(formula, CB, VB, Eg, pH, pH.ZPC, ref, footnotemark)
+# put footnotemarks in the first column
+xtab.semiconductors <-
+   xtab.semiconductors %>%
+   mutate(formula = paste0(formula, footnotemark)) %>%
+   select(formula, CB, VB, Eg, pH, pH.ZPC, ref) %>%
+   xtable()
+caption(xtab.semiconductors) <- c(
+   paste(
+      "Absolute band edge potential at the pH of zero-point charge for each material.",
+      "All band edge potentials vs~SHE."),
+   "Semiconductor properties: a subset of the band gaps dataset")
+label(xtab.semiconductors) <- "tab:0400-bandgaps"
+names(xtab.semiconductors) <- c(
+   "{Formula}",
+   "{$E_\\text{CB}$/\\unit{\\volt}}",
+   "{$E_\\text{VB}$/\\unit{\\volt}}",
+   "{$E_\\text{g}$/\\unit{\\volt}}",
+   "{pH}",
+   "{pH$_\\text{ZPC}$}",
+   "{Ref}")
+digits(xtab.semiconductors) <- c(
+   0, #row.names
+   0, #formula
+   2, #CB
+   2, #VB
+   2, #Eg
+   2, #pH
+   2, #pH.ZPC
+   0) #Refs
+display(xtab.semiconductors) <- c(
+   "s", #row.names
+   "s", #formula
+   "f", #CB
+   "f", #VB
+   "f", #Eg
+   "f", #pH
+   "f", #pH.ZPC
+   "s") #Refs
+align(xtab.semiconductors) <- c(
+   "l",                    #row.names
+   "l",                    #formula
+   "S[table-format=+1.2]", #CB
+   "S[table-format=+1.2]", #VB
+   "S[table-format=+1.2]", #Eg
+   "S[table-format=1.2]",  #pH
+   "S[table-format=1.2]",  #pH.ZPC
+   "l")                    #Refs
+## create-latex-footnotetexts
+if (length(comments) > 1) {
+   footnotetext <- comments
+   # add numbering to each footnote
+   for (j in 1:length(comments)) {
+      footnotetext[j] <- paste0(
+         "\\multicolumn{", dim(xtab.semiconductors)[2],
+         # note, we are forced to hard-code table width here, adjust as necessary
+         "}{p{0.85\\textwidth}}{",
+         "$^{", footnotemark[which(!is.na(footnotemark))][j], "}$ ",
+         comments[j], "}",
+         ifelse(j == length(comments), "\n", "\\\\"))
+   }
+}
+print(
+   xtab.semiconductors,
+   floating = TRUE,
+   floating.environment = "table",
+   table.placement = "tbp",
+   caption.placement = "top",
+   hline.after = NULL,
+   add.to.row = list(
+      pos = list(
+         -1,
+         0,
+         nrow(xtab.semiconductors),
+         nrow(xtab.semiconductors)),
+      command = c(
+         "\\toprule\n",
+         "\\midrule\n",
+         "\\bottomrule\n",
+         ifelse(
+            length(comments) > 1,
+            paste(footnotetext, collapse = "\n"),
+            ""))),
+   include.rownames = FALSE,
+   include.colnames = TRUE,
+   type = "latex",
+   tabular.environment = "tabular",
+   # note: env small affects the table and footnotetext, but not the caption
+   latex.environments = "center",
+   sanitize.text.function = function(x){x},
+   math.style.negative = FALSE)
+@

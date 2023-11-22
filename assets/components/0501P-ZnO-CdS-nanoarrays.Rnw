@@ -1,0 +1,15 @@
+% In this chunk we establish a separate R environment
+% for the P01 manuscript code.
+% NOTE: warning=FALSE was required here since adding it to specific chunks below had no effect
+% NOTE: assigning IsolatedChild() to a variable avoids the environment memory address printed
+%\input{assets/code/P01/100-main.Rnw}
+<<'0501P-manuscript-isolated', eval=TRUE, results="asis", warning=FALSE>>=
+res <-
+   IsolatedChild(
+      input = here::here('assets/code/P01/100-main.Rnw'),
+      # specify functions in globalEnv that we want to expose inside this child env
+      theme_default = theme_default,
+      theme_halfwidth = theme_halfwidth,
+      theme_plot_in_margin = theme_plot_in_margin,
+      print_with_axes_inside = print_with_axes_inside)
+@

@@ -1,0 +1,173 @@
+<<'0407F-light-sources-spectra'>>=
+lightsources_spectra <- rbind(
+   cbind(
+      lamp = "Blue LED",
+      facet = "A",
+      # label.* are used as anchor points for text labels in the plot
+      label.x = 500,
+      label.y = 0.8,
+      OO2df(here::here("assets/data/1207-0B0006.txt"))),
+   cbind(
+      lamp = "Xenon arc",
+      facet = "B",
+      label.x = 550,
+      label.y = 1.2,
+      OO2df(here::here("assets/data/Miramar-lamp.txt"))),
+   cbind(
+      lamp = "Mercury arc",
+      facet = "D",
+      label.x = 375,
+      label.y = 1.4,
+      OO2df(here::here("assets/data/232cm-to-detector-1ms-10avg.txt"))),
+   cbind(
+      lamp = "White LED",
+      facet = "C",
+      label.x = 550,
+      label.y = 1.0,
+      sampleid = "whiteled",
+      range = "001",
+      read.csv(
+         here::here("assets/data/white-LED-spectrum-digitized.txt"),
+         sep="\t", header=F, col.names = c("wavelength", "intensity")),
+      DateTime="", IntegrationTime="", n_Averaged="", Boxcar="", CorrElectricDark="",
+      StrobeLampEnabled="", CorrDetectorNonLin="", CorrStrayLight="", n_Pixels=""),
+   cbind(
+      lamp = "Black light CFL",
+      facet = "A",
+      label.x = 400, # 350,
+      label.y = 1.6,
+      sampleid = "blacklightcfl",
+      range = "001",
+      read.csv(
+         here::here("assets/data/blacklight-CFL-spectrum-digitized.txt"),
+         sep="\t", header=F, col.names = c("wavelength", "intensity")),
+      DateTime="", IntegrationTime="", n_Averaged="", Boxcar="", CorrElectricDark="",
+      StrobeLampEnabled="", CorrDetectorNonLin="", CorrStrayLight="", n_Pixels="")
+)
+# normalise all the spectra Y axis so they all go from 0-1
+# 1. find the maxima for each sample
+# 2. divide all other intensity values in that sample by that max
+maxintensities_lightsources <-
+   lightsources_spectra %>%
+   group_by(lamp) %>%
+   summarise(maximum = max(intensity), .groups = "keep")
+lightsources_spectra$normalised <- 0
+for (i in 1:length(unique(lightsources_spectra$lamp))) {
+   lamp_indices <- which(lightsources_spectra$lamp == unique(lightsources_spectra$lamp)[i])
+   max_index <- which(maxintensities_lightsources$lamp == unique(lightsources_spectra$lamp)[i])
+   lightsources_spectra$normalised[lamp_indices] <-
+      lightsources_spectra$intensity[lamp_indices] / maxintensities_lightsources$maximum[max_index]
+   # adjust down the baselines of some of the lamps
+   if (unique(lightsources_spectra$lamp)[i] %in% c("Blue LED", "Xenon arc", "Mercury arc")) {
+      lightsources_spectra$normalised[lamp_indices] <-
+         lightsources_spectra$normalised[lamp_indices] - min(lightsources_spectra$normalised[lamp_indices])
+   }
+}
+@
+
+
+\begin{infobox}[Laboratory light sources]
+\label{box:light-sources}
+
+To maintain a stable power density on the irradiated sample it is always
+advisable to allow the light source sufficient time to warm up before starting
+the measurement, in order for any filament to reach its working temperature,
+or heat transfer across a sink to reach equilibrium, \etc.
+If the light is not too bright nor too dim, the evenness of the produced patch
+can easily be judged simply by looking at it.
+Evenness can be improved considerably by adding suitable optics in the light path.
+Light sources are commonly rated by their power draw, but this says
+nothing about the intensity of the produced light nor its spectral
+distribution.
+It is therefore important to measure both the power density of the lamp
+(which depends on the distance) and its spectral distribution.
+
+In contrast to natural sunlight, we can tailor the spectral output of a lamp
+to suit a particular application, \eg, a wide gap semiconductor might be
+put under illumination of a \gls{UV} lamp. Since light is effectively a reactant
+in a \gls{PC} reaction, this can significantly increase its throughput.
+
+\begin{center}%
+<<'0407-fig-PC-light-sources', fig.width=3.80, fig.height=1.46, out.width = '3.80in'>>=
+# https://stackoverflow.com/questions/40515581/ggplot2-geom-area-overlay-area-plots-in-front-of-each-other
+ggplot(data = lightsources_spectra) +
+   coord_cartesian(
+      ylim = c(0, 2),
+      xlim = c(300, 1000)) +
+   scale_y_continuous(expand = expansion(0, 0)) +
+   geom_area(aes(x = wavelength, y = normalised, fill = lamp, colour = lamp)) +
+   facet_wrap(~facet) +
+   # note that we have normalised y-axis, so all facets have the same x,y limitations
+   # this makes it easier to place text labels
+   geom_text(
+      data = lightsources_spectra %>%
+         # only 1 row per group (lamp) to avoid the text label being drawn multiple
+         # times (makes it look blurry)
+         group_by(lamp) %>% slice(1),
+      hjust = 0, vjust = 0, size = 2,
+      aes(
+         y = label.y, x = label.x,
+         label = lamp, colour = lamp)) +
+   labs(x = "$\\lambda/\\unit{\\nm}$",
+        y = "$I$/au") +
+   theme_halfwidth() +
+   theme(
+      legend.position = "none",
+      # hide facet strip labels
+      strip.text = element_blank(),
+      # hide y-axis text and ticks
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank())
+@
+% captionof inside BOX (as in this case) needs to use smaller font size to match the box font size
+\captionsetup{font+=footnotesize}
+% I tried font+=\smaller but throws error "Illegal parameter number in definition of \XKV@naa"
+\captionof{figure}[Representative emission spectra of common light sources]{%
+   Emission spectra of black light \gls{CFL} (digitized from manufacturer's
+   datasheet) and a custom-order blue \gls{LED} array (experimentally recorded),
+   a xenon arc solar simulator lamp (experimentally recorded),
+   typical white \gls{LED} (digitized from manufacturer's datasheet),
+   and mercury arc lamp (experimentally recorded).
+}
+\label{fig:box-pc-light-sources}
+\end{center}
+
+Philips PL-S BLB/2P \gls{CFL} black light
+with a power draw of \qty{8.6}{\watt} and producing
+\qty{1.65}{\watt} \glsdisp{UV}{UV-A}
+centered at \qty{370}{\nm} and with less than \qty{0.2}{\percent} \glsdisp{UV}{UV-B},
+according to the manufacturer's datasheet.
+This kind of lamp has the form-factor of a consumer-grade \gls{CFL}, is cheap and
+easy to source but produces very little visible light (hence the name).
+But because the light source itself is about a decimetre long
+and half as wide, the power density even very close to the lamp was very low,
+which made it unsuitable for our \gls{PC} experiments.
+
+Our blue \gls{LED} was a custom-made array with \num{49} surface-mounted blue
+\glsplural{LED} with an integrated heatsink and fan (branded \enquote{Allray}).
+Spectral output was centered at \qty{450}{\nm}
+with \glsxtrshort{FWHM} of $\qty{20}{\nm}$ and a
+power draw of \qty{50}{\watt}.
+We measured power density at the distance of the sample (\cf\ \cref{{fig:0400-pc-blue-vertical-with-condensers}})
+to \qty{34(4)}{\mW\per\square\cm}.
+
+The Oriel Instruments Newport 67005 solar simulator
+used a xenon arc filament and an \gls{AM15G} optical filter
+to produce \qty{100}{\mW\per\square\cm} at the sample
+(\hlink{https://solarchemist.se/2016/04/23/lamps-filters}{see blog for details}).
+
+The bottom-left panel shows a typical white \gls{LED} emission spectrum,
+here represented by a Perkin-Elmer ACULED™ with a colour temperature of \qty{6500}{\kelvin}.
+This spectral distribution is typical for
+\ch{GaN} (emitting at \qty{465}{\nm}) and
+\ch{Ce^{3+}:YAG} (\ch{Ce}-doped yttrium aluminium garnet) acting as a phosphor
+emitting a broader Stokes-shifted yellow light. This sort of white light suffers
+from \enquote{blue overshoot} and a \enquote{cyan gap},
+which new materials based on perovskite nanostructures aim to overcome \cite{Peng2023}.
+
+The high-pressure mercury arc filament can sustain very high intensities
+(commercially known as a \enquote{tanning lamp}). Here showing the emission of a
+Philips HPA 400S high-pressure mercury lamp (\qty{400}{\watt}).
+Apart from broad \gls{Vis} emission it also outputs lots of \glsdisp{UV}{UV-A}
+and heat.
+\end{infobox}

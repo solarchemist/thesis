@@ -1,0 +1,36 @@
+% I have purposefully made the individual panels smaller to avoid
+% this figure being too overbearing visually
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[b]{0.25\linewidth}
+   \centering
+   \includegraphics[width=\textwidth]{synthesis/electrodeposition/0310114755-cropped.jpg}
+   \caption{}
+   \label{fig:0301-ED-Autolab02-a}
+\end{subfigure}%
+\hspace{7pt}%
+\begin{subfigure}[b]{0.25\linewidth}
+   \centering
+   \includegraphics[width=\textwidth]{synthesis/electrodeposition/autolab-cell-electrodes-distance_0508130452-cropped.jpg}
+   \caption{}
+   \label{fig:0301-ED-electrodes-distance}
+\end{subfigure}%
+\hspace{7pt}%
+\begin{subfigure}[b]{0.25\linewidth}
+   \centering
+   \includegraphics[width=\textwidth]{synthesis/electrodeposition/0311110433-cropped.jpg}
+   \caption{}
+   \label{fig:0301-ED-electrode-insulated}
+\end{subfigure}%
+\caption%
+[Secondary electrodeposition cell]{%
+   Secondary electrodeposition setup.
+   (\subref{fig:0301-ED-Autolab02-a})
+   Cell with mounted electrodes and no electrolyte solution.
+   (\subref{fig:0301-ED-electrodes-distance})
+   The \glsname{WE}--\glsname{CE} distance was about \qty{25}{\mm}.
+   (\subref{fig:0301-ED-electrode-insulated})
+   A fully insulated contact covered with red nail varnish (pre-deposition).
+}
+\label{fig:0301-ED-cell-autolab}
+\end{figure}

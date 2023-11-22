@@ -1,0 +1,81 @@
+\chapter{Acknowledgements}
+\label{ch:acknowledgements}
+
+\bgroup
+% let's not use paragraph indentation in the Acknowledgements
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+
+I am very thankful for the unwavering support from my advisors
+Tomas \orcid{0000-0003-2759-7356} and
+Jiefang \orcid{0000-0002-6326-8106};
+without your help I would never have started on this endeavour, and certainly
+not finished it.
+Thank you for freely sharing your time and experience with me, and
+for giving me space to pursue my own ideas at other times.
+I would like to thank Mats Boman for taking on the mantle of assistant advisor
+at a time when the going was rough for me: thank you for helping steady my boat.
+And to Kristina \orcid{0000-0003-4440-2952} and Torbjörn \orcid{0000-0003-2737-4670}:
+I will never forget your kindness that day at café Fågelsången.
+
+
+I could not be here without the work of my co-authors: I thank you all for your
+invaluable research contributions.
+My gratitude to all the research groups at the Ångström laboratory who gracefully
+allowed me the use of their instruments for my research.
+
+I would like to thank all current and past members of the Edvinsson group,
+including Ilknur \orcid{0000-0002-4362-6148}, Jakob \orcid{0000-0002-9812-7370},
+Rafael, Mustafa, Bitao, Robin \orcid{0000-0002-8696-0496}, Carlos, and
+Zhen \orcid{0000-0002-7892-5260}. It has been delightful.
+I would also like to thank Jesper \orcid{0000-0002-4317-2879}
+for his collegiality and for sharing his MATLAB scripts with me;
+Delphine Lebrun, for pleasant discussions and for giving me the push to start that \R\ course;
+Daniel Hedlund \orcid{0000-0003-3574-2146}, for reviewing that manuscript;
+Mario \orcid{0000-0002-0069-8707}, for always offering encouraging words or advice;
+Mikaela \orcid{0000-0003-4472-955X}, for helping me save an old dataset from bitrot;
+Jonas Högström, for showing by example that a \LaTeX\ thesis was doable;
+and Pierre Sandin, for being an excellent research student.
+%
+I suppose the expression \enquote{it takes a village to\ldots} certainly applies to raising
+a PhD---I have definitely benefitted from the guidance and inspiration from far
+too many people to thank them here by name---please know that I extend my
+earnest gratitude to you all.
+
+I offer my deepest appreciation to the research groups in structural chemistry,
+inorganic chemistry, and theoretical chemistry for fostering an academic environment
+conducive to learning and growth.
+I would like to express my gratitude to the stellar technical staff, current
+and former, at both the departments of chemistry and engineering.
+Without your support and expertise many of my experiments would
+never have been realized.
+And how could I forget to acknowledge our kind and supportive administrative staff,
+in particular I would like to thank Eva Larsson for always lending a kind ear.
+
+During this PhD I have had the pleasure to get to know many other PhD candidates
+through my stints as an elected member in the TekNat faculty doctoral council (TNDR)
+and later the university doctoral board (DN); I wish all of you the best and hope we will
+get the chance to meet again in the future.
+
+If you will allow me a moment to reminesce; I would like to thank
+Hans Adolfsson \orcid{0000-0001-5887-4630} for teaching me about chirality
+and introducing me to chemistry research when I was but a highschool student.
+I still remember your bottles of limonene.
+Thanks also to my highschool teachers in chemistry and physics,
+who as it happened both held PhDs, for encouraging me and so many of my cohort
+to pursue a path of seeking knowledge.
+
+
+Thanks to the futsal organizers at the physics department and to all the players
+over the years, it was fun while it lasted!
+My thanks to the Uppsala Linux user group and Cykelfrämjandet for organising
+worthwhile extracurricular activities, and to the indefatigable cadre of
+instructors at Campus1477.
+And where would I have been without the help of kind strangers online, whether
+on the \TeX\ and \R\ StackExchange forums or elsewhere on the web.
+
+Thank you all, and keep up the good work! Every bit matters.
+
+
+\egroup

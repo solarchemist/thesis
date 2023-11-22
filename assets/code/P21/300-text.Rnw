@@ -1,0 +1,55 @@
+\section{Long-term tracking of growth of ZnO QDs}
+\label{results:P21-tracking-growth-ZnO-QDs}
+
+Here we report an unpublished observation on the relationship between
+\ZnO\ \gls{QD} particle size and growth time for the same conditions (concentration,
+temperature, \etc) as those we employed in \cref{P3}.
+
+We spectrophotometrically observed the growth of \ZnO\ \glsplural{QD} in
+colloidal suspension and tracked their diameter \via\ the
+empirical relationship between optical band gap and particle size that
+we established previously (\cref{fig:6500-ZnO-QD-tracked}).
+Initially (from \qtyrange{0}{1193}{\minute}) spectrophotometry was performed \insitu,
+but to track the growth over a longer period of time,
+later spectra were recorded \exsitu\
+at a semi-regular frequency until approximately \qty{143000}{\minute} (\qty{100}{\days}).
+The \gls{QD} colloidal suspension was stored in a sealed glass bottle at ambient conditions
+and behaved like a sol (the suspension was stable over time) without any gel formation.
+
+
+% show the UV-Vis spectra of all band gaps
+%\input{assets/aux/fig/fig_6500-abs-wl-diameter-time.Rnw}
+<<child=here::here('assets/aux/fig/fig_6500-abs-wl-diameter-time.Rnw')>>=
+# \label{fig:6500-abs-vs-wavelength}
+# \label{fig:6500-diameter-vs-time}
+# \label{fig:6500-ZnO-QD-tracked}
+@
+
+Plotting the logarithm of time (in minutes) \vs\ the particle size (\cref{fig:6500-diameter-vs-time})
+shows that the particle diameter grows approximately linearly: for every decade
+increase in time the diameter increases by \qty{2}{\nm}.
+The deviation from linearity appears strongest initially, where growth is slower.
+
+The data allows us to relate particle diameter $d$ in nanometres, to time $t$ in minutes,
+using the following empirically derived logarithmic relationship:
+\begin{equation}
+d = \Sexpr{formatC(linfit.diameter.time$coefficients[2], digits=3)} \times
+   \log(t) - \Sexpr{formatC(abs(linfit.diameter.time$coefficients[1]), digits=2)}
+\end{equation}
+
+This gives an average growth rate of
+\qty[per-mode=symbol]{\Sexpr{formatC(10^-linfit.diameter.time$coefficients[2], digits=1)}}{\nm\per\minute},
+or
+\qty[per-mode=symbol]{\Sexpr{formatC(60e-6 * 24 * 10^-linfit.diameter.time$coefficients[2], digits=3)}}{\mm\per\day}.
+Which is very slow compared to other synthetical routes.%
+\footnote{%
+   For comparison, \ZnO\ grown by the hydrothermal method
+   grow around \qty[per-mode=symbol]{1}{\mm\per\day}
+   and by the vapour phase method around \qty[per-mode=symbol]{7}{\mm\per\day}
+   \cite{Jacobs2010,Schulz2008}.
+   \Gls{ALD}, which is considered a slow method, deposits material
+   about as fast (depending on whether the flushing steps are counted or not)
+   as a fingernail grows (about \qty{0.1}{\mm\per\day}).
+}
+Assuming the \ch{Zn}--\ch{O} inter-ionic distance is \qty{1}{\angstrom},
+this rate would correspond to just \num{10} atomic layers per hour.

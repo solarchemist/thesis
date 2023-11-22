@@ -1,0 +1,216 @@
+% chemmacros already defines \insitu
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+
+% PSA: variable names cannot contain numbers
+\NewChemParticle{\oxide}{O^{2-}}
+% defining \hydroxide as \Hyd (chemmacros built-in) caused TeX memory error. Weird...
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+
+% for some reason the number 2 in front of the adduct always gets
+% subscripted when using \NewChemParticle, but renders normally with \newcommand
+% note, macros with \ch{} inside will not work when called from inside \ch{}, which is very annoying
+% \newcommand{\ZnAc}{\ch{Zn(OAc)2 * 2 H2O}}
+% ok, new approach, let \ZnAc exclude the water, add the water yourself when needed
+\NewChemParticle\ZnAc{Zn(OAc)2}
+% to avoid confusing ourselves, lets also define ZnOAc (same formula)
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+% \hematite is used by glossary entry \gls{hematite}
+% NOTE here we are abusing a unicode character for "hyphen"
+% this was the only way to get a proper hyphen (dash) inside NewChemParticle
+% all other ways I tried rendered as math minus (or chemical bond)
+% and I tried \textnormal{-} within/without math mode, and \text{}, \textrm{}, etc.
+% NOTE! siunitx suggests another way to accomplish this, see sec. 9.4 in its manual
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+
+
+
+% elemental transitions (for XPS, primarily)
+% Use \eltr like this:
+% \eltr{C}{1s}        => C 1s
+% \eltr{Fe}{2p}       => Fe 2p
+% \eltr{Zn}{3d}^{6}   => Zn 3d<sup>6</sup>
+% \eltr{Fe}{2p}_{3/2} => Fe 2p<sub>3/2</sub>
+% could also use sfrac style, but not trivial to make that apply automatically...
+% https://tex.stackexchange.com/questions/543318/command-with-optional-argument-in-parentheses-and-subscript
+% https://tex.stackexchange.com/questions/345365/xparses-new-e-type-argument-replacement-for-k-type-argument
+% https://tex.stackexchange.com/questions/636432/usage-of-e-and-e-argument-types-in-xparse
+% e{} is a special kind of optional argument with embellishments
+\NewDocumentCommand{\eltr}{mme{_}e{^}}{%
+   % I think mkern is better than hspace, to ensure no breaks are allowed
+   % .2222em should be equivalent to 4mu
+   % https://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing
+   \ensuremath{\ch{#1}\mkern4mu#2}%
+   \IfValueT{#4}{\ensuremath{^{#4}}}%
+   \IfValueT{#3}{\ensuremath{_{#3}}}%
+}
+
+
+% when you want to refer to SI
+% prints "Supplemental Information" by default
+% use optional arg "short" to print "SI"
+\NewDocumentCommand{\supplemental}{o}{%
+   \IfNoValueTF{#1}{%
+      \textsc{Supplemental Information}%
+   }{%
+      \ifthenelse{\equal{#1}{short}}{%
+         \textsc{si}%
+      }{%
+         % if any string was given as optional arg, disregard and fall-back to default
+         \textsc{Supplemental Information}%
+      }%
+   }%
+}
+
+
+% intended for use in the Acknowledgements
+% I decided against using the externalLink icon (cf \hlink), and against
+% providing the full ORCID URL in a footnote or similar, because an ORCID ID
+% should be sufficiently recognisable these days (and the reader can be trusted
+% to know to put http://orcid.org/ in front of it)
+% This macro layouts the ORCID as a tiny two-line string with ORCID icon in printedition,
+% and as just a hyperlinked ORCID icon in webedition.
+% Found this TeX.SE answer solving the same problem:
+% https://tex.stackexchange.com/questions/445563/ieeetran-how-to-include-orcid-in-tex-pdf-with-pdflatex/445583
+\NewDocumentCommand{\orcid}{m}{%
+   \ifwebedition{%
+      \ifdraft{%
+         % no reason not to be verbose in draft mode, might decrease risk of mistakes
+         \href{http://orcid.org/#1}{\faOrcid\kern0.12em#1}%
+      }{%
+         \href{http://orcid.org/#1}{\faOrcid}%
+      }%
+   }{% if printedition
+      \faOrcid%
+      \kern0.08em%
+      % 1.0 baselineskip is too much, 0.65 neatly fits the ORCID string over 2 lines
+      % width 0.75 cm found to fit nicely with fontsize \tiny and \sffamily
+      \parbox[b][0.65\baselineskip]{0.75cm}{\nointerlineskip\linespread{0}\tiny\sffamily#1}%
+   }%
+}
+
+
+% global length registers
+% necessitated because \newlength{} is not contained by \bgroup ... \egroup scoping
+% https://tex.stackexchange.com/a/29956
+\newlength{\bgxpos}      % currently used in fig_0100 and fig_0308
+\newlength{\bgedgewidth} % currently used in fig_0100 and fig_0308
+
+% colour commands
+\newcommand{\bgcolorbackground}{white} % used in the ED cell schematic
+
+
+% margin note indicating relevant paper (from list of papers)
+% first arg (mandatory): paper, e.g., P1, P2
+% second arg (optional, default empty): a vertical offset, e.g., \baselineskip (negative for up)
+\NewDocumentCommand{\seepaper}{mo}{%
+   % had to use ifnovaluetf{}{}{} construct because passing optional arg to \marginnote{}[#2] kept causing errors
+   % when the optional arg was not set/not given in \seepaper. This approach is verbose, but works.
+   \IfNoValueTF{#2}{%
+      \marginnote{%
+         \tikz[baseline=(current bounding box.south)]%
+         % to avoid the appearance of the filled box bleeding into the body text
+         % on left-side pages (even numbers) we simply shrink the width slightly
+         % Would have been a nicer to have align= depend on even/odd pagenumber, somehow
+         \node[rectangle,rounded corners,fill=mullsvag,text=black,font=\scriptsize]{\cref{#1}};%
+      }%
+   }{%
+      % if second (optional) arg was provided, use it to set marginnote's voffset
+      \marginnote{%
+         \tikz[baseline=(current bounding box.south)]%
+         \node[rectangle,rounded corners,fill=mullsvag,text=black,font=\scriptsize]{\cref{#1}};%
+      }[#2]%
+   }%
+}
+
+
+% labels in margin pointing to more info on blog
+\newcommand{\seemore}[1]{\marginnote{%
+   \noindent\tikz[baseline=(current bounding box.south)]%
+   % to avoid the appearance of the filled box bleeding into the body text
+   % on left-side pages (even numbers) we simply shrink the width slightly
+   % What would have been a nicer solution? Have align= depend on even/odd pagenumber somehow
+   \node[text width=0.8\marginparwidth,align=left,rectangle,rounded corners,fill=blondsvag,font=\scriptsize]{#1};%
+}}
+
+
+% Make URL font size smaller
+% https://tex.stackexchange.com/questions/109740/font-size-of-url-in-footnote
+% smaller[i] reduces font size by i steps (default 1)
+% this only effects \url{}, right?
+\renewcommand*{\UrlFont}{\ttfamily\smaller[2]}
+
+
+% CC licence pictograms, perhaps nicer (more compact?) than writing CC BY-SA in text
+% the optional arg is meant for setting the font size of the pictograms
+% use like this: \CCBY, or \CCBY[\tiny]
+\NewDocumentCommand{\CCBY}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy}%
+   }%
+}
+\NewDocumentCommand{\CCBYSA}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsSa%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsSa}%
+   }%
+}
+\NewDocumentCommand{\CCBYND}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsNd%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsNd}%
+   }%
+}
+
+
+% to write 19th century, 20th century, and so on
+% also see \input{assets/stylesheet.md}
+% \newcommand{\th}{\textsuperscript{th}} % unfortunately, \th is already defined by something else
+% https://tex.stackexchange.com/a/140686
+\newcommand\centuryname{century}
+% \let\markcent\textsc
+%   \newcommand*{\century}[1]
+%   {\markcent{\uppercase\expandafter{\romannumeral #1\relax}}\textsuperscript{o} \centuryname}
+\NewDocumentCommand{\century}{m}{%
+  \stringcase{#1}[#1\textsuperscript{th} \centuryname]{%
+     {1}{#1\textsuperscript{st} \centuryname}%
+     {2}{#1\textsuperscript{nd} \centuryname}%
+     {3}{#1\textsuperscript{rd} \centuryname}%
+  }%
+}
+
+
+%\input{assets/preamble/custom/infobox.Rnw}
+<<child=here::here('assets/preamble/custom/infobox.Rnw'), label='preamble-custom-infobox', eval=TRUE>>=
+@
+
+%\input{assets/preamble/custom/beer-lambert.Rnw}
+<<child=here::here('assets/preamble/custom/beer-lambert.Rnw'), label='preamble-custom-beer-lambert', eval=TRUE>>=
+@
+
+%\input{assets/preamble/custom/hyperlinks.Rnw}
+<<child=here::here('assets/preamble/custom/hyperlinks.Rnw'), label='preamble-custom-hyperlinks', eval=TRUE>>=
+@

@@ -1,0 +1,355 @@
+% ----------------------------------------------------------------------
+% R SETUP
+% ----------------------------------------------------------------------
+<<'Rnw-LaTeX-declarations', echo=FALSE, results='hide'>>=
+# NOTE, at this point dplyr (and most other packages) not yet in namespace,
+# so don't use %>% and the like
+thesis.tikz.libraries <- system(
+   command = paste(
+      "find", here::here(),
+      # Read the \usetikzlibrary{...} declaration across multiple lines
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "sed -n -e '/^\\\\usetikzlibrary{%tikz/,/^}/ p' {} \\;"),
+   intern = TRUE) |>
+   # remove leading or trailing whitespaces
+   # https://stackoverflow.com/a/30210713/1198249
+   trimws() |>
+   # remove lines starting with a percent sign (comments)
+   stringr::str_subset("^%", negate = TRUE) |>
+   # remove trailing percent signs
+   # note, R native pipe passes the supplied object to the first non-named argument
+   # https://stackoverflow.com/a/70598429/1198249
+   # this way piping works as expected without the "object '.' not found" error
+   gsub(pattern = "%.*?$", replacement = "") |>
+   # collapse the clean LaTeX code into a single string we can use
+   paste(collapse = " ")
+thesis.chemmacros.package <- system(
+   command = paste(
+      "find", here::here(),
+      # Read the \usepackage[...]{chemmacros} declaration with options across multiple lines
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "sed -n -e '/^\\\\usepackage\\[%chemmacros/,/^\\]{chemmacros}/ p' {} \\;"),
+   intern = TRUE) |>
+   # remove leading or trailing whitespaces
+   # https://stackoverflow.com/a/30210713/1198249
+   trimws() |>
+   # remove lines starting with a percent sign (comments)
+   stringr::str_subset("^%", negate = TRUE) |>
+   # remove trailing percent signs (I sometimes add them to avoid LaTeX errors or printed whitespace)
+   gsub(pattern = "%.*?$", replacement = "") |>
+   # collapse the clean LaTeX code into a single string we can use
+   paste(collapse = " ")
+thesis.chemmacros.chemsetup <- system(
+   command = paste(
+      "find", here::here(),
+      # Read the \chemsetup{...} declaration across multiple lines
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "sed -n -e '/^\\\\chemsetup{/,/^}/ p' {} \\;"),
+   intern = TRUE) |>
+   trimws() |>
+   stringr::str_subset("^%", negate = TRUE) |>
+   gsub(pattern = "%.*?$", replacement = "") |>
+   paste(collapse = " ")
+thesis.chemmacros.chemicals <- system(
+   command = paste(
+      "find", here::here(),
+      # The regex looks for lines starting with \NewChem..., matching both
+      # \NewChemLatin and \NewChemParticle
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "grep --color '^\\\\NewChem' {} \\;"),
+   intern = TRUE)
+# Look in all *.Rnw files in the thesis tree for \DeclareSIUnit commands and collect them.
+# This makes it no longer necessary to manually add new siunitx declaration
+# to the tikzLualatexPackages option below.
+# Should work great so long as we don't pick up any unintended code.
+thesis.siunitx.declarations <- system(
+   command = paste(
+      "find", here::here(),
+      # The find command excludes this file itself to avoid crazy recursion.
+      # The regex looks for lines starting with \Decl... which should avoid commented-out lines
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "grep --color '^\\\\DeclareSIUnit' {} \\;"),
+   intern = TRUE)
+# programmatically collect \sisetup{...} (even over multiple lines) by looking for the closing brace
+# https://unix.stackexchange.com/questions/21076/how-to-show-lines-after-each-grep-match-until-other-specific-match
+thesis.siunitx.setup <- system(
+   command = paste(
+      "find", here::here(),
+      # Read the \sisetup{} declaration even if spread across multiple lines
+      # This sed command returns all lines up until the closing "}" (inclusive)
+      # https://unix.stackexchange.com/a/21078/411416
+      "-not -path '*/renv/*' -not -name 'R.Rnw' -type f -name '*.Rnw' -exec",
+      "sed -n -e '/^\\\\sisetup{/,/^}/ p' {} \\;"),
+   intern = TRUE) |>
+   # remove leading or trailing whitespaces
+   # https://stackoverflow.com/a/30210713/1198249
+   trimws() |>
+   # remove lines starting with a percent sign (comments)
+   stringr::str_subset("^%", negate = TRUE) |>
+   # remove trailing percent signs (I sometimes add them to avoid LaTeX errors or printed whitespace)
+   gsub(pattern = "%.*?$", replacement = "") |>
+   # collapse the clean LaTeX code into a single string we can use
+   paste(collapse = " ")
+@
+
+
+<<'Rnw-LaTeX-custom', echo=FALSE, results='hide'>>=
+if (file.exists(here::here("assets/preamble/custom/latex-knitr.Rnw"))) {
+   thesis.custom.texmacros <-
+      readr::read_lines(file = here::here("assets/preamble/custom/latex-knitr.Rnw")) |>
+      trimws() |>
+      stringr::str_subset("^%", negate = TRUE) |>
+      gsub(pattern = "%.*?$", replacement = "") |>
+      paste(collapse = " ")
+} else {
+   thesis.custom.texmacros <- "%"
+}
+@
+
+
+<<'R-setup', echo=FALSE, results='hide'>>=
+# Set tikzDefaultEngine, necessary when we use fontspec
+# http://tex.stackexchange.com/a/333230
+options(
+   tinytex.verbose = TRUE,
+   tikzDefaultEngine = "luatex", # default is pdftex
+   # https://www.rdocumentation.org/packages/tikzDevice/versions/0.12.3.1/topics/tikzDevice-package
+   # reset document declaration explicitly because our stylefile unfortunately
+   # requires us to add luatex85 *before* documentclass line to work properly
+   "tikzDocumentDeclaration" =
+      c(# https://git.solarchemist.se/config/texmf-latex/src/branch/master/LuaUUThesis.cls#L169
+         "\\RequirePackage{luatex85}",
+         "\\documentclass{LuaUUThesis}"),
+   "tikzLualatexPackages" =
+      # since we rewrite this option, we start by adding back the defaults
+      c(# library(tikzDevice); getOption("tikzLualatexPackages") # to see the defaults
+         "\\usepackage{tikz}",
+         "\\usepackage{luatex85}",
+         "\\usepackage[active,tightpage,psfixbb]{preview}",
+         ## we have to replicate our font settings here
+         "\\usepackage{fontspec}",
+         "\\setsansfont{Linux Biolinum O}",
+         "\\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}\\linespread{1.05}",
+         "\\usepackage{mathtools}",
+         "\\usepackage{unicode-math}",
+         "\\setmathfont{TeX Gyre Pagella Math}",
+         "\\setmonofont[Scale=0.85]{DejaVu Sans Mono}",
+         "\\PreviewEnvironment{pgfpicture}",
+         "\\setlength\\PreviewBorder{0pt}",
+         ## now add our own latex packages that we would like TikZ to be aware of
+         "\\usepackage{booktabs}",
+         "\\usepackage{ctable}",
+         # with \addbibresource{...} in the main Rnw, we need biblatex here
+         "\\usepackage[backend=biber]{biblatex}",
+         "\\usepackage{xfrac}",
+         thesis.tikz.libraries,
+         thesis.chemmacros.package,
+         thesis.chemmacros.chemsetup,
+         thesis.chemmacros.chemicals,
+         "\\usepackage{chemfig}",
+         "\\setchemfig{atom sep=2em}",
+         "\\definesubmol\\nobond{-[,1.2,,,draw=none]}",
+         "\\renewcommand*\\printatom[1]{\\ensuremath{\\mathsf{#1}}}",
+         # allow us to use siunitx macros in R (and ggplots)
+         "\\usepackage{siunitx}",
+         thesis.siunitx.setup,
+         thesis.siunitx.declarations,
+         # xparse because thesis.custom.texmacros uses \NewDocumentCommand{},
+         # which also depends on xifthen
+         "\\usepackage{xifthen}",
+         "\\usepackage{xparse}",
+         thesis.custom.texmacros),
+   # https://stackoverflow.com/questions/11239428/how-to-change-warning-setting
+   # https://stackoverflow.com/questions/27280911/locating-source-of-knitr-data-table-warning-message-in-original-code
+   # warn   = 2, # turn all warnings into errors
+   digits   = 7,
+   # tested to fit width together with size=scriptsize
+   width    = 94,
+   continue = "  ",
+   prompt   = "> ",
+   # brought on by my desire to reuse zotero-sql-db chunk for wordclouds
+   # https://github.com/yihui/knitr/issues/957
+   # https://bookdown.org/yihui/rmarkdown-cookbook/duplicate-label.html
+   knitr.duplicate.label = "allow",
+   stringsAsFactors = FALSE)
+@
+
+
+<<'R-isolated-child-setup', echo=FALSE, results="hide">>=
+# https://yihui.org/knitr/options/#package_options
+# https://stackoverflow.com/questions/34498734/how-do-you-hide-and-pass-variables-in-knitr-child-documents
+# https://stackoverflow.com/questions/32257970/knitr-inherits-variables-from-a-users-environment-even-with-envir-new-env/32259700#32259700
+# https://stackoverflow.com/questions/24009622/how-to-use-the-envir-argument-in-knit-child
+# NOTE! The path of the child document is determined relative to the parent document.
+IsolatedChild <- function(input, ...) {
+   # by specifiying the parent environment to something other
+   # than `parent.frame()`, we avoid inheriting everything from
+   # the global environment into the child's env.
+   # But we still want to load all packages into the child,
+   # and that can be accomplished by `as.environment(2)`
+   evaluationEnv <- list2env(x = list(...), parent = as.environment(2))
+   cat(knitr::asis_output(knitr::knit_child(
+      input = input,
+      envir = evaluationEnv,
+      quiet = TRUE)))
+   return(evaluationEnv)
+}
+@
+% ----------------------------------------------------------------------
+
+
+
+% ----------------------------------------------------------------------
+% R LOAD PACKAGES
+% ----------------------------------------------------------------------
+<<'load-RENV-packages', echo=FALSE, results='hide', message=FALSE>>=
+### THIS PROJECT/DOCUMENT USES RENV
+# need to be explicitly loaded only because this project uses RENV
+# If not loaded, renv does not include these pkgs in its lockfile,
+# and knitr compilation fails on the first plot
+library(tikzDevice)
+library(tinytex)
+# markdown is required for rich-text rendering in our exciton radius
+# probability distribution plot, which for some reason is not otherwise
+# picked up by renv
+library(markdown)
+# languageserver, just to allow easier working with R in VSCodium
+# https://renkun.me/2019/12/11/writing-r-in-vscode-a-fresh-start/
+# although languageserver and vscode-R do not support Rnw, unfortunately
+# https://github.com/Ikuyadeu/vscode-R/issues/213
+library(languageserver)
+@
+
+
+<<'load-R-packages', echo=FALSE, results='hide', message=FALSE>>=
+library(conflicted)
+# note that path to Python venv is set in ./.Renviron (see notes in ./assets/README.md)
+library(reticulate)
+library(cowplot)
+library(knitr)
+library(ggplot2)
+library(ggrepel)
+library(ggExtra)     # ggMarginal()
+library(munsell)     # mnsl() colour gradients
+library(geomtextpath)
+library(wordcloud2)
+library(grid)        # viewport()
+library(gridExtra)   # grid.arrange()
+library(directlabels)
+# https://cran.r-project.org/web/packages/ggspectra/vignettes/userguide1-grammar.html
+# https://cran.r-project.org/web/packages/ggspectra/vignettes/userguide2-autoplot-methods.html
+# https://cran.r-project.org/web/packages/ggspectra/vignettes/userguide3-data-manip.html
+library(ggspectra)
+library(magrittr)
+library(tibble)      # primarily for the sake of add_column()
+library(readr)       # read_csv() and read_table()
+library(dplyr)
+library(tidyr)
+library(DBI)         # reading Zotero SQLite database
+library(RSQLite)     # reading Zotero SQLite database
+library(htmlwidgets) # save wordcloud to HTML file
+library(webshot2)    # convert wordcloud to PDF
+library(xml2)        # to read citation keys from thesis.bcf file
+library(stringr)     # str_replace(), str_extract()
+library(xtable)
+library(errors)
+library(units)
+library(constants)
+library(quantities)
+library(bib2df)
+library(here)
+library(git2r); repo <- git2r::repository(path = here::here())
+library(common)
+library(chi760c)
+library(kptech)
+library(oceanoptics)
+library(photoec)
+library(bandgaps)
+library(refelectrodes)
+library(O2solubilitywater)
+library(renishaw)
+library(zahner)
+library(xps)
+library(xrdtools)
+library(uvvistauc)
+library(periodicdata)
+@
+
+
+<<'settle-R-conflicts', echo=FALSE, results='hide', message=FALSE>>=
+# To figure out namespace conflicts, use conflicted::conflict_scout()
+# Up until this point, be *explicit* when calling functions
+# to avoid weird and really-hard-to-debug errors
+# https://www.rdocumentation.org/packages/conflicted
+conflict_prefer("add",         "magrittr")     # * `add`        : git2r, magrittr
+conflict_prefer("combine",     "dplyr")        # * `combine`    : dplyr, gridExtra
+conflict_prefer("cv2df",       "chi760c")      # * `cv2df`      : zahner, chi760c
+conflict_prefer("extract",     "tidyr")        # * `extract`    : tidyr, magrittr
+conflict_prefer("fetch",       "DBI")          # * `fetch`      : git2r, DBI
+conflict_prefer("filter",      "dplyr")        # * `filter`     : dplyr, stats
+conflict_prefer("lag",         "dplyr")        # * `lag`        : dplyr, stats
+conflict_prefer("Position",    "ggplot2")      # * `Position`   : ggplot2, base
+conflict_prefer("pull",        "dplyr")        # * `pull`       : git2r, dplyr
+conflict_prefer("spread",      "tidyr")        # * `spread`     : tidyr, photobiology
+conflict_prefer("tag",         "photobiology") # * `tag`        : git2r, photobiology
+conflict_prefer("lookup",      "constants")    # * `lookup`     : git2r, constants
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% KNITR CONFIG
+% ----------------------------------------------------------------------
+<<'R-global-config', echo=FALSE, results='hide', message=FALSE>>=
+knitr::opts_knit$set(
+   self.contained = FALSE,
+   child.path = '')
+knitr::opts_chunk$set(
+   dev = 'tikz',
+   # external = TRUE only takes effect when tikz is the ONLY dev option
+   external = TRUE,
+   # default cache setting should be FALSE
+   # then enabling caching on a per-chunk basis for long-running chunks
+   cache = FALSE,
+   fig.width = 4.72, # corresponds to 120 mm textwidth (s5paper)
+   # corresponding height based on golden ratio (1.618034):
+   fig.height = 2.92,
+   out.width = '4.72in', #\\textwidth
+   fig.align = 'center',
+   # note! changing size will cause *all* chunks to recompile, cached or not
+   size = 'scriptsize',
+   echo = FALSE,
+   eval = TRUE,
+   results = 'hide',
+   message = FALSE,
+   tidy = FALSE)
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% DOCUMENT STATUS: DRAFT BY DEFAULT
+% ----------------------------------------------------------------------
+<<'knitr-chunk-draft', echo=FALSE, results='hide', message=FALSE>>=
+# uncomment this line for final mode
+# doc.is.draft <- FALSE
+# we use this variable in `eval=doc.is.draft` in certain chunks,
+# for example the gitmeta chunk
+if (!exists("doc.is.draft")) {
+   doc.is.draft <- TRUE
+}
+@
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% GGPLOT2 THEMES
+% ----------------------------------------------------------------------
+% note, commented out \input{...} commands use relative paths (which would not
+% be considered a valid path by LaTeX) because we use them only to navigate around
+% our source files using the F12 shortcut afforded by VSCodium's TeX extension
+% (place the cursor on any part of the argumnent and press F12 to immediately open the file)
+% \input{ggplot-themes.Rnw}
+<<child=here::here('assets/preamble/ggplot-themes.Rnw'), label='ggplot-themes', cache=FALSE>>=
+@
+% ----------------------------------------------------------------------

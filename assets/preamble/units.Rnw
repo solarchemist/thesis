@@ -1,0 +1,87 @@
+\usepackage{siunitx}
+\sisetup{%
+   uncertainty-mode=compact,%
+   % When printing in text mode, reset-text-* = FALSE means to let siunitx override
+   % the surrounding font settings (false means to always keep the default \upshape, \mdseries, \rmfamily)
+   reset-text-family=false,% always print quantities \upright (never italicise, boldface, etc.)
+   % reset-text-series=false,%
+   % reset-text-shape=false,%
+   % the settings text-*-to-math are used to match math mode output to the surrounding text
+   text-family-to-math=false,%
+   text-series-to-math=false%
+}
+% REMEMBER: literal text should not be intermixed with unit macros in DeclareSIUnit
+% counts, intensity
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+% lines, in optical gratings
+\DeclareSIUnit{\lines}{lines}
+% electrochemical scales
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+% these declarations stopped working: "Undefined control sequence. \volt ->\ERROR"
+% after upgrading from siunitx v2 to v3
+% FIXED by moving the literal text into their own unit declarations
+% this way, we are not mixing unit macros with literal text in the same declaration
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+% time, or per time
+\DeclareSIUnit{\rpm}{rpm}
+% \day is already defined by siunitx as "d", but I prefer "day"
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+% there is a more elegant way to handle localized strings
+% note, in my limited testing siunitx did not work any better after moving
+% language options to documentclass
+% https://tex.stackexchange.com/a/507573/10824
+% but I have no time for this right now
+% https://ctan.org/pkg/translator
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+% power or energy
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+% \kWh is builtin, and is typeset without any space between kW and h
+% I would like \MWh and \TWh to behave in the same way
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+% storage
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+% currencies
+% if more complicated behaviour for currencies is desired, look into:
+% https://tex.stackexchange.com/questions/172566/how-to-print-negative-value-with-currency
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+% some non-SI units, when citing values from older literature
+\DeclareSIUnit{\foot}{ft}
+% for use in square ohms (sheet resistance)
+% https://tex.stackexchange.com/questions/71220/si-units-for-sheet-resistance-using-siunitx
+% https://en.wikipedia.org/wiki/Sheet_resistance
+% \DeclareSIUnit{\sq}{\ensuremath{\Box}} % \Box requires amssymb, which breaks in this document
+% \DeclareSIUnit{\sq}{\tikz{\draw (0,0) rectangle (1,1)}} % poorly specified tikz error
+\DeclareSIUnit{\sq}{sq}
+% astronomical unit AU
+% the siunitx-provided \astronomicalunit uses lower-case au, which I don't like
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+% parts per ...
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+% siunitx 3.3.7 (possibly earlier) has deprecated \angstrom, so we need to redefine it ourselves
+\DeclareSIUnit{\angstrom}{Å}

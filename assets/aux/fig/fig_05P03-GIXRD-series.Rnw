@@ -1,0 +1,147 @@
+<<'0503P-gixrd-series-tribble-legacy', eval=FALSE>>=
+gixrd.reflex.list <- tibble::tribble(
+   ~theta, ~reflex,
+   #            ZnO     SnO₂    ZnO     Hm      ZnO     SnO₂    SnO₂    ZnO     SnO₂    SnO₂    ZnO     SnO₂    ZnO    SnO₂
+   #            100     101     002     110     101     200     210     102     211     220     110     310     103    112
+     0.05, list(31.7947,33.9159,34.6707,        36.3115,38.008,         47.6786,51.8147,54.8159,56.7876),
+     0.15, list(31.8694,33.8138,34.7153,        36.3475,37.9448,                51.7794,54.7953,56.7755,61.9064,63.075,64.7443),
+     0.25, list(31.8091,33.8087,34.6109,35.4641,36.3323,37.9065,        47.7118,51.7321,54.7798,        61.8809),
+     1.00, list(31.8231,33.7499,34.6181,        36.3282,37.7987,42.5016,        51.632, 54.6875,56.7709,61.7358,       64.5072),
+     3.00, list(31.8041,33.694, 34.6084,        36.3141,37.7486,42.5205,47.751, 51.5798,54.6401,56.714, 61.6804,       64.5145),
+     6.00, list(31.5508,33.6788,34.6457,                37.7315,42.4564,        51.5562,54.5942,        61.6386,       64.4625)
+)
+@
+
+
+<<'0503P-gixrd-series-incident-angles'>>=
+# peak fitted select angles from the full 0.05°-15° series
+gixrd.reflexes <- tibble::tribble(
+   ~theta, ~ZnO.100, ~SnO2.101, ~ZnO.002, ~Hm.110, ~ZnO.101, ~SnO2.200, ~SnO2.210, ~ZnO.102, ~SnO2.211, ~SnO2.220, ~ZnO.110, ~SnO2.310, ~ZnO.103, ~SnO2.112,
+   0.05,    31.7947,   33.9159,  34.6707,      NA,  36.3115,    38.008,        NA,  47.6786,   51.8147,   54.8159,  56.7876,         NA,      NA,        NA,
+   0.15,    31.8694,   33.8138,  34.7153,      NA,  36.3475,   37.9448,        NA,       NA,   51.7794,   54.7953,  56.7755,    61.9064,   63.075,  64.7443,
+   0.25,    31.8091,   33.8087,  34.6109, 35.4641,  36.3323,   37.9065,        NA,  47.7118,   51.7321,   54.7798,       NA,    61.8809,       NA,       NA,
+   1.00,    31.8231,   33.7499,  34.6181,      NA,  36.3282,   37.7987,   42.5016,       NA,    51.632,   54.6875,  56.7709,    61.7358,       NA,  64.5072,
+   3.00,    31.8041,    33.694,  34.6084,      NA,  36.3141,   37.7486,   42.5205,   47.751,   51.5798,   54.6401,   56.714,    61.6804,       NA,  64.5145,
+   6.00,    31.5508,   33.6788,  34.6457,      NA,       NA,   37.7315,   42.4564,       NA,   51.5562,   54.5942,       NA,    61.6386,       NA,  64.4625
+)
+# for plotting, it's much easier to reshape this tibble to long form
+# https://tidyr.tidyverse.org/reference/pivot_longer.html
+p.rflx <- pivot_longer(
+   gixrd.reflexes,
+   values_to = "thth",
+   cols = starts_with(c("ZnO", "SnO2", "Hm"))) %>%
+   # split the created "name" column into two at the dot
+   tidyr::separate(
+      col = name,
+      sep = "\\.",
+      into = c("material", "hkl")) %>%
+   # remove hkl labels for SnO2 except for lowest angles
+   # (drop the reflexex that are large enough they don't need to be pointed out)
+   filter(!(theta > 0.20 & material == "SnO2")) %>%
+   # add y column for plotting vertical segments
+   mutate(y = 0) %>%
+   # arrange is important for manual y-values below to assign as expected
+   arrange(theta, thth)
+# read the experimental diffractograms
+gixrd.exp <- muxd2df(uxdfile = here::here("assets/data/P03/xrd/806-7B0407.uxd"))
+# prepare dataframe for plotting
+p.data <- gixrd.exp %>% filter(theta %in% gixrd.reflexes$theta)
+# if you change the stack distance factor, you will need to readjust all p.rflx y-values!
+p.stack.factor <- 175
+# manually adjusted (mark one eye-ball) y-values for hkl labels
+p.rflx$y <- c(
+   # theta = 0.05°
+   250, 270, 275, 280, 270,  235, 270, 235, 235,  rep(NA, 5),
+   # theta = 0.15°
+   430, 450, 430, 450, 460,  480, rep(410, 3), 400, 400,  rep(NA, 3),
+   # theta = 0.25°
+   rep(605, 3), 615, 585, rep(NA, 2),
+   # theta = 1.00°
+   rep(785, 2), 795, 775, rep(NA, 3),
+   # theta = 3.00°
+   rep(990, 2), 1000, rep(950, 3), NA,
+   # theta = 6.00°
+   rep(1200, 2), rep(NA, 5))
+# stack plots in a "waterfall"
+for (i in 1:length(gixrd.reflexes$theta)) {
+   p.data %<>% mutate(
+      counts = ifelse(
+         theta == gixrd.reflexes$theta[i],
+         counts + ((p.stack.factor * seq(1, length(gixrd.reflexes$theta))[i])),
+         counts))
+}
+@
+
+
+<<'0503P-figref-gixrd-exp', eval=FALSE>>=
+# keep only 30° - 70°
+p.data %<>% filter(thth >= 30 & thth <= 70)
+# note, same colours (but not same labels) used in other plots in thesis
+# 05P03-Raman-405nm-stacked and P03-tem-NR-micrograph-lineprofile
+colour.by.material <-
+   c("ZnO"  = "#00b0f6",
+     "Hm"   = "#f8766d",
+     "SnO2" = "#4c4a4a")
+ggplot(data = p.data) +
+   coord_cartesian(ylim = c(200, 1350)) +
+   geom_segment(
+      data = p.rflx, size = 1,
+      aes(
+         x = thth, xend = thth,
+         # vertical extent of the segments
+         y = y, yend = y + 60,
+         colour = material)) +
+   # hkl labels
+   geom_text(
+      data = p.rflx, size = 2.25,
+      angle = 90, vjust = 1.4, hjust = 0,
+      aes(x = thth, y = y, colour = material, label = hkl)) +
+   geom_line(
+      aes(x = thth, y = counts, group = theta)) +
+   # incident angle label, theta
+   geom_text(
+      data = p.data %>%
+         group_by(theta) %>%
+         slice_tail(n = 1),
+      # negative vjust shifts the label upwards
+      vjust = -0.40, hjust = 0.60, size = 2.75,
+      aes(
+         x = thth, y = counts,
+         label = paste0("$\\theta=\\ang{", theta, "}$"))) +
+   scale_colour_manual(
+      values = colour.by.material,
+      # ZnO and Hm don't need formatting, but SnO2 could use some subsetting to
+      # look nice in the figure legend
+      labels = c("ZnO", "Hm", "\\ch{SnO2}")) +
+   labs(
+      y = "Counts/\\unit{\\counts}",
+      x = "$2\\theta$/\\unit{\\degree}",
+      title = NULL) +
+   theme(
+      legend.position = c(0.38, 0.95),
+      legend.justification = c(0.5, 1),
+      legend.title = element_blank(),
+      legend.direction = "horizontal",
+      # smaller margins inside legend box
+      # https://github.com/tidyverse/ggplot2/blob/main/R/theme-defaults.R
+      legend.spacing = unit(4, "pt"),
+      legend.spacing.x = unit(1, "pt"),
+      legend.margin = margin(1.0, 1.0, 1.0, 1.0),
+      legend.key.size = unit(0.8, "lines"),
+      axis.ticks.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.title.y = element_blank())
+@
+
+
+\begin{figure}[tbp]
+\centering
+<<'0503P-fig-gixrd-exp', ref.label='0503P-figref-gixrd-exp', eval=TRUE>>=
+@
+\caption[GI-XRD \ch{ZnO}/\ch{Fe2O3}]{%
+   GI-XRD series on a \ch{ZnO}/\ch{Fe2O3} thin-film sample (on \gls{FTO} glass substrate).
+   We varied the incident angle $\theta$ between
+   \qtyrange[range-phrase=\ensuremath{\text{ and }}]{0.05}{6}{\degree}.
+}
+\label{fig:P03-gixrd-exp}
+\end{figure}

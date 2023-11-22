@@ -1,0 +1,70 @@
+% https://tex.stackexchange.com/questions/85318/multiple-paragraphs-break-custom-command
+% Type your abstract text here. Try to not type more than 300 words.
+\newcommand{\abstractEng}{% 280 words
+   The increasing demand for clean energy and safe water resources has driven
+   the development of efficient and sustainable technologies.
+   Among these technologies, photocatalysis using semiconducting materials has emerged
+   as a promising solution for both solar hydrogen generation and water purification.
+   Low-dimensional \zincox, including nanorods, nanoparticles, and quantum confined particles
+   (so called quantum dots), has demonstrated excellent photocatalytic properties due to its
+   large surface area, high electron mobility, and tunable band gap.
+
+   The work in this thesis aims to investigate the potential of low-dimensional \zincox\ alone and in
+   combination with \ch{CdS} and \ch{Fe2O3} for solar hydrogen generation and photocatalytic
+   water purification. The thesis includes a comprehensive analysis of the synthesis,
+   characterisation, and optimisation of low-dimensional \zincox-based photocatalyst systems
+   for solar hydrogen generation and photocatalytic water purification.
+   Additionally, the thesis will evaluate the performance of the \zincox-based photocatalysts
+   under different experimental conditions, either as photoelectrodes or as distributed particle
+   systems for water purification.
+   The work includes detailed size control of \zincox\ by itself in dimensions below
+   \qty{10}{\nm} using a hydrothermal method, to provide an increased total surface area
+   and introduce quantum confinement effects that increase the band gap to enable degradation
+   of chemical bonds in a model pollutant in a distributed system for water purification.
+   The work also includes a relatively detailed study of the phonon--phonon and
+   electron--phonon coupling as a function of dimension from \qtyrange{10}{150}{\nm}
+   for \zincox\ using non-resonant and resonant Raman spectroscopy.
+   Ultimately, the thesis aims to provide insight into the potential of
+   low-dimensional \zincox\ alone and in combination with other inorganic materials
+   for solar hydrogen generation and photocatalytic water purification
+   and pave the way for the development of efficient and sustainable technologies for
+   clean energy and safe water resources.
+}
+
+
+% Filling in this bibliographic information facilitates the processing of the thesis
+% https://unix.stackexchange.com/questions/139809/discovering-metadata-about-a-pdf
+% Insert linebreaks if necessary
+\newcommand{\authorSurname}{Ahmed}
+\newcommand{\authorFirstName}{Taha}
+\newcommand{\authorFirstInitial}{T}
+\newcommand{\authorEmail}{taha.ahmed@kemi.uu.se}
+%%%% TITLE
+\newcommand{\dissertationTitle}{Nanostructured ZnO and metal chalcogenide films for solar photocatalysis}
+%%%% SUBTITLE
+\newcommand{\dissertationSubtitle}{}
+\newcommand{\yearOfPublication}{2023}
+\newcommand{\placeOfDisputation}{Polhemsalen, Lägerhyddsvägen 1, Uppsala}
+\newcommand{\dateOfDisputation}{Monday, 18 December 2023}
+\newcommand{\timeOfDisputation}{13:15}
+\newcommand{\disputationLanguage}{English}
+\newcommand{\numberOfPages}{141}
+\newcommand{\placeOfPublication}{Uppsala}
+\renewcommand{\ISBN}{978-91-513-1961-2}
+\renewcommand{\series}{Uppsala Dissertations from the Faculty of Science and Technology}
+\newcommand{\serialNumber}{2337}
+\newcommand{\department}{Department of Chemistry--Ångström, Structural Chemistry}
+\newcommand{\departmentaddress}{Box~538, Uppsala University, SE-751\,21 Uppsala, Sweden}
+% ISSN for Digital comprehensive summaries of Uppsala dissertations from the faculty of science and technology
+\renewcommand{\ISSN}{1651--6214}
+\newcommand{\urn}{urn:nbn:se:uu:diva-515258}
+% Keywords separated by comma
+\renewcommand{\keywords}{%
+   photocatalysis, %
+   zinc oxide, %
+   quantum dots, %
+   nanorods, %
+   quantum confinement, %
+   low-dimensional, %
+   cathodic electrodeposition, %
+   Raman spectroscopy}

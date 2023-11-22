@@ -1,0 +1,93 @@
+\backmatter
+
+
+%%% ACKNOWLEDGEMENTS
+%\input{assets/components/0901-acknowledgements.Rnw}
+<<child=here::here('assets/components/0901-acknowledgements.Rnw'), label='acknowledgements'>>=
+@
+
+
+%%% BIBLIOGRAPHY
+\printbibliography[%
+   title=References,%
+   % heading=bibintoc adds a TOC entry for the bibliography
+   heading=bibintoc%
+]
+
+
+\cleardoublepage
+\begingroup
+   % redefine cleardoublepage to do nothing inside this group
+   \let\cleardoublepage\relax
+
+   %%% LIST OF FIGURES
+   \setcounter{lofdepth}{1}
+   % I do not like the default capitalisation of every word...
+   % https://tex.stackexchange.com/questions/28516/how-to-change-the-title-of-toc
+   \renewcommand{\listfigurename}{List of figures}
+   % https://tex.stackexchange.com/questions/48509/insert-list-of-figures-in-the-table-of-contents
+   \addcontentsline{toc}{chapter}{\listfigurename}
+   \listoffigures
+
+   % note that the \clearpage commands in the backmatter are important for the
+   % page numbering to be correct in the TOC
+
+   %%% LIST OF TABLES
+   \clearpage
+   \setcounter{lotdepth}{1}
+   \renewcommand{\listtablename}{List of tables}
+   \addcontentsline{toc}{chapter}{\listtablename}
+   \listoftables
+
+   % %%% LIST OF SCHEMES
+   % \clearpage
+   % \setcounter{losdepth}{2}
+   % \addcontentsline{toc}{chapter}{\listschemename}
+   % % listofschemes is provided by the scheme module of chemmacros
+   % \listofschemes
+
+   %%% LIST OF REACTIONS
+   \clearpage
+   % https://tex.stackexchange.com/questions/550196/list-of-reactions-within-chapter#comment1393385_550473
+   \renewcommand{\reactionlistname}{List of reactions}
+   \addcontentsline{toc}{chapter}{\reactionlistname}
+   % listofreactions is provided by the reactions module of chemmacros
+   \listofreactions
+
+   % %%% LIST OF BOXES
+   % \clearpage
+   % \addcontentsline{toc}{chapter}{\listinfoboxname}
+   % \listofinfobox
+\endgroup
+
+
+% List of external hyperlinks only useful in print edition
+\ifprintedition{%
+   \clearpage
+   %%% LIST OF EXTERNAL HYPERLINKS
+   %{\hypersetup{linktoc=none}\listofhlink} % this did not have any effect
+   \addcontentsline{toc}{chapter}{\listhlinkname}
+   \listofhlink
+}{}
+
+
+%%% COLOPHON
+%\input{assets/components/9800-colophon.Rnw}
+<<child=here::here('assets/components/9800-colophon.Rnw'), label='colophon'>>=
+@
+
+
+% % note: the fixme package automatically hides the listoffixmes in final mode
+% % fixme does not appear to expose this command to the user, so we're
+% % redefining the following line from /usr/local/texlive/2023/texmf-dist/tex/latex/fixme/ source:
+% % ./fixme.sty:669:\newcommand*\@fxlistfixmename{\@nameuse{\@fxlang listfixmename}}
+% \makeatletter
+% \renewcommand*\@fxlistfixmename{List of corrections (only in draft-mode)}
+% \makeatother
+% \listoffixmes
+
+
+% Metadata for Git and LaTeX, only in draft mode
+%\input{assets/components/9910-thesis-gitmeta.Rnw}
+<<child=here::here('assets/components/9910-thesis-gitmeta.Rnw'), label='document-metadata', eval=doc.is.draft, cache=FALSE>>=
+@

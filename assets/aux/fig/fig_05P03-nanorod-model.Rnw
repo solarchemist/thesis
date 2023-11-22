@@ -1,0 +1,287 @@
+<<'05P03-sem-nanorod-model-dimensions', cache=TRUE>>=
+cyl.radius <- 0.15 # um
+cyl.height <- 1 # um
+# film-dimensions
+film.thickness <- 0.061 # um
+# baseplate-dimensions
+width <- 0.575 # um
+# intersection of baseplate diagonal with circumference of outer cylinder
+bpdcoc <- 0.5 * (sqrt(2) * width - 2 * (cyl.radius + film.thickness)) * sin(as.radians(45))
+@
+
+
+\marginpar{%
+\centering
+<<'sem-model-viewport-side'>>=
+maincoord.x.rot <- 70  # 80
+maincoord.z.rot <- 150 # 150 # currently optimised for 90-180 degrees
+# next we set the two points on the cylinder, C1 and C2, so that the
+# line they form lies exactly in the plane of the page
+plotcoord.C1.azimuthal <- maincoord.z.rot
+plotcoord.C2.azimuthal <- maincoord.z.rot - 180
+@
+
+% tdplotsetmaincoords{arg}{arg}
+% first arg denotes rotation around x,
+% second arg denotes rotation around z
+% the default orientation is {0}{0}
+% default: x points right, y points up, z points out of the page
+\tdplotsetmaincoords{\Sexpr{maincoord.x.rot}}{\Sexpr{maincoord.z.rot}}
+% size is controlled by scale. we have simply chosen a value that lets the model
+% fit comfortably inside the margin
+\begin{tikzpicture}[scale=1.2,tdplot_main_coords]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% DEFINE COORDINATES AND POINTS %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% origin
+\coordinate (O) at (0,0,0);
+% top of cylinder % this coordinate not strictly necessary,
+% as it is equivalent to both C1z and C2z
+% but for simplicity, could be good to keep using
+\coordinate (H) at (0,0,\Sexpr{cyl.height});
+% film level
+\coordinate (F) at (0,0,\Sexpr{film.thickness});
+\coordinate (HF) at (0,0,\Sexpr{cyl.height+film.thickness});
+
+% draw baseplate (side 0.575 um)
+% the baseplate should have some thickness to it, perhaps
+% even showing TCO and glass interface
+
+% bottom of baseplate
+\coordinate (G1) at (\Sexpr{width/2},\Sexpr{width/2},-0.08);
+\coordinate (G2) at (\Sexpr{-width/2},\Sexpr{width/2},-0.08);
+\coordinate (G3) at (\Sexpr{-width/2},\Sexpr{-width/2},-0.08);
+\coordinate (G4) at (\Sexpr{width/2},\Sexpr{-width/2},-0.08);
+% top of baseplate
+\coordinate (S1) at (\Sexpr{width/2},\Sexpr{width/2},0);
+\coordinate (S2) at (\Sexpr{-width/2},\Sexpr{width/2},0);
+\coordinate (S3) at (\Sexpr{-width/2},\Sexpr{-width/2},0);
+\coordinate (S4) at (\Sexpr{width/2},\Sexpr{-width/2},0);
+% top of film (on baseplate)
+% SF1: corner in first quadrant,
+% SF2: corner in second quadrant
+% SF3: corner in third quadrant
+% SF4: corner in fourth quadrant
+\coordinate (SF1) at (\Sexpr{width/2},\Sexpr{width/2},\Sexpr{film.thickness});
+\coordinate (SF2) at (\Sexpr{-width/2},\Sexpr{width/2},\Sexpr{film.thickness});
+\coordinate (SF3) at (\Sexpr{-width/2},\Sexpr{-width/2},\Sexpr{film.thickness});
+\coordinate (SF4) at (\Sexpr{width/2},\Sexpr{-width/2},\Sexpr{film.thickness});
+% four points on top of film along the circle defining the outer cylinder,
+% creating four segments
+\coordinate (SFOC1) at (\Sexpr{width/2 - bpdcoc},\Sexpr{width/2 - bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC2) at (\Sexpr{-width/2 + bpdcoc},\Sexpr{width/2 - bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC3) at (\Sexpr{-width/2 + bpdcoc},\Sexpr{-width/2 + bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC4) at (\Sexpr{width/2 - bpdcoc},\Sexpr{-width/2 + bpdcoc},\Sexpr{film.thickness});
+
+% tdplotsetcoord{label}{radius}{polar angle}{azimuthal angle}
+% radius: distance from the origin
+% polar angle: xz plane, 0 points along z, 90 points along x
+% azimuthal angle: yx plane, 0 points along x, 90 points along y
+
+% define two points for cylinder C1, C2 (radius r, at height h)
+% the radius here is calculated using a = 1, b = 0.15 (pythagoras)
+\tdplotsetcoord{C1}{\Sexpr{sqrt(cyl.height+cyl.radius^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height,cyl.radius))}}{\Sexpr{plotcoord.C1.azimuthal}};
+\tdplotsetcoord{C2}{\Sexpr{sqrt(cyl.height+cyl.radius^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height,cyl.radius))}}{\Sexpr{plotcoord.C2.azimuthal}};
+
+% film outside cylinder
+% top-right corner: F1, top-left corner: F2, bottom-right corner: F3, bottom-left corner: F4
+\tdplotsetcoord{F1}{\Sexpr{sqrt((cyl.height+film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height+film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C1.azimuthal}}
+\tdplotsetcoord{F2}{\Sexpr{sqrt((cyl.height+film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height+film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C2.azimuthal}}
+\tdplotsetcoord{F3}{\Sexpr{sqrt((film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C1.azimuthal}}
+\tdplotsetcoord{F4}{\Sexpr{sqrt((film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C2.azimuthal}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%      DRAW ARCS AND LINES      %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% connect corners of bottom baseplate
+\draw[color=black,fill=white] (G4) -- (G1) -- (G2) -- (G3) -- cycle;
+% connect top and bottom baseplates
+% this part is not compatible with free rotation around z
+% (needs manual fixing dependent on viewport angle)
+\draw[color=black,fill=white] (G1) -- (S1) -- (S2) -- (G2) -- cycle;
+\draw[color=black,fill=white] (G2) -- (S2) -- (S3) -- (G3);% -- (G2);
+\draw[color=black,fill=white] (G3) -- (S3) -- (S4) -- (G4) -- cycle;
+\draw[color=black,fill=white] (G4) -- (S4) -- (S1) -- (G1) -- cycle;
+% connect corners of top baseplate
+\draw[color=black,fill=white] (S1) -- (S2) -- (S3) -- (S4) -- cycle;
+
+% connect top of substrate corners with film corners
+\draw[color=red,fill=red,opacity=0.2] (SF2) -- (S2) -- (S3) -- (SF3) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF3) -- (S3) -- (S4) -- (SF4) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF4) -- (S4) -- (S1) -- (SF1) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF1) -- (S1) -- (S2) -- (SF2) -- cycle;
+
+% film on baseplate (only outside of footprint of outer cylinder)
+\fill[red,opacity=0.2] (SF2) -- (SF3) -- (SFOC3) arc[start angle=225,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+\fill[red,opacity=0.2] (SF3) -- (SF4) -- (SFOC4) arc[start angle=315,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+
+% outer cylinder: back bottom circle
+\tdplotdrawarc[color=red,opacity=0.2]{(F)}{\Sexpr{cyl.radius+film.thickness}}{\Sexpr{plotcoord.C1.azimuthal}}{\Sexpr{360 - plotcoord.C2.azimuthal}}{}{};
+
+% inner cylinder: wall, front of top arc and front of bottom arc
+\draw[black,fill=white] (C1) -- (C1xy) arc[start angle=\Sexpr{plotcoord.C1.azimuthal},delta angle=-180,radius=\Sexpr{cyl.radius}] -- (C2) arc[start angle=\Sexpr{plotcoord.C2.azimuthal},delta angle=180,radius=\Sexpr{cyl.radius}];
+
+\fill[red,opacity=0.2] (SF1) -- (SF2) -- (SFOC2) arc[start angle=135,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+\fill[red,opacity=0.2] (SF4) -- (SF1) -- (SFOC1) arc[start angle=45,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+
+% inner cylinder: full top circle
+\tdplotdrawarc[color=black]{(H)}{\Sexpr{cyl.radius}}{0}{360}{}{};
+
+% outer cylinder: wall, front of top arc and front of bottom arc
+\draw[color=red,fill=red,opacity=0.2] (F1) -- (F3) arc[start angle=\Sexpr{plotcoord.C1.azimuthal},delta angle=-180,radius=\Sexpr{cyl.radius+film.thickness}] -- (F2) arc[start angle=\Sexpr{plotcoord.C2.azimuthal},delta angle=180,radius=\Sexpr{cyl.radius+film.thickness}];
+
+% outer cylinder: full top circle
+\tdplotdrawarc[color=red,fill=red,opacity=0.2]{(HF)}{\Sexpr{cyl.radius+film.thickness}}{0}{360}{color=gray,anchor=center}{360}; % placement of label not very nice
+
+% outer cylinder: front bottom circle
+\tdplotdrawarc[color=red,opacity=0.2]{(F)}{\Sexpr{cyl.radius+film.thickness}}{\Sexpr{plotcoord.C1.azimuthal}}{\Sexpr{plotcoord.C2.azimuthal}}{}{};
+
+% cartesian unit vectors
+% \draw[color=blue,dashed,->] (0,0,0) -- (1,0,0) node[anchor=east]{$x$};
+% \draw[color=blue,dashed,->] (0,0,0) -- (0,1,0) node[anchor=west]{$y$};
+% \draw[color=blue,dashed,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
+\end{tikzpicture}
+\scriptsize\itshape%
+\\Side view.
+}
+
+\marginpar{%
+\centering % works fine for the image, but remains to be seen how text looks
+<<'sem-model-viewport-top'>>=
+maincoord.x.rot <- 45  # 80
+maincoord.z.rot <- 120 # 150 # currently optimised for 90-180 degrees
+# next we set the two points on the cylinder, C1 and C2, so that the
+# line they form lies exactly in the plane of the page
+plotcoord.C1.azimuthal <- maincoord.z.rot
+plotcoord.C2.azimuthal <- maincoord.z.rot - 180
+@
+%%%
+% tdplotsetmaincoords{arg}{arg}
+% first arg denotes rotation around x,
+% second arg denotes rotation around z
+% the default orientation is {0}{0}
+% default: x points right, y points up, z points out of the page
+\tdplotsetmaincoords{\Sexpr{maincoord.x.rot}}{\Sexpr{maincoord.z.rot}}
+\begin{tikzpicture}[scale=1.2,tdplot_main_coords]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% DEFINE COORDINATES AND POINTS %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% origin
+\coordinate (O) at (0,0,0);
+% top of cylinder % this coordinate not strictly necessary,
+% as it is equivalent to both C1z and C2z
+% but for simplicity, could be good to keep using
+\coordinate (H) at (0,0,\Sexpr{cyl.height});
+% film level
+\coordinate (F) at (0,0,\Sexpr{film.thickness});
+\coordinate (HF) at (0,0,\Sexpr{cyl.height+film.thickness});
+
+% draw baseplate (side 0.575 um)
+% the baseplate should have some thickness to it, perhaps
+% even showing TCO and glass interface
+
+% bottom of baseplate
+\coordinate (G1) at (\Sexpr{width/2},\Sexpr{width/2},-0.08);
+\coordinate (G2) at (\Sexpr{-width/2},\Sexpr{width/2},-0.08);
+\coordinate (G3) at (\Sexpr{-width/2},\Sexpr{-width/2},-0.08);
+\coordinate (G4) at (\Sexpr{width/2},\Sexpr{-width/2},-0.08);
+% top of baseplate
+\coordinate (S1) at (\Sexpr{width/2},\Sexpr{width/2},0);
+\coordinate (S2) at (\Sexpr{-width/2},\Sexpr{width/2},0);
+\coordinate (S3) at (\Sexpr{-width/2},\Sexpr{-width/2},0);
+\coordinate (S4) at (\Sexpr{width/2},\Sexpr{-width/2},0);
+% top of film (on baseplate)
+% SF1: corner in first quadrant,
+% SF2: corner in second quadrant
+% SF3: corner in third quadrant
+% SF4: corner in fourth quadrant
+\coordinate (SF1) at (\Sexpr{width/2},\Sexpr{width/2},\Sexpr{film.thickness});
+\coordinate (SF2) at (\Sexpr{-width/2},\Sexpr{width/2},\Sexpr{film.thickness});
+\coordinate (SF3) at (\Sexpr{-width/2},\Sexpr{-width/2},\Sexpr{film.thickness});
+\coordinate (SF4) at (\Sexpr{width/2},\Sexpr{-width/2},\Sexpr{film.thickness});
+% four points on top of film along the circle defining the outer cylinder,
+% creating four segments
+\coordinate (SFOC1) at (\Sexpr{width/2 - bpdcoc},\Sexpr{width/2 - bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC2) at (\Sexpr{-width/2 + bpdcoc},\Sexpr{width/2 - bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC3) at (\Sexpr{-width/2 + bpdcoc},\Sexpr{-width/2 + bpdcoc},\Sexpr{film.thickness});
+\coordinate (SFOC4) at (\Sexpr{width/2 - bpdcoc},\Sexpr{-width/2 + bpdcoc},\Sexpr{film.thickness});
+
+% tdplotsetcoord{label}{radius}{polar angle}{azimuthal angle}
+% radius: distance from the origin
+% polar angle: xz plane, 0 points along z, 90 points along x
+% azimuthal angle: yx plane, 0 points along x, 90 points along y
+
+% define two points for cylinder C1, C2 (radius r, at height h)
+% the radius here is calculated using a = 1, b = 0.15 (pythagoras)
+\tdplotsetcoord{C1}{\Sexpr{sqrt(cyl.height+cyl.radius^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height,cyl.radius))}}{\Sexpr{plotcoord.C1.azimuthal}};
+\tdplotsetcoord{C2}{\Sexpr{sqrt(cyl.height+cyl.radius^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height,cyl.radius))}}{\Sexpr{plotcoord.C2.azimuthal}};
+
+% film outside cylinder
+% top-right corner: F1, top-left corner: F2, bottom-right corner: F3, bottom-left corner: F4
+\tdplotsetcoord{F1}{\Sexpr{sqrt((cyl.height+film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height+film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C1.azimuthal}}
+\tdplotsetcoord{F2}{\Sexpr{sqrt((cyl.height+film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(cyl.height+film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C2.azimuthal}}
+\tdplotsetcoord{F3}{\Sexpr{sqrt((film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C1.azimuthal}}
+\tdplotsetcoord{F4}{\Sexpr{sqrt((film.thickness)^2 + (cyl.radius+film.thickness)^2)}}{\Sexpr{90 - as.degrees(atan2(film.thickness,cyl.radius+film.thickness))}}{\Sexpr{plotcoord.C2.azimuthal}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%      DRAW ARCS AND LINES      %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% connect corners of bottom baseplate
+\draw[color=black,fill=white] (G4) -- (G1) -- (G2) -- (G3) -- cycle;
+% connect top and bottom baseplates
+% this part is not compatible with free rotation around z
+% (needs manual fixing dependent on viewport angle)
+\draw[color=black,fill=white] (G1) -- (S1) -- (S2) -- (G2) -- cycle;
+\draw[color=black,fill=white] (G2) -- (S2) -- (S3) -- (G3);% -- (G2);
+\draw[color=black,fill=white] (G3) -- (S3) -- (S4) -- (G4) -- cycle;
+\draw[color=black,fill=white] (G4) -- (S4) -- (S1) -- (G1) -- cycle;
+% connect corners of top baseplate
+\draw[color=black,fill=white] (S1) -- (S2) -- (S3) -- (S4) -- cycle;
+
+% connect top of substrate corners with film corners
+\draw[color=red,fill=red,opacity=0.2] (SF2) -- (S2) -- (S3) -- (SF3) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF3) -- (S3) -- (S4) -- (SF4) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF4) -- (S4) -- (S1) -- (SF1) -- cycle;
+\draw[color=red,fill=red,opacity=0.2] (SF1) -- (S1) -- (S2) -- (SF2) -- cycle;
+
+% film on baseplate (only outside of footprint of outer cylinder)
+\fill[red,opacity=0.2] (SF2) -- (SF3) -- (SFOC3) arc[start angle=225,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+\fill[red,opacity=0.2] (SF3) -- (SF4) -- (SFOC4) arc[start angle=315,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+
+% outer cylinder: back bottom circle
+\tdplotdrawarc[color=red,opacity=0.2]{(F)}{\Sexpr{cyl.radius+film.thickness}}{\Sexpr{plotcoord.C1.azimuthal}}{\Sexpr{360 - plotcoord.C2.azimuthal}}{}{};
+
+% inner cylinder: wall, front of top arc and front of bottom arc
+\draw[black,fill=white] (C1) -- (C1xy) arc[start angle=\Sexpr{plotcoord.C1.azimuthal},delta angle=-180,radius=\Sexpr{cyl.radius}] -- (C2) arc[start angle=\Sexpr{plotcoord.C2.azimuthal},delta angle=180,radius=\Sexpr{cyl.radius}];
+
+\fill[red,opacity=0.2] (SF1) -- (SF2) -- (SFOC2) arc[start angle=135,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+\fill[red,opacity=0.2] (SF4) -- (SF1) -- (SFOC1) arc[start angle=45,delta angle=-90,radius=\Sexpr{cyl.radius+film.thickness}] -- cycle;
+
+% inner cylinder: full top circle
+\tdplotdrawarc[color=black]{(H)}{\Sexpr{cyl.radius}}{0}{360}{}{};
+
+% outer cylinder: wall, front of top arc and front of bottom arc
+\draw[color=red,fill=red,opacity=0.2] (F1) -- (F3) arc[start angle=\Sexpr{plotcoord.C1.azimuthal},delta angle=-180,radius=\Sexpr{cyl.radius+film.thickness}] -- (F2) arc[start angle=\Sexpr{plotcoord.C2.azimuthal},delta angle=180,radius=\Sexpr{cyl.radius+film.thickness}];
+
+% outer cylinder: full top circle
+\tdplotdrawarc[color=red,fill=red,opacity=0.2]{(HF)}{\Sexpr{cyl.radius+film.thickness}}{0}{360}{color=gray,anchor=center}{360}; % placement of label not very nice
+
+% outer cylinder: front bottom circle
+\tdplotdrawarc[color=red,opacity=0.2]{(F)}{\Sexpr{cyl.radius+film.thickness}}{\Sexpr{plotcoord.C1.azimuthal}}{\Sexpr{plotcoord.C2.azimuthal}}{}{};
+
+% cartesian unit vectors
+% \draw[color=blue,dashed,->] (0,0,0) -- (1,0,0) node[anchor=east]{$x$};
+% \draw[color=blue,dashed,->] (0,0,0) -- (0,1,0) node[anchor=west]{$y$};
+% \draw[color=blue,dashed,->] (0,0,0) -- (0,0,1) node[anchor=south]{$z$};
+\end{tikzpicture}
+\scriptsize\itshape%
+\\Oblique view.
+}

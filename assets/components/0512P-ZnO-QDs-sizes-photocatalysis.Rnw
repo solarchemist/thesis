@@ -1,0 +1,12 @@
+%\input{assets/code/P12/100-main.Rnw}
+<<'0512P-manuscript-isolated', eval=TRUE, results="asis", warning=FALSE>>=
+# In this chunk we establish a separate R environment for the P12 manuscript
+res <-
+   IsolatedChild(
+      input = here::here('assets/code/P12/100-main.Rnw'),
+      # specify functions in globalEnv that we want to expose inside this child env
+      theme_default = theme_default,
+      theme_halfwidth = theme_halfwidth,
+      theme_plot_in_margin = theme_plot_in_margin,
+      print_with_axes_inside = print_with_axes_inside)
+@

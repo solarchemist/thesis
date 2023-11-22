@@ -1,0 +1,152 @@
+<<'0501P-xray-data'>>=
+xraydata.file <- here::here("assets/rdata/xray-line-energies.rda")
+xraydata <- common::LoadRData2Variable(path = xraydata.file)
+# reset some columns as numeric (currently they are all character, which is not suitable for plotting)
+xraydata$Z <- as.numeric(xraydata$Z)
+xraydata$transition.keV <- as.numeric(xraydata$transition.keV)
+xraydata$intensity <- as.numeric(xraydata$intensity)
+xraydata$width.eV <- as.numeric(xraydata$width.eV)
+xraydata$edge.keV <- as.numeric(xraydata$edge.keV)
+xraydata$fluorescence.yield <- as.numeric(xraydata$fluorescence.yield)
+# energy -> wavelength -> frequency
+xraydata$wavelength <- # wavelength in metres
+   subset(photoec::solarconstants, label == "h.eV")$value *
+   subset(photoec::solarconstants, label == "c")$value /
+   (1E3 * xraydata$transition.keV) # in electron volts
+xraydata$frequency <- # frequency in s-1
+   (1E3 * xraydata$transition.keV) / # in electron volts
+   subset(photoec::solarconstants, label == "h.eV")$value
+## Calculate Kb/Ka ratio
+# Identify Kb transitions
+Kb.transitions <- subset(xraydata, Siegbahn.short == "Kb")
+# Identify Ka transitions
+Ka.transitions <- subset(xraydata, Siegbahn.short == "Ka")
+# Join the two sets
+KbKa.transitions <-
+   arrange(rbind(Kb.transitions, Ka.transitions), Z, Siegbahn.short)
+# To make our life easier, drop some for this purpose unnecessary columns
+KbKa.transitions <-
+   KbKa.transitions[, -which(names(KbKa.transitions) %in%
+                                c("edge",
+                                  "edge.keV",
+                                  "fluorescence.yield",
+                                  "shell.filled",
+                                  "subshell.filled",
+                                  "shell.source",
+                                  "subshell.source"))]
+mKbKa <-
+   reshape::melt(data = KbKa.transitions,
+                 id.vars = c("Z", "element", "uid", "Siegbahn.short"),
+                 measure.vars = "intensity")
+# Drop all NA intensity values
+mKbKa <- mKbKa[-which(is.na(mKbKa$value)), ]
+# Sum the intensity values for each element's Ka and Kb transitions, respectively
+cKbKa <- reshape::cast(data = mKbKa, formula = Z + element ~ Siegbahn.short, fun.aggregate = sum)
+cKbKa$ratio <- cKbKa$Kb / cKbKa$Ka
+@
+
+<<'0501P-xray-KbKa-ratio', cache=TRUE, warning=FALSE, fig.width=2.36, fig.height=1.46, out.width = '2.36in', eval=FALSE>>=
+ggplot(cKbKa) +
+   geom_point(aes(Z, ratio), size = 0.35) +
+   scale_x_continuous(breaks = c(min(xraydata$Z),
+                                 seq(18, max(xraydata$Z), 18), max(xraydata$Z)),
+                      labels = paste(c(min(xraydata$Z),
+                                       seq(18, max(xraydata$Z), 18),
+                                       max(xraydata$Z)),
+                                     unique(xraydata$element)[
+                                        c(1, seq(15, max(xraydata$Z), 18)[1:5],
+                                          max(xraydata$Z) - 3)])) +
+   # make sure the x-axis includes
+   expand_limits(x = c(4, 103)) +
+   labs(x = NULL,
+        y = "$\\mathrm{K}\\beta/\\mathrm{K}\\alpha$") +
+   theme_halfwidth() +
+   theme(legend.position = "none",
+         # rotate the axis text, also make it slightly smaller
+         axis.text.x = element_text(angle = 60, hjust = 1, size = rel(0.8)))
+@
+
+
+\begin{figure}[tbp]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+<<'0501P-xray-fluorescence-yield', cache=TRUE, warning=FALSE, fig.width=2.36, fig.height=1.46, out.width = '2.36in'>>=
+ggplot(xraydata[which(!is.na(xraydata$fluorescence.yield)), ],
+       aes(Z, fluorescence.yield, colour = edge)) +
+   geom_point(size = 0.35) +
+   scale_x_continuous(breaks = c(min(xraydata$Z),
+                                 seq(18, max(xraydata$Z), 18), max(xraydata$Z)),
+                      labels = paste(c(min(xraydata$Z),
+                                       seq(18, max(xraydata$Z), 18),
+                                       max(xraydata$Z)),
+                                     unique(xraydata$element)[
+                                        c(1, seq(15, max(xraydata$Z), 18)[1:5],
+                                          max(xraydata$Z) - 3)])) +
+   scale_y_log10(breaks = c(0.00005, 0.0005, 0.005, 0.05, 0.2, 1),
+                 labels = c(0.00005, 0.0005, 0.005, 0.05, 0.2, 1)) +
+   labs(x = NULL,
+        y = "Fluor. yield") +
+   theme_halfwidth() +
+   theme(legend.position = "none",
+         # rotate the axis text, also make it slightly smaller
+         axis.text.x = element_text(angle = 60, hjust = 1, size = rel(0.8)))
+@
+\caption{Fluorescence yield}
+\label{fig:xray-fluorescence-yield}
+\end{subfigure}\,%
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+<<'0501P-xray-Moseley-plot', cache=TRUE, warning=FALSE, fig.width=2.36, fig.height=1.46, out.width = '2.36in'>>=
+ggplot() +
+   geom_smooth(
+      data = xraydata,
+      aes(y = Z,
+          x = sqrt(frequency),
+          group = transition),
+      method = "lm",
+      formula = y ~ x,
+      se = FALSE,
+      fullrange = FALSE,
+      size = 0.3,
+      colour = "gray50") +
+   geom_point(
+      data = xraydata,
+      aes(y = Z,
+          x = sqrt(frequency),
+          colour = transition),
+          size = 0.35) +
+   # adding a secondary y-axis showing E/keV won't work due to sqrt of primary
+   # squaring is not a monotonous operation, and so disallowed by sec_axis()
+   scale_y_continuous(
+      name = "",
+      breaks = c(
+         min(xraydata$Z), seq(18, max(xraydata$Z), 18), max(xraydata$Z)),
+      labels = paste(
+         c(min(xraydata$Z), seq(18, max(xraydata$Z), 18), max(xraydata$Z)),
+         unique(xraydata$element)[
+            c(1, seq(15, max(xraydata$Z), 18)[1:5], max(xraydata$Z) - 3)])) +
+   scale_x_continuous(
+      breaks = c(0, 2E9, 4E9, 6E9),
+      labels = c(0, 2, 4, 6)) +
+   labs(x = "$\\sqrt{f}\\times10^9$",
+        y = NULL) +
+   theme_halfwidth() +
+   theme(legend.position = "none")
+@
+\caption{Moseley plot}
+\label{fig:xray-moseley}
+\end{subfigure}%
+\caption[X-ray lines dataset examples]{%
+   (\subref{fig:xray-fluorescence-yield})
+   Fluorescence yields of the $\mathrm{K}$, $\mathrm{L}_1$, $\mathrm{L}_2$, and $\mathrm{L}_3$ lines.
+   (\subref{fig:xray-moseley})
+   The classic Moseley plot reproduced from our dataset of X-ray transitions,
+   showing the expected close-to-linearity of each transition line. The increasingly larger
+   slope of the outer-shell lines says something about the increased shielding experienced
+   by those electrons.
+}
+\label{fig:xray-overview}
+\end{figure}
+% http://hyperphysics.phy-astr.gsu.edu/hbase/quantum/moseley.html
+% https://en.wikipedia.org/wiki/Moseley%27s_law

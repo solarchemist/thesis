@@ -1,0 +1,41 @@
+% space group numbers are defined in International Tables for Crystallography, vol. A
+% (see Brock2019)
+\begin{table}[tbp]
+\caption[Structural properties of the phases]{%
+   Names and symmetry properties of the materials under study as well as
+   chemically adjacent phases.
+   \emph{PDF number} signifies our chosen JCPDS reference,
+   \emph{mineral} the naturally occuring mineral (if any),
+   \emph{class} the typical crystal structure,
+   \emph{system} the crystal family,
+   and \emph{space group} is shown using Hermann-Mauguin (international) notation.}
+\label{tab:0300-pxrd-pdfs}
+\footnotesize
+% note, adjustbox cannot go before the caption -> LaTeX error
+\begin{adjustbox}{center}
+\begin{tabular}{llllllll}\toprule
+Phase                  & PDF number     & Mineral       & Class      & System       & Space group            & Ref.\\\midrule
+\ch{SnO2}              & 00-041-1445    & cassiterite   & rutile     & tetragonal   & \spacegroup{136} (136) & \cite{McCarthy1989} \\
+\ch{Zn2SnO4}           & 00-024-1470    &               &            & cubic        & \spacegroup{227} (227) & \\
+\ch{ZnO}               & 00-036-1451    & zincite       & wurtzite   & hexagonal    & \spacegroup{186} (186) & \cite{McMurdie1986} \\
+\ch{CdS}               & 41-1049        & greenockite   & wurtzite   & hexagonal    & \spacegroup{186} (186) & \\
+\ch{CdS}               & 01-89-0440     & hawleyite     & zincblende & cubic        & \spacegroup{216} (216) & \\
+\ch{ZnFe2O4}           & 01-070-3377    & franklinite   &            & cubic        & \spacegroup{227} (227) & \cite{Avese2000} \\
+$\gamma$-\ch{Fe2SiO4}  & 00-034-0178    & fayalite      &            & orthorhombic & \spacegroup{62} (62)   & \\
+% note that \spacegroup{62} produces Pnma, whereas several refs give fayalite's spacegroup as Pmnb (without number)
+% Pmnb (or Pbnm) simply represents a rotation of the crystal axes compared to Pnma (so what was c becomes  b, etc.) \cite{Schwertmann2000}
+$\alpha$-\ch{Fe2SiO4}    & 04-008-1861  & ringwoodite   &            & cubic        & \spacegroup{227} (227) & \\
+\ch{FeO}                 & 01-089-0687  & wustite       &            & cubic        & \spacegroup{225} (225) & \cite{Fjellvag1996} \\ % Fe50.00 O50.00
+\ch{Fe3O4}               & 00-019-0629  & magnetite     & spinel     & cubic        & \spacegroup{227} (227) & \cite{Swanson1967} \\ % Fe42.86 O57.14
+\hematite                & 00-033-0664  & hematite      & corundum   & trigonal     & \spacegroup{167} (167) & \cite{Morris1981} \\ % Fe40.00 O60.00
+$\gamma$-\ch{Fe2O3}      & 00-039-1346  & maghemite     &            & cubic        & \spacegroup{212} (212) & \cite{Schwertmann2000,Cornell2003} \\ % Fe40.00 O60.00
+$\beta$-\ch{FeOOH}       & 00-034-1266  & akageneite    &            & monoclinic   & \spacegroup{12} (12)   & \cite{Schwertmann2000,Cornell2003} \\ % Fe25.00 H25.00 O50.00
+% sources say ferroxyhyte is hexagonal and spacegroup P3ml, which I assume is typo for P3m1 (156). But 156 is trigonal, not hexagonal...?
+% https://en.wikipedia.org/wiki/List_of_space_groups#List_of_trigonal
+$\delta$-\ch{FeOOH}      & 01-077-0247  & ferroxyhyte   &            & hexagonal    & \spacegroup{156} (156) & \cite{Schwertmann2000} \\ % Fe25.00 H25.00 O50.00
+$\alpha$-\ch{FeOOH}      & 04-014-5919  & goethite      &            & orthorhombic & \spacegroup{62} (62)   & \cite{Schwertmann2000} \\ % Fe25.00 H25.00 O50.00
+$\gamma$-\ch{FeOOH}      & 00-044-1415  & lepidocrocite &            & orthorhombic & \spacegroup{63} (63)   & \cite{Schwertmann2000,Cornell2003} \\ % Fe25.00 H25.00 O50.00
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}

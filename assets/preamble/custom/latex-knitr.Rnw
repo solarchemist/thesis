@@ -1,0 +1,229 @@
+% defines a case environment
+% code taken from a TeX.SE answer by egreg
+% https://tex.stackexchange.com/a/451094/10824
+% fantastic piece of code, works beautifully, for an arbitrary number of cases
+\ExplSyntaxOn
+\NewExpandableDocumentCommand{\stringcase}{mO{}m}{%
+   \str_case_e:nnF { #1 } { #3 } { #2 }
+}
+\ExplSyntaxOff
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesShort}{m}{%
+   \stringcase{#1}[\textbf{??}]{%
+      % note, neither \text{} nor \mathrm{} obey \mathbf{} nor \bfseries
+      % the unicode-math package provides \mathup{} % https://tex.stackexchange.com/a/380398/10824
+      % \mathbfup ? did not work
+      % \textup inside math mode? pointless % https://tex.stackexchange.com/questions/33120/should-subscripts-in-math-mode-be-upright
+      % what a horrible mess, why is math-mode simply not allowing bold upright?
+      % abandon math mode, \textsubscript instead? % https://tex.stackexchange.com/a/47327/10824
+      % Ok, completely avoiding math mode here allows the command to obey
+      % surrounding bold environment. Also, works as-is if used in math mode.
+      % Note our use of \textup{} to ensure that those parts always stay upright even
+      % if surrounded by italic environment.
+      % {shortcode}{LaTeX typeset text}
+      {E2l}{\textit{E}\textsubscript{\textup{2l}}}%
+      {B1l}{\textit{B}\textsubscript{\textup{1l}}}%
+      {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}}%
+      {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}}%
+      {E2h}{\textit{E}\textsubscript{\textup{2h}}}%
+      {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {B1h}{\textit{B}\textsubscript{\textup{1h}}}%
+      {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}}%
+      {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}}%
+      {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}}%
+      {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}}%
+   }%
+}
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesLong}{m}{%
+   \stringcase{#1}[\textbf{??}]{%
+      {E2l}{\textit{E}\textsubscript{\textup{2(low)}}}%
+      {B1l}{\textit{B}\textsubscript{\textup{1(low)}}}%
+      {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}}%
+      {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}}%
+      {E2h}{\textit{E}\textsubscript{\textup{2(high)}}}%
+      {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {B1h}{\textit{B}\textsubscript{\textup{1(high)}}}%
+      {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}}%
+      {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}}%
+      {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}}%
+      {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}}%
+   }%
+}
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{%
+   \IfNoValueTF{#2}{%
+      % arg #2 (optional) not given, proceed as "short"
+      \NonResonantModesShort{#1}%
+   }{%
+      % arg #2 (optional) was given, check if it is "long"
+      \ifthenelse{\equal{#2}{long}}{%
+         % "long" was given
+         \NonResonantModesLong{#1}%
+      }{%
+         % arg was given, but is not equal to "long"
+         % check if it is "short"
+         \ifthenelse{\equal{#2}{short}}{%
+            \NonResonantModesShort{#1}%
+         }{%
+            % arg was neither "long" nor "short", something else
+            \NonResonantModesShort{}%
+         }%
+      }%
+   }%
+}
+
+% Non-resonant Raman modes of ZnO
+% \nonresmode{E2h}[E2l][long][diff]
+% Use \nonresmode like this:
+% \nonresmode{E2l}              => E2l
+% \nonresmode{E2l}[][long]      => E2low
+% \nonresmode{}                 => ??
+% \nonresmode                   => ERROR
+% \nonresmode{E2l}[E2h]         => E2l+E2h
+% \nonresmode{E2l}[E2h][][diff] => E2l-E2h
+% \nonresmode{E2l}[E2h][long]   => E2low + E2high
+% only specify optional arguments if necessary, i.e.,
+% please don't do \nonresmode{E2l}[][][], but please do \nonresmode{E2l}
+% remember, optional arg "o" will supply the special -NoValue- marker if not given
+% the arg O{sum} is an optional arg with the default value "sum"
+\NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{%
+   \IfNoValueTF{#2}{%
+      % no arg #2 was given, which means we are typesetting a single mode
+      % if no arg #2 was given, then we can disregard #4
+      \IfNoValueTF{#3}{%
+         % this way, if #3 was not given, we avoid passing the special -NoValue- marker
+         \NonResonantModesLogic{#1}%
+      }{%
+         % if #3 was given, pass it on, unless it was empty
+         \ifthenelse{\isempty{#3}}{%
+            \NonResonantModesLogic{#1}%
+         }{%
+            \NonResonantModesLogic{#1}[#3]%
+         }%
+      }%
+   }{%
+      % If optional arg #2 was given and is empty, perform the same code as if -NoValue-
+      \ifthenelse{\isempty{#2}}{%
+         \IfNoValueTF{#3}{%
+            % this way, if #3 was not given, we avoid passing the special -NoValue- marker
+            \NonResonantModesLogic{#1}%
+         }{%
+            % if #3 was given, pass it on, unless it was empty
+            \ifthenelse{\isempty{#3}}{%
+               \NonResonantModesLogic{#1}%
+            }{%
+               \NonResonantModesLogic{#1}[#3]%
+            }%
+         }%
+      }{%
+         % if #2 is not -NoValue- nor empty, then just assume that it is one of the mode shortcodes
+         % (we don't try to check that it is in fact part of that set)
+         % But first, determine if we are writing "sum" or "diff" modes
+         % (note that we assume that #4 has a value, since it is the last arg we never expect it%
+         % to be given explicitly empty)
+         \ifthenelse{\equal{#4}{diff}}{%
+            % Since #4 has a default, we can simplify this if-else to only check for "diff"
+            % and we can then assume that the else-clause matches "sum"
+            % But note that arg #3 may have been given explicity empty, thus overriding the default
+            % so we must check for that
+            \ifthenelse{\isempty{#3}}{%
+               % Note, to get consistent spacing around the +/- sign whether the
+               % call to \nonresmode{} is surrounded by math mode or not, it is
+               % good to surround everything in ensuremath{} here
+               % Also, for "short" mode, I want to kill the space surrounding the +/- sign
+               % (to keep it compact, which is probably what the user wants in "short" mode)
+               \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2}%
+            }{%
+               \ifthenelse{\equal{#3}{long}}{%
+                  % \mkern to avoid addition of glue (glue may make the space larger, which looks bad)
+                  % https://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing
+                  % https://tex.stackexchange.com/questions/512101/what-is-kern-good-for
+                  % \thinmuskip is equivalent to 3mu
+                  \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3]%
+               }{%
+                  \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}%
+               }%
+            }%
+         }{%
+            \ifthenelse{\isempty{#3}}{%
+               \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2}%
+            }{%
+               \ifthenelse{\equal{#3}{long}}{%
+                  \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3]%
+               }{%
+                  \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}%
+               }%
+            }%
+         }%
+      }%
+   }%
+}
+
+
+% Use \Eg like this:
+% \Eg{}         => Eg
+% \Eg{}[]       => Eg
+% \Eg{3.57}     => Eg = 3.57 eV
+% \Eg{3.57}[]   => Eg = 3.57 eV
+% \Eg{480}[\nm] => Eg = 480 nm
+% Note, just \Eg (without braces) will cause an error!
+% The aim is to always return a string that make physical sense (valid SI notation)
+% Requires xparse, xifthen, siunitx
+% https://stackoverflow.com/questions/1812214/latex-optional-arguments
+% https://tex.stackexchange.com/questions/58628/optional-argument-for-newcommand
+% https://tex.stackexchange.com/questions/308/different-command-definitions-with-and-without-optional-argument
+\NewDocumentCommand{\Eg}{mo}{%
+   % if the first arg (m) is empty, just print the symbol for Eg
+   \ifthenelse{\isempty{#1}}{%
+      \ensuremath{E_\text{g}}}{%
+      \IfNoValueTF{#2}{%
+         % note that IfNoValue considers empty arg, i.e., [], as a valid value
+         \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{%
+         \ifthenelse{\isempty{#2}}{%
+            \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{%
+            \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}
+
+
+% Use \Rsq like this: \Rsq{0.988}, \Rsq[adj]{0.988}
+% requires xparse, xifthen, siunitx
+% https://tex.stackexchange.com/questions/48355/latex-command-with-optional-arguments
+\NewDocumentCommand{\Rsq}{om}{%
+   \IfNoValueTF{#1}{%
+      \ensuremath{R^2{\,=\,}\num{#2}}}{%
+      \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}
+
+
+% Use \density like this:
+% \density{}       => p (returns just the symbol)
+% \density{}[]     => p (ditto)
+% \density{4.15}   => p=4.15 g cm-3
+% \density{4.15}[] => p=4.15 g cm-3
+% \density{4.15}[\kg\per\cubic\metre] => p=4.15 kg m-3
+% Note, just \density (without braces) will cause an error!
+% The aim is to always return a string that make physical sense (valid SI notation)
+% Requires xparse, xifthen, siunitx
+\NewDocumentCommand{\density}{mo}{%
+   % if the first arg (m) is empty, just print the symbol for density
+   \ifthenelse{\isempty{#1}}{%
+      \ensuremath{\rho}}{%
+      \IfNoValueTF{#2}{%
+         % note that IfNoValue considers empty arg, i.e., [], as a valid value
+         \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{%
+         \ifthenelse{\isempty{#2}}{%
+            \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{%
+            \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}
+
+
+% typeset Miller index
+% use like this:
+% \miller{002}
+\NewDocumentCommand{\miller}{m}{%
+   % for now simply put inside \num{}
+   \num{#1}%
+}

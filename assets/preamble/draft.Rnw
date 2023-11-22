@@ -1,0 +1,63 @@
+\definecolor{LNblue}{HTML}{2F3C4F} % dark blue colour, used for LN signature in FXNote
+\definecolor{LNyellow}{HTML}{FBB040} % yellow colour, used for LN signature in FXNote
+\definecolor{fxgray}{HTML}{dcdee0} % light gray
+\usepackage{fixme}
+   % https://tex.stackexchange.com/a/99920
+   \FXRegisterAuthor{ta}{ata}{\colorbox{fxgray}{TA}}
+   \FXRegisterAuthor{te}{ate}{\colorbox{red}{\color{black}TE}}
+   \FXRegisterAuthor{jz}{ajz}{\colorbox{purple}{\color{white}JZ}}
+   \fxsetup{% NOTE that fxnotes do NOT work in captions unless you use inline!
+      mode=multiuser,%
+      marginface=\scriptsize,%
+      % changed from colorsig to color, caused signature to be printed first
+      % theme=color prints signature before the comment, which makes it easier to tell
+      % a comment apart from the body text I think
+      theme=color,%
+      layout=inline%
+   }
+% https://tex.stackexchange.com/a/256296/10824
+% Use by issuing: \xxnote{some note}, \xxwarning{...}, \xxerror{...}, or \xxfatal{...}
+% where xx is the two-letter author-identifier defined above.
+%\newcommand{\fxinline}[1]{\fxnote[inline]{#1}}
+% \usepackage{cancel}
+% https://tex.stackexchange.com/a/23715/10824
+% https://jansoehlke.com/2010/06/strikethrough-in-latex/
+\usepackage[normalem]{ulem}
+% https://tex.stackexchange.com/questions/21234/doing-something-only-when-the-draft-option-is-on
+% used for including all glossary entries \glsaddall if in draft mode only
+% also used to only load showlabels package options when in draft mode
+\usepackage{ifdraft}
+\ifdraft{%
+   % add a "DRAFT" watermark to the cover page
+   \usepackage[firstpage]{draftwatermark}%
+   \SetWatermarkText{Draft: ON}%
+   \SetWatermarkAngle{25}%
+   \SetWatermarkScale{0.65}%
+   % the physical page size is correct when in final mode, but when in draft mode
+   % the physical page is squeezed into one corner of the sheet, for some reason
+   % it seems we can rectify that by effectively redefining the basic s5paper
+   % dimensions using geometry (ugly hack, but works...)
+   \usepackage[%
+      paperheight=242mm,%
+      paperwidth=165mm,%
+      hoffset=-1in,%
+      voffset=-1in,%
+      twoside,
+      %topmargin=8.8mm,% not defined the same way for geometry
+      %oddsidemargin=22.5mm,% not defined the same way for geometry
+      %evensidemargin=22.5mm,% not defined the same way for geometry
+      headheight=4.6mm,%
+      headsep=4.6mm,%
+      textheight=572pt,%
+      textwidth=120mm,%
+      marginparsep=1mm,%
+      marginparwidth=20mm,%
+      footskip=26pt%
+      %topskip=13pt% not defined the same way for geometry
+   ]{geometry}
+   % show the true page border when printing on A4 stock
+   % https://tex.stackexchange.com/a/15055/10824
+   \usepackage[a4,cam,center]{crop}
+   % showframe displays page margins *and* the page border
+   % \usepackage{showframe}
+}{}
