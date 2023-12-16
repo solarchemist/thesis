@@ -12,7 +12,7 @@
 % Please avoid using absolute paths in either LaTeX or R code
 % (in LaTeX code, use paths relative to the thesis root, and in R code please use the here::here() function).
 
-\documentclass[draft,webedition,openright,titles,swedish,english]{LuaUUThesis}\usepackage[]{graphicx}\usepackage[]{xcolor}
+\documentclass[webedition,openright,titles,swedish,english]{LuaUUThesis}\usepackage[]{graphicx}\usepackage[]{xcolor}
 % maxwidth is the original width if it is less than linewidth
 % otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -2768,7 +2768,7 @@ This is where modern chemistry and engineering comes into the fore.
 \captionof{table}[Relative power density and relative flux of AM1.5G]{Relative spectral power density and flux}
 \label{tab:solarspectrum-amounts}
 % latex table generated in R 4.1.3 by xtable 1.8-4 package
-% Fri Dec 15 02:00:44 2023
+% Mon Dec 18 09:06:30 2023
 \begin{tabular}{lS[table-format=2.1]S[table-format=2.1]}
   \toprule
 {} & {\glsname{irradiance}/\unit{\percent}} & {\glsname{photon_flux}/\unit{\percent}} \\ 
@@ -3717,8 +3717,8 @@ any capping agents or surfactant molecules that preferentially inhibit the
 growth of particular crystallographic facets, which was attractive to my
 experimental sensibilities.
 
-We created \ZnO\ \glsplural{NR} by cathodic deposition at \qty{-0.7}{\voltAgCl}
-for \qty{90}{\minute} with an initial pulse at \qty{-1.3}{\voltAgCl} with a duration
+We created \ZnO\ \glsplural{NR} by cathodic deposition at \qty{-0.7}{\voltSCE}
+for \qty{90}{\minute} with an initial pulse at \qty{-1.3}{\voltSCE} with a duration
 of \qtylist[list-final-separator={ or }]{0.1;0.5;1.0}{\second}.
 The aqueous electrolyte solution was
 \reactant[concentration=0.1,concentration-unit=\milli\Molar]{zincchloride}
@@ -4881,12 +4881,8 @@ structure (in other words, ionic crystals), with few defects
 interaction between this polar electric field and
 the optical phonons is expected to be the dominant scattering mechanism at \gls{RT}.
 This so called polar--optical-phonon scattering interacts with the charge carriers
-in what is known as the Fröhlich interaction \cite[p.\,40]{Stroscio2005}.
-
-This interaction of optical phonons and charge carriers in polar semiconductors
-in many cases determines its carrier mobility \cite{Stroscio2005}
-\enquote{The carrier mobility in the presence of an external electric field is determined
-predominantly by the rate at which the electrons emit optical phonons} \cite{Stroscio2005}.
+in what is known as the Fröhlich interaction \cite[p.\,40]{Stroscio2005},
+which strongly influences the semiconductor's carrier mobility.
 
 Raman spectroscopy is non-destructive, simple, and often (but not always) a quick method
 to determine which crystal phases are present in a solid or solute sample.
@@ -5031,7 +5027,7 @@ position on the emitting surface (spatially homogeneous).
 %\input{assets/aux/tab/tab_0100-solarconstants.Rnw}
 
 % latex table generated in R 4.1.3 by xtable 1.8-4 package
-% Fri Dec 15 02:01:06 2023
+% Mon Dec 18 09:06:53 2023
 \begin{table}[tbp]
 \centering
 \caption[Constants related to solar spectral irradiance]{Physical quantities related to Planck's law \cref{eq:planck} and the calculation of the solar spectrum. For sources please see \cref{photoec}.} 
@@ -6433,7 +6429,7 @@ V_\mathrm{H} = 0.059\left(\pH_\mathrm{\glsname{PZZP}} - \pH\right).
 
 
 % latex table generated in R 4.1.3 by xtable 1.8-4 package
-% Fri Dec 15 02:02:02 2023
+% Mon Dec 18 09:08:28 2023
 \begin{table}[tbp]
 \centering
 \caption[Semiconductor properties: a subset of the band gaps dataset]{Absolute band edge potential at the pH of zero-point charge for each material. All band edge potentials vs~SHE.} 
@@ -7172,12 +7168,9 @@ the much less powerful \ch{CdS} as the \glsxtrlong{PC}.
 
 \end{knitrout}
 \caption[Photodegradation of EBT with ZnO/CdS]{%
-   Photocatalytic degradation of \protect\gls{EBT} (structure inset)
-   with \protect\gls{PC} made of \zincox\ \protect\gls{NR} array coated
-   with increasingly thicker layer of \CdS\ (tallied in deposition time, $t_\mathrm{dep}$).
-   Main plot shows the experimentally recorded \protect\gls{UV-Vis} spectra of the dye
-   for varying \CdS\ loading, and the inset barplot shows the calculated $C/C_0$
-   for (slightly different) \CdS\ loadings.}
+   Photocatalytic degradation over \qty{90}{\minute} of \protect\gls{EBT} (structure inset)
+   on \ZnO with \qty{40}{\minute} deposition of \CdS.
+   The inset shows the resultant $C/C_0$ for this sample as well as other \CdS\ loadings.}
 \label{fig:P01-photocat}
 \end{figure}
 
@@ -9907,114 +9900,5 @@ thesis off of it.
 % Metadata for Git and LaTeX, only in draft mode
 %\input{assets/components/9910-thesis-gitmeta.Rnw}
 
-\clearpage
-%%%%% TikZ box displaying commit history, R session info, and LaTeX version info
-\begin{tikzpicture}[remember picture, overlay]%
-\node (gitbox) at (current page.north)
-   [anchor=north, yshift=-4.5cm, text width=12cm, fill=blue!40, font=\sffamily\tiny\color{white}]%
-{\raggedright\bfseries%
-Source: \texttt{\jobname.Rnw}\\%
-git refs: \texttt{\gitReferences}\\%
-git hash: \texttt{\gitAbbrevHash}\\%
-git author: \gitAuthorName\\%
-author email: \gitAuthorEmail\\%
-commit date: \gitAuthorIsoDate\\%
-compile date: 2023-12-15 02:10:19};%
-\node (gitRbox) at (gitbox.south west) [yshift=0.35cm, text width=12cm, below right, font=\sffamily]%
-{%
-\begin{knitrout}\scriptsize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-## Local:    public /media/bay/taha/chepec/thesis
-## Remote:   public @ public-github (git@github.com:solarchemist/thesis.git)
-## Head:     [bcaf6f9] 2023-12-15: First commit of public branch of thesis source code.
-## 
-## Branches:         8
-## Tags:             8
-## Commits:          1
-## Contributors:     1
-## Stashes:          0
-## Ignored files:   59
-## Untracked files:  9
-## Unstaged files:  80
-## Staged files:     0
-## 
-## Latest commits:
-## [bcaf6f9] 2023-12-15: First commit of public branch of thesis source code.
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-};%
-\node (Rbox) at (gitRbox.south west) [fill=blue!20, text width=12cm, below right, font=\sffamily\tiny]%
-{%
-\begin{itemize}\raggedright
-  \item R version 4.1.3 (2022-03-10), \verb|x86_64-pc-linux-gnu|
-  \item Running under: \verb|Ubuntu 22.04.3 LTS|
-  \item Matrix products: default
-  \item BLAS:   \verb|/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0|
-  \item LAPACK: \verb|/usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.10.0|
-  \item Base packages: base, datasets, graphics, grDevices, grid, methods, stats,
-    utils
-  \item Other packages: bandgaps~0.1.1.9000, bib2df~1.1.1, chi760c~0.0.0.9000,
-    common~0.1.2, conflicted~1.2.0, constants~1.0.1, cowplot~1.1.1, DBI~1.1.3,
-    directlabels~2021.1.13, dplyr~1.1.2, errors~0.4.0, geomtextpath~0.1.1,
-    ggExtra~0.10.0, ggplot2~3.4.2, ggrepel~0.9.3, ggspectra~0.3.11, git2r~0.32.0,
-    gridExtra~2.3, here~1.0.1, htmlwidgets~1.6.2, knitr~1.43, kptech~0.0.0.9001,
-    languageserver~0.3.15, magrittr~2.0.3, markdown~1.7, munsell~0.5.0,
-    O2solubilitywater~0.2.1, oceanoptics~0.1.0.9000, periodicdata~0.2.1.9000,
-    photobiology~0.10.17, photoec~0.4.1.9000, quantities~0.2.1, readr~2.1.4,
-    refelectrodes~0.0.0.9000, renishaw~0.1.0.9000, reticulate~1.30, RSQLite~2.3.1,
-    stringr~1.5.0, tibble~3.2.1, tidyr~1.3.0, tikzDevice~0.12.4, tinytex~0.45,
-    units~0.8-2, uvvistauc~0.5.1.9000, webshot2~0.1.0, wordcloud2~0.2.1,
-    xml2~1.3.4, xps~0.1.1.9000, xrdtools~0.1.0.9000, xtable~1.8-4,
-    zahner~0.0.0.9001
-  \item Loaded via a namespace (and not attached): bit~4.0.5, bit64~4.0.5,
-    blob~1.2.4, cachem~1.0.8, callr~3.7.3, chromote~0.1.1, cli~3.6.1,
-    codetools~0.2-19, colorspace~2.1-0, commonmark~1.9.0, compiler~4.1.3,
-    crayon~1.5.2, digest~0.6.32, ellipsis~0.3.2, evaluate~0.21, fansi~1.0.4,
-    farver~2.1.1, fastmap~1.1.1, filehash~2.4-5, generics~0.1.3, glue~1.6.2,
-    gtable~0.3.3, hms~1.1.3, htmltools~0.5.5, httpuv~1.6.11, httr~1.4.6,
-    humaniformat~0.6.0, jsonlite~1.8.7, labeling~0.4.2, later~1.3.1,
-    lattice~0.21-8, lifecycle~1.0.3, Matrix~1.5-4.1, memoise~2.0.1, mgcv~1.8-42,
-    mime~0.12, miniUI~0.1.1.1, nlme~3.1-162, NLP~0.2-1, parallel~4.1.3,
-    photobiologyWavebands~0.5.1, pillar~1.9.0, pkgconfig~2.0.3, plyr~1.8.8,
-    png~0.1-8, processx~3.8.2, promises~1.2.0.1, ps~1.7.5, purrr~1.0.1,
-    quadprog~1.5-8, R6~2.5.1, RColorBrewer~1.1-3, Rcpp~1.0.10, renv~0.17.3,
-    reshape~0.8.9, rlang~1.1.1, rprojroot~2.0.3, scales~1.2.1, shiny~1.7.4,
-    slam~0.1-50, splines~4.1.3, stringi~1.7.12, systemfonts~1.0.4,
-    textshaping~0.3.6, tidyselect~1.2.0, tm~0.7-11, tools~4.1.3, tzdb~0.4.0,
-    utf8~1.2.3, vctrs~0.6.3, vroom~1.6.3, websocket~1.4.1, withr~2.5.0, xfun~0.39,
-    yaml~2.3.7
-\end{itemize}
-
-};%
-\node (LaTeXbox) at (Rbox.south west) [fill=blue!10, text width=12cm, below right, font=\sffamily\tiny]%
-{%
-\noindent
-This is LuaHBTeX, Version 1.16.0 (TeX Live 2023)\\
-The LuaTeX team is Hans Hagen, Hartmut Henkel, Taco Hoekwater, Luigi Scarso.\\
-LuaHBTeX merges and builds upon (parts of) the code from these projects:\\
-tex       : Donald Knuth\\
-etex      : Peter Breitenlohner, Phil Taylor and friends\\
-omega     : John Plaice and Yannis Haralambous\\
-aleph     : Giuseppe Bilotta\\
-pdftex    : Han The Thanh and friends\\
-kpathsea  : Karl Berry, Olaf Weber and others\\
-lua       : Roberto Ierusalimschy, Waldemar Celes and Luiz Henrique de Figueiredo\\
-metapost  : John Hobby, Taco Hoekwater, Luigi Scarso, Hans Hagen and friends\\
-pplib     : Paweł Jackowski\\
-fontforge : George Williams (partial)\\
-luajit    : Mike Pall (used in LuajitTeX)\\
-Compiled with libharfbuzz 7.0.1; using 7.0.1\\
-Compiled with libpng 1.6.39; using 1.6.39\\
-Compiled with lua version 5.3.6\\
-Compiled with mplib version 2.02\\
-Compiled with zlib 1.2.13; using 1.2.13\\
-Development id: 7567
-};%
-% put a frame around the metadata box
-\draw[thick] (LaTeXbox.south west) rectangle (gitbox.north east);
-\end{tikzpicture}%
-%%%%%
 
 \end{document}

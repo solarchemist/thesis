@@ -12,7 +12,7 @@
 % Please avoid using absolute paths in either LaTeX or R code
 % (in LaTeX code, use paths relative to the thesis root, and in R code please use the here::here() function).
 
-\documentclass[draft,webedition,openright,titles,swedish,english]{LuaUUThesis}
+\documentclass[webedition,openright,titles,swedish,english]{LuaUUThesis}
 % printedition: configure thesis for physical printing (webedition by default)
 % openright: force chapters to start on right-hand page (important for print edition)
 % titles: show current chapter and section in top outer corner of each page (like a proper book)
@@ -697,8 +697,8 @@ any capping agents or surfactant molecules that preferentially inhibit the
 growth of particular crystallographic facets, which was attractive to my
 experimental sensibilities.
 
-We created \ZnO\ \glsplural{NR} by cathodic deposition at \qty{-0.7}{\voltAgCl}
-for \qty{90}{\minute} with an initial pulse at \qty{-1.3}{\voltAgCl} with a duration
+We created \ZnO\ \glsplural{NR} by cathodic deposition at \qty{-0.7}{\voltSCE}
+for \qty{90}{\minute} with an initial pulse at \qty{-1.3}{\voltSCE} with a duration
 of \qtylist[list-final-separator={ or }]{0.1;0.5;1.0}{\second}.
 The aqueous electrolyte solution was
 \reactant[concentration=0.1,concentration-unit=\milli\Molar]{zincchloride}
@@ -1423,12 +1423,8 @@ structure (in other words, ionic crystals), with few defects
 interaction between this polar electric field and
 the optical phonons is expected to be the dominant scattering mechanism at \gls{RT}.
 This so called polar--optical-phonon scattering interacts with the charge carriers
-in what is known as the Fröhlich interaction \cite[p.\,40]{Stroscio2005}.
-
-This interaction of optical phonons and charge carriers in polar semiconductors
-in many cases determines its carrier mobility \cite{Stroscio2005}
-\enquote{The carrier mobility in the presence of an external electric field is determined
-predominantly by the rate at which the electrons emit optical phonons} \cite{Stroscio2005}.
+in what is known as the Fröhlich interaction \cite[p.\,40]{Stroscio2005},
+which strongly influences the semiconductor's carrier mobility.
 
 Raman spectroscopy is non-destructive, simple, and often (but not always) a quick method
 to determine which crystal phases are present in a solid or solute sample.

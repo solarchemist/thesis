@@ -1,0 +1,2255 @@
+%%%%%%%%
+% To compile the errate:
+% $ Rscript -e "library(knitr); library(methods); knit('errata.Rnw')"; latexmk -pdf -bibtex errata
+% Note that latexmk settings are set in the ./.latexmkrc file
+%%%%%%%%
+
+\RequirePackage{luatex85}
+\PassOptionsToPackage{final}{graphicx}
+\PassOptionsToPackage{final}{hyperref}
+
+\documentclass[webedition,titles,swedish,english]{LuaUUThesis}\usepackage[]{graphicx}\usepackage[]{xcolor}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+%\input{assets/preamble/preamble.Rnw}
+
+% ----------------------------------------------------------------------
+% Fonts and symbols (LuaLaTeX specific)
+% ----------------------------------------------------------------------
+%\input{assets/preamble/fonts.Rnw}
+
+\usepackage{babel}
+% \usepackage[utf8]{luainputenc} % don't think luainputenc is actually needed
+% https://en.wikibooks.org/wiki/LaTeX/Fonts
+% https://tex.stackexchange.com/questions/59403/what-font-packages-are-installed-in-tex-live
+% https://tex.stackexchange.com/questions/134079/font-setup-for-an-academic-thesis-no-computer-modern-wanted
+% https://tex.stackexchange.com/questions/412757/do-i-need-to-use-usepackaget1fontenc-if-i-use-lualatex
+% https://r2src.github.io/top10fonts/
+% http://www.khirevich.com/latex/font/
+\usepackage{fontspec}
+
+\setsansfont{Linux Biolinum O}
+% emulate the font settings in classicthesis
+% https://ctan.org/tex-archive/macros/latex/contrib/classicthesis
+% I tried Numbers=OldStyle with Pagella but did not like it
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella} % Palatino clone
+\linespread{1.05} % a bit more spread for Palatino
+
+% https://tex.stackexchange.com/questions/118244/what-is-the-difference-between-unicode-math-and-mathspec
+% https://tex.stackexchange.com/questions/198658/circled-equal-with-same-size-as-oplus-otimes-with-pdflatex
+% warning during compilation: "for best results, please load mathtools *before* unicode-math"
+% this was before I loaded mathtools, so I assume some other package loaded it (probably chemmacros)
+% so let's load it here, explicitly
+\usepackage{mathtools}
+\usepackage{unicode-math} % caused ominus/oplus inside chemfig to fail
+\setmathfont{TeX Gyre Pagella Math}
+\setmonofont[Scale=0.85]{DejaVu Sans Mono} % like Bera; Scale=MatchLowercase
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Custom LaTeX abbreviations, etc.
+% ----------------------------------------------------------------------
+%\input{assets/preamble/abbrev-commands.Rnw}
+
+% Our own abbreviations, definitions, etc. using LaTeX newcommands
+% These should not depend on other packages. If you need to define
+% commands that depend on other packages, put them in custom.Rnw instead.
+
+\newcommand{\R}{\texttt{R}}
+\newcommand{\Rpackage}[1]{\texttt{#1}}
+\newcommand{\XeTeX}{\mbox{Xe\TeX}}
+\newcommand{\XeLaTeX}{\mbox{Xe\LaTeX}}
+\newcommand{\LuaLaTeX}{\mbox{Lua\LaTeX}}
+
+% https://proofed.com/writing-tips/ibid-latin-terms-referencing/
+% note that comma or not after i.e. and e.g. is a contested matter:
+% https://tex.stackexchange.com/a/2736/10824
+% in any case, such commas would not be handled here
+% most sources I've consulted say no need to italicise Latin abbreviations
+\newcommand{\ie}{i.e.}
+\newcommand{\eg}{e.g.}
+
+\newcommand{\viz}{viz.}
+\newcommand{\namely}{\viz}
+
+\newcommand{\etc}{etc.}
+\newcommand{\etcetera}{\etc}
+
+% does not make sense to use capitalised versions of eg, viz, and etc.
+\newcommand{\cf}{c.f.}
+\newcommand{\conferatum}{\cf}
+\newcommand{\compare}{\cf}
+\newcommand{\Cf}{C.f.}
+\newcommand{\Conferatum}{\Cf}
+\newcommand{\Compare}{\Cf}
+
+% doubtful if capitalised Via is ever used.
+\newcommand{\via}{via}
+\newcommand{\Via}{Via}
+
+\newcommand{\ibid}{ibid.}
+\newcommand{\ibidem}{\ibid}
+\newcommand{\Ibid}{Ibid.}
+\newcommand{\Ibidem}{\Ibid}
+
+% https://english.stackexchange.com/questions/5392/how-should-i-abbreviate-versus
+% https://english.stackexchange.com/questions/52378/versus-versus-vs-in-writing
+% we mainly use it in units: "V vs SHE"
+% I think I prefer vs. with the dot at the end
+\newcommand{\vs}{vs.}
+\newcommand{\versus}{\vs}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Draft packages
+% ----------------------------------------------------------------------
+%\input{assets/preamble/draft.Rnw}
+
+\definecolor{LNblue}{HTML}{2F3C4F} % dark blue colour, used for LN signature in FXNote
+\definecolor{LNyellow}{HTML}{FBB040} % yellow colour, used for LN signature in FXNote
+\definecolor{fxgray}{HTML}{dcdee0} % light gray
+\usepackage{fixme}
+   % https://tex.stackexchange.com/a/99920
+   \FXRegisterAuthor{ta}{ata}{\colorbox{fxgray}{TA}}
+   \FXRegisterAuthor{te}{ate}{\colorbox{red}{\color{black}TE}}
+   \FXRegisterAuthor{jz}{ajz}{\colorbox{purple}{\color{white}JZ}}
+   \fxsetup{% NOTE that fxnotes do NOT work in captions unless you use inline!
+      mode=multiuser,%
+      marginface=\scriptsize,%
+      % changed from colorsig to color, caused signature to be printed first
+      % theme=color prints signature before the comment, which makes it easier to tell
+      % a comment apart from the body text I think
+      theme=color,%
+      layout=inline%
+   }
+% https://tex.stackexchange.com/a/256296/10824
+% Use by issuing: \xxnote{some note}, \xxwarning{...}, \xxerror{...}, or \xxfatal{...}
+% where xx is the two-letter author-identifier defined above.
+%\newcommand{\fxinline}[1]{\fxnote[inline]{#1}}
+% \usepackage{cancel}
+% https://tex.stackexchange.com/a/23715/10824
+% https://jansoehlke.com/2010/06/strikethrough-in-latex/
+\usepackage[normalem]{ulem}
+% https://tex.stackexchange.com/questions/21234/doing-something-only-when-the-draft-option-is-on
+% used for including all glossary entries \glsaddall if in draft mode only
+% also used to only load showlabels package options when in draft mode
+\usepackage{ifdraft}
+\ifdraft{%
+   % add a "DRAFT" watermark to the cover page
+   \usepackage[firstpage]{draftwatermark}%
+   \SetWatermarkText{Draft: ON}%
+   \SetWatermarkAngle{25}%
+   \SetWatermarkScale{0.65}%
+   % the physical page size is correct when in final mode, but when in draft mode
+   % the physical page is squeezed into one corner of the sheet, for some reason
+   % it seems we can rectify that by effectively redefining the basic s5paper
+   % dimensions using geometry (ugly hack, but works...)
+   \usepackage[%
+      paperheight=242mm,%
+      paperwidth=165mm,%
+      hoffset=-1in,%
+      voffset=-1in,%
+      twoside,
+      %topmargin=8.8mm,% not defined the same way for geometry
+      %oddsidemargin=22.5mm,% not defined the same way for geometry
+      %evensidemargin=22.5mm,% not defined the same way for geometry
+      headheight=4.6mm,%
+      headsep=4.6mm,%
+      textheight=572pt,%
+      textwidth=120mm,%
+      marginparsep=1mm,%
+      marginparwidth=20mm,%
+      footskip=26pt%
+      %topskip=13pt% not defined the same way for geometry
+   ]{geometry}
+   % show the true page border when printing on A4 stock
+   % https://tex.stackexchange.com/a/15055/10824
+   \usepackage[a4,cam,center]{crop}
+   % showframe displays page margins *and* the page border
+   % \usepackage{showframe}
+}{}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - general
+% ----------------------------------------------------------------------
+%\input{assets/preamble/misc-packages.Rnw}
+
+% ifprintedition package supports documentclass options "webedition" and "printedition" and
+% the commands \ifprintedition and \ifwebedition (works like \ifdraft)
+% https://git.solarchemist.se/taha/ifprintedition
+\usepackage{ifprintedition}
+
+% https://blog.martisak.se/2020/05/03/top-ten-latex-packages/#microtype
+% http://www.khirevich.com/latex/microtype/
+\usepackage[%
+   % protrusion=true is a default setting of microtype
+   % NOTE, if protrusion is enabled, might be a good idea to DISABLE it for TOC, LoT, etc.
+   % to get nicer alignment of page numbers in those tables
+   protrusion=true,%
+   % another default setting of microtype
+   expansion,%
+   % final is inherited from documentclass
+   % we set it explicitly to apply microtype also in draft mode
+   final%
+]{microtype}
+
+\usepackage{csquotes}
+% markifdraft puts a git watermark at bottom centre of each sheet IN DRAFT MODE ONLY
+\usepackage[markifdraft]{gitinfo2}
+   \renewcommand{\gitMarkFormat}{\color{gray}\scriptsize\sffamily}
+% we use relsize to make URL font size smaller, see
+% https://tex.stackexchange.com/questions/109740/font-size-of-url-in-footnote
+\usepackage{relsize}
+% alias counter names (used to shorten "infobox:" to "ibx:")
+\usepackage{aliascnt}
+% fnpct handles multiple footnotes
+% https://tex.stackexchange.com/questions/28465/multiple-footnotes-at-one-point
+\usepackage{fnpct}
+% epigraphs next to chapter headings
+% https://tex.stackexchange.com/a/53378/10824
+\usepackage{epigraph}
+% https://anneurai.net/2017/10/18/thesis-formatting-in-latex/
+\setlength\epigraphwidth{0.67\textwidth}
+\setlength\epigraphrule{0pt}
+\setlength\beforeepigraphskip{0\baselineskip}
+\setlength\afterepigraphskip{2\baselineskip}
+\renewcommand*{\textflush}{flushright}
+\renewcommand*{\epigraphsize}{\footnotesize}
+% https://tex.stackexchange.com/questions/117597/inserting-a-creative-commons-licence-into-a-latex-document
+% the cc symbols from the fontawesome5 package sit better on the baseline (than ccicons)
+\usepackage{fontawesome5}
+% Academicons (at this time for the sake of the DOI icon, see bibliography config)
+\usepackage{academicons}
+% bandgaps illustration (TikZ) uses \isempty and thus requires xifthen
+% several command definitions use \isempty et al.
+\usepackage{xifthen}
+% we use \NewDocumentCommand to define some commands
+\usepackage{xparse}
+% xfrac supplies \sfrac (split-level fractions)
+\usepackage{xfrac}
+% ended up needing upright Greek symbols after all
+\usepackage{upgreek}
+% fancyvrb to support verbatim in footnotes
+% https://tex.stackexchange.com/questions/203/how-to-obtain-verbatim-text-in-a-footnote
+\usepackage{fancyvrb}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Bibliography
+% ----------------------------------------------------------------------
+%\input{assets/preamble/bibliography-packages.Rnw}
+
+% use backref=true only in draft mode
+% https://tex.stackexchange.com/questions/40097/disable-issn-but-keep-isbn-with-biblatex
+% https://tex.stackexchange.com/questions/23117/biblatex-get-rid-of-issn-urls-and-dois-in-references
+% https://tex.stackexchange.com/questions/32930/is-it-possible-to-suppress-a-specific-field-from-bibtex-bbl-in-biblatex
+\ifdraft{%
+   \usepackage[%
+      backend=biber,%
+      isbn=false,%
+      % hide PMID, ISSN, maybe other fields
+      eprint=false,%
+      % only print year (not day, month) of dates
+      % https://tex.stackexchange.com/questions/89842/how-to-print-only-year-no-day-month-with-biblatex
+      date=year,%
+      % note, doi field is replaced by hyperlink in web edition by bibmacro below
+      doi=true,%
+      % suppress output of URL for entry types whose url is optional
+      % @online entries always have their url printed even when url=false
+      url=false,%
+      style=numeric-comp,%
+      sorting=none,%
+      % https://libguides.lib.msu.edu/latex/citations
+      citestyle=chem-acs,%phys,%chem-acs,%science,%nature,%
+      backref=true%
+   ]{biblatex}%
+}{%
+   \usepackage[%
+      backend=biber,%
+      isbn=false,%
+      eprint=false,%
+      % only print year (not day, month) of dates
+      date=year,%
+      % note, doi field is replaced by hyperlink in web edition by bibmacro below
+      doi=true,%
+      % suppress output of URL for entry types whose url is optional
+      % @online entries always have their url printed even when url=false
+      url=false,%
+      style=numeric-comp,%
+      sorting=none,%
+      citestyle=chem-acs%phys%chem-acs%science%nature%
+   ]{biblatex}%
+}
+
+
+% use smaller font size in printedition, where pages count
+% https://tex.stackexchange.com/a/609374/10824
+\ifprintedition{\renewcommand*{\bibfont}{\normalfont\small}}{}
+
+
+% For entries with DOI, show the DOI in print mode (\ifprintedition) but
+% hide it in web mode instead hyperlinking the entry to the DOI.
+% As a first test, let's try this approach https://tex.stackexchange.com/a/588287/10824
+% finentry defines the end (fini) of each entry, usually simply containing \finentry.
+% fontawesome still has no DOI icon https://github.com/FortAwesome/Font-Awesome/issues/15595
+% academicons has a DOI icon, and comes with a LaTeX package!
+% https://www.ctan.org/pkg/academicons
+% don't use \finentrypunct instead of \finentry or the dot is placed *before* the subsequent entry
+% https://tex.stackexchange.com/a/550732/10824 https://tex.stackexchange.com/a/612524/10824
+\ifwebedition{%
+   \renewbibmacro*{finentry}{%
+      \iffieldundef{doi}{%
+         % Entry lacks DOI
+         \iffieldundef{url}{%
+            % Entry lacks URL and DOI
+            \finentry%
+         }{%
+            % Entry has URL but lacks DOI
+            % Show URL hyperlink as icon (concsiously not using same icon as our "external hyperlinks")
+            \finentry\space%
+            \href{\thefield{url}}{\footnotesize\faIcon{link}}%
+         }%
+      }{%
+         % Entry has DOI \aiDoi
+         \finentry\space%
+         % lower the DOI  symbol a little to align better with baseline
+         \href{https://doi.org/\thefield{doi}}{\raisebox{-0.1ex}{\aiDoi}}%
+      }%
+   }%
+   % suppress output of DOI field (hide both DOI label and string)
+   \DeclareFieldFormat{doi}{}%
+}{%
+   % PRINT EDITION
+   % By default, DOIs are shown, with label in all lower-case, and the DOI itself in \texttt font
+   % DOI appears to be hyperlinked by default. Also, the DOI label is small-caps by default.
+   % https://tex.stackexchange.com/questions/266495/underlined-doi-with-rsc-package/269791#269791
+   % https://tex.stackexchange.com/questions/58636/how-to-change-the-font-for-biblatex-acronyms
+   % Now that the whole Bibliography is printed in small, no need to make DOI smaller still
+   % DOIs are linebroken by default on dashes, which still leaves some DOIs causing overfull lines
+   % because they don't contain any dashes or only at unsuitable positions
+   % So we should allow linebreak at other characters
+   % https://tex.stackexchange.com/a/507350/10824
+   % https://github.com/plk/biblatex/issues/850#issuecomment-487370262
+   % Interesting, disabling our custom doiformat and mkbibacro commands (also the
+   % DeclareFieldFormat below) appears to have fixed the linebreaks in DOIs (they
+   % break pretty nice now)
+   \setcounter{biburlnumpenalty}{9000}
+   \setcounter{biburlucpenalty}{9000}
+   \setcounter{biburllcpenalty}{9000}
+   % add some space after numbers in strings formatted with the \url command (affects URLs and DOIs in bibliography)
+   % only takes effect if biburlnumpenalty is non-zero
+   \biburlnumskip=0mu plus 1mu\relax
+   % ditto for uppercase letters
+   \biburlucskip=0mu plus 1mu\relax
+   % ditto for lowercase letters
+   \biburllcskip=0mu plus 1mu\relax
+}
+
+% hyphenation adjustments I found warranted in the References
+% remember, multiple \hyphenation{} commands simply accumulate
+% please don't edit existing terms here unless you double-check that the still work, sensitive stuff!
+\hyphenation{Perkin-Elmer Natur-vårds-verket läke-med-els-rester nano-crys-tal-line}
+% https://tex.stackexchange.com/questions/634827/correct-way-to-generate-hyphenation-patterns-with-biblatex
+% https://github.com/retorquere/zotero-better-bibtex/issues/612
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - graphics, captions, etc.
+% ----------------------------------------------------------------------
+%\input{assets/preamble/graphics-captions.Rnw}
+
+% we use an `adjustbox` to center some wide figures or tables
+% this replaces my old \centerwide macro
+% https://tex.stackexchange.com/questions/39435/how-can-i-center-a-too-wide-table
+\usepackage{adjustbox}
+\usepackage{xcolor}
+   % "the"-colors borrowed from the microtype manual
+   \definecolor{thered}    {rgb} {0.65,0.04,0.07}
+   \definecolor{sectioning}{gray}{0.44}
+   \definecolor{thegrey}   {gray}{0.5}
+   \definecolor{theframe}  {gray}{0.75}
+   \definecolor{theshade}  {gray}{0.94}
+   % towards a document color scheme
+   \colorlet{thegreen}{green!40!black} % slightly darker to avoid clashing with \fxnote
+   \colorlet{theblue}{blue!60!black}
+% use the Uppsala university profile colours
+\ifprintedition{%
+   \usepackage{uuprintcolorscmyk}
+}{%
+   \usepackage{uuprintcolorsrgb}
+}
+\usepackage{graphicx}
+   \graphicspath{{assets/images/}{assets/photos/}}
+\usepackage{rotating} % sidewaysfigure
+\usepackage{tikz}
+% please *do not* remove the commented-out package name, the chunk 'Rnw-LaTeX-declarations' depends on it!
+\usetikzlibrary{%tikz
+   arrows,% elektromagnetiskt spektrum
+   backgrounds,% required by TikZ periodic table, mdframed boxes, elektromagnetiskt spektrum
+   calc,% required by TikZ periodic table, mdframed boxes, elektromagnetiskt spektrum
+   decorations,% required by SEM scattering picture
+   decorations.markings,% required by Beer-Lambert picture,
+   decorations.pathmorphing,% required by ED cell schematic
+   decorations.pathreplacing,% required by ED cell schematic
+   decorations.shapes,%
+   decorations.text,%
+   fadings,% required by SEM scattering picture
+   fit,% elektromagnetiskt spektrum
+   positioning,% we use it for below=of ..., and easier "node distance" setting, elektromagnetiskt spektrum
+   shapes% elektromagnetiskt spektrum
+}
+% pfg-spectra draws emission spectra for all elements and the visible-light spectrum
+\usepackage{pgf-spectra}
+% tikz-3dplot used to create the nanorod models in P03
+\usepackage{tikz-3dplot}
+% contour used in elektromagnetiskt spektrum TikZ illustration
+\usepackage{contour}
+% mdframed used to draw info boxes
+\usepackage[framemethod=TikZ]{mdframed}
+% added compatibility=false to make it work together with subcaption
+% https://tex.stackexchange.com/questions/31906/subcaption-package-compatibility-issue#31927
+\usepackage[%
+   font=small,%
+   labelsep=period,%
+   nooneline,%
+   compatibility=false%
+]{caption}
+\captionsetup[figure]{%
+   labelfont=it,%
+}
+\captionsetup[table]{%
+   labelfont=bf,%
+   % textfont only affects the caption text
+   textfont=it,%
+}
+% https://tex.stackexchange.com/questions/97094/how-to-change-the-display-of-subfigures-in-list-of-figures
+\usepackage[%
+   margin=0pt,%
+   % the += notation *adds* the declared option(s) to any previously declared options for this property
+   font+=small,%
+   labelformat=parens,%
+   labelsep=space,%
+   justification=centering,%
+   skip=6pt,%
+   % list=true to list sub-captions in List of Figures/Tables
+   list=false,%
+   % hypcap=true is ignored if set, according to log (why?)
+   hypcap=false%
+]{subcaption}
+
+% Typeset captions for figures/tables *beside* it instead of below/above (uses minipages,
+% defines environments SCfigure and SCtable)
+% https://tex.stackexchange.com/questions/29143/caption-on-the-side-of-a-figure
+% I have tested the sidecap package, but found some disappointments:
+% outercaption behaves like innercaption (weird, unless something is wrong with our documentclass),
+% caption does not utilise the available textwidth (limited to width of image, it seems?),
+% sidecaption text is bottom aligned (with no option to change?),
+% and separation between sidecaption and image is too small.
+% Still, the automatic determination of caption placement visavi left/right page is very useful,
+% and caption width can be increased (but I guess having it equal to image helps center the float),
+% and I guess we can live with bottom-aligned caption text.
+
+% Note: neither outercaption nor innercaption work as advertised, they never
+% detect left/right pages!
+% innercaption puts caption to the right of the figure on *all* pages
+% outercaption puts caption to the left of the figure on *all* pages
+% I have no idea how to fix this. Perhaps it's a bug in sidecap.
+\usepackage[%
+   innercaption,%
+   raggedright% no discernible effect though
+]{sidecap}
+% The space between the minipages is \sidecaptionsep, which we reset here
+% note that it's reset using renewcommand, and not setlength as could be assumed
+% \newlength\sidecaptionsep{6pt} -> error: command already defined...
+% \setlength\sidecaptionsep{6pt} -> error: not a number...
+\renewcommand{\sidecaptionsep}{10pt}
+% Set vertical alignment of side caption with its figure
+% https://latex.org/forum/viewtopic.php?t=12364
+% https://stackoverflow.com/questions/67309714/adjusting-side-caption-in-latex
+% "t" to top-align, "c" center, "b" bottom
+\sidecaptionvpos{figure}{b}
+% ----------------------------------------------------------------------
+
+% ----------------------------------------------------------------------
+% Support packages - tables, lists
+% ----------------------------------------------------------------------
+%\input{assets/preamble/tables-lists.Rnw}
+
+\usepackage{booktabs}
+% ctable used for certain complicated tables (e.g., tables with footnotes)
+% note: the ctable manual says "You must load ctable after tikz"
+\usepackage{ctable}
+\usepackage{tabularx}
+\usepackage{longtable}
+% Including headings down to the subsection level in main TOC
+\contentsdepth{subsection} % this command is defined in UUthesis class
+% Numbering of headings in main TOC down to the subsection level
+\numberingdepth{subsection} % this command is defined in UUthesis class
+% tocloft because we want custom "List of..." for Box environments and Hyperlinks
+% the option titles makes tocloft surrender control of the TOC title font, spacing, etc.
+% to the document's default behaviour (otherwise tocloft uses its own settings,
+% which resets fontface, weight, size, spacing, etc. of the following
+% lists: table of contents, list of figures, list of tables, list of schemes,
+% list of boxes, external hyperlinks
+% [titles] did not affect the following lists: list of papers, list of contribs,
+% list of reactions, list of corrections, list of symbols, list of abbreviations,
+% nor any of the regular chapter headers (incl. bibliography).
+\usepackage[titles]{tocloft}
+% https://tex.stackexchange.com/questions/18411/what-are-the-differences-between-using-paralist-vs-enumitem
+% https://tex.stackexchange.com/questions/146306/how-to-make-horizontal-lists
+% inline enables inline (in-paragraph, aka horizontal) lists
+\usepackage[inline]{enumitem}
+% TE remarked (correctly) that new paragraph after itemize list was missing vertical space
+% between it and the end of the list. It seems vspace that should be added for new paragraph
+% is not automatically added after itemize?
+% https://tex.stackexchange.com/questions/199118/modifying-whitespace-before-and-after-list-separately-using-enumitem-package
+% but rather than changing the behaviour for all itemize environments
+% \setlist{after=\vspace{\baselineskip}}
+% I prefer to let the author add this vspace on a per-list basis with
+% \begin{itemize}[after=\vspace{\baselineskip}]
+% [noadjust]{marginnote} "does not adjust the margin note at the height or depth of the current
+% line. This often results in vertical misplacement but seldom in
+% vertical extra space before or after the current line". Sounds good!
+\usepackage[noadjust]{marginnote}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Support packages - chemistry, SI units
+% ----------------------------------------------------------------------
+%\input{assets/preamble/chem-packages.Rnw}
+
+% according to the chemmacros manual only minimal and modules (and formula I suppose)
+% are allowed load-time options (v6+). Other options should be set in \chemsetup{...}
+% please *do not* remove the commented out package name, the chunk 'Rnw-LaTeX-declarations' depends on it!
+\usepackage[%chemmacros
+   % *minimal* specifies the following set of always loaded modules:
+   % acid-base, charges, nomenclature, particles, phases, symbols
+   minimal=true,%
+   modules={%
+      thermodynamics,%
+      units,%
+      orbital,%
+      % reactions also provides \listofreactions
+      reactions,%
+      redox,%
+      reactants,%
+      % scheme also provides \listofschemes
+      scheme}%
+]{chemmacros}
+
+% for descriptions on how to use \chemsetup, see chemmacros manual sec 3.2
+\chemsetup{
+   % if you explicitly set formula=chemformula the chemformula package is loaded immediately
+   % and the method is set up. Otherwise the option will be set by chemmacros at
+   % the end of the preamble
+   formula=chemformula,%
+   chemformula/frac-style=nicefrac,%
+   % list-entry empty string to remove "Reaction " prefix in TOC contentsline
+   reactions/list-entry={},%
+   reactants/printreactants-style=xltabular,%
+   % number reactants when first used (false) or by order of \DeclareChemReactant{} commands (true)
+   reactants/initiate=true%
+}
+
+% Scheme with sub-scheme support, with first sublevel shown in List of Schemes:
+% https://tex.stackexchange.com/questions/6478/new-figure-environment
+% https://tex.stackexchange.com/questions/554320/how-to-create-subschemes-using-chemmacros-and-list-subcaptions-in-table-of-schem
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[
+   fileext=los,
+   listname={List of schemes},
+   name=Scheme,
+   placement=tbp,
+   within=none % don't reset numbering (other options are within={section,chapter})
+]{scheme}
+% starred or not? starred gives (1.a) in subcaptions, unstarred gives (a)
+% also see associated cleveref subscheme macro
+\DeclareCaptionSubType{scheme}
+
+% subreactions environment (used in half-cell and sum reaction)
+% answer https://tex.stackexchange.com/a/681515/10824to my question
+% this environment definition also seen https://tex.stackexchange.com/a/603667/10824 (2021-07-04)
+% citing https://tex.stackexchange.com/a/356406/134144 (2017-03-01)
+\makeatletter
+\newenvironment{subreactions}{%
+   \refstepcounter{reaction}%
+   \protected@edef\theparentequation{\thereaction}%
+   \setcounter{parentequation}{\value{reaction}}%
+   \setcounter{reaction}{0}%
+   \def\thereaction{\theparentequation\alph{reaction}}%
+   \ignorespaces
+}{%
+   \setcounter{reaction}{\value{parentequation}}%
+   \ignorespacesafterend
+}
+\makeatother
+
+% custom package, provides \spacegroup{} command
+\usepackage{spacegroup}
+
+% chemfig for structural formulae drawings
+\usepackage{chemfig}
+   % setatomsep has been deprecated, use \setchemfig instead
+   \setchemfig{atom sep=2em}
+   % define invisible bond (for use between the charged species)
+   \definesubmol\nobond{-[,1.2,,,draw=none]}
+   % set chemfig to print atoms in sans-serif instead of serif, just for contrast
+   \renewcommand*\printatom[1]{\ensuremath{\mathsf{#1}}}
+%\input{assets/preamble/units.Rnw}
+
+\usepackage{siunitx}
+\sisetup{%
+   uncertainty-mode=compact,%
+   % When printing in text mode, reset-text-* = FALSE means to let siunitx override
+   % the surrounding font settings (false means to always keep the default \upshape, \mdseries, \rmfamily)
+   reset-text-family=false,% always print quantities \upright (never italicise, boldface, etc.)
+   % reset-text-series=false,%
+   % reset-text-shape=false,%
+   % the settings text-*-to-math are used to match math mode output to the surrounding text
+   text-family-to-math=false,%
+   text-series-to-math=false%
+}
+% REMEMBER: literal text should not be intermixed with unit macros in DeclareSIUnit
+% counts, intensity
+\DeclareSIUnit{\counts}{cts}
+\DeclareSIUnit{\cps}{cps}
+% lines, in optical gratings
+\DeclareSIUnit{\lines}{lines}
+% electrochemical scales
+\DeclareSIUnit{\vsAgCl}{\vs~\ch{Ag}/\ch{AgCl}}
+\DeclareSIUnit{\vsSHE}{\vs~SHE}
+\DeclareSIUnit{\vsNHE}{\vs~NHE}
+\DeclareSIUnit{\vsSCE}{\vs~SCE}
+\DeclareSIUnit{\vsAVS}{\vs~AVS}
+% these declarations stopped working: "Undefined control sequence. \volt ->\ERROR"
+% after upgrading from siunitx v2 to v3
+% FIXED by moving the literal text into their own unit declarations
+% this way, we are not mixing unit macros with literal text in the same declaration
+\DeclareSIUnit{\voltAgCl}{\volt\vsAgCl}
+\DeclareSIUnit{\voltSHE}{\volt\vsSHE}
+\DeclareSIUnit{\voltNHE}{\volt\vsNHE}
+\DeclareSIUnit{\voltSCE}{\volt\vsSCE}
+\DeclareSIUnit{\voltAVS}{\volt\vsAVS}
+% time, or per time
+\DeclareSIUnit{\rpm}{rpm}
+% \day is already defined by siunitx as "d", but I prefer "day"
+\DeclareSIUnit{\day}{day}
+\DeclareSIUnit{\days}{days}
+% there is a more elegant way to handle localized strings
+% note, in my limited testing siunitx did not work any better after moving
+% language options to documentclass
+% https://tex.stackexchange.com/a/507573/10824
+% but I have no time for this right now
+% https://ctan.org/pkg/translator
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\yearswe}{år}
+\DeclareSIUnit{\years}{years}
+\DeclareSIUnit{\yr}{year}
+\DeclareSIUnit{\yrs}{year}
+% power or energy
+\DeclareSIUnit{\TJ}{\tera\joule}
+\DeclareSIUnit{\GJ}{\giga\joule}
+\DeclareSIUnit{\MJ}{\mega\joule}
+\DeclareSIUnit{\kJ}{\kilo\joule}
+\DeclareSIUnit{\TW}{\tera\watt}
+% \kWh is builtin, and is typeset without any space between kW and h
+% I would like \MWh and \TWh to behave in the same way
+\DeclareSIUnit[inter-unit-product={}]{\TWh}{\tera\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\MWh}{\mega\watt\hour}
+\DeclareSIUnit[inter-unit-product={}]{\Wh}{\watt\hour}
+% storage
+\DeclareSIUnit{\MB}{\mega\byte}
+\DeclareSIUnit{\GB}{\giga\byte}
+\DeclareSIUnit{\TB}{\tera\byte}
+% currencies
+% if more complicated behaviour for currencies is desired, look into:
+% https://tex.stackexchange.com/questions/172566/how-to-print-negative-value-with-currency
+\DeclareSIUnit{\USD}{USD}
+\DeclareSIUnit{\EUR}{EUR}
+\DeclareSIUnit{\SEK}{SEK}
+% some non-SI units, when citing values from older literature
+\DeclareSIUnit{\foot}{ft}
+% for use in square ohms (sheet resistance)
+% https://tex.stackexchange.com/questions/71220/si-units-for-sheet-resistance-using-siunitx
+% https://en.wikipedia.org/wiki/Sheet_resistance
+% \DeclareSIUnit{\sq}{\ensuremath{\Box}} % \Box requires amssymb, which breaks in this document
+% \DeclareSIUnit{\sq}{\tikz{\draw (0,0) rectangle (1,1)}} % poorly specified tikz error
+\DeclareSIUnit{\sq}{sq}
+% astronomical unit AU
+% the siunitx-provided \astronomicalunit uses lower-case au, which I don't like
+\DeclareSIUnit{\astronomicalunit}{AU}
+\DeclareSIUnit{\AU}{\astronomicalunit}
+% parts per ...
+\DeclareSIUnit{\ppm}{ppm}
+\DeclareSIUnit{\ppb}{ppb}
+% siunitx 3.3.7 (possibly earlier) has deprecated \angstrom, so we need to redefine it ourselves
+\DeclareSIUnit{\angstrom}{Å}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Bibliographic metadata
+% ----------------------------------------------------------------------
+%\input{assets/preamble/uu-metadata.Rnw}
+
+% https://tex.stackexchange.com/questions/85318/multiple-paragraphs-break-custom-command
+% Type your abstract text here. Try to not type more than 300 words.
+\newcommand{\abstractEng}{% 280 words
+   The increasing demand for clean energy and safe water resources has driven
+   the development of efficient and sustainable technologies.
+   Among these technologies, photocatalysis using semiconducting materials has emerged
+   as a promising solution for both solar hydrogen generation and water purification.
+   Low-dimensional \zincox, including nanorods, nanoparticles, and quantum confined particles
+   (so called quantum dots), has demonstrated excellent photocatalytic properties due to its
+   large surface area, high electron mobility, and tunable band gap.
+
+   The work in this thesis aims to investigate the potential of low-dimensional \zincox\ alone and in
+   combination with \ch{CdS} and \ch{Fe2O3} for solar hydrogen generation and photocatalytic
+   water purification. The thesis includes a comprehensive analysis of the synthesis,
+   characterisation, and optimisation of low-dimensional \zincox-based photocatalyst systems
+   for solar hydrogen generation and photocatalytic water purification.
+   Additionally, the thesis will evaluate the performance of the \zincox-based photocatalysts
+   under different experimental conditions, either as photoelectrodes or as distributed particle
+   systems for water purification.
+   The work includes detailed size control of \zincox\ by itself in dimensions below
+   \qty{10}{\nm} using a hydrothermal method, to provide an increased total surface area
+   and introduce quantum confinement effects that increase the band gap to enable degradation
+   of chemical bonds in a model pollutant in a distributed system for water purification.
+   The work also includes a relatively detailed study of the phonon--phonon and
+   electron--phonon coupling as a function of dimension from \qtyrange{10}{150}{\nm}
+   for \zincox\ using non-resonant and resonant Raman spectroscopy.
+   Ultimately, the thesis aims to provide insight into the potential of
+   low-dimensional \zincox\ alone and in combination with other inorganic materials
+   for solar hydrogen generation and photocatalytic water purification
+   and pave the way for the development of efficient and sustainable technologies for
+   clean energy and safe water resources.
+}
+
+
+% Filling in this bibliographic information facilitates the processing of the thesis
+% https://unix.stackexchange.com/questions/139809/discovering-metadata-about-a-pdf
+% Insert linebreaks if necessary
+\newcommand{\authorSurname}{Ahmed}
+\newcommand{\authorFirstName}{Taha}
+\newcommand{\authorFirstInitial}{T}
+\newcommand{\authorEmail}{taha.ahmed@kemi.uu.se}
+%%%% TITLE
+\newcommand{\dissertationTitle}{Nanostructured ZnO and metal chalcogenide films for solar photocatalysis}
+%%%% SUBTITLE
+\newcommand{\dissertationSubtitle}{}
+\newcommand{\yearOfPublication}{2023}
+\newcommand{\placeOfDisputation}{Polhemsalen, Lägerhyddsvägen 1, Uppsala}
+\newcommand{\dateOfDisputation}{Monday, 18 December 2023}
+\newcommand{\timeOfDisputation}{13:15}
+\newcommand{\disputationLanguage}{English}
+\newcommand{\numberOfPages}{141}
+\newcommand{\placeOfPublication}{Uppsala}
+\renewcommand{\ISBN}{978-91-513-1961-2}
+\renewcommand{\series}{Uppsala Dissertations from the Faculty of Science and Technology}
+\newcommand{\serialNumber}{2337}
+\newcommand{\department}{Department of Chemistry--Ångström, Structural Chemistry}
+\newcommand{\departmentaddress}{Box~538, Uppsala University, SE-751\,21 Uppsala, Sweden}
+% ISSN for Digital comprehensive summaries of Uppsala dissertations from the faculty of science and technology
+\renewcommand{\ISSN}{1651--6214}
+\newcommand{\urn}{urn:nbn:se:uu:diva-515258}
+% Keywords separated by comma
+\renewcommand{\keywords}{%
+   photocatalysis, %
+   zinc oxide, %
+   quantum dots, %
+   nanorods, %
+   quantum confinement, %
+   low-dimensional, %
+   cathodic electrodeposition, %
+   Raman spectroscopy}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% hyperref and cleveref packages and config
+% ----------------------------------------------------------------------
+%\input{assets/preamble/hyper-settings.Rnw}
+
+% hyperxmp makes it easy to include XMP metadata, integrates with hyperref
+\usepackage{hyperxmp}
+% http://tex.stackexchange.com/questions/41461/how-to-add-copyright-information-to-pdf-metadata
+% http://tex.stackexchange.com/questions/91433/error-using-hyperxmp-package
+\usepackage[%
+   pdfa=false,%
+   % option pdfa sets and disables the following:
+   % Enabled annotation flags: Print, NoZoom, NoRotate [PDF/A 6.5.3].
+   % Disabled annotation flags: Hidden, Invisible, NoView [PDF/A 6.5.3].
+   % Disabled: Launch action ([PDF/A 6.6.1].
+   % more details: http://www.tug.org/applications/hyperref/manual.html#x1-450005.26
+   % If you really want PDF standards, use pdfx package https://www.ctan.org/pkg/pdfx
+   % do NOT set pagebackref=true ==> Package biblatex Error: Incompatible package 'backref'
+   pagebackref=false]{hyperref}
+% hyperlinks do not show up in draft mode, unless you pass "final" to hyperref (see line 10 in thesis.Rnw)
+
+% both editions
+\hypersetup{%
+   % keeppdfinfo retains hyperref's author and keyword fields as-is
+   % this is a necessary work-around otherwise hyperxmp leaves these fields blank
+   % to conform with PDF/A and stuff. See note 1 in section 2.3 of the hyperxmp manual.
+   keeppdfinfo,
+   pdflang=en,%
+   % note: pdfcreator and pdfproducer should not be set
+   % https://tex.stackexchange.com/a/540673/10824
+   pdfauthor={\authorFirstName{} \authorSurname},%
+   % pdfpublisher requires hyperxmp
+   pdfpublisher={\authorFirstName{} \authorSurname},%
+   % pdfcopyright requires hyperxmp
+   % http://tex.stackexchange.com/questions/176856/newline-in-copyright-notice-string-xmp-pdf-metadata
+   pdfcopyright={%
+      \textcopyright\ CC-BY\ 2023\textLF%
+      You are free to share this material in any medium or format, and you are free to adapt this work for any purpose, even commercially, under the following terms:\textLF%
+      You must give appropriate credit, provide a link to the licence, and indicate if changes were made. You may not apply legal terms or technological measures that restricts others from doing anything this licence permits.},%
+   % pdfcontactaddress requires hyperxmp
+   pdfcontactaddress={%
+      Institutionen för kemi--Ångström,\textLF%
+      Uppsala universitet\textLF%
+      Lägerhyddsvägen 1},%
+   pdfcontactcity={Uppsala},%
+   pdfcontactcountry={Sweden},%
+   pdfcontactemail={\authorEmail},%
+   pdfcontactpostcode={75237},%
+   pdfcontacturl={https://solarchemist.se},%
+   pdfkeywords={\keywords},%
+   pdflicenseurl={https://creativecommons.org/licenses/by/4.0},%
+   pdfsubject={Uppsala university PhD thesis Structural chemistry},%
+   pdftitle={\dissertationTitle},%
+   pdftype={PhD thesis}%
+}
+
+% hyperref settings depending on edition
+\ifwebedition{%
+   \hypersetup{%
+      % % PDF/A-3b, see https://tex.stackexchange.com/a/535849/10824
+      % pdfapart=3, %set to 1 for PDF/A-1
+      bookmarks=true,%
+      bookmarksnumbered=true,%
+      % keep PDF bookmarks collapsed by default (should make it easier for new readers to orient themselves)
+      % https://tex.stackexchange.com/questions/288266/how-to-create-pdf-file-with-all-your-bookmarks-displayed
+      % if you decide you want to set the level, see the bookmark package's `openlevel=n` setting
+      bookmarksopen=false,%
+      % breaklinks=true,%
+      % https://tex.stackexchange.com/questions/263526/color-options-for-appearance-of-links-in-hyperref
+      % citecolor=thegreen,% set to black for print?
+      % colorlinks=true without explicitly setting any other *color settings makes all
+      % cross-references (TOC, glossary entries) red text, citations green text, etc.
+      % NOTE, any hover effects are due to the PDF reader and nothing we can control
+      % https://tex.stackexchange.com/questions/512833/make-href-in-latex-change-color-when-hover-above-text
+      % colorlinks=false puts a coloured box around all xref, citations, etc. while
+      % leaving the text colour unchanged
+      % Note that despite "false", DOI links in References are still coloured cyan
+      colorlinks=false,%
+      % hyperlink border colour
+      % linkbordercolor did not accept "none" or "false"
+      % https://tex.stackexchange.com/questions/148754/how-to-set-the-border-color-in-pdf-forms-to-none
+      % linkbordercolor= (empty value throws no errors, but draws the border black in Evince/Okular/Firefox)
+      % linkbordercolor={} (same result as empty value: black border)
+      % linkbordercolor=transparent (same result as empty value: black border)
+      % linkbordercolor=white (works, hidden border in all PDF readers I tested except Zotero)
+      % https://forums.zotero.org/discussion/93669/zotero-pdf-reader-incorrect-surrounding-box-size-of-hyperlinks-in-pdf-files
+      linkbordercolor=white,%
+      % linkbordercolor=transparent,%
+      % linkborderwidth=0pt =>  Undefined key 'linkborderwidth'
+      % borderwidth=0pt     =>  Undefined key `borderwidth' (huh, did not expect that, weird)
+      % pdfborder: width of PDF link border
+      % linkbordercolor=white combined with pdfborder=0pt causes the same issue in Zotero PDF reader
+      % perhaps pdfborder is not about link borders? hyperref docs is not clear
+      % pdfborder=0pt,%
+      % hidelinks works OK in Zotero too, but obviously now we have no linkboxes at all anywhere
+      % hidelinks,%
+      % filecolor=black,%
+      % hyperfootnotes=true,%
+      % hyperindex=true,%
+      % linkcolor=theblue,% set to black for print?
+      % linktoc=section,% linktoc=all does not color pagenums, no idea why. Have not been able to color both text and num.
+      % menucolor=black,%
+      % urlcolor=thered,% set to black for print?
+   }
+}{%
+   % print edition
+   % some metadata is still useful for the print PDF
+   \hypersetup{%
+      % https://tex.stackexchange.com/a/505947/10824
+      hidelinks,%
+      % % PDF/A-3b, see https://tex.stackexchange.com/a/535849/10824
+      % pdfapart=3, %set to 1 for PDF/A-1
+      % pdfaconformance=B,%
+      bookmarks=false,%
+   }
+}
+%\input{assets/preamble/cleveref-settings.Rnw}
+
+% nameinlink makes the whole cleveref ref (including label) a clickable link
+\usepackage[nameinlink]{cleveref}
+
+% The cross-reference name for a given cross-reference type is customised using
+% the \crefname and \Crefname commands
+% (by default, if we do nothing, we got "fig. X")
+% For cross-refs to objects in the thesis itself, let's not use abbreviations
+\crefname{figure}{figure}{figures}
+\Crefname{figure}{Figure}{Figures}
+\crefname{table}{table}{tables}
+\Crefname{table}{Table}{Tables}
+
+% https://tex.stackexchange.com/questions/571810/create-a-simple-scheme-environment-and-a-list-of-schemes
+% otherwise \cref{sch:MB-structure} produces "?? 1a"
+\crefname{subscheme}{scheme}{schemes}
+\Crefname{subscheme}{Scheme}{Schemes}
+
+% List of Papers environment, counters, etc. are defined in the LuaUUThesis class:
+% /usr/local/texlive/texmf-local/tex/latex/local/LuaUUThesis.cls
+% https://git.solarchemist.se/config/texmf-latex
+\crefname{listofpapersc}{\textbf{\textsc{paper}}}{\textbf{\textsc{papers}}}
+\Crefname{listofpapersc}{\textbf{\textsc{Paper}}}{\textbf{\textsc{Papers}}}
+\creflabelformat{listofpapersc}{#2\textbf{\textsc{#1}}#3}
+
+
+% List of contributions (other than papers)
+% List of Contributions environment, counters, etc. are defined in the LuaUUThesis class:
+% /usr/local/texlive/texmf-local/tex/latex/local/LuaUUThesis.cls
+% https://git.solarchemist.se/config/texmf-latex
+\crefname{listofcontributionsc}{\textbf{\textsc{contrib.}}}{\textbf{\textsc{contribs.}}}
+\Crefname{listofcontributionsc}{\textbf{\textsc{Contrib.}}}{\textbf{\textsc{Contribs.}}}
+\creflabelformat{listofcontributionsc}{#2\textbf{\textsc{#1}}#3}
+
+
+%%% Cross-refs to PAPER 1 (figures)
+\DeclareFloatingEnvironment[within=none]{figureP1}
+\crefformat{figureP1}{\textsc{#2fig.~#1#3}~of\space\cref{P1}}
+\Crefformat{figureP1}{\textsc{#2Fig.~#1#3}~of\space\cref{P1}}
+\crefrangeformat{figureP1}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P1}}
+\Crefrangeformat{figureP1}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P1}}
+\crefmultiformat{figureP1}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}
+\Crefmultiformat{figureP1}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P1}}
+\crefrangemultiformat{figureP1}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}
+\Crefrangemultiformat{figureP1}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P1}}
+
+
+%%% Cross-refs to PAPER 2 (tables and figures)
+% DeclareFloatingEnvironment is from the newfloat package
+% within=none: don't reset numbering (other values are section or chapter)
+\DeclareFloatingEnvironment[within=none]{tableP2}
+% cleveref considers \crefname a high-level command, but \crefformat is a low-level command
+% as such, we need to specify all the \crefformat* variants ourselves
+\crefformat{tableP2}{\textsc{#2tab.~#1#3}~of\space\cref{P2}}
+\Crefformat{tableP2}{\textsc{#2Tab.~#1#3}~of\space\cref{P2}}
+\crefrangeformat{tableP2}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\Crefrangeformat{tableP2}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+% https://tex.stackexchange.com/questions/383587/plural-cref-with-custom-unnumbered-subsections
+% From the cleveref manual: crefmultiformat takes five args:
+% the cross-reference type,
+\crefmultiformat{tableP2}{%
+   % the format for the first cross-reference in a list,
+   \scshape tabs.~#2#1#3}{%
+   % the format for the second cross-reference in a list of two,
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   % the format for the middle cross-references in a list of more than two,
+   , #2#1#3}{%
+   % and the format for the last cross-reference in a list of more than two.
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\Crefmultiformat{tableP2}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+% crefrangemultiformat is used if cross-ref contains multiple ranges, e.g., 1-3 & 5-8
+% https://gist.github.com/ummels/3428745
+\crefrangemultiformat{tableP2}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+\Crefrangemultiformat{tableP2}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+
+\DeclareFloatingEnvironment[within=none]{figureP2}
+\crefformat{figureP2}{\textsc{#2fig.~#1#3}~of\space\cref{P2}}
+\Crefformat{figureP2}{\textsc{#2Fig.~#1#3}~of\space\cref{P2}}
+\crefrangeformat{figureP2}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\Crefrangeformat{figureP2}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P2}}
+\crefmultiformat{figureP2}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\Crefmultiformat{figureP2}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P2}}
+\crefrangemultiformat{figureP2}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+\Crefrangemultiformat{figureP2}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P2}}
+
+
+%%% Cross-refs to PAPER 3 (tables and figures)
+\DeclareFloatingEnvironment[within=none]{tableP3}
+\crefformat{tableP3}{\textsc{#2tab.~#1#3}~of\space\cref{P3}}
+\Crefformat{tableP3}{\textsc{#2Tab.~#1#3}~of\space\cref{P3}}
+\crefrangeformat{tableP3}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\Crefrangeformat{tableP3}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\crefmultiformat{tableP3}{%
+   \scshape tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\Crefmultiformat{tableP3}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\crefrangemultiformat{tableP3}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+\Crefrangemultiformat{tableP3}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+
+\DeclareFloatingEnvironment[within=none]{figureP3}
+\crefformat{figureP3}{\textsc{#2fig.~#1#3}~of\space\cref{P3}}
+\Crefformat{figureP3}{\textsc{#2Fig.~#1#3}~of\space\cref{P3}}
+\crefrangeformat{figureP3}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\Crefrangeformat{figureP3}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P3}}
+\crefmultiformat{figureP3}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\Crefmultiformat{figureP3}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P3}}
+\crefrangemultiformat{figureP3}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+\Crefrangemultiformat{figureP3}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P3}}
+
+
+%%% Cross-refs to PAPER 4 (tables and figures)
+\DeclareFloatingEnvironment[within=none]{tableP4}
+\crefformat{tableP4}{\textsc{#2tab.~#1#3}~of\space\cref{P4}}
+\Crefformat{tableP4}{\textsc{#2Tab.~#1#3}~of\space\cref{P4}}
+\crefrangeformat{tableP4}{\textsc{tabs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{tableP4}{\textsc{Tabs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{tableP4}{%
+   \scshape tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{tableP4}{%
+   \scshape Tabs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{tableP4}{%
+   \scshape tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{tableP4}{%
+   \scshape Tabs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+
+\DeclareFloatingEnvironment[within=none]{figureP4}
+\crefformat{figureP4}{\textsc{#2fig.~#1#3}~of\space\cref{P4}}
+\Crefformat{figureP4}{\textsc{#2Fig.~#1#3}~of\space\cref{P4}}
+\crefrangeformat{figureP4}{\textsc{figs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{figureP4}{\textsc{Figs.~#3#1#4--#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{figureP4}{%
+   \scshape figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{figureP4}{%
+   \scshape Figs.~#2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , #2#1#3}{%
+   \:\&\:#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{figureP4}{%
+   \scshape figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{figureP4}{%
+   \scshape Figs.~#3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , #3#1#4--#5#2#6}{%
+   \:\&\:#3#1#4--#5#2#6~\textnormal{of\space}\cref{P4}}
+
+\DeclareFloatingEnvironment[within=none]{figureP4-SI}
+\crefformat{figureP4-SI}{\textsc{#2fig.~S#1#3}~of\space\cref{P4}}
+\Crefformat{figureP4-SI}{\textsc{#2Fig.~S#1#3}~of\space\cref{P4}}
+\crefrangeformat{figureP4-SI}{\textsc{figs.~S#3#1#4--S#5#2#6}~of\space\cref{P4}}
+\Crefrangeformat{figureP4-SI}{\textsc{Figs.~S#3#1#4--S#5#2#6}~of\space\cref{P4}}
+\crefmultiformat{figureP4-SI}{%
+   \scshape figs.~S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}
+\Crefmultiformat{figureP4-SI}{%
+   \scshape Figs.~S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}{%
+   , S#2#1#3}{%
+   \:\&\:S#2#1#3~\textnormal{of\space}\cref{P4}}
+\crefrangemultiformat{figureP4-SI}{%
+   \scshape figs.~S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}
+\Crefrangemultiformat{figureP4-SI}{%
+   \scshape Figs.~S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}{%
+   , S#3#1#4--S#5#2#6}{%
+   \:\&\:S#3#1#4--S#5#2#6~\textnormal{of\space}\cref{P4}}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Custom LaTeX commands
+% ----------------------------------------------------------------------
+% Both of these children contain custom macros that may depend on other
+% loaded packages, such as glossaries or cleveref and so need to be last
+% latex-knitr contains commands that need to be known to *both* LaTeX and R
+% (e.g., \nonresmode{} used in plots). This entire file is read by R.Rnw
+%\input{assets/preamble/custom/latex-knitr.Rnw}
+
+% defines a case environment
+% code taken from a TeX.SE answer by egreg
+% https://tex.stackexchange.com/a/451094/10824
+% fantastic piece of code, works beautifully, for an arbitrary number of cases
+\ExplSyntaxOn
+\NewExpandableDocumentCommand{\stringcase}{mO{}m}{%
+   \str_case_e:nnF { #1 } { #3 } { #2 }
+}
+\ExplSyntaxOff
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesShort}{m}{%
+   \stringcase{#1}[\textbf{??}]{%
+      % note, neither \text{} nor \mathrm{} obey \mathbf{} nor \bfseries
+      % the unicode-math package provides \mathup{} % https://tex.stackexchange.com/a/380398/10824
+      % \mathbfup ? did not work
+      % \textup inside math mode? pointless % https://tex.stackexchange.com/questions/33120/should-subscripts-in-math-mode-be-upright
+      % what a horrible mess, why is math-mode simply not allowing bold upright?
+      % abandon math mode, \textsubscript instead? % https://tex.stackexchange.com/a/47327/10824
+      % Ok, completely avoiding math mode here allows the command to obey
+      % surrounding bold environment. Also, works as-is if used in math mode.
+      % Note our use of \textup{} to ensure that those parts always stay upright even
+      % if surrounded by italic environment.
+      % {shortcode}{LaTeX typeset text}
+      {E2l}{\textit{E}\textsubscript{\textup{2l}}}%
+      {B1l}{\textit{B}\textsubscript{\textup{1l}}}%
+      {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}}%
+      {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}}%
+      {E2h}{\textit{E}\textsubscript{\textup{2h}}}%
+      {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {B1h}{\textit{B}\textsubscript{\textup{1h}}}%
+      {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}}%
+      {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2l}}}%
+      {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2h}}}%
+      {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}}%
+   }%
+}
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesLong}{m}{%
+   \stringcase{#1}[\textbf{??}]{%
+      {E2l}{\textit{E}\textsubscript{\textup{2(low)}}}%
+      {B1l}{\textit{B}\textsubscript{\textup{1(low)}}}%
+      {A1TO}{\textit{A}\textsubscript{\textup{1(TO)}}}%
+      {E1TO}{\textit{E}\textsubscript{\textup{1(TO)}}}%
+      {E2h}{\textit{E}\textsubscript{\textup{2(high)}}}%
+      {E1LO}{\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {B1h}{\textit{B}\textsubscript{\textup{1(high)}}}%
+      {A1LO}{\textit{A}\textsubscript{\textup{1(LO)}}}%
+      {2E2l}{\textup{2}\textit{E}\textsubscript{\textup{2(low)}}}%
+      {2E2h}{\textup{2}\textit{E}\textsubscript{\textup{2(high)}}}%
+      {2E1LO}{\textup{2}\textit{E}\textsubscript{\textup{1(LO)}}}%
+      {2A1LO}{\textup{2}\textit{A}\textsubscript{\textup{1(LO)}}}%
+   }%
+}
+
+% not meant to be exposed to user
+\NewDocumentCommand{\NonResonantModesLogic}{m O{short}}{%
+   \IfNoValueTF{#2}{%
+      % arg #2 (optional) not given, proceed as "short"
+      \NonResonantModesShort{#1}%
+   }{%
+      % arg #2 (optional) was given, check if it is "long"
+      \ifthenelse{\equal{#2}{long}}{%
+         % "long" was given
+         \NonResonantModesLong{#1}%
+      }{%
+         % arg was given, but is not equal to "long"
+         % check if it is "short"
+         \ifthenelse{\equal{#2}{short}}{%
+            \NonResonantModesShort{#1}%
+         }{%
+            % arg was neither "long" nor "short", something else
+            \NonResonantModesShort{}%
+         }%
+      }%
+   }%
+}
+
+% Non-resonant Raman modes of ZnO
+% \nonresmode{E2h}[E2l][long][diff]
+% Use \nonresmode like this:
+% \nonresmode{E2l}              => E2l
+% \nonresmode{E2l}[][long]      => E2low
+% \nonresmode{}                 => ??
+% \nonresmode                   => ERROR
+% \nonresmode{E2l}[E2h]         => E2l+E2h
+% \nonresmode{E2l}[E2h][][diff] => E2l-E2h
+% \nonresmode{E2l}[E2h][long]   => E2low + E2high
+% only specify optional arguments if necessary, i.e.,
+% please don't do \nonresmode{E2l}[][][], but please do \nonresmode{E2l}
+% remember, optional arg "o" will supply the special -NoValue- marker if not given
+% the arg O{sum} is an optional arg with the default value "sum"
+\NewDocumentCommand{\nonresmode}{m o O{short} O{sum}}{%
+   \IfNoValueTF{#2}{%
+      % no arg #2 was given, which means we are typesetting a single mode
+      % if no arg #2 was given, then we can disregard #4
+      \IfNoValueTF{#3}{%
+         % this way, if #3 was not given, we avoid passing the special -NoValue- marker
+         \NonResonantModesLogic{#1}%
+      }{%
+         % if #3 was given, pass it on, unless it was empty
+         \ifthenelse{\isempty{#3}}{%
+            \NonResonantModesLogic{#1}%
+         }{%
+            \NonResonantModesLogic{#1}[#3]%
+         }%
+      }%
+   }{%
+      % If optional arg #2 was given and is empty, perform the same code as if -NoValue-
+      \ifthenelse{\isempty{#2}}{%
+         \IfNoValueTF{#3}{%
+            % this way, if #3 was not given, we avoid passing the special -NoValue- marker
+            \NonResonantModesLogic{#1}%
+         }{%
+            % if #3 was given, pass it on, unless it was empty
+            \ifthenelse{\isempty{#3}}{%
+               \NonResonantModesLogic{#1}%
+            }{%
+               \NonResonantModesLogic{#1}[#3]%
+            }%
+         }%
+      }{%
+         % if #2 is not -NoValue- nor empty, then just assume that it is one of the mode shortcodes
+         % (we don't try to check that it is in fact part of that set)
+         % But first, determine if we are writing "sum" or "diff" modes
+         % (note that we assume that #4 has a value, since it is the last arg we never expect it%
+         % to be given explicitly empty)
+         \ifthenelse{\equal{#4}{diff}}{%
+            % Since #4 has a default, we can simplify this if-else to only check for "diff"
+            % and we can then assume that the else-clause matches "sum"
+            % But note that arg #3 may have been given explicity empty, thus overriding the default
+            % so we must check for that
+            \ifthenelse{\isempty{#3}}{%
+               % Note, to get consistent spacing around the +/- sign whether the
+               % call to \nonresmode{} is surrounded by math mode or not, it is
+               % good to surround everything in ensuremath{} here
+               % Also, for "short" mode, I want to kill the space surrounding the +/- sign
+               % (to keep it compact, which is probably what the user wants in "short" mode)
+               \NonResonantModesLogic{#1}\ensuremath{\mkern0mu-\mkern0mu}\NonResonantModesLogic{#2}%
+            }{%
+               \ifthenelse{\equal{#3}{long}}{%
+                  % \mkern to avoid addition of glue (glue may make the space larger, which looks bad)
+                  % https://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing
+                  % https://tex.stackexchange.com/questions/512101/what-is-kern-good-for
+                  % \thinmuskip is equivalent to 3mu
+                  \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}[#3]%
+               }{%
+                  \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu-\mkern1.5mu}\NonResonantModesLogic{#2}%
+               }%
+            }%
+         }{%
+            \ifthenelse{\isempty{#3}}{%
+               \NonResonantModesLogic{#1}\ensuremath{\mkern0mu+\mkern0mu}\NonResonantModesLogic{#2}%
+            }{%
+               \ifthenelse{\equal{#3}{long}}{%
+                  \NonResonantModesLogic{#1}[#3]\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}[#3]%
+               }{%
+                  \NonResonantModesLogic{#1}\ensuremath{\mkern1.5mu+\mkern1.5mu}\NonResonantModesLogic{#2}%
+               }%
+            }%
+         }%
+      }%
+   }%
+}
+
+
+% Use \Eg like this:
+% \Eg{}         => Eg
+% \Eg{}[]       => Eg
+% \Eg{3.57}     => Eg = 3.57 eV
+% \Eg{3.57}[]   => Eg = 3.57 eV
+% \Eg{480}[\nm] => Eg = 480 nm
+% Note, just \Eg (without braces) will cause an error!
+% The aim is to always return a string that make physical sense (valid SI notation)
+% Requires xparse, xifthen, siunitx
+% https://stackoverflow.com/questions/1812214/latex-optional-arguments
+% https://tex.stackexchange.com/questions/58628/optional-argument-for-newcommand
+% https://tex.stackexchange.com/questions/308/different-command-definitions-with-and-without-optional-argument
+\NewDocumentCommand{\Eg}{mo}{%
+   % if the first arg (m) is empty, just print the symbol for Eg
+   \ifthenelse{\isempty{#1}}{%
+      \ensuremath{E_\text{g}}}{%
+      \IfNoValueTF{#2}{%
+         % note that IfNoValue considers empty arg, i.e., [], as a valid value
+         \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{%
+         \ifthenelse{\isempty{#2}}{%
+            \ensuremath{E_\text{g}{\,=\,}\qty{#1}{\eV}}}{%
+            \ensuremath{E_\text{g}{\,=\,}\qty{#1}{#2}}}}}}
+
+
+% Use \Rsq like this: \Rsq{0.988}, \Rsq[adj]{0.988}
+% requires xparse, xifthen, siunitx
+% https://tex.stackexchange.com/questions/48355/latex-command-with-optional-arguments
+\NewDocumentCommand{\Rsq}{om}{%
+   \IfNoValueTF{#1}{%
+      \ensuremath{R^2{\,=\,}\num{#2}}}{%
+      \ensuremath{R_\text{#1}^2{\,=\,}\num{#2}}}}
+
+
+% Use \density like this:
+% \density{}       => p (returns just the symbol)
+% \density{}[]     => p (ditto)
+% \density{4.15}   => p=4.15 g cm-3
+% \density{4.15}[] => p=4.15 g cm-3
+% \density{4.15}[\kg\per\cubic\metre] => p=4.15 kg m-3
+% Note, just \density (without braces) will cause an error!
+% The aim is to always return a string that make physical sense (valid SI notation)
+% Requires xparse, xifthen, siunitx
+\NewDocumentCommand{\density}{mo}{%
+   % if the first arg (m) is empty, just print the symbol for density
+   \ifthenelse{\isempty{#1}}{%
+      \ensuremath{\rho}}{%
+      \IfNoValueTF{#2}{%
+         % note that IfNoValue considers empty arg, i.e., [], as a valid value
+         \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{%
+         \ifthenelse{\isempty{#2}}{%
+            \ensuremath{\rho{\,=\,}\qty{#1}{\gram\per\cubic\cm}}}{%
+            \ensuremath{\rho{\,=\,}\qty{#1}{#2}}}}}}
+
+
+% typeset Miller index
+% use like this:
+% \miller{002}
+\NewDocumentCommand{\miller}{m}{%
+   % for now simply put inside \num{}
+   \num{#1}%
+}
+% macros that need only be known to LaTeX
+%\input{assets/preamble/custom/latex.Rnw}
+
+% chemmacros already defines \insitu
+\NewChemLatin{\exsitu}{ex~situ}
+\NewChemLatin{\Exsitu}{Ex~situ}
+\NewChemLatin{\Insitu}{In~situ}
+
+\NewChemParticle{\proton}{H+}
+\NewChemParticle{\electron}{e-}
+\NewChemParticle{\hole}{h+}
+\NewChemParticle{\photon}{\ensuremath{h\nu}}
+
+% PSA: variable names cannot contain numbers
+\NewChemParticle{\oxide}{O^{2-}}
+% defining \hydroxide as \Hyd (chemmacros built-in) caused TeX memory error. Weird...
+\NewChemParticle{\hydroxide}{OH-}
+\NewChemParticle{\HydRad}{^.OH}
+\NewChemParticle{\hydroxyl}{OH}
+\NewChemParticle{\zincox}{ZnO}
+\NewChemParticle{\ZnO}{ZnO}
+\NewChemParticle{\ironox}{Fe2O3}
+\NewChemParticle{\tinox}{SnO2}
+\NewChemParticle{\EtOH}{EtOH}
+\NewChemParticle{\LiOH}{LiOH * H2O}
+\NewChemParticle{\CdS}{CdS}
+\NewChemParticle{\hydrogen}{H2}
+\NewChemParticle{\oxygen}{O2}
+\NewChemParticle{\carbonox}{CO2}
+\NewChemParticle{\carbondiox}{CO2}
+
+% for some reason the number 2 in front of the adduct always gets
+% subscripted when using \NewChemParticle, but renders normally with \newcommand
+% note, macros with \ch{} inside will not work when called from inside \ch{}, which is very annoying
+% \newcommand{\ZnAc}{\ch{Zn(OAc)2 * 2 H2O}}
+% ok, new approach, let \ZnAc exclude the water, add the water yourself when needed
+\NewChemParticle\ZnAc{Zn(OAc)2}
+% to avoid confusing ourselves, lets also define ZnOAc (same formula)
+\NewChemParticle\ZnOAc{Zn(OAc)2}
+% \hematite is used by glossary entry \gls{hematite}
+% NOTE here we are abusing a unicode character for "hyphen"
+% this was the only way to get a proper hyphen (dash) inside NewChemParticle
+% all other ways I tried rendered as math minus (or chemical bond)
+% and I tried \textnormal{-} within/without math mode, and \text{}, \textrm{}, etc.
+% NOTE! siunitx suggests another way to accomplish this, see sec. 9.4 in its manual
+\NewChemParticle{\hematite}{\chemalpha{}‐Fe2O3}
+
+
+
+% elemental transitions (for XPS, primarily)
+% Use \eltr like this:
+% \eltr{C}{1s}        => C 1s
+% \eltr{Fe}{2p}       => Fe 2p
+% \eltr{Zn}{3d}^{6}   => Zn 3d<sup>6</sup>
+% \eltr{Fe}{2p}_{3/2} => Fe 2p<sub>3/2</sub>
+% could also use sfrac style, but not trivial to make that apply automatically...
+% https://tex.stackexchange.com/questions/543318/command-with-optional-argument-in-parentheses-and-subscript
+% https://tex.stackexchange.com/questions/345365/xparses-new-e-type-argument-replacement-for-k-type-argument
+% https://tex.stackexchange.com/questions/636432/usage-of-e-and-e-argument-types-in-xparse
+% e{} is a special kind of optional argument with embellishments
+\NewDocumentCommand{\eltr}{mme{_}e{^}}{%
+   % I think mkern is better than hspace, to ensure no breaks are allowed
+   % .2222em should be equivalent to 4mu
+   % https://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing
+   \ensuremath{\ch{#1}\mkern4mu#2}%
+   \IfValueT{#4}{\ensuremath{^{#4}}}%
+   \IfValueT{#3}{\ensuremath{_{#3}}}%
+}
+
+
+% when you want to refer to SI
+% prints "Supplemental Information" by default
+% use optional arg "short" to print "SI"
+\NewDocumentCommand{\supplemental}{o}{%
+   \IfNoValueTF{#1}{%
+      \textsc{Supplemental Information}%
+   }{%
+      \ifthenelse{\equal{#1}{short}}{%
+         \textsc{si}%
+      }{%
+         % if any string was given as optional arg, disregard and fall-back to default
+         \textsc{Supplemental Information}%
+      }%
+   }%
+}
+
+
+% intended for use in the Acknowledgements
+% I decided against using the externalLink icon (cf \hlink), and against
+% providing the full ORCID URL in a footnote or similar, because an ORCID ID
+% should be sufficiently recognisable these days (and the reader can be trusted
+% to know to put http://orcid.org/ in front of it)
+% This macro layouts the ORCID as a tiny two-line string with ORCID icon in printedition,
+% and as just a hyperlinked ORCID icon in webedition.
+% Found this TeX.SE answer solving the same problem:
+% https://tex.stackexchange.com/questions/445563/ieeetran-how-to-include-orcid-in-tex-pdf-with-pdflatex/445583
+\NewDocumentCommand{\orcid}{m}{%
+   \ifwebedition{%
+      \ifdraft{%
+         % no reason not to be verbose in draft mode, might decrease risk of mistakes
+         \href{http://orcid.org/#1}{\faOrcid\kern0.12em#1}%
+      }{%
+         \href{http://orcid.org/#1}{\faOrcid}%
+      }%
+   }{% if printedition
+      \faOrcid%
+      \kern0.08em%
+      % 1.0 baselineskip is too much, 0.65 neatly fits the ORCID string over 2 lines
+      % width 0.75 cm found to fit nicely with fontsize \tiny and \sffamily
+      \parbox[b][0.65\baselineskip]{0.75cm}{\nointerlineskip\linespread{0}\tiny\sffamily#1}%
+   }%
+}
+
+
+% global length registers
+% necessitated because \newlength{} is not contained by \bgroup ... \egroup scoping
+% https://tex.stackexchange.com/a/29956
+\newlength{\bgxpos}      % currently used in fig_0100 and fig_0308
+\newlength{\bgedgewidth} % currently used in fig_0100 and fig_0308
+
+% colour commands
+\newcommand{\bgcolorbackground}{white} % used in the ED cell schematic
+
+
+% margin note indicating relevant paper (from list of papers)
+% first arg (mandatory): paper, e.g., P1, P2
+% second arg (optional, default empty): a vertical offset, e.g., \baselineskip (negative for up)
+\NewDocumentCommand{\seepaper}{mo}{%
+   % had to use ifnovaluetf{}{}{} construct because passing optional arg to \marginnote{}[#2] kept causing errors
+   % when the optional arg was not set/not given in \seepaper. This approach is verbose, but works.
+   \IfNoValueTF{#2}{%
+      \marginnote{%
+         \tikz[baseline=(current bounding box.south)]%
+         % to avoid the appearance of the filled box bleeding into the body text
+         % on left-side pages (even numbers) we simply shrink the width slightly
+         % Would have been a nicer to have align= depend on even/odd pagenumber, somehow
+         \node[rectangle,rounded corners,fill=mullsvag,text=black,font=\scriptsize]{\cref{#1}};%
+      }%
+   }{%
+      % if second (optional) arg was provided, use it to set marginnote's voffset
+      \marginnote{%
+         \tikz[baseline=(current bounding box.south)]%
+         \node[rectangle,rounded corners,fill=mullsvag,text=black,font=\scriptsize]{\cref{#1}};%
+      }[#2]%
+   }%
+}
+
+
+% labels in margin pointing to more info on blog
+\newcommand{\seemore}[1]{\marginnote{%
+   \noindent\tikz[baseline=(current bounding box.south)]%
+   % to avoid the appearance of the filled box bleeding into the body text
+   % on left-side pages (even numbers) we simply shrink the width slightly
+   % What would have been a nicer solution? Have align= depend on even/odd pagenumber somehow
+   \node[text width=0.8\marginparwidth,align=left,rectangle,rounded corners,fill=blondsvag,font=\scriptsize]{#1};%
+}}
+
+
+% Make URL font size smaller
+% https://tex.stackexchange.com/questions/109740/font-size-of-url-in-footnote
+% smaller[i] reduces font size by i steps (default 1)
+% this only effects \url{}, right?
+\renewcommand*{\UrlFont}{\ttfamily\smaller[2]}
+
+
+% CC licence pictograms, perhaps nicer (more compact?) than writing CC BY-SA in text
+% the optional arg is meant for setting the font size of the pictograms
+% use like this: \CCBY, or \CCBY[\tiny]
+\NewDocumentCommand{\CCBY}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy}%
+   }%
+}
+\NewDocumentCommand{\CCBYSA}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsSa%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsSa}%
+   }%
+}
+\NewDocumentCommand{\CCBYND}{o}{%
+   \IfNoValueTF{#1}{%
+      \faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsNd%
+   }{%
+      {#1\faCreativeCommons\,\faCreativeCommonsBy\,\faCreativeCommonsNd}%
+   }%
+}
+
+
+% to write 19th century, 20th century, and so on
+% also see \input{assets/stylesheet.md}
+% \newcommand{\th}{\textsuperscript{th}} % unfortunately, \th is already defined by something else
+% https://tex.stackexchange.com/a/140686
+\newcommand\centuryname{century}
+% \let\markcent\textsc
+%   \newcommand*{\century}[1]
+%   {\markcent{\uppercase\expandafter{\romannumeral #1\relax}}\textsuperscript{o} \centuryname}
+\NewDocumentCommand{\century}{m}{%
+  \stringcase{#1}[#1\textsuperscript{th} \centuryname]{%
+     {1}{#1\textsuperscript{st} \centuryname}%
+     {2}{#1\textsuperscript{nd} \centuryname}%
+     {3}{#1\textsuperscript{rd} \centuryname}%
+  }%
+}
+
+
+%\input{assets/preamble/custom/infobox.Rnw}
+
+% define the listofboxes TOC
+\newcommand{\listinfoboxname}{List of boxes}
+% note that \newlistof sets \newcounter{infobox}\setcounter{0} internally
+\newlistof[chapter]{infobox}{lob}{\listinfoboxname}
+% let cleveref know about this new label
+\crefname{infobox}{box}{boxes}
+% to allow for shorter labels, define the alias "ibx"
+\newaliascnt{box}{infobox}
+\crefname{box}{box}{boxes}
+
+% mdframed infobox environment definition
+\newenvironment{infobox}[1][]{%
+   \refstepcounter{infobox}
+   \addcontentsline{lob}{section}{\protect\numberline{\theinfobox} #1}%
+   %%% Code for box design goes here:
+   \ifstrempty{#1}{%
+      % if condition (without title)
+      \mdfsetup{%
+         frametitle={%
+         \tikz[baseline=(current bounding box.east),outer sep=0pt]
+         \node[anchor=east,rectangle,fill=gryningstark]
+         {\strut\sffamily Box~\theinfobox};
+         }%
+      }%
+   }{%
+      % else condition (with title)
+      \mdfsetup{%
+         frametitle={%
+         \tikz[baseline=(current bounding box.east),outer sep=0pt]
+         \node[anchor=east,rectangle,fill=gryningstark]
+         {\strut\sffamily Box~\theinfobox:~#1};
+         }%
+      }%
+   }%
+   % For both conditions (with or without title):
+   \mdfsetup{%
+      innertopmargin=10pt,%
+      linecolor=gryningstark,%
+      linewidth=2pt,%
+      topline=true,%
+      frametitleaboveskip=\dimexpr-\ht\strutbox\relax%
+   }%
+   % no indent and smaller fontsize for text in infoboxes
+   \begin{mdframed}[]\smaller\parindent0pt\noindent\relax%
+}{%
+   \end{mdframed}%
+}
+
+%\input{assets/preamble/custom/beer-lambert.Rnw}
+
+% https://texample.net/tikz/examples/lambert-beer-law/
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FADING LIGHT DECORATION %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\pgfkeys{/pgf/decoration/.cd,
+         start color/.store in = \startcolor,
+         end color/.store in   = \endcolor
+        }
+
+\pgfdeclaredecoration{color change}{initial}{
+% Initial state
+\state{initial}[%
+    width                     = 0pt,
+    next state                = line,
+    persistent precomputation = {\pgfmathdivide{50}{\pgfdecoratedpathlength}%
+                                 \let\increment=\pgfmathresult%
+                                 \def\x{0}}]%
+{}%
+
+% Line state
+\state{line}[%
+    width                      = .5pt,
+    persistent postcomputation = {\pgfmathadd@{\x}{\increment}%
+                                  \let\x=\pgfmathresult}]%
+{%
+  \pgfsetlinewidth{\pgflinewidth}%
+  \pgfsetarrows{-}%
+  \pgfpathmoveto{\pgfpointorigin}%
+  \pgfpathlineto{\pgfqpoint{.75pt}{0pt}}%
+  \pgfsetstrokecolor{\endcolor!\x!\startcolor}%
+  \pgfusepath{stroke}%
+}%
+
+% Final state
+\state{final}{%
+  \pgfsetlinewidth{\pgflinewidth}%
+  \pgfpathmoveto{\pgfpointorigin}%
+  \color{\endcolor!\x!\startcolor}%
+  \pgfusepath{stroke}%
+}
+}
+\makeatother
+
+
+%%%%%%%%%%%%
+% COMMANDS %
+%%%%%%%%%%%%
+\def\pr#1{\directlua{tex.print(#1)}}
+
+\def\rnd{.%
+\pdfuniformdeviate10%
+\pdfuniformdeviate10%
+\pdfuniformdeviate10%
+}
+
+%\input{assets/preamble/custom/hyperlinks.Rnw}
+
+%%% external hyperlinks
+% Includes regular \href{}{} links in the document (highlighted using fontawesome symbol)
+% and creates a list of all URLs (included in the backmatter)
+% Could be useful for readers forced to use a physical paper copy
+
+% define the listofhyperlinks TOC
+\newcommand{\listhlinkname}{List of external hyperlinks}
+% note that \newlistof sets \newcounter{hlinks}\setcounter{0} internally
+\newlistof[chapter]{hlink}{lol}{\listhlinkname}
+
+% this command should not be cross-referenced, so no need to integrate with cleveref
+
+% hyperlink command
+% uses \href{}{} (hyperref) and \faExternalLink* (fontawesome5)
+% starred version does *not* add line in "List of external hyperlinks"
+% list of arguments {smm}: starred/not and 2 mandatory args
+% https://tex.stackexchange.com/a/4399/10824
+\NewDocumentCommand{\hlink}{smm}{%
+   \IfBooleanTF{#1}{%
+      % starred command
+      \hypersetup{urlcolor=.}\href{#2}{#3~\faExternalLink*}%
+   }{%
+      % regular command, non-starred
+      \refstepcounter{hlink}%
+      \addcontentsline{lol}{hlink}{#2}%
+      % reset the link colour using the dot operator (uses the current text colour)
+      % https://tex.stackexchange.com/a/382995/10824
+      \hypersetup{urlcolor=.}\href{#2}{#3~\faExternalLink*}%
+   }%
+}
+
+% add vertical spacing between chapters in list of hlinks
+% https://tex.stackexchange.com/a/43312/10824
+\makeatletter
+\preto\chapter{\addtocontents{lol}{\protect\addvspace{12\p@}}}%
+\makeatother
+
+
+%%% New approach, let's create a separate \hyperdoi{} macro for DOIs
+%%% to be used instead of \hlink{}, in order to allow saner behaviour
+%%% in print/web edition
+% For example, DOIs do not need any link or \faExternalLink icon in printedition
+\NewDocumentCommand{\hyperdoi}{m}{%
+   \ifwebedition{%
+      % dot "color" resets to whatever colour the surrounding text uses
+      \hypersetup{urlcolor=.}\href{https://doi.org/#1}{DOI: #1~\faExternalLink*}%
+   }{% if printedition
+      DOI: #1%
+   }%
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% Reactants (defined using chemmacros "reactants" module)
+% ----------------------------------------------------------------------
+%\input{assets/preamble/reactants.Rnw}
+
+% see ch. 18 in the chemmacros manual for an excellent introduction on reactants
+\DeclareChemReactant{zincchloride}{%
+   name={\ch{ZnCl2}},%
+   bookmark={ZnCl₂}%
+}
+\DeclareChemReactant{potassiumchloride}{%
+   name={\ch{KCl}},%
+   bookmark={KCl}%
+}
+\DeclareChemReactant{cadmiumsulfate}{%
+   name={\ch{CdSO4}},%
+   % bookmark (replacement in PDF bookmarks)
+   bookmark={CdSO₄}%
+}
+\DeclareChemReactant{cadmiumsulfatehydrate}{%
+   name={\ch{CdSO4 * 8/3 H2O}},%
+   bookmark={CdSO₄ ⋅ 2.67H₂O}%
+}
+\DeclareChemReactant{thiourea}{%
+   name={\ch{CH4N2S}},%
+   bookmark={CH₄N₂S}%
+}
+\DeclareChemReactant{ammonia}{%
+   name={\ch{NH3}},%
+   bookmark={NH₃}%
+}
+\DeclareChemReactant{zincacetatedihydrate}{%
+   name={\ch{\ZnAc * 2 \water}},%
+   bookmark={Zn(OAc)₂ ⋅ 2H₂O}%
+}
+% \LiOH is defined as \NewChemParticle in custom.Rnw
+\DeclareChemReactant{lithiumhydroxidehydrate}{%
+   name={\LiOH},%
+   bookmark={LiOH ⋅ H₂O}%
+}
+% \EtOH is defined as \NewChemParticle in custom.Rnw
+\DeclareChemReactant{ethanol}{%
+   name={\EtOH},%
+   bookmark={EtOH}%
+}
+% MB is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{MB}{%
+   name=\iupac{3,7-bis(di|methyl|amino)-pheno|thiazin-5-ium chloride},%
+   bookmark={MB}%
+}
+% RB5 is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{RB5}{%
+   name=\iupac{2,7-naphthalene|di|sulfonic acid, 4-amino-5-hydroxy-3,6-bis[[4-[[2-(sulfo|oxy)ethyl]sulfonyl]phenyl]azo]-, tetra|sodium salt},%
+   bookmark={RB5}%
+}
+% EBT is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{EBT}{%
+   name=\iupac{sodium 4-[2-(1-hydroxy|naphthalen-2-yl)hydrazin-1-ylidene]-7-nitro-3-oxo-3,4-di|hydro|naphthalene-1-sulfonate},%
+   bookmark={EBT}%
+}
+% MO is included glossary entry in acronyms.Rnw
+\DeclareChemReactant{MO}{%
+   name=\iupac{sodium 4-{[4-(di|methyl|amino)phenyl]di|azenyl}benzene-1-sulfonate},%
+   bookmark={MO}%
+}
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% glossaries-extra and showlabels
+% ----------------------------------------------------------------------
+% glossaries need to be loaded *after* hyperref (for clickable glossary links)
+%\input{assets/preamble/glossaries-extra.Rnw}
+
+% glossaries need to be loaded *after* hyperref for clickable glossary links
+\usepackage[%
+   % The record option not only creates new keys (group and location) but also makes
+   % references to undefined entries trigger warnings rather than errors. This is
+   % necessary since the entries won’t be defined on the first LaTeX call
+   % (see pp. 57 in https://tug.org/TUGboat/tb40-1/tb124talbot-bib2gls.pdf).
+   % glossaries-extra v1.37 introduced the option record=nameref, which writes
+   % more detailed indexing information to the *.aux file.
+   record=nameref,%
+   abbreviations,%
+   symbols,%
+   % If you use one of the tabular-like styles with \printunsrtglossary, make sure
+   % to load glossaries-extra-stylemods which modifies the definition of \glsgroupskip
+   % to avoid the “Incomplete \iftrue” error that may otherwise occur.
+   % This is more conveniently loaded through the stylemods option
+   % stylemods=super,
+   nomain%
+]{glossaries-extra}
+
+% note that \glsaddkeys must be invoked *before* \GlsXtrLoadResources
+% https://tex.stackexchange.com/a/631710
+\glsaddkey{value}%   key/field
+   {}%               default value if field isn't used in \newglossaryentry
+   {\glsentryvalue}% command analogous to \glsentrytext
+   {\Glsentryvalue}% command analogous to \Glsentrytext
+   {\glsvalue}%      command analogous to \glstext
+   {\Glsvalue}%      command analogous to \Glstext
+   {\GLSvalue}%      command analogous to \GLStext
+
+\glsaddkey{unit}%   key/field
+   {}%              default value if field isn't used in \newglossaryentry
+   {\glsentryunit}% command analogous to \glsentrytext
+   {\Glsentryunit}% command analogous to \Glsentrytext
+   {\glsunit}%      command analogous to \glstext
+   {\Glsunit}%      command analogous to \Glstext
+   {\GLSunit}%      command analogous to \GLStext
+
+\glsaddkey{exact}%   key/field
+   {}%               default value if field isn't used in \newglossaryentry
+   {\glsentryexact}% command analogous to \glsentrytext
+   {\Glsentryexact}% command analogous to \Glsentrytext
+   {\glsexact}%      command analogous to \glstext
+   {\Glsexact}%      command analogous to \Glstext
+   {\GLSexact}%      command analogous to \GLStext
+
+\GlsXtrLoadResources[%
+   src={assets/glossaries/acronyms},%
+   sort={en-GB},% sort according to 'en-GB' locale
+   % in final mode, change from "selection=all" to
+   % selection=recorded and deps,%
+   % or alternatively, to
+   selection=recorded and deps and see]%
+   % in draft mode, I prefer including all entries, whether referenced or not
+   % selection=all]
+
+\GlsXtrLoadResources[%
+   src={assets/glossaries/symbols},%
+   sort={en-GB},% sort according to 'en-GB' locale
+   % in final mode, change from "selection=all" (which is useful for draft) to
+   % selection=recorded and deps,%
+   % or alternatively, to
+   selection=recorded and deps and see]%
+   % "selection=all" includes all entries, whether called in the document or not
+   % selection=all]
+
+% \glsdescwidth is the width of the description column in the symbol glossary list
+% \glspagelistwidth is the width of the page list column, if any
+% NOTE: the styles long4col and super4col do NOT use these lengths
+% NOTE: this length has been estimated by eye, but corresponds very closely to
+% textwidth of normal text (compared to the glossary preamble).
+\setlength{\glsdescwidth}{.90\textwidth}
+
+% define custom style=supermod that includes value/unit
+% https://tex.stackexchange.com/questions/415275/flush-glossaries-super-style-to-left
+% the SE answer above appears outdated---the code below is based directly
+% on glossaries-extra v1.50 source code
+\newglossarystyle{supermod}{%
+   \renewenvironment{theglossary}{%
+      \tablehead{}\tabletail{}%
+      \begin{supertabular}{@{}lp{\glsdescwidth}}%
+   }{%
+      \end{supertabular}%
+   }%
+   \renewcommand*{\glossaryheader}{}%
+   \renewcommand*{\glsgroupheading}[1]{}%
+   \renewcommand*{\glssubgroupheading}[4]{}%
+   % Note, \newline worked well to introduce a linebreak while staying inside the p{} column
+   % (in contrast to "\\" which forced the new line to start in the first column)
+   \renewcommand{\glossentry}[2]{%
+      \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+      % if field "value" is specified for this entry
+      \ifglshasfield{value}{##1}{%
+         % if field "exact" is set, use $\equiv$ sign instead of equals sign
+         \ifglshasfield{exact}{##1}{%
+            % we assume that field "exact" is always numeric one or zero
+            \ifthenelse{\glsentryexact{##1} = 1}{$\equiv$}{$=$}%
+         % if field "exact" is not set, but entry has "value" specified, treat as \thisexact=0
+         }{$=$}%
+         % if field "unit" is specified for this entry, print value *and* unit
+         % and if unitless, print just the value
+         \ifglshasfield{unit}{##1}{%
+            $\thinspace$\qty{\glsentryvalue{##1}}{\glsentryunit{##1}}\newline%
+         }{%
+            $\thinspace$\num{\glsentryvalue{##1}}\newline%
+         }%
+      }{%
+         % if field "value" is not specified, check if unit is specified
+         % the typical notation to express "unit of" is [d]=pm, but it's unsuitable
+         % because would mean repeating the symbol...
+         % I came up with this simple forward-slash notation as a work-around
+         \ifglshasfield{unit}{##1}{%
+            $/\unit{\glsentryunit{##1}}$\newline%
+         }{}%
+      }%
+      \glossentrydesc{##1}%
+      \glspostdescription%
+      % if you prefer page numbers and "see also" on their own line, add \newline
+      % before ##2 and remove the \space
+      \space ##2%
+      % change here to increase vertical space between symbol entries
+      \tabularnewline[0pt]
+   }%
+   % we are not using sub-entries, so this could be removed
+   \renewcommand{\subglossentry}[3]{%
+      &
+      \glssubentryitem{##2}%
+      \glstarget{##2}{\strut}\glossentrydesc{##2}\glspostdescription
+      \space ##3\tabularnewline
+   }%
+   \ifglsnogroupskip
+      \renewcommand*{\glsgroupskip}{}%
+   \else
+      \renewcommand*{\glsgroupskip}{& \tabularnewline}%
+   \fi
+}
+% showlabels needs to be called *after* hyperref
+% but also uses glossaries and cleveref commands
+%\input{assets/preamble/showlabels.Rnw}
+
+% showlabels needs to be called *after* hyperref
+% put all labels in the inner margin to avoid clashing with margin notes
+% TO TURN OFF ALL SHOWLABELS, switch document to "final" mode in documentclass options
+\usepackage[nolabel,inner]{showlabels}
+   \ifdraft{% execute showlabels options only in draft mode
+      \renewcommand{\showlabelfont}{\tiny\ttfamily}
+      \showlabels[\color{blue!30!black}]{label}
+      \showlabels[\color{theblue}]{cref}
+      \showlabels[\color{theblue}]{Cref}
+      \showlabels[\color{thegreen}]{cite}
+      \showlabels[\color{thegreen}]{citet}
+      % show labels for glossary commands
+      % note that this crashes inside table environments!!
+      %% either drop the showlabels + glossary integration, or
+      %% abstain from using glossary commands inside tables (floats in general)
+      %% NOTE: DO NOT USE glossaries commands inside floats, or else remove these showlabels commands:
+      \showlabels[\color{red!30!black}]{gls}
+      \showlabels[\color{red!30!black}]{Gls}
+      \showlabels[\color{red!30!black}]{glspl}
+      \showlabels[\color{red!30!black}]{Glspl}
+      \showlabels[\color{red!30!black}]{glsfirst}
+      \showlabels[\color{red!30!black}]{Glsfirst}
+      \showlabels[\color{red!30!black}]{glstext}
+      \showlabels[\color{red!30!black}]{Glstext}
+      \showlabels[\color{red!30!black}]{glsname}
+      \showlabels[\color{red!30!black}]{Glsname}
+      \showlabels[\color{red!30!black}]{glssymbol}
+      \showlabels[\color{red!30!black}]{glsunit}
+   }{}
+% ----------------------------------------------------------------------
+
+% https://tex.stackexchange.com/questions/136742/changing-background-color-of-text-in-latex
+% https://texblog.org/2015/05/20/using-colors-in-a-latex-document
+% note that siunitx commands inside hl{} must be put inside \mbox{} to work
+\usepackage{soul}
+\sethlcolor{yellow!15}
+% apparently the \hl{} macro destroys csquotes ability to automatically determine
+% that long quotes should be typeset as a block
+% If you want proper blocks, look into using csquotes mkblockquote macro
+% https://tex.stackexchange.com/questions/135680/csquotes-always-enclose-blockquote-in
+% https://tex.stackexchange.com/questions/648839/blockquote-outputting-unpredictably
+% \renewcommand\mkblockquote[4]{\leavevmode#1#2#3#4}
+
+\addbibresource{assets/references/library.bib}
+
+% let's adapt the footer (note, fancyhdr has no effect in this class)
+\makeatletter
+\renewcommand{\ps@plain}{%
+	\let\@oddhead\@empty%
+	\let\@evenhead\@empty%
+	\renewcommand{\@oddfoot}{\url{http://solarchemist.se/thesis}\hfil{\small2023-12-18}}%
+	\renewcommand{\@evenfoot}{{\small2023-12-18}\hfil\url{http://solarchemist.se/thesis}}%
+}
+\makeatother
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+% ----------------------------------------------------------------------
+% R SETUP
+% ----------------------------------------------------------------------
+%\input{assets/preamble/R.Rnw}
+
+% ----------------------------------------------------------------------
+% R SETUP
+% ----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+% ----------------------------------------------------------------------
+
+
+
+% ----------------------------------------------------------------------
+% R LOAD PACKAGES
+% ----------------------------------------------------------------------
+
+
+
+
+
+
+
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% KNITR CONFIG
+% ----------------------------------------------------------------------
+
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% DOCUMENT STATUS: DRAFT BY DEFAULT
+% ----------------------------------------------------------------------
+
+% ----------------------------------------------------------------------
+
+
+% ----------------------------------------------------------------------
+% GGPLOT2 THEMES
+% ----------------------------------------------------------------------
+% note, commented out \input{...} commands use relative paths (which would not
+% be considered a valid path by LaTeX) because we use them only to navigate around
+% our source files using the F12 shortcut afforded by VSCodium's TeX extension
+% (place the cursor on any part of the argumnent and press F12 to immediately open the file)
+% \input{ggplot-themes.Rnw}
+
+% https://github.com/tidyverse/ggplot2/blob/master/R/theme-defaults.r
+% https://exts.ggplot2.tidyverse.org/gallery/
+% https://github.com/jrnold/ggthemes
+% https://github.com/cttobin/ggthemr
+% https://github.com/ricardo-bion/ggtech
+% https://ggplot2-book.org/polishing.html
+% https://github.com/tidyverse/ggplot2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% ----------------------------------------------------------------------
+% ----------------------------------------------------------------------
+
+
+\mainmatter
+
+% let's not use paragraph indentation in the errata
+\setlength{\parindent}{0pt}
+% and increase the parskip distance slightly
+\setlength{\parskip}{2ex plus 1.0ex minus 0.4ex}
+
+
+\chapter*{Errata}
+
+
+\section*{In the thesis}
+
+On page~36 (in the third paragraph of section \enquote{2.1 Electrochemical deposition of ZnO NR arrays})
+% \blockquote{%
+%    cathodic deposition at \qty{-0.7}{\voltAgCl} for \qty{90}{\minute} with an
+%    initial pulse at \qty{-1.3}{\voltAgCl}}
+both mentions of \enquote{Ag/AgCl} should be \emph{replaced} with SCE, like so:
+\blockquote{\hl{%
+   cathodic deposition at \mbox{\qty{-0.7}{\voltSCE}} for \mbox{\qty{90}{\minute}} with an
+   initial pulse at \mbox{\qty{-1.3}{\voltSCE}}}}.
+
+On page~49 (in section \enquote{3.3 Raman spectroscopy}), the entire paragraph
+starting with \enquote{This interaction of optical phonons [\ldots]} should
+be \emph{stricken} and the following \emph{appended to the preceding paragraph}:
+\blockquote{\hl{%
+   which strongly influences the semiconductor's carrier mobility.
+}}
+
+In figure 6.3 (PC degradation of EBT on ZnO/CdS, page~80) the entire caption
+should be \emph{replaced} with:
+\blockquote{\hl{%
+   Photocatalytic degradation over \mbox{\qty{90}{\minute}} of EBT (structure inset)
+   on ZnO with \mbox{\qty{40}{\minute}} deposition of CdS.
+   The inset shows the resultant $C/C_0$ for this sample as well as other CdS loadings.}}
+
+% #00B0F6 rgb(0, 176, 246)
+\definecolor{bluezno}{rgb}{0,176,246}
+In figure~6.7 (GI-XRD series, page~84) the colours in the legend got mixed up.
+It should say:
+\fbox{\textcolor{red}{\bfseries---} Hm\hspace{1em}\textbf{---} \ch{SnO2}\hspace{1em}\textcolor{bluezno}{\bfseries---} ZnO}
+
+
+
+\section*{In \textbf{\textsc{paper II}} (unpublished manuscript)}
+
+In figure~4 (SEM micrographs, page~6) the caption should read:
+\blockquote{\hl{%
+   SEM micrographs, from left to right:
+   an electrodeposited ZnO NR array,
+   a ZnO NR array after 50 ALD cycles,
+   a different ZnO NR array after 87 ALD cycles.}}
+
+
+
+\section*{In \textbf{\textsc{paper IV}} (unpublished manuscript)}
+
+% As this is related to the e0/e_inf ratio via eq 5, and thus implies that the factor
+% contributing with the dielectric change (1/e_inf - 1/e0) in the Franck-Condon
+% interaction energy (eq 4) dominates over the medium geometry (R-1) factor.
+
+On page~16, on the last line of section \enquote{4.2 Resonant Raman} the
+word \enquote{dominates} should be \emph{replaced} with
+\blockquote{\hl{does not dominate}}.
+
+
+
+
+\backmatter
+
+%%% BIBLIOGRAPHY
+\printbibliography[%
+   title=References,%
+   % heading=bibintoc adds a TOC entry for the bibliography
+   heading=bibintoc%
+]
+
+
+\end{document}

@@ -332,7 +332,7 @@ knitr::opts_chunk$set(
 % ----------------------------------------------------------------------
 <<'knitr-chunk-draft', echo=FALSE, results='hide', message=FALSE>>=
 # uncomment this line for final mode
-# doc.is.draft <- FALSE
+doc.is.draft <- FALSE
 # we use this variable in `eval=doc.is.draft` in certain chunks,
 # for example the gitmeta chunk
 if (!exists("doc.is.draft")) {

@@ -36,7 +36,7 @@ p.rflx <- pivot_longer(
       sep = "\\.",
       into = c("material", "hkl")) %>%
    # remove hkl labels for SnO2 except for lowest angles
-   # (drop the reflexex that are large enough they don't need to be pointed out)
+   # (drop the reflexes that are large enough they don't need to be pointed out)
    filter(!(theta > 0.20 & material == "SnO2")) %>%
    # add y column for plotting vertical segments
    mutate(y = 0) %>%
@@ -85,7 +85,7 @@ colour.by.material <-
 ggplot(data = p.data) +
    coord_cartesian(ylim = c(200, 1350)) +
    geom_segment(
-      data = p.rflx, size = 1,
+      data = p.rflx, linewidth = 1,
       aes(
          x = thth, xend = thth,
          # vertical extent of the segments
@@ -112,7 +112,9 @@ ggplot(data = p.data) +
       values = colour.by.material,
       # ZnO and Hm don't need formatting, but SnO2 could use some subsetting to
       # look nice in the figure legend
-      labels = c("ZnO", "Hm", "\\ch{SnO2}")) +
+      # NOTE, legend is actually broken, I "fixed" it by simply re-ordering the labels
+      # Real fix would entail figuring out why geoms/aes are not properly setting legend
+      labels = c("Hm", "\\ch{SnO2}", "ZnO")) +
    labs(
       y = "Counts/\\unit{\\counts}",
       x = "$2\\theta$/\\unit{\\degree}",

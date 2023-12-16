@@ -98,11 +98,8 @@ print(p.abs, vp = vp.abs)
 print(p.cc0, vp = vp.cc0)
 @
 \caption[Photodegradation of EBT with ZnO/CdS]{%
-   Photocatalytic degradation of \protect\gls{EBT} (structure inset)
-   with \protect\gls{PC} made of \zincox\ \protect\gls{NR} array coated
-   with increasingly thicker layer of \CdS\ (tallied in deposition time, $t_\mathrm{dep}$).
-   Main plot shows the experimentally recorded \protect\gls{UV-Vis} spectra of the dye
-   for varying \CdS\ loading, and the inset barplot shows the calculated $C/C_0$
-   for (slightly different) \CdS\ loadings.}
+   Photocatalytic degradation over \qty{90}{\minute} of \protect\gls{EBT} (structure inset)
+   on \ZnO with \qty{40}{\minute} deposition of \CdS.
+   The inset shows the resultant $C/C_0$ for this sample as well as other \CdS\ loadings.}
 \label{fig:P01-photocat}
 \end{figure}
